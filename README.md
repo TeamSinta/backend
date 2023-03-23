@@ -1,0 +1,8 @@
+# teamsinta
+Sinta
+
+
+## Setup
+
+
+## Requirements
