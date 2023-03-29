@@ -7,7 +7,6 @@ const AccentPurpleBox = styled.div`
   height: 200px;
   background: ${(props) => props.theme.colors.accentPurple};
   color: ${(props) => props.theme.colors.white};
-  font-family: "Chillax";
 `;
 
 //I leave counter temporarily for refrence for redux-toolkit.
@@ -15,6 +14,7 @@ function App() {
   return (
     <div className="App">
       <Counter />
+
       <AccentPurpleBox>Accent purple box</AccentPurpleBox>
     </div>
   );
