@@ -61,6 +61,7 @@
     "@storybook/addon-essentials": "^6.5.16",
     "@storybook/addon-interactions": "^6.5.16",
     "@storybook/addon-links": "^6.5.16",
+    "@storybook/addon-styling": "^0.3.2",
     "@storybook/builder-webpack5": "^6.5.16",
     "@storybook/manager-webpack5": "^6.5.16",
     "@storybook/node-logger": "^6.5.16",

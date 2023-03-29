@@ -53,6 +53,7 @@ table {
 }
 body{
   font-weight: 100;
+  font-family: 'Chillax';
 }
 
 a{
