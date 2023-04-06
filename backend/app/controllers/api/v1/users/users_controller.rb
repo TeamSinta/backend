@@ -1,4 +1,4 @@
-class Api::V1::UsersController < ApplicationController
+class Api::V1::Users::UsersController < ApplicationController
   # skip_before_action :verify_authenticity_token
 
   def new
