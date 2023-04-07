@@ -1,4 +1,4 @@
-class Api::V1::UsersController < ApplicationController
+class Api::V1::Users::UsersController < ApplicationController
   # skip_before_action :verify_authenticity_token
 
   def new
@@ -14,16 +14,6 @@ class Api::V1::UsersController < ApplicationController
     @users = User.all
     render json: @users
   end
-
-  def create
-    @user = User.new(user_params)
-    if @user.save
-     render json: @user
-    else
-      render :new, status: :unprocessable_entity
-    end
-  end
-
 
   def destroy
     @user = User.find(params[:id])
