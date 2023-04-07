@@ -15,17 +15,6 @@ class Api::V1::Users::UsersController < ApplicationController
     render json: @users
   end
 
-  # def create
-  #   @user = User.new(user_params)
-  #   if @user.save
-  #    render json: @user
-  #   else
-  #     render :new, status: :unprocessable_entity
-  #   end
-  # end
-
-
-
   def destroy
     @user = User.find(params[:id])
     @user.destroy
