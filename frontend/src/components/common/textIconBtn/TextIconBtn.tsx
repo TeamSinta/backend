@@ -15,6 +15,7 @@ const TextIconBtn = (props: ITextIconBtnProps) => {
   return (
     <>
       <TextIconBtnWrap>
+        <div></div>
         {label}
         <TextIconBtnIcon>{icon}</TextIconBtnIcon>
         <ButtonShadow />
