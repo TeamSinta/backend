@@ -20,6 +20,13 @@ export const iconSB = {
   fill: "#121212",
 };
 
+export const iconSW = {
+  width: 18,
+  height: 18,
+  stroke: "#ffffff",
+  fill: "#ffffff",
+};
+
 export const iconMB = {
   width: 20,
   height: 20,
