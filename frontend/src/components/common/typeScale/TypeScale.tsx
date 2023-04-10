@@ -32,7 +32,7 @@ const TypeScale = ({ label }: ITypeScaleProps) => {
       <H2Bold>H2 SemiBold: {label}</H2Bold>
       <H2Medium>H2 Medium : {label}</H2Medium>
       <H3Bold>H3 SemiBold : {label}</H3Bold>
-      <H3Medium>H3 Mediun : {label}</H3Medium>
+      <H3Medium>H3 Medium : {label}</H3Medium>
       <BodyLBold>Body L Bold : {label}</BodyLBold>
       <BodyLMedium>Body L Medium : {label}</BodyLMedium>
       <BodyMBold>Body M Bold : {label}</BodyMBold>
