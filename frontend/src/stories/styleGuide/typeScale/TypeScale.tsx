@@ -1,16 +1,16 @@
 import {
+  H1,
+  H2Bold,
+  H2Medium,
+  H3Bold,
+  H3Medium,
   BodyLBold,
   BodyLMedium,
   BodyMBold,
   BodyMMedium,
   BodySBold,
   BodySMedium,
-  H1,
-  H2Bold,
-  H2Medium,
-  H3Bold,
-  H3Medium,
-} from "./StyledTypeScale";
+} from "components/common/typeScale/StyledTypeScale";
 
 interface ITypeScaleProps {
   label?: string;
