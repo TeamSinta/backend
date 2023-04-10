@@ -30,6 +30,19 @@ export default {
           icons,
         },
       },
+      description: "Icon components",
+    },
+    label: {
+      control: {
+        type: "text",
+      },
+      description: "Text for button",
+    },
+    disable: {
+      control: {
+        type: "boolean",
+      },
+      description: "Disable or able",
     },
   },
 } as ComponentMeta<typeof TextIconBtn>;
