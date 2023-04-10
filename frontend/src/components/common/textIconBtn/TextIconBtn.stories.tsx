@@ -35,7 +35,10 @@ export default {
 } as ComponentMeta<typeof TextIconBtn>;
 
 const Template: ComponentStory<typeof TextIconBtn> = (arg) => {
-  var icon = icons[arg.icon.toString() as keyof typeof icons];
+  var icon = arg.icon;
+  if (icon !== undefined) {
+    icon = icons[arg.icon.toString() as keyof typeof icons];
+  }
 
   if (icon === undefined) {
     return <TextIconBtn {...arg} />;
@@ -54,4 +57,13 @@ export const Primary = Template.bind({});
 Primary.args = {
   label: "Create",
   icon: <PlusIcon {...iconSW} />,
+  disable: false,
+};
+
+export const Disable = Template.bind({});
+
+Disable.args = {
+  label: "Create",
+  icon: <PlusIcon {...iconSW} />,
+  disable: true,
 };

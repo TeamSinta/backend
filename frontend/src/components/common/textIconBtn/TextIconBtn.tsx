@@ -1,20 +1,18 @@
-import { JsxElement } from "typescript";
 import { ButtonShadow } from "../button/StyledBtn";
-import { PlusIcon } from "../svgIcons/Icons";
-import { iconSW } from "../svgIcons/iconType";
 import { TextIconBtnIcon, TextIconBtnWrap } from "./StyledTextIconBtn";
 
 interface ITextIconBtnProps {
   label?: string;
   icon: JSX.Element;
+  disable: boolean;
 }
 
 const TextIconBtn = (props: ITextIconBtnProps) => {
-  const { label, icon } = props;
+  const { label, icon, disable } = props;
 
   return (
     <>
-      <TextIconBtnWrap>
+      <TextIconBtnWrap disable={disable}>
         <div></div>
         {label}
         <TextIconBtnIcon>{icon}</TextIconBtnIcon>
