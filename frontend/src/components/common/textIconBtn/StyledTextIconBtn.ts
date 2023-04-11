@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { ButtonLayout } from "../button/StyledBtn";
 
 export const TextIconBtnWrap = styled(ButtonLayout)`
