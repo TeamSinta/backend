@@ -161,7 +161,7 @@ const Icons = () => {
           </IconDiv>
           <IconDiv>
             <RoleIcon {...iconLB} />
-            <div style={{ marginTop: "10px" }}>DashboardIcon</div>
+            <div style={{ marginTop: "10px" }}>RoleIcon</div>
           </IconDiv>
           <IconDiv>
             <CandidateIcon {...iconLB} />
