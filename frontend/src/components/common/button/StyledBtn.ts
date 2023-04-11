@@ -34,7 +34,7 @@ export const ButtonLayout = styled.div<IButtonLayout>`
       return css`
         &::after {
           width: 102%;
-          height: 120%;
+          height: 50px;
           position: absolute;
           top: -5%;
           background: ${props.theme.colors.white};
