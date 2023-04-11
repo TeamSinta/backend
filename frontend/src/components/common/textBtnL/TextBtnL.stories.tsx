@@ -3,19 +3,9 @@ import TextBtnL from "./TextBtnL";
 
 
 export default {
-  title: "common/TextIconButton",
-  component: TextIconBtn,
+  title: "common/button/TextBtnL",
+  component: TextBtnL,
   argTypes: {
-    icon: {
-      control: {
-        type: "select",
-        options: Object.keys(icons),
-        mapping: {
-          icons,
-        },
-      },
-      description: "Icon components",
-    },
     label: {
       control: {
         type: "text",
@@ -29,4 +19,23 @@ export default {
       description: "Disable or able",
     },
   },
-} as ComponentMeta<typeof TextIconBtn>;
+} as ComponentMeta<typeof TextBtnL>;
+
+const Template: ComponentStory<typeof TextBtnL> = (args) => (
+  <TextBtnL {...args} />
+);
+
+export const Primary = Template.bind({});
+// More on args: https://storybook.js.org/docs/react/writing-stories/args
+
+Primary.args = {
+  label: "Invite",
+  disable: false,
+};
+
+export const Disable = Template.bind({});
+
+Disable.args = {
+  label: "Invite",
+  disable: true,
+};

@@ -19,7 +19,7 @@ const icons = {
 };
 
 export default {
-  title: "common/TextIconButton",
+  title: "common/button/TextIconButton",
   component: TextIconBtn,
   argTypes: {
     icon: {
