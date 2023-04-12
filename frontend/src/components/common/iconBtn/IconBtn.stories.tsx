@@ -1,5 +1,4 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import { argv } from "process";
 import {
     ArrowDownIcon,
     CalendarIcon,
@@ -11,6 +10,7 @@ import {
 } from "../svgIcons/Icons";
 import { iconLB } from "../svgIcons/iconType";
 import IconBtn from "./IconBtn";
+import { ButtonBgColor } from "../button/ButtonTypes";
 
 const icons = {
     ArrowDown: <ArrowDownIcon {...iconLB} />,
@@ -36,12 +36,18 @@ export default {
             },
             description: "Icon components",
         },
-        disbale: {
+        disable: {
             control: {
                 type: "boolean",
             },
             description: "Disable or able",
         },
+        background: {
+            control : {
+                type: "color",
+                presetColors: [ButtonBgColor.White, ButtonBgColor.AccentPurple]
+            }
+        }
     },
 } as ComponentMeta<typeof IconBtn>;
 
@@ -67,11 +73,13 @@ export const Primary = Template.bind({});
 Primary.args = {
     icon: <EditIcon {...iconLB} />,
     disable: false,
+    background: ButtonBgColor.White
 };
 
 export const Disable = Template.bind({});
 
-Primary.args = {
+Disable.args = {
     icon: <EditIcon {...iconLB} />,
     disable: true,
+    background: ButtonBgColor.White
 };
