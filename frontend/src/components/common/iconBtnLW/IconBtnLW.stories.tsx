@@ -9,8 +9,7 @@ import {
     SettingIcon,
 } from "../svgIcons/Icons";
 import { iconLB } from "../svgIcons/iconType";
-import IconBtn from "./IconBtn";
-import { ButtonBgColor } from "../button/ButtonTypes";
+import IconBtnLW from "./IconBtnLW";
 
 const icons = {
     ArrowDown: <ArrowDownIcon {...iconLB} />,
@@ -22,9 +21,10 @@ const icons = {
     Setting: <SettingIcon {...iconLB} />,
 };
 
+
 export default {
-    title: "common/IconButton",
-    component: IconBtn,
+    title: "common/IconButtonLW",
+    component: IconBtnLW,
     argTypes: {
         icon: {
             control: {
@@ -41,30 +41,24 @@ export default {
                 type: "boolean",
             },
             description: "Disable or able",
-        },
-        background: {
-            control : {
-                type: "color",
-                presetColors: [ButtonBgColor.White, ButtonBgColor.AccentPurple]
-            }
         }
     },
-} as ComponentMeta<typeof IconBtn>;
+} as ComponentMeta<typeof IconBtnLW>;
 
-const Template: ComponentStory<typeof IconBtn> = (arg) => {
+const Template: ComponentStory<typeof IconBtnLW> = (arg) => {
     var icon = arg.icon;
     if (icon !== undefined) {
         icon = icons[arg.icon.toString() as keyof typeof icons];
     }
 
     if (icon === undefined) {
-        return <IconBtn {...arg} />;
+        return <IconBtnLW {...arg} />;
     } else {
         var current = {
             ...arg,
             icon: icon,
         };
-        return <IconBtn {...current} />;
+        return <IconBtnLW {...current} />;
     }
 };
 
@@ -73,7 +67,6 @@ export const Primary = Template.bind({});
 Primary.args = {
     icon: <EditIcon {...iconLB} />,
     disable: false,
-    background: ButtonBgColor.White
 };
 
 export const Disable = Template.bind({});
@@ -81,5 +74,4 @@ export const Disable = Template.bind({});
 Disable.args = {
     icon: <EditIcon {...iconLB} />,
     disable: true,
-    background: ButtonBgColor.White
 };
