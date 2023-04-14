@@ -17,9 +17,14 @@ return Promise.reject(error)
 
 });
 
+const getAccessToken = () => {
+
+};
+
 
 instance.interceptors.request.use(function(config){
-
+  const accessToken = getAccessToken();;
+  config.headers.Authorization = `JWT ${accessToken}`
   return config;
 }, function (error){
 
