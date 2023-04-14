@@ -7,9 +7,7 @@ const instance = axios.create({
   }
   });
 
-const getRefreshToken = () => {
-
-  };
+const getRefreshToken = ''
 
 instance.interceptors.response.use(function(response){
   return response;
@@ -17,7 +15,7 @@ instance.interceptors.response.use(function(response){
   const originalRequest = error.config;
   if(error.response.status === 401 && !originalRequest._retry){
     originalRequest._retry = true;
-    const refreshToken = getRefreshToken(); // get refresh token from a cookie
+    const refreshToken = getRefreshToken; // get refresh token from a cookie
     return instance.post('/auth/refresh', {refreshToken}).then((response) => {
       if(response.status === 200){
         const accessToken = response.data.accessToken
