@@ -1,6 +1,5 @@
 import axios  from "axios";
 
-
 const instance = axios.create({
   baseURL: 'http://localhost:3000',
   headers: {
@@ -22,6 +21,7 @@ instance.interceptors.response.use(function(response){
     return instance.post('/auth/refresh', {refreshToken}).then((response) => {
       if(response.status === 200){
         const accessToken = response.data.accessToken
+        // setAccessToken(accessToken); <- Optional? // store new access token in a variable
         originalRequest.headers.Authorization = `JWT ${accessToken}`
         return instance(originalRequest)
       }
