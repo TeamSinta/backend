@@ -5,14 +5,16 @@ interface ITextIconBtnProps {
   label?: string;
   icon: JSX.Element;
   disable: boolean;
+  onClick?: () => void;
+
 }
 
 const TextIconBtn = (props: ITextIconBtnProps) => {
-  const { label, icon, disable } = props;
+  const { label, icon, disable, onClick } = props;
 
   return (
     <>
-      <TextIconBtnWrap disable={disable}>
+      <TextIconBtnWrap disable={disable} onClick={onClick}>
         <div></div>
         {label}
         <TextIconBtnIcon>{icon}</TextIconBtnIcon>
