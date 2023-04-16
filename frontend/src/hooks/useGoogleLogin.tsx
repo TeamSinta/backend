@@ -1,6 +1,7 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { useCookies } from 'react-cookie';
-import HttpService from "./httpService";
+
+import HttpService from "utils/axiosService/httpService";
 
 
 type GoogleLoginReturnType = {
@@ -17,12 +18,10 @@ const GoogleLogin = (): GoogleLoginReturnType => {
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
       console.log(codeResponse);
-      const tokens = await instance.post("http://localhost:3000/auth/google", {
-        code: codeResponse.code,
-      });
-      console.log(tokens);
+      const response = await instance.get(`http://localhost:3000/auth?code=${codeResponse.code}`);
+      console.log(response);
       // Extract the access token and refresh token from the response
-      const { access_token, refresh_token } = tokens.data;
+      const { access_token, refresh_token } = response.data;
       // Store the access token and refresh token in cookies or local storage
       setCookies('access_token', access_token);
       setCookies('refresh_token', refresh_token);

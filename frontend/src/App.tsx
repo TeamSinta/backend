@@ -3,7 +3,7 @@ import { Counter } from "features/counter/Counter";
 import styled from "styled-components";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 // import { GoogleLogin } from "@react-oauth/google";
-import GoogleLoginButton from "utils/GoogleLoginButton";
+import GoogleLoginButton from "components/common/googleLoginBtn/GoogleLoginButton";
 
 const AccentPurpleBox = styled.div`
   width: 200px;
@@ -14,6 +14,8 @@ const AccentPurpleBox = styled.div`
 
 
 //I leave counter temporarily for reference for redux-toolkit.
+//I left google login button temporarily for reference & testing.
+
 function App() {
   return (
     <div className="App">
