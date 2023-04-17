@@ -1,11 +1,13 @@
+/* eslint-disable react/no-unescaped-entities */
+
 import React from "react";
 
 import { Header } from "./Header";
 import "./page.css";
 
-type User = {
+interface User {
   name: string;
-};
+}
 
 export const Page: React.VFC = () => {
   const [user, setUser] = React.useState<User>();
@@ -14,9 +16,15 @@ export const Page: React.VFC = () => {
     <article>
       <Header
         user={user}
-        onLogin={() => setUser({ name: "Jane Doe" })}
-        onLogout={() => setUser(undefined)}
-        onCreateAccount={() => setUser({ name: "Jane Doe" })}
+        onLogin={() => {
+          setUser({ name: "Jane Doe" });
+        }}
+        onLogout={() => {
+          setUser(undefined);
+        }}
+        onCreateAccount={() => {
+          setUser({ name: "Jane Doe" });
+        }}
       />
 
       <section>

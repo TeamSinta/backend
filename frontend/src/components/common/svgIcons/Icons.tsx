@@ -26,7 +26,7 @@ import { ReactComponent as ArrowDown } from "assets/svg/arrowDown.svg";
 import { ReactComponent as Door } from "assets/svg/door.svg";
 import { ReactComponent as Edit } from "assets/svg/edit.svg";
 
-import { IIconProps } from "./iconType";
+import { type IIconProps } from "./iconType";
 
 export const HambergerIcon = (props: IIconProps) => {
   return <Hamburger {...props} />;
