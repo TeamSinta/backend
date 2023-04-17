@@ -1,4 +1,7 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
+
+import React from "react";
+import { type ComponentMeta, type ComponentStory } from "@storybook/react";
 import Icons from "./Icons";
 
 export default {
