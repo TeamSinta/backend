@@ -1,7 +1,11 @@
-import axios, { AxiosInstance , AxiosError, InternalAxiosRequestConfig } from 'axios';
+import type {
+  AxiosInstance,
+  AxiosError,
+  InternalAxiosRequestConfig,
+} from "axios";
+import axios from "axios";
 
-import { useEffect } from 'react';
-
+import { useEffect } from "react";
 
 const HttpService = (): AxiosInstance => {
   const instance = axios.create({
@@ -9,14 +13,16 @@ const HttpService = (): AxiosInstance => {
   });
 
   // Request Handler
-  const requestHandler = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig> => {
-    const token = localStorage.getItem('token');
-    if (token) {
+  const requestHandler = (
+    config: InternalAxiosRequestConfig
+  ): InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig> => {
+    const token = localStorage.getItem("token");
+    if (token != null) {
       switch (config.url) {
         case process.env.APP_LOGIN:
           return config;
         default:
-          if (config.headers) {
+          if (config.headers != null) {
             config.headers.Authorization = `Bearer ${token}`;
           }
           return config;
@@ -26,32 +32,37 @@ const HttpService = (): AxiosInstance => {
   };
 
   // Request Error Handler
-  const onRequestError = (error: AxiosError): Promise<AxiosError> => {
+  const onRequestError = async (error: AxiosError): Promise<AxiosError> => {
     console.error(`[request error] [${JSON.stringify(error)}]`);
-    return Promise.reject(error);
+    return await Promise.reject(error);
   };
 
   // Response Handler
-  const responseHandler = (response: any) => {
+  const responseHandler = (response: any): any => {
     return response;
   };
 
   // Response Error Handler
-  const onResponseError = (error: AxiosError): Promise<AxiosError> => {
+  const onResponseError = async (error: AxiosError): Promise<AxiosError> => {
     console.error(`[response error] [${JSON.stringify(error)}]`);
-    return Promise.reject(error);
+    return await Promise.reject(error);
   };
 
-
   useEffect(() => {
-    const requestInterceptor = instance.interceptors.request.use(requestHandler, onRequestError);
-    const responseInterceptor = instance.interceptors.response.use(responseHandler, onResponseError);
+    const requestInterceptor = instance.interceptors.request.use(
+      requestHandler,
+      onRequestError
+    );
+    const responseInterceptor = instance.interceptors.response.use(
+      responseHandler,
+      onResponseError
+    );
 
     return () => {
       instance.interceptors.request.eject(requestInterceptor);
       instance.interceptors.response.eject(responseInterceptor);
     };
-  });
+  }, [instance.interceptors.request, instance.interceptors.response]);
 
   return instance;
 };

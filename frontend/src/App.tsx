@@ -14,19 +14,14 @@ const AccentPurpleBox = styled.div`
   color: ${(props) => props.theme.colors.white};
 `;
 
-
-
-//I leave counter temporarily for reference for redux-toolkit.
-//I left google login button temporarily for reference & testing.
+// I leave counter temporarily for reference for redux-toolkit.
+// I left google login button temporarily for reference & testing.
 
 function App() {
   return (
     <div className="App">
-
-      <GoogleOAuthProvider
-        clientId="202041052767-e7lmm09oascjre869gfjqp8gd1bmksbr.apps.googleusercontent.com"
-      >
-        <GoogleLoginButton/>
+      <GoogleOAuthProvider clientId="202041052767-e7lmm09oascjre869gfjqp8gd1bmksbr.apps.googleusercontent.com">
+        <GoogleLoginButton />
         <Counter />
         <AccentPurpleBox>Accent purple box</AccentPurpleBox>;
       </GoogleOAuthProvider>

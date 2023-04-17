@@ -1,6 +1,6 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { ComponentStory } from "@storybook/react";
 import TextBtnL from "./TextBtnL";
-
+import React from "react";
 
 export default {
   title: "common/button/TextBtnL",
@@ -19,7 +19,7 @@ export default {
       description: "Disable or able",
     },
   },
-} as ComponentMeta<typeof TextBtnL>;
+} as const;
 
 const Template: ComponentStory<typeof TextBtnL> = (args) => (
   <TextBtnL {...args} />
