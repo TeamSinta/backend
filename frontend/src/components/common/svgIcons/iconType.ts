@@ -34,9 +34,23 @@ export const iconMB = {
   fill: "#121212",
 };
 
+export const iconMW = {
+  width: 20,
+  height: 20,
+  stroke: "#ffffff",
+  fill: "#ffffff",
+};
+
 export const iconLB = {
   width: 24,
   height: 24,
   stroke: "#121212",
   fill: "#121212",
+};
+
+export const iconLW = {
+  width: 24,
+  height: 24,
+  stroke: "#ffffff",
+  fill: "#ffffff",
 };
