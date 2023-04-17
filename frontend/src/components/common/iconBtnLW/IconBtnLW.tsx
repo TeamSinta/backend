@@ -1,3 +1,4 @@
+import React from "react";
 import { ButtonShadow } from "../button/StyledBtn";
 import { IconBtnLWIcon, IconBtnLWWrap } from "./StyledIconBtnLW";
 
@@ -6,7 +7,7 @@ interface IIconBtnLWProps {
   disable: boolean;
 }
 
-const IconBtnLW = (props: IIconBtnLWProps) => {
+const IconBtnLW = (props: IIconBtnLWProps): JSX.Element => {
   const { icon, disable } = props;
 
   return (

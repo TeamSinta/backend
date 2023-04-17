@@ -1,3 +1,4 @@
+import React from "react";
 import { ReactComponent as Hamburger } from "assets/svg/hamburger.svg";
 import { ReactComponent as Asterisk } from "assets/svg/asterisk.svg";
 import { ReactComponent as Calendar } from "assets/svg/calendar.svg";
@@ -28,110 +29,110 @@ import { ReactComponent as Edit } from "assets/svg/edit.svg";
 
 import { type IIconProps } from "./iconType";
 
-export const HambergerIcon = (props: IIconProps) => {
+export const HambergerIcon = (props: IIconProps): JSX.Element => {
   return <Hamburger {...props} />;
 };
 
-export const AsteriskIcon = (props: IIconProps) => {
+export const AsteriskIcon = (props: IIconProps): JSX.Element => {
   return <Asterisk {...props} />;
 };
 
-export const CalendarIcon = (props: IIconProps) => {
+export const CalendarIcon = (props: IIconProps): JSX.Element => {
   return <Calendar {...props} />;
 };
 
-export const CardIcon = (props: IIconProps) => {
+export const CardIcon = (props: IIconProps): JSX.Element => {
   return <Card {...props} />;
 };
 
-export const DocumentIcon = (props: IIconProps) => {
+export const DocumentIcon = (props: IIconProps): JSX.Element => {
   return <Document {...props} />;
 };
 
-export const GoogleIcon = (props: IIconProps) => {
+export const GoogleIcon = (props: IIconProps): JSX.Element => {
   return <Google {...props} />;
 };
 
-export const PlusIcon = (props: IIconProps) => {
+export const PlusIcon = (props: IIconProps): JSX.Element => {
   return <Plus {...props} />;
 };
 
-export const RightBracketIcon = (props: IIconProps) => {
+export const RightBracketIcon = (props: IIconProps): JSX.Element => {
   return <RightBracket {...props} />;
 };
 
-export const PaperIcon = (props: IIconProps) => {
+export const PaperIcon = (props: IIconProps): JSX.Element => {
   return <Paper {...props} />;
 };
 
-export const ChatIcon = (props: IIconProps) => {
+export const ChatIcon = (props: IIconProps): JSX.Element => {
   return <Chat {...props} />;
 };
 
-export const CheckIcon = (props: IIconProps) => {
+export const CheckIcon = (props: IIconProps): JSX.Element => {
   return <Check {...props} />;
 };
 
-export const BinIcon = (props: IIconProps) => {
+export const BinIcon = (props: IIconProps): JSX.Element => {
   return <Bin {...props} />;
 };
 
-export const TimeIcon = (props: IIconProps) => {
+export const TimeIcon = (props: IIconProps): JSX.Element => {
   return <Time {...props} />;
 };
 
-export const GraphIcon = (props: IIconProps) => {
+export const GraphIcon = (props: IIconProps): JSX.Element => {
   return <Graph {...props} />;
 };
 
-export const StarIcon = (props: IIconProps) => {
+export const StarIcon = (props: IIconProps): JSX.Element => {
   return <Star {...props} />;
 };
 
-export const MessageIcon = (props: IIconProps) => {
+export const MessageIcon = (props: IIconProps): JSX.Element => {
   return <Message {...props} />;
 };
 
-export const LocationIcon = (props: IIconProps) => {
+export const LocationIcon = (props: IIconProps): JSX.Element => {
   return <Location {...props} />;
 };
 
-export const CallIcon = (props: IIconProps) => {
+export const CallIcon = (props: IIconProps): JSX.Element => {
   return <Call {...props} />;
 };
 
-export const InfoIcon = (props: IIconProps) => {
+export const InfoIcon = (props: IIconProps): JSX.Element => {
   return <Info {...props} />;
 };
 
-export const DashboardIcon = (props: IIconProps) => {
+export const DashboardIcon = (props: IIconProps): JSX.Element => {
   return <Dashboard {...props} />;
 };
 
-export const RoleIcon = (props: IIconProps) => {
+export const RoleIcon = (props: IIconProps): JSX.Element => {
   return <Role {...props} />;
 };
 
-export const SettingIcon = (props: IIconProps) => {
+export const SettingIcon = (props: IIconProps): JSX.Element => {
   return <Setting {...props} />;
 };
 
-export const CandidateIcon = (props: IIconProps) => {
+export const CandidateIcon = (props: IIconProps): JSX.Element => {
   return <Candidate {...props} />;
 };
 
-export const DoorIcon = (props: IIconProps) => {
+export const DoorIcon = (props: IIconProps): JSX.Element => {
   return <Door {...props} />;
 };
 
-export const EditIcon = (props: IIconProps) => {
+export const EditIcon = (props: IIconProps): JSX.Element => {
   return <Edit {...props} />;
 };
 
-export const CloseIcon = (props: IIconProps) => {
+export const CloseIcon = (props: IIconProps): JSX.Element => {
   return <Close {...props} />;
 };
 
-export const ArrowDownIcon = (props: IIconProps) => {
+export const ArrowDownIcon = (props: IIconProps): JSX.Element => {
   return <ArrowDown {...props} />;
 };

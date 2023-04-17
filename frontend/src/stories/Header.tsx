@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import React from "react";
 
 import { Button } from "./Button";
@@ -47,7 +49,7 @@ export const Header = ({
         <h1>Acme</h1>
       </div>
       <div>
-        {user ? (
+        {user != null ? (
           <>
             <span className="welcome">
               Welcome, <b>{user.name}</b>!

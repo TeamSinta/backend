@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
   H1,
   H2Bold,
@@ -16,7 +18,7 @@ interface ITypeScaleProps {
   label?: string;
 }
 
-const TypeScale = ({ label }: ITypeScaleProps) => {
+const TypeScale = ({ label }: ITypeScaleProps): JSX.Element => {
   return (
     <div
       style={{

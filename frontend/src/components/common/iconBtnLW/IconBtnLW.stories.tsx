@@ -1,4 +1,5 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import React from "react";
+import { type ComponentMeta, type ComponentStory } from "@storybook/react";
 import {
   ArrowDownIcon,
   CalendarIcon,
@@ -21,6 +22,7 @@ const icons = {
   Setting: <SettingIcon {...iconLB} />,
 };
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 export default {
   title: "common/IconButtonLW",
   component: IconBtnLW,
@@ -45,17 +47,17 @@ export default {
 } as ComponentMeta<typeof IconBtnLW>;
 
 const Template: ComponentStory<typeof IconBtnLW> = (arg) => {
-  var icon = arg.icon;
+  let icon = arg.icon;
   if (icon !== undefined) {
-    icon = icons[arg.icon.toString() as keyof typeof icons];
+    icon = icons[arg.icon as unknown as keyof typeof icons];
   }
 
   if (icon === undefined) {
     return <IconBtnLW {...arg} />;
   } else {
-    var current = {
+    const current = {
       ...arg,
-      icon: icon,
+      icon,
     };
     return <IconBtnLW {...current} />;
   }
