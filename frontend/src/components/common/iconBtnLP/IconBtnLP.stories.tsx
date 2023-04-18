@@ -11,20 +11,20 @@ import {
     RoleIcon,
     SettingIcon,
 } from "../svgIcons/Icons";
-import { iconSW } from "../svgIcons/iconType";
+import { iconLW } from "../svgIcons/iconType";
 import IconBtnLP from "./IconBtnLP";
 
 const icons = {
-    ArrowDown: <ArrowDownIcon {...iconSW} />,
-    Calendar: <CalendarIcon {...iconSW} />,
-    Candidate: <CandidateIcon {...iconSW} />,
-    Close: <CloseIcon {...iconSW} />,
-    Dashboard: <DashboardIcon {...iconSW} />,
-    Door: <DoorIcon {...iconSW} />, 
-    Edit: <EditIcon {...iconSW} />,
-    Plus: <PlusIcon {...iconSW} />,
-    Role: <RoleIcon {...iconSW} />,
-    Setting: <SettingIcon {...iconSW} />,
+    ArrowDown: <ArrowDownIcon {...iconLW} />,
+    Calendar: <CalendarIcon {...iconLW} />,
+    Candidate: <CandidateIcon {...iconLW} />,
+    Close: <CloseIcon {...iconLW} />,
+    Dashboard: <DashboardIcon {...iconLW} />,
+    Door: <DoorIcon {...iconLW} />, 
+    Edit: <EditIcon {...iconLW} />,
+    Plus: <PlusIcon {...iconLW} />,
+    Role: <RoleIcon {...iconLW} />,
+    Setting: <SettingIcon {...iconLW} />,
 };
 
 
@@ -71,13 +71,13 @@ const Template: ComponentStory<typeof IconBtnLP> = (arg) => {
 export const Primary = Template.bind({});
 
 Primary.args = {
-    icon: <EditIcon {...iconSW} />,
+    icon: <EditIcon {...iconLW} />,
     disable: false,
 };
 
 export const Disable = Template.bind({});
 
 Disable.args = {
-    icon: <EditIcon {...iconSW} />,
+    icon: <EditIcon {...iconLW} />,
     disable: true,
 };
