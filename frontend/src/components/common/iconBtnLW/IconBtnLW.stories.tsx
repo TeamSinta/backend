@@ -1,31 +1,31 @@
 import React from "react";
 import { type ComponentMeta, type ComponentStory } from "@storybook/react";
 import {
-    ArrowDownIcon,
-    CalendarIcon,
-    CandidateIcon,
-    CloseIcon,
-    DashboardIcon,
-    DoorIcon,
-    EditIcon,
-    PlusIcon,
-    RoleIcon,
-    SettingIcon,
+  ArrowDownIcon,
+  CalendarIcon,
+  CandidateIcon,
+  CloseIcon,
+  DashboardIcon,
+  DoorIcon,
+  EditIcon,
+  PlusIcon,
+  RoleIcon,
+  SettingIcon,
 } from "../svgIcons/Icons";
 import { iconLB } from "../svgIcons/iconType";
 import IconBtnLW from "./IconBtnLW";
 
 const icons = {
-    ArrowDown: <ArrowDownIcon {...iconLB} />,
-    Calendar: <CalendarIcon {...iconLB} />,
-    Candidate: <CandidateIcon {...iconLB} />,
-    Close: <CloseIcon {...iconLB} />,
-    Dashboard: <DashboardIcon {...iconLB} />,
-    Door: <DoorIcon {...iconLB} />,
-    Edit: <EditIcon {...iconLB} />,
-    Plus: <PlusIcon {...iconLB} />,
-    Role: <RoleIcon {...iconLB} />,
-    Setting: <SettingIcon {...iconLB} />,
+  ArrowDown: <ArrowDownIcon {...iconLB} />,
+  Calendar: <CalendarIcon {...iconLB} />,
+  Candidate: <CandidateIcon {...iconLB} />,
+  Close: <CloseIcon {...iconLB} />,
+  Dashboard: <DashboardIcon {...iconLB} />,
+  Door: <DoorIcon {...iconLB} />,
+  Edit: <EditIcon {...iconLB} />,
+  Plus: <PlusIcon {...iconLB} />,
+  Role: <RoleIcon {...iconLB} />,
+  Setting: <SettingIcon {...iconLB} />,
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
