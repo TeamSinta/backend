@@ -1,7 +1,7 @@
 import React from "react";
 import { ButtonShadow } from "../button/StyledBtn";
 import { TextIconBtnIcon, TextIconBtnWrap } from "./StyledTextIconBtn";
-import type { ReactElement } from "react";
+
 
 interface ITextIconBtnProps {
   label?: string;
@@ -10,7 +10,7 @@ interface ITextIconBtnProps {
   onClick?: () => void;
 }
 
-const TextIconBtn = (props: ITextIconBtnProps): ReactElement => {
+const TextIconBtn = (props: ITextIconBtnProps): JSX.Element => {
   const { label, icon, disable, onClick } = props;
 
   return (

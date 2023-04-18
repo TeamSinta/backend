@@ -16,7 +16,7 @@ const GoogleLogin = (): GoogleLoginReturnType => {
     /* eslint-disable */
     onSuccess: async (codeResponse) => {
       const response = await instance.get(
-        `http://localhost:3000/auth?code=${codeResponse.code}`
+        `${process.env.REACT_APP_GOOGLE_API}=${codeResponse.code}`
       );
       // Extract the access token and refresh token from the response
       const { accessToken, refreshToken } = response.data;
