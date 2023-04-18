@@ -2,7 +2,6 @@ import React from "react";
 import { ButtonShadow } from "../button/StyledBtn";
 import { TextIconBtnIcon, TextIconBtnWrap } from "./StyledTextIconBtn";
 
-
 interface ITextIconBtnProps {
   label?: string;
   icon: JSX.Element;

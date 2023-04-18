@@ -16,15 +16,16 @@ const AccentPurpleBox = styled.div`
 // I leave counter temporarily for reference for redux-toolkit.
 // I left google login button temporarily for reference & testing.
 
-
 function App() {
   return (
     <div className="App">
-  <GoogleOAuthProvider clientId= {`${process.env.REACT_APP_GOOGLE_CLIENT_ID ?? 'defaultClientId'}`}  >
-
-        <GoogleLoginButton  />
+      <GoogleOAuthProvider
+        clientId={`${
+          process.env.REACT_APP_GOOGLE_CLIENT_ID ?? "defaultClientId"
+        }`}
+      >
+        <GoogleLoginButton />
         <Counter />
-
         <AccentPurpleBox>Accent purple box</AccentPurpleBox>;
       </GoogleOAuthProvider>
     </div>
