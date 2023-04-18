@@ -4,8 +4,11 @@ import {
     CalendarIcon,
     CandidateIcon,
     CloseIcon,
+    DashboardIcon,
+    DoorIcon,
     EditIcon,
     PlusIcon,
+    RoleIcon,
     SettingIcon,
 } from "../svgIcons/Icons";
 import { iconSW } from "../svgIcons/iconType";
@@ -16,8 +19,11 @@ const icons = {
     Calendar: <CalendarIcon {...iconSW} />,
     Candidate: <CandidateIcon {...iconSW} />,
     Close: <CloseIcon {...iconSW} />,
+    Dashboard: <DashboardIcon {...iconSW} />,
+    Door: <DoorIcon {...iconSW} />, 
     Edit: <EditIcon {...iconSW} />,
     Plus: <PlusIcon {...iconSW} />,
+    Role: <RoleIcon {...iconSW} />,
     Setting: <SettingIcon {...iconSW} />,
 };
 
