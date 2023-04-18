@@ -1,4 +1,5 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import React from "react";
+import { type ComponentMeta, type ComponentStory } from "@storybook/react";
 import {
     ArrowDownIcon,
     CalendarIcon,
@@ -20,64 +21,64 @@ const icons = {
     Candidate: <CandidateIcon {...iconLB} />,
     Close: <CloseIcon {...iconLB} />,
     Dashboard: <DashboardIcon {...iconLB} />,
-    Door: <DoorIcon {...iconLB} />, 
+    Door: <DoorIcon {...iconLB} />,
     Edit: <EditIcon {...iconLB} />,
     Plus: <PlusIcon {...iconLB} />,
     Role: <RoleIcon {...iconLB} />,
     Setting: <SettingIcon {...iconLB} />,
 };
 
-
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 export default {
-    title: "common/IconButtonLW",
-    component: IconBtnLW,
-    argTypes: {
-        icon: {
-            control: {
-                type: "select",
-                options: Object.keys(icons),
-                mapping: {
-                    icons,
-                },
-            },
-            description: "Icon components",
+  title: "common/IconButtonLW",
+  component: IconBtnLW,
+  argTypes: {
+    icon: {
+      control: {
+        type: "select",
+        options: Object.keys(icons),
+        mapping: {
+          icons,
         },
-        disable: {
-            control: {
-                type: "boolean",
-            },
-            description: "Disable or able",
-        }
+      },
+      description: "Icon components",
     },
+    disable: {
+      control: {
+        type: "boolean",
+      },
+      description: "Disable or able",
+    },
+  },
 } as ComponentMeta<typeof IconBtnLW>;
 
 const Template: ComponentStory<typeof IconBtnLW> = (arg) => {
-    var icon = arg.icon;
-    if (icon !== undefined) {
-        icon = icons[arg.icon.toString() as keyof typeof icons];
-    }
+  let icon = arg.icon;
+  if (icon !== undefined) {
+    icon = icons[arg.icon as unknown as keyof typeof icons];
+  }
 
-    if (icon === undefined) {
-        return <IconBtnLW {...arg} />;
-    } else {
-        var current = {
-            ...arg,
-            icon: icon,
-        };
-        return <IconBtnLW {...current} />;
-    }
+  if (icon === undefined) {
+    return <IconBtnLW {...arg} />;
+  } else {
+    const current = {
+      ...arg,
+      icon,
+    };
+    return <IconBtnLW {...current} />;
+  }
 };
 
 export const Primary = Template.bind({});
 
 Primary.args = {
-    icon: <EditIcon {...iconLB} />,
-    disable: false,
+  icon: <EditIcon {...iconLB} />,
+  disable: false,
 };
 
 export const Disable = Template.bind({});
 
 Disable.args = {
-    icon: <EditIcon {...iconLB} />,
-    disable: true,
+  icon: <EditIcon {...iconLB} />,
+  disable: true,
 };

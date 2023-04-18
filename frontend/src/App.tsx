@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
 import React from "react";
 import { Counter } from "features/counter/Counter";
 import styled from "styled-components";
@@ -9,7 +11,7 @@ const AccentPurpleBox = styled.div`
   color: ${(props) => props.theme.colors.white};
 `;
 
-//I leave counter temporarily for refrence for redux-toolkit.
+// I leave counter temporarily for refrence for redux-toolkit.
 function App() {
   return (
     <div className="App">

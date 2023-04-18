@@ -1,3 +1,4 @@
+import React from "react";
 import { ButtonShadow } from "../button/StyledBtn";
 import { TextIconBtnIcon, TextIconBtnWrap } from "./StyledTextIconBtn";
 
@@ -7,7 +8,7 @@ interface ITextIconBtnProps {
   disable: boolean;
 }
 
-const TextIconBtn = (props: ITextIconBtnProps) => {
+const TextIconBtn = (props: ITextIconBtnProps): JSX.Element => {
   const { label, icon, disable } = props;
 
   return (

@@ -1,4 +1,6 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
+import React from "react";
+import { type ComponentMeta, type ComponentStory } from "@storybook/react";
 import {
   ArrowDownIcon,
   AsteriskIcon,
@@ -47,17 +49,17 @@ export default {
 } as ComponentMeta<typeof TextIconBtn>;
 
 const Template: ComponentStory<typeof TextIconBtn> = (arg) => {
-  var icon = arg.icon;
+  let icon = arg.icon;
   if (icon !== undefined) {
-    icon = icons[arg.icon.toString() as keyof typeof icons];
+    icon = icons[arg.icon as unknown as keyof typeof icons];
   }
 
   if (icon === undefined) {
     return <TextIconBtn {...arg} />;
   } else {
-    var current = {
+    const current = {
       ...arg,
-      icon: icon,
+      icon,
     };
     return <TextIconBtn {...current} />;
   }

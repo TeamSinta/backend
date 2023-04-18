@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-confusing-void-expression */
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useState } from "react";
 
 import { useAppSelector, useAppDispatch } from "app/hooks";
@@ -52,7 +56,7 @@ export function Counter() {
         </button>
         <button
           className={styles.asyncButton}
-          onClick={() => dispatch(incrementAsync(incrementValue))}
+          onClick={async () => await dispatch(incrementAsync(incrementValue))}
         >
           Add Async
         </button>

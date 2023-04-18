@@ -1,4 +1,7 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
+
+import React from "react";
+import { type ComponentMeta, type ComponentStory } from "@storybook/react";
 import TypeScale from "./TypeScale";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
