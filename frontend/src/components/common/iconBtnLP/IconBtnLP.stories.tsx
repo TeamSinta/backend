@@ -12,26 +12,26 @@ import {
   RoleIcon,
   SettingIcon,
 } from "../svgIcons/Icons";
-import { iconLB } from "../svgIcons/iconType";
-import IconBtnLW from "./IconBtnLW";
+import { iconLW } from "../svgIcons/iconType";
+import IconBtnLP from "./IconBtnLP";
 
 const icons = {
-  ArrowDown: <ArrowDownIcon {...iconLB} />,
-  Calendar: <CalendarIcon {...iconLB} />,
-  Candidate: <CandidateIcon {...iconLB} />,
-  Close: <CloseIcon {...iconLB} />,
-  Dashboard: <DashboardIcon {...iconLB} />,
-  Door: <DoorIcon {...iconLB} />,
-  Edit: <EditIcon {...iconLB} />,
-  Plus: <PlusIcon {...iconLB} />,
-  Role: <RoleIcon {...iconLB} />,
-  Setting: <SettingIcon {...iconLB} />,
+  ArrowDown: <ArrowDownIcon {...iconLW} />,
+  Calendar: <CalendarIcon {...iconLW} />,
+  Candidate: <CandidateIcon {...iconLW} />,
+  Close: <CloseIcon {...iconLW} />,
+  Dashboard: <DashboardIcon {...iconLW} />,
+  Door: <DoorIcon {...iconLW} />,
+  Edit: <EditIcon {...iconLW} />,
+  Plus: <PlusIcon {...iconLW} />,
+  Role: <RoleIcon {...iconLW} />,
+  Setting: <SettingIcon {...iconLW} />,
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 export default {
-  title: "common/IconButtonLW",
-  component: IconBtnLW,
+  title: "common/IconButtonLP",
+  component: IconBtnLP,
   argTypes: {
     icon: {
       control: {
@@ -50,35 +50,35 @@ export default {
       description: "Disable or able",
     },
   },
-} as ComponentMeta<typeof IconBtnLW>;
+} as ComponentMeta<typeof IconBtnLP>;
 
-const Template: ComponentStory<typeof IconBtnLW> = (arg) => {
+const Template: ComponentStory<typeof IconBtnLP> = (arg) => {
   let icon = arg.icon;
   if (icon !== undefined) {
     icon = icons[arg.icon as unknown as keyof typeof icons];
   }
 
   if (icon === undefined) {
-    return <IconBtnLW {...arg} />;
+    return <IconBtnLP {...arg} />;
   } else {
     const current = {
       ...arg,
       icon,
     };
-    return <IconBtnLW {...current} />;
+    return <IconBtnLP {...current} />;
   }
 };
 
 export const Primary = Template.bind({});
 
 Primary.args = {
-  icon: <EditIcon {...iconLB} />,
+  icon: <EditIcon {...iconLW} />,
   disable: false,
 };
 
 export const Disable = Template.bind({});
 
 Disable.args = {
-  icon: <EditIcon {...iconLB} />,
+  icon: <EditIcon {...iconLW} />,
   disable: true,
 };
