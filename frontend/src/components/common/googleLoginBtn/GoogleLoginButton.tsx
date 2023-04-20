@@ -5,7 +5,7 @@ import { GoogleIcon } from "components/common/svgIcons/Icons";
 import { iconSW } from "components/common/svgIcons/iconType";
 import React from "react";
 
-const GoogleLoginButton = (): ReactElement => {
+const GoogleLoginButton = (): JSX.Element => {
   const { signIn } = useGoogleLogin();
 
   return (
