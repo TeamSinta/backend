@@ -1,4 +1,3 @@
-import type { ReactElement } from "react";
 import useGoogleLogin from "../../../hooks/useGoogleLogin";
 import TextIconBtn from "components/common/textIconBtn/TextIconBtn";
 import { GoogleIcon } from "components/common/svgIcons/Icons";
