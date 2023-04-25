@@ -1,4 +1,5 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import React from "react";
+import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import TextInput from "./TextInput";
 
 export default {
@@ -32,7 +33,7 @@ export default {
   },
 } as ComponentMeta<typeof TextInput>;
 
-const Template: ComponentStory<typeof TextInput> = (arg) => {
+const Template: ComponentStory<typeof TextInput> = (arg): JSX.Element => {
   return <TextInput {...arg}></TextInput>;
 };
 

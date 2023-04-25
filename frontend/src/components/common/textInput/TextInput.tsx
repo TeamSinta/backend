@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import React from "react";
 import {
   Input,
   InputError,
@@ -13,7 +13,7 @@ interface ITextInput {
   error: boolean;
 }
 
-const TextInput = (props: ITextInput): ReactElement => {
+const TextInput = (props: ITextInput): JSX.Element => {
   const { disable, label, placeholder, error } = props;
 
   return (
