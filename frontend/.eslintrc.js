@@ -12,7 +12,9 @@ module.exports = {
     project: "./tsconfig.json",
   },
   plugins: ["react"],
-  rules: {},
+  rules: {
+    "@typescript-eslint/consistent-type-assertions": 0,
+  },
   settings: {
     react: {
       version: "17.02",
