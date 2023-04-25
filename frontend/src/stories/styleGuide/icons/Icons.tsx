@@ -1,3 +1,4 @@
+import React from "react";
 import {
   ArrowDownIcon,
   AsteriskIcon,
@@ -35,7 +36,7 @@ const IconDiv = styled.div`
   text-align: center;
 `;
 
-const Icons = () => {
+const Icons = (): JSX.Element => {
   return (
     <>
       <div>
