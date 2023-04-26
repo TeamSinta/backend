@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { ButtonLayout } from "../button/StyledBtn";
+import { SmallButtonLayout } from "../button/StyledBtn";
 
-export const IconBtnSWrap = styled(ButtonLayout)`
+export const IconBtnSWrap = styled(SmallButtonLayout)`
   height: 32px;
   width: 32px;
   background: ${(props) => props.theme.colors.white};

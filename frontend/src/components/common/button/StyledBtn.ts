@@ -64,3 +64,40 @@ export const ButtonLayout = styled.div<IButtonLayout>`
     }
   }}
 `;
+
+export const SmallButtonLayout = styled.div<IButtonLayout>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  padding: 8px 120px;
+  border: none;
+  border-radius: 8px;
+
+  ${(props) => {
+    if (props.disable) {
+      return css`
+        &::after {
+          background: ${props.theme.colors.white};
+          content: " ";
+          opacity: 0.3s;
+        }
+        :hover {
+          cursor: not-allowed;
+        }
+      `;
+    } else {
+      return css`
+        :hover {
+          background: ${props.theme.colors.lightPurple}
+          cursor: pointer;
+          transition: 0.2s ease-in-out;
+        }
+
+        :active {
+          background: ${props.theme.colors.pastelPurple}
+        }
+      `;
+    }
+  }}
+`;
