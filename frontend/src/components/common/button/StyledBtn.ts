@@ -69,7 +69,6 @@ export const SmallButtonLayout = styled.div<IButtonLayout>`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
   padding: 8px 120px;
   border: none;
   border-radius: 8px;
@@ -78,9 +77,12 @@ export const SmallButtonLayout = styled.div<IButtonLayout>`
     if (props.disable) {
       return css`
         &::after {
+          width: 100%;
+          height: inherit;
           background: ${props.theme.colors.white};
           content: " ";
-          opacity: 0.3s;
+          opacity: 0.3;
+          position: absolute;
         }
         :hover {
           cursor: not-allowed;
@@ -89,13 +91,13 @@ export const SmallButtonLayout = styled.div<IButtonLayout>`
     } else {
       return css`
         :hover {
-          background: ${props.theme.colors.lightPurple}
+          background: ${props.theme.colors.lightPurple};
           cursor: pointer;
-          transition: 0.2s ease-in-out;
+          transition: 0.2s;
         }
 
         :active {
-          background: ${props.theme.colors.pastelPurple}
+          background: ${props.theme.colors.pastelPurple};
         }
       `;
     }
