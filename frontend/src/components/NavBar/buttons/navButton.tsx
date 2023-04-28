@@ -9,13 +9,12 @@ import {
 interface INavBarButtonProps {
   label?: string;
   icon: JSX.Element;
-  disable: boolean;
   onClick?: () => void;
   active: boolean;
 }
 
 const NavBarButton = (props: INavBarButtonProps): JSX.Element => {
-  const { label, icon, disable, onClick, active } = props;
+  const { label, icon, onClick, active } = props;
 
   const [isActive, setIsActive] = useState(active);
 
@@ -27,7 +26,7 @@ const NavBarButton = (props: INavBarButtonProps): JSX.Element => {
   };
 
   return (
-    <NavButtonWrapComponent disable={disable} onClick={handleClick}>
+    <NavButtonWrapComponent onClick={handleClick}>
       <NavBarButtonIcon>{icon}</NavBarButtonIcon>
       <NavBarButtonLabel>{label}</NavBarButtonLabel>
     </NavButtonWrapComponent>

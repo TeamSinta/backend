@@ -45,12 +45,6 @@ export default {
       },
       description: "Active or not",
     },
-    disable: {
-      control: {
-        type: "boolean",
-      },
-      description: "Disable or able",
-    },
   },
 } as ComponentMeta<typeof NavBarButton>;
 
@@ -71,29 +65,19 @@ const Template: ComponentStory<typeof NavBarButton> = (arg) => {
   }
 };
 
-export const Primary = Template.bind({});
+export const Inactive = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
-
-Primary.args = {
-  label: "Dashboard",
-  icon: <DashboardIcon {...iconLB} />,
-  disable: false,
-  active: false,
-};
-
-export const Disable = Template.bind({});
-
-Disable.args = {
-  label: "Dashboard",
-  icon: <DashboardIcon {...iconLB} />,
-  disable: true,
-};
 
 export const Active = Template.bind({});
 
 Active.args = {
   label: "Dashboard",
   icon: <DashboardIcon {...iconLB} />,
-  disable: false,
   active: true,
+};
+
+Inactive.args = {
+  label: "Dashboard",
+  icon: <DashboardIcon {...iconLB} />,
+  active: false,
 };
