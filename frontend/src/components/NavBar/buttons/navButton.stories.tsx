@@ -8,15 +8,15 @@ import {
   SettingIcon,
   DashboardIcon,
 } from "components/common/svgIcons/Icons";
-import { iconSW } from "components/common/svgIcons/iconType";
+import { iconLB } from "components/common/svgIcons/iconType";
 import NavBarButton from "./navButton";
 
 const icons = {
-  Role: <RoleIcon {...iconSW} />,
-  Candidate: <CandidateIcon {...iconSW} />,
-  Calender: <CalendarIcon {...iconSW} />,
-  Setting: <SettingIcon {...iconSW} />,
-  Dashboard: <DashboardIcon {...iconSW} />,
+  Role: <RoleIcon {...iconLB} />,
+  Candidate: <CandidateIcon {...iconLB} />,
+  Calender: <CalendarIcon {...iconLB} />,
+  Setting: <SettingIcon {...iconLB} />,
+  Dashboard: <DashboardIcon {...iconLB} />,
 };
 
 export default {
@@ -38,6 +38,12 @@ export default {
         type: "text",
       },
       description: "Text for button",
+    },
+    active: {
+      control: {
+        type: "boolean",
+      },
+      description: "Active or not",
     },
     disable: {
       control: {
@@ -69,15 +75,25 @@ export const Primary = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 
 Primary.args = {
-  label: "Create",
-  icon: <DashboardIcon {...iconSW} />,
+  label: "Dashboard",
+  icon: <DashboardIcon {...iconLB} />,
   disable: false,
+  active: false,
 };
 
 export const Disable = Template.bind({});
 
 Disable.args = {
-  label: "Create",
-  icon: <DashboardIcon {...iconSW} />,
+  label: "Dashboard",
+  icon: <DashboardIcon {...iconLB} />,
   disable: true,
+};
+
+export const Active = Template.bind({});
+
+Active.args = {
+  label: "Dashboard",
+  icon: <DashboardIcon {...iconLB} />,
+  disable: false,
+  active: true,
 };
