@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from 'react';
 import {
   NavBarButtonIcon,
   NavButtonWrap,
@@ -11,22 +11,20 @@ interface INavBarButtonProps {
   icon: JSX.Element;
   onClick?: () => void;
   active: boolean;
+  activeButtonId: number;
 }
 
 const NavBarButton = (props: INavBarButtonProps): JSX.Element => {
   const { label, icon, onClick, active } = props;
 
-  const [isActive, setIsActive] = useState(active);
-
-  const NavButtonWrapComponent = isActive ? NavButtonWrapActive : NavButtonWrap;
+  const NavButtonWrapComponent = active ? NavButtonWrapActive : NavButtonWrap;
 
   const handleClick = (): void => {
-    setIsActive(true);
     onClick?.();
   };
 
   return (
-    <NavButtonWrapComponent onClick={handleClick}>
+    <NavButtonWrapComponent onClick={handleClick} >
       <NavBarButtonIcon>{icon}</NavBarButtonIcon>
       <NavBarButtonLabel>{label}</NavBarButtonLabel>
     </NavButtonWrapComponent>

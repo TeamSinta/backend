@@ -7,6 +7,7 @@ import {
   CalendarIcon,
   SettingIcon,
   DashboardIcon,
+  DoorIcon,
 } from "components/common/svgIcons/Icons";
 import { iconLB } from "components/common/svgIcons/iconType";
 import NavBarButton from "./navButton";
@@ -17,6 +18,7 @@ const icons = {
   Calender: <CalendarIcon {...iconLB} />,
   Setting: <SettingIcon {...iconLB} />,
   Dashboard: <DashboardIcon {...iconLB} />,
+  Logout: <DoorIcon {...iconLB}/>
 };
 
 export default {

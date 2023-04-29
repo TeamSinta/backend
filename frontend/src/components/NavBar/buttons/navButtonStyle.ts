@@ -6,7 +6,6 @@ export const NavButtonWrap = styled.div`
   align-items: center;
   height: 81px;
   width: 118px;
-  background: ${(props) => props.theme.colors.white};
   color: ${(props) => props.theme.colors.black};
   padding: 0px;
   gap: 8px;
@@ -14,10 +13,18 @@ export const NavButtonWrap = styled.div`
   position: relative;
   border-radius: 12px;
 
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+
   &:hover {
     background: ${(props) => props.theme.colors.palePurple};
     cursor: pointer;
     transition: background-color 0.1s ease-in;
+    flex: none;
+  order: 0;
+  flex-grow: 0;
+
   }
 `;
 
