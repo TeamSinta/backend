@@ -5,7 +5,7 @@ export const SideNavBarWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: #f6f6fb;
-  height: 100vh;
+  height: 1686px;
   position: absolute;
   width: 180px;
   left: 0px;
@@ -46,7 +46,7 @@ export const BottomButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  height: 100%;
+
+  height: 50%;
   margin-top: auto;
 `;

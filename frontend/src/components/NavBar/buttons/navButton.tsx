@@ -11,7 +11,6 @@ interface INavBarButtonProps {
   icon: JSX.Element;
   onClick?: () => void;
   active: boolean;
-  activeButtonId: number;
 }
 
 const NavBarButton = (props: INavBarButtonProps): JSX.Element => {

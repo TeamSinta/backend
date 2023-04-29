@@ -41,26 +41,20 @@ const NavBar = ({ logo, buttonData }: NavBarProps): JSX.Element => {
         {otherButtons.map((button) => (
           <NavBarButton
             key={button.id}
-            onClick={() => {
-              handleButtonClick(button.id);
-            }}
+            onClick={() => handleButtonClick(button.id)}
             active={button.id === activeButtonId}
             icon={button.icon}
             label={button.text}
-            activeButtonId={activeButtonId}
           />
         ))}
       </ButtonWrapper>
       <BottomButtonWrapper>
         <NavBarButton
           key={lastButton.id}
-          onClick={() => {
-            handleButtonClick(lastButton.id);
-          }}
+          onClick={() => handleButtonClick(lastButton.id)}
           active={lastButton.id === activeButtonId}
           icon={lastButton.icon}
           label={lastButton.text}
-          activeButtonId={activeButtonId}
         />
       </BottomButtonWrapper>
     </SideNavBarWrapper>
