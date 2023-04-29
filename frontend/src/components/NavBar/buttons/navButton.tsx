@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   NavBarButtonIcon,
   NavButtonWrap,
@@ -24,7 +24,7 @@ const NavBarButton = (props: INavBarButtonProps): JSX.Element => {
   };
 
   return (
-    <NavButtonWrapComponent onClick={handleClick} >
+    <NavButtonWrapComponent onClick={handleClick}>
       <NavBarButtonIcon>{icon}</NavBarButtonIcon>
       <NavBarButtonLabel>{label}</NavBarButtonLabel>
     </NavButtonWrapComponent>

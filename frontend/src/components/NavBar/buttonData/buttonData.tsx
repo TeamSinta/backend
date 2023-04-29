@@ -10,7 +10,6 @@ import {
 } from "components/common/svgIcons/Icons";
 import { iconLB } from "components/common/svgIcons/iconType";
 
-
 export const buttonData = [
   {
     id: 1,

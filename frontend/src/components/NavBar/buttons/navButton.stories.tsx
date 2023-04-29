@@ -18,7 +18,7 @@ const icons = {
   Calender: <CalendarIcon {...iconLB} />,
   Setting: <SettingIcon {...iconLB} />,
   Dashboard: <DashboardIcon {...iconLB} />,
-  Logout: <DoorIcon {...iconLB}/>
+  Logout: <DoorIcon {...iconLB} />,
 };
 
 export default {

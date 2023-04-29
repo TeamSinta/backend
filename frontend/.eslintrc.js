@@ -20,6 +20,5 @@ module.exports = {
       version: "17.02",
     },
   },
-  ignorePatterns: ["**/NavBar.tsx"]
-
+  ignorePatterns: ["**/NavBar.tsx"],
 };

@@ -22,9 +22,8 @@ export const NavButtonWrap = styled.div`
     cursor: pointer;
     transition: background-color 0.1s ease-in;
     flex: none;
-  order: 0;
-  flex-grow: 0;
-
+    order: 0;
+    flex-grow: 0;
   }
 `;
 
