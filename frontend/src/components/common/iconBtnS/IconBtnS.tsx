@@ -1,12 +1,12 @@
 import React from "react";
 import { IconBtnSIcon, IconBtnSWrap } from "./StyledIconBtnS";
 
-interface IIconBtnLWProps {
+interface IIconBtnSProps {
   icon: JSX.Element;
   disable: boolean;
 }
 
-const IconBtnS = (props: IIconBtnLWProps): JSX.Element => {
+const IconBtnS = (props: IIconBtnSProps): JSX.Element => {
   const { icon, disable } = props;
 
   return (
