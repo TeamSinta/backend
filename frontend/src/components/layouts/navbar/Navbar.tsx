@@ -1,4 +1,4 @@
-import NavBarButton from "./buttons/navButton";
+import NavBarButton from "./buttons/NavButton";
 import React, { useState } from "react";
 import {
   BottomButtonWrapper,
@@ -6,7 +6,7 @@ import {
   LogoWrapper,
   LogoImage,
   ButtonWrapper,
-} from "./sideNavBar";
+} from "./StyledNavbar";
 
 export interface NavBarProps {
   logo: string;

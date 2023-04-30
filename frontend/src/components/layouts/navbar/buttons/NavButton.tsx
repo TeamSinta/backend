@@ -4,7 +4,7 @@ import {
   NavButtonWrap,
   NavButtonWrapActive,
   NavBarButtonLabel,
-} from "./navButtonStyle";
+} from "./NavButtonStyle";
 
 interface INavBarButtonProps {
   label?: string;

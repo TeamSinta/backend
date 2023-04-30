@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { storiesOf } from "@storybook/react";
-import NavBar from "./NavBar";
-import { buttonData } from "./buttonData/buttonData";
+import NavBar from "./Navbar";
+import { buttonData } from "./buttonData/ButtonData";
 
 import imageFile from "./SintaLogo.png";
 

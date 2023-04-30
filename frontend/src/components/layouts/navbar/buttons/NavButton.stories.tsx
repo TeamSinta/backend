@@ -10,7 +10,7 @@ import {
   DoorIcon,
 } from "components/common/svgIcons/Icons";
 import { iconLB } from "components/common/svgIcons/iconType";
-import NavBarButton from "./navButton";
+import NavBarButton from "./NavButton";
 
 const icons = {
   Role: <RoleIcon {...iconLB} />,

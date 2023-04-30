@@ -4,9 +4,12 @@ import React from "react";
 // import { Counter } from "features/counter/Counter";
 // import styled from "styled-components";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import GoogleLoginButton from "components/common/googleLoginBtn/GoogleLoginButton";
-import { buttonData } from "components/NavBar/buttonData/buttonData";
-import NavBar from "./components/NavBar/NavBar";
+// import GoogleLoginButton from "components/common/googleLoginBtn/GoogleLoginButton";
+import { buttonData } from "components/layouts/navbar/buttonData/ButtonData";
+import NavBar from "components/layouts/navbar/Navbar";
+import imageFile from "./components/layouts/navbar/SintaLogo.png";
+import TopNavBar from "components/layouts/topNavbar/TopNavBar";
+
 // const AccentPurpleBox = styled.div`
 //   width: 200px;
 //   height: 200px;
@@ -21,7 +24,10 @@ function App() {
   return (
     <div className="App">
       <div>
-        <NavBar logo={"logo.png"} buttonData={buttonData} />
+        <TopNavBar />
+      </div>
+      <div>
+        <NavBar logo={imageFile} buttonData={buttonData} />
       </div>
       <div>
         <GoogleOAuthProvider
@@ -29,7 +35,7 @@ function App() {
             process.env.REACT_APP_GOOGLE_CLIENT_ID ?? "defaultClientId"
           }`}
         >
-          <GoogleLoginButton />
+          {/* <GoogleLoginButton /> */}
           {/* <Counter /> */}
           {/* <AccentPurpleBox>Accent purple box</AccentPurpleBox>; */}
         </GoogleOAuthProvider>
