@@ -3,7 +3,7 @@ import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import SearchInput from "./SearchInput";
 
 export default {
-  title: "common/inputs/SearchInput",
+  title: "common/form/SearchInput",
   component: SearchInput,
   argTypes: {
     disable: {

@@ -3,7 +3,7 @@ import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import TextInput from "./TextInput";
 
 export default {
-  title: "common/inputs/TextInput",
+  title: "common/form/TextInput",
   component: TextInput,
   argTypes: {
     label: {
