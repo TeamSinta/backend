@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { BodySMedium } from "../typeScale/StyledTypeScale";
+import { BodySMedium } from "../../typeScale/StyledTypeScale";
 
 export const InputLayout = styled.div`
   width: 100%;
@@ -17,7 +17,7 @@ export const Input = styled.input`
   background: ${(props) => props.theme.colors.lightGrey};
   border: none;
   outline: none;
-  padding: 9px 16px;
+  padding: 8px 16px;
   font-family: "Chillax";
 `;
 
