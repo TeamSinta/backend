@@ -1,5 +1,9 @@
 import React from "react";
-import { TopNavBarWrapper, StyledTextIconBtn } from "./StyledTopBarNav";
+import {
+  TopNavBarWrapper,
+  StyledTextIconBtn,
+  StyledSearchInput,
+} from "./StyledTopBarNav";
 import { PlusIcon } from "components/common/svgIcons/Icons";
 import { iconSW } from "components/common/svgIcons/iconType";
 
@@ -28,6 +32,10 @@ const TopNavBar = (): JSX.Element => {
 
   return (
     <TopNavBarWrapper>
+      <StyledSearchInput
+        disable={false}
+        placeholder={"Search for Role or Candidate"}
+      />
       {buttonData.map((button) => (
         <StyledTextIconBtn
           key={button.id}

@@ -5,11 +5,7 @@ import React from "react";
 // import styled from "styled-components";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 // import GoogleLoginButton from "components/common/googleLoginBtn/GoogleLoginButton";
-import { buttonData } from "components/layouts/navbar/buttonData/ButtonData";
-import NavBar from "components/layouts/navbar/Navbar";
-import imageFile from "./components/layouts/navbar/SintaLogo.png";
-import TopNavBar from "components/layouts/topNavbar/TopNavBar";
-
+import MainNavBar from "components/layouts/mainNavbar/mainNavbar";
 // const AccentPurpleBox = styled.div`
 //   width: 200px;
 //   height: 200px;
@@ -23,12 +19,8 @@ import TopNavBar from "components/layouts/topNavbar/TopNavBar";
 function App() {
   return (
     <div className="App">
-      <div>
-        <TopNavBar />
-      </div>
-      <div>
-        <NavBar logo={imageFile} buttonData={buttonData} />
-      </div>
+      <div></div>
+      <MainNavBar />
       <div>
         <GoogleOAuthProvider
           clientId={`${

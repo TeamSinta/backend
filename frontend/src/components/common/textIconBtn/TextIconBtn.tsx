@@ -7,6 +7,7 @@ interface ITextIconBtnProps {
   icon: JSX.Element;
   disable: boolean;
   onClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 const TextIconBtn = (props: ITextIconBtnProps): JSX.Element => {
