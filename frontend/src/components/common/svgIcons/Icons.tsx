@@ -26,6 +26,7 @@ import { ReactComponent as Close } from "assets/svg/close.svg";
 import { ReactComponent as ArrowDown } from "assets/svg/arrowDown.svg";
 import { ReactComponent as Door } from "assets/svg/door.svg";
 import { ReactComponent as Edit } from "assets/svg/edit.svg";
+import { ReactComponent as Search } from "assets/svg/search.svg";
 
 import { type IIconProps } from "./iconType";
 
@@ -135,4 +136,8 @@ export const CloseIcon = (props: IIconProps): JSX.Element => {
 
 export const ArrowDownIcon = (props: IIconProps): JSX.Element => {
   return <ArrowDown {...props} />;
+};
+
+export const SearchIcon = (props: IIconProps): JSX.Element => {
+  return <Search {...props} />;
 };
