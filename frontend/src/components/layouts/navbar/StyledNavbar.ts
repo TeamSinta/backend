@@ -6,7 +6,7 @@ export const SideNavBarWrapper = styled.div`
   align-items: center;
   background-color: #f6f6fb;
   height: 1686px;
-  position: absolute;
+  position: fixed;
   width: 180px;
   left: 0px;
   top: 0px;

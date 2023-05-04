@@ -7,6 +7,9 @@ import {
 import { PlusIcon } from "components/common/svgIcons/Icons";
 import { iconSW } from "components/common/svgIcons/iconType";
 
+import TextIconBtn from "../../common/textIconBtn/TextIconBtn";
+import SearchInput from "components/common/form/serchInput/SearchInput";
+
 // interface TopNavBarProps{
 
 //   disable?: boolean;
@@ -26,25 +29,26 @@ export const buttonData = [
 ];
 
 const TopNavBar = (): JSX.Element => {
-  // const handleOnClick = () => {
-  //   return console.log("test")
-  // }
-
   return (
     <TopNavBarWrapper>
-      <StyledSearchInput
-        disable={false}
-        placeholder={"Search for Role or Candidate"}
-      />
-      {buttonData.map((button) => (
-        <StyledTextIconBtn
-          key={button.id}
-          icon={button.icon}
-          onClick={button.onClick}
-          label={button.text}
-          disable={button.active}
+      <StyledSearchInput>
+        <SearchInput
+          disable={false}
+          placeholder={"Search for Role or Candidate"}
         />
-      ))}
+      </StyledSearchInput>
+
+      <StyledTextIconBtn>
+        {buttonData.map((button) => (
+          <TextIconBtn
+            key={button.id}
+            icon={button.icon}
+            onClick={button.onClick}
+            label={button.text}
+            disable={button.active}
+          />
+        ))}
+      </StyledTextIconBtn>
     </TopNavBarWrapper>
   );
 };

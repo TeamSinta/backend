@@ -1,8 +1,6 @@
 import styled from "styled-components";
-import TextIconBtn from "../../common/textIconBtn/TextIconBtn";
-import SearchInput from "components/common/form/serchInput/SearchInput";
 
-export const StyledTextIconBtn = styled(TextIconBtn)`
+export const StyledTextIconBtn = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -13,13 +11,12 @@ export const StyledTextIconBtn = styled(TextIconBtn)`
   height: 40px;
 `;
 
-export const StyledSearchInput = styled(SearchInput)`
-  position: absolute;
+export const StyledSearchInput = styled.div`
   left: 0%;
   right: 51.42%;
   top: 0%;
   bottom: 0%;
-  width: 216px;
+  width: 518px;
 `;
 
 export const TopNavBarWrapper = styled.div`
@@ -28,9 +25,9 @@ export const TopNavBarWrapper = styled.div`
   padding: 10px;
   border-radius: 5px;
   border: none;
-  position: absolute;
   width: 1200px;
   left: 210px;
   top: 30px;
   justify-content: space-between;
+  position: fixed;
 `;
