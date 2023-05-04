@@ -13,6 +13,13 @@ export interface IIconProps {
   fill?: string;
 }
 
+export const iconXSB = {
+  width: 12,
+  height: 12,
+  stroke: "#121212",
+  fill: "#121212",
+};
+
 export const iconSB = {
   width: 18,
   height: 18,
