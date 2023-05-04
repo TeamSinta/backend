@@ -22,7 +22,7 @@ export default {
 } as ComponentMeta<typeof SearchInput>;
 
 const Template: ComponentStory<typeof SearchInput> = (arg): JSX.Element => {
-  return <SearchInput {...arg} {...arg}></SearchInput>;
+  return <SearchInput {...arg}></SearchInput>;
 };
 
 export const Primary = Template.bind({});
