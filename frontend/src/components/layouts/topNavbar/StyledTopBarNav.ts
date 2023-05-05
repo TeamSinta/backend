@@ -5,9 +5,8 @@ export const StyledTextIconBtn = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 9px 173px;
   gap: 10px;
-  width: 216px;
+  width: 416px;
   height: 40px;
 `;
 
@@ -17,6 +16,10 @@ export const StyledSearchInput = styled.div`
   top: 0%;
   bottom: 0%;
   width: 518px;
+`;
+
+export const StyledDropDownWrapper = styled.div`
+  width: 237px;
 `;
 
 export const TopNavBarWrapper = styled.div`

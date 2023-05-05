@@ -3,20 +3,15 @@ import {
   TopNavBarWrapper,
   StyledTextIconBtn,
   StyledSearchInput,
+  StyledDropDownWrapper,
 } from "./StyledTopBarNav";
 import { PlusIcon } from "components/common/svgIcons/Icons";
 import { iconSW } from "components/common/svgIcons/iconType";
+import { DropdownLayoutType } from "components/common/form/dropdown/StyledDropdown";
 
 import TextIconBtn from "../../common/textIconBtn/TextIconBtn";
 import SearchInput from "components/common/form/serchInput/SearchInput";
-
-// interface TopNavBarProps{
-
-//   disable?: boolean;
-//   label?: string;
-//   icon: JSX.Element;
-
-// }
+import Dropdown from "../../common/form/dropdown/Dropdown";
 
 export const buttonData = [
   {
@@ -28,6 +23,12 @@ export const buttonData = [
   },
 ];
 
+export const workSpaceData = [
+  { name: "Launchman", value: "Test1" },
+  { name: "Wei-Wei", value: "Test2" },
+  { name: "Sinta", value: "Test3" },
+];
+
 const TopNavBar = (): JSX.Element => {
   return (
     <TopNavBarWrapper>
@@ -37,7 +38,15 @@ const TopNavBar = (): JSX.Element => {
           placeholder={"Search for Role or Candidate"}
         />
       </StyledSearchInput>
-
+      <StyledDropDownWrapper>
+        <Dropdown
+          label="Workspace"
+          layoutType={DropdownLayoutType.FLEX}
+          optionArr={workSpaceData}
+          dropdownName="Sinta"
+          dropdownIconVisible={true}
+        />
+      </StyledDropDownWrapper>
       <StyledTextIconBtn>
         {buttonData.map((button) => (
           <TextIconBtn
