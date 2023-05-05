@@ -17,26 +17,26 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ./frontend/.nvmrc
+          node-version: frontend/.nvmrc
           cache: "npm"
-          cache-dependency-path: "./frontend/package-lock.json"
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
-        working-directory: ./frontend
+        working-directory: frontend
         run: npm ci
 
       - name: Formatting
-        working-directory: ./frontend
+        working-directory: frontend
         run: npm run check-format
 
       - name: Lint
-        working-directory: ./frontend
+        working-directory: frontend
         run: npm run check-lint
 
       - name: Type check
-        working-directory: ./frontend
+        working-directory: frontend
         run: npm run check-types
 
       - name: Build
-        working-directory: ./frontend
+        working-directory: frontend
         run: npm run build
