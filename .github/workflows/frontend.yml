@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [staging]
 
-defaults:
-  run:
-    working-directory: ./frontend
-
 jobs:
   frontend:
     runs-on: ubuntu-latest
@@ -20,21 +16,27 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
+        working-directory: ./frontend
         with:
           node-version: .nvmrc
           cache: "npm"
 
       - name: Install dependencies
+        working-directory: ./frontend
         run: npm ci
 
       - name: Formatting
+        working-directory: ./frontend
         run: npm run check-format
 
       - name: Lint
+        working-directory: ./frontend
         run: npm run check-lint
 
       - name: Type check
+        working-directory: ./frontend
         run: npm run check-types
 
       - name: Build
+        working-directory: ./frontend
         run: npm run build
