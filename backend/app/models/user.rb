@@ -10,9 +10,12 @@ class User < ApplicationRecord
          jwt_revocation_strategy: none
 
   def self.from_omniauth(authorization_code)
+    puts "Authorization Code #{authorization_code}"
     access_token = get_access_token(authorization_code)
 
-    data = access_token.info
+    data = access_token
+    puts "This is the access token: #{access_token}"
+
     user = User.where(email: data["email"]).first
 
     # Uncomment the section below if you want users to be created if they don't exist
@@ -25,20 +28,29 @@ class User < ApplicationRecord
     user
   end
 
-  def self.get_access_token(authorization_code)
-    conn = Faraday.new
-    response = conn.post(ENV['GOOGLE_AUTHORIZATION_URL'], {
-      client_id: ENV['GOOGLE_CLIENT_ID'],
-      client_secret: ENV['GOOGLE_CLIENT_SECRET'],
-      code: authorization_code,
-      grant_type: 'authorization_code',
-      redirect_uri: ENV['REDIRECT_URI']
-    })
+  def self.get_access_token(auth_code)
+    conn = Faraday.new(url:'https://oauth2.googleapis.com') do | faraday |
+      faraday.request :url_encoded
+      faraday.adapter Faraday.default_adapter
+    end
+
+    response = conn.post('/token') do |req|
+      req.params['client_id'] = ENV['GOOGLE_CLIENT_ID']
+      req.params['client_secret'] = ENV['GOOGLE_CLIENT_SECRET']
+      req.params['code'] = auth_code
+      req.params['grant_type'] = 'authorization_code'
+      req.params['prompt'] = 'none'
+      req.params['access_type'] = 'offline'
+      req.params['redirect_uri'] = URI.encode_www_form_component(ENV['REDIRECT_URI'])
+    end
 
     if response.status == 200
-      puts "Successfully authorized code"
+      puts "Successfully authorized code and got access_token"
     else
-      puts "unsuccessfull......"
+      puts "Failed to get access_token. See information below."
+      puts "Response status: #{response.status}"
+      puts "Response body: #{response.body}"
     end
+    response
   end
 end
