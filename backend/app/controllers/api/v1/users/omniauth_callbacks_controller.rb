@@ -8,10 +8,19 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     puts "Found user info, now back at Controller....."
 
     if @user.persisted?
-     puts 'User is logged in'
-   else
-     puts 'user login failed'
-   end
+      puts "#{@user.name} is logged in"
+
+      payload = {
+        email: @user.email,
+        name: @user.name
+      }
+
+     access_token = Warden::JWTAuth::UserEncoder.new.call(payload, :user, nil)
+
+     render json: {access_token: access_token, refresh_token: 'your_refresh_token'}
+    else
+      puts 'user login failed'
+    end
   end
 
   def failure
