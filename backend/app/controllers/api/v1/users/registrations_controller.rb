@@ -16,6 +16,7 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
   private
 
   def respond_with(resource, _opts = {})
+    # if we successfully registred user, the "resource" persisted
     if resource.persisted?
       render json: {
         status: { code: 200, message: 'Signed up sucessfully.' },
@@ -23,7 +24,7 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
       }
     else
       render json: {
-        status: { message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}" }
+        status: { code: 422, message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}" }
       }, status: :unprocessable_entity
     end
   end
