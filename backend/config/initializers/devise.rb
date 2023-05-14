@@ -317,5 +317,6 @@ Devise.setup do |config|
   end
 end
 
+# Loggers, remove these once done.
 OmniAuth.config.logger = Rails.logger
 OmniAuth.config.logger.level = Logger::DEBUG
