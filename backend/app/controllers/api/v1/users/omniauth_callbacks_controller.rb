@@ -3,13 +3,16 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     puts "\nGoogle Oauth2 Controller Reached 👌Passing over to create a user..."
     code = params[:code]
     @user = User.from_omniauth(code)
-    puts "User Object: #{@user.inspect}"
+    # puts "User Object: #{@user.inspect}"
 
-    if @user.persisted?
-      puts 'User is logged in'
-    else
-      puts 'user login failed'
-    end
+    puts "Found user info, now back at Controller....."
+    puts "I DID IT SINTA FAM, LETS GOOOOOOOOO!!!! 🕺🕺🕺🕺🕺🕺🕺🕺🕺🕺🕺"
+
+    # if @user.persisted?
+   #   puts 'User is logged in'
+   # else
+    #  puts 'user login failed'
+   # end
   end
 
   def failure

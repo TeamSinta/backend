@@ -10,16 +10,16 @@ class User < ApplicationRecord
          jwt_revocation_strategy: none
 
   def self.from_omniauth(authorization_code)
-    puts "Authorization Code #{authorization_code}"
+    puts "Authorization Code: #{authorization_code}"
     access_token = get_access_token(authorization_code)
-
 
     # Handle the Access Token
     if access_token
       id_info = JWT.decode(access_token['id_token'], nil, false)[0]
-      puts "This is the user info from id_token: #{id_info}"
-      user = User.where(email: id_info['email']).first
-      user
+      puts "\nThis is the user info from id_token: #{id_info}"
+      puts "\nUser Name: #{id_info['email']}"
+      puts "User Email: #{id_info['name']}"
+      puts "Picture URL: #{id_info['picture']}"
     else
       puts "There's no access token to handle."
     end
@@ -41,7 +41,7 @@ class User < ApplicationRecord
     if response.status == 200
       JSON.parse(response.body)
     else
-      puts "Failed to get access_token."
+      puts 'Failed to get access_token.'
       puts "Response status: #{response.status}"
       puts "Response body: #{response.body}"
     end
