@@ -19,7 +19,7 @@ const HttpService = (): AxiosInstance => {
     const token = localStorage.getItem("token");
     if (token != null) {
       switch (config.url) {
-        case process.env.APP_LOGIN:
+        case process.env.AUTH_CALLBACK_URL:
           return config;
         default:
           if (config.headers != null) {
