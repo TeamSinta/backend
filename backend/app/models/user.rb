@@ -26,5 +26,19 @@ class User < ApplicationRecord
   end
 
   def self.get_access_token(authorization_code)
+    conn = Faraday.new
+    response = conn.post(ENV['GOOGLE_AUTHORIZATION_URL'], {
+      client_id: ENV['GOOGLE_CLIENT_ID'],
+      client_secret: ENV['GOOGLE_CLIENT_SECRET'],
+      code: authorization_code,
+      grant_type: 'authorization_code',
+      redirect_uri: ENV['REDIRECT_URI']
+    })
+
+    if response.status == 200
+      puts "Successfully authorized code"
+    else
+      puts "unsuccessfull......"
+    end
   end
 end
