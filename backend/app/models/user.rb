@@ -13,11 +13,16 @@ class User < ApplicationRecord
     puts "Authorization Code #{authorization_code}"
     access_token = get_access_token(authorization_code)
 
-    # data = access_token
-    puts "This is the access token: #{access_token}"
-    # user = User.where(email: data['email']).first
 
-    # user
+    # Handle the Access Token
+    if access_token
+      id_info = JWT.decode(access_token['id_token'], nil, false)[0]
+      puts "This is the user info from id_token: #{id_info}"
+      user = User.where(email: id_info['email']).first
+      user
+    else
+      puts "There's no access token to handle."
+    end
   end
 
   def self.get_access_token(auth_code)
