@@ -7,7 +7,7 @@ class User < ApplicationRecord
          :omniauthable,
          :jwt_authenticatable,
          omniauth_providers: [:google_oauth2],
-         jwt_revocation_strategy: none
+         jwt_revocation_strategy: self
 
   def self.from_omniauth(authorization_code)
     puts "Authorization Code: #{authorization_code}"
