@@ -12,7 +12,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :users
+      devise_scope :user do
+        get '/users/auth/google_oauth2/callback', to: 'users/omniauth_callbacks#google_oauth2'
+      end
     end
   end
 end

@@ -9,7 +9,7 @@ import { useEffect } from "react";
 
 const HttpService = (): AxiosInstance => {
   const instance = axios.create({
-    baseURL: process.env.BACKEND_URL,
+    baseURL: process.env.REACT_APP_BACKEND_URL,
   });
 
   // Request Handler
@@ -19,7 +19,7 @@ const HttpService = (): AxiosInstance => {
     const token = localStorage.getItem("token");
     if (token != null) {
       switch (config.url) {
-        case process.env.AUTH_CALLBACK_URL:
+        case process.env.REACT_APP_GOOGLE_API:
           return config;
         default:
           if (config.headers != null) {
