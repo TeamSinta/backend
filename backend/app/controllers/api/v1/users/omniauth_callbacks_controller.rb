@@ -3,9 +3,7 @@ class Api::V1::Users::OmniAuthCallbacksController < Devise::OmniAuthCallbacksCon
     puts "Omniauth Controller saying HI"
   end
 
-
   def failure
     puts "Something went wrong....?"
   end
-
 end

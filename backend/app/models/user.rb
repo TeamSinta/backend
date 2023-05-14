@@ -7,7 +7,7 @@ class User < ApplicationRecord
          :omniauthable,
          :jwt_authenticatable,
          omniauth_providers: [:google_oauth2],
-         jwt_revocation_strategy: JwtDenylist
+         jwt_revocation_strategy: none
 
   def self.from_omniauth(authorization_code)
     access_token = get_access_token(authorization_code)
