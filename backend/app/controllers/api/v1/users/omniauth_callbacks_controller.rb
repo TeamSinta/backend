@@ -6,13 +6,12 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     # puts "User Object: #{@user.inspect}"
 
     puts "Found user info, now back at Controller....."
-    puts "I DID IT SINTA FAM, LETS GOOOOOOOOO!!!! 🕺🕺🕺🕺🕺🕺🕺🕺🕺🕺🕺"
 
-    # if @user.persisted?
-   #   puts 'User is logged in'
-   # else
-    #  puts 'user login failed'
-   # end
+    if @user.persisted?
+     puts 'User is logged in'
+   else
+     puts 'user login failed'
+   end
   end
 
   def failure

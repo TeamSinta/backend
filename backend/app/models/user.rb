@@ -13,16 +13,16 @@ class User < ApplicationRecord
     puts "Authorization Code: #{authorization_code}"
     access_token = OauthService.get_access_token(authorization_code)
 
-    # Handle the Access Token
+    # Decode User Information from Access Token ID and create/find user
     if access_token
-      id_info = JWT.decode(access_token['id_token'], nil, false)[0]
-      puts "\nThis is the user info from id_token: #{id_info}"
-      puts "\nUser Name: #{id_info['email']}"
-      puts "User Email: #{id_info['name']}"
-      puts "Picture URL: #{id_info['picture']}"
+      user_info = JWT.decode(access_token['id_token'], nil, false)[0]
+      user = User.find_or_create_by!(email: user_info['email']) do |user|
+        user.name = user_info['name']
+        user.password = Devise.friendly_token[0, 20]
+      end
+      user
     else
       puts "There's no access token to handle."
     end
   end
-
 end
