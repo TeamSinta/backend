@@ -9,7 +9,7 @@ import { useEffect } from "react";
 
 const HttpService = (): AxiosInstance => {
   const instance = axios.create({
-    baseURL: process.env.REACT_URL,
+    baseURL: process.env.BACKEND_URL,
   });
 
   // Request Handler
