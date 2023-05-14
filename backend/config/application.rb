@@ -25,6 +25,5 @@ module Backend
     config.api_only = true
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, key: '_sinta_session'
-
   end
 end
