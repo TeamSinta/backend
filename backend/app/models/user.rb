@@ -16,7 +16,8 @@ class User < ApplicationRecord
     data = access_token
     puts "This is the access token: #{access_token}"
 
-    user = User.where(email: data["email"]).first
+    puts data['email']
+    # user = User.where(email: id_info["email"]).first_or_create
 
     # Uncomment the section below if you want users to be created if they don't exist
     # unless user
@@ -29,28 +30,24 @@ class User < ApplicationRecord
   end
 
   def self.get_access_token(auth_code)
-    conn = Faraday.new(url:'https://oauth2.googleapis.com') do | faraday |
-      faraday.request :url_encoded
-      faraday.adapter Faraday.default_adapter
-    end
-
-    response = conn.post('/token') do |req|
-      req.params['client_id'] = ENV['GOOGLE_CLIENT_ID']
-      req.params['client_secret'] = ENV['GOOGLE_CLIENT_SECRET']
-      req.params['code'] = auth_code
-      req.params['grant_type'] = 'authorization_code'
-      req.params['prompt'] = 'none'
-      req.params['access_type'] = 'offline'
-      req.params['redirect_uri'] = URI.encode_www_form_component(ENV['REDIRECT_URI'])
+    conn = Faraday.new
+    response = conn.post(ENV['GOOGLE_AUTHORIZATION_URL']) do |req|
+      req.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+      req.body = {
+        code: auth_code,
+        client_id: ENV['GOOGLE_CLIENT_ID'],
+        client_secret: ENV['GOOGLE_CLIENT_SECRET'],
+        redirect_uri: ENV['REDIRECT_URI'],
+        grant_type: 'authorization_code'
+      }.to_query
     end
 
     if response.status == 200
-      puts "Successfully authorized code and got access_token"
+      response.body
     else
-      puts "Failed to get access_token. See information below."
+      puts "Failed to get access_token."
       puts "Response status: #{response.status}"
       puts "Response body: #{response.body}"
     end
-    response
   end
 end
