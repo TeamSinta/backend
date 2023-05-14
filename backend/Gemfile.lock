@@ -238,6 +238,7 @@ DEPENDENCIES
   dotenv-rails
   faraday
   jsonapi-serializer
+  jwt
   omniauth-google-oauth2
   pg
   puma (~> 5.0)

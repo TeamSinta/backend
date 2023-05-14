@@ -39,6 +39,7 @@ gem "rack-cors"
 # Manually added gems
 gem 'devise'
 gem 'devise-jwt'
+gem 'jwt'
 gem 'jsonapi-serializer'
 gem 'omniauth-google-oauth2'
 gem 'dotenv-rails', groups: [:development, :test]

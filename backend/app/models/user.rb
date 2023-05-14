@@ -13,19 +13,11 @@ class User < ApplicationRecord
     puts "Authorization Code #{authorization_code}"
     access_token = get_access_token(authorization_code)
 
-    data = access_token
+    # data = access_token
     puts "This is the access token: #{access_token}"
-    user = User.where(email: data['email']).first
-    # user = User.where(email: id_info["email"]).first_or_create
+    # user = User.where(email: data['email']).first
 
-    # Uncomment the section below if you want users to be created if they don't exist
-    # unless user
-    #     user = User.create(name: data['name'],
-    #        email: data['email'],
-    #        password: Devise.friendly_token[0,20]
-    #     )
-    # end
-    user
+    # user
   end
 
   def self.get_access_token(auth_code)
@@ -42,7 +34,7 @@ class User < ApplicationRecord
     end
 
     if response.status == 200
-      response.body
+      JSON.parse(response.body)
     else
       puts "Failed to get access_token."
       puts "Response status: #{response.status}"
