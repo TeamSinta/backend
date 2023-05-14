@@ -12,7 +12,6 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
     }, status: :ok
   end
 
-
   # Checks for valid token in header, if there is destroys session(user logged out)
   def respond_to_on_destroy
     if current_user
