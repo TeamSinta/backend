@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
-
+  has_many :refresh_token, dependent: :destroy
   devise :database_authenticatable,
          :registerable,
          :validatable,
