@@ -15,8 +15,7 @@ class User < ApplicationRecord
 
     data = access_token
     puts "This is the access token: #{access_token}"
-
-    puts data['email']
+    user = User.where(email: data['email']).first
     # user = User.where(email: id_info["email"]).first_or_create
 
     # Uncomment the section below if you want users to be created if they don't exist
