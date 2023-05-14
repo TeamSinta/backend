@@ -1,4 +1,4 @@
-class Api::V1::Users::OmniAuthCallbacksController < Devise::OmniAuthCallbacksController
+class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def google_oauth2
     puts "Omniauth Controller saying HI"
   end
