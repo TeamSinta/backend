@@ -34,7 +34,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
 
       # Create new Refresh Token
       new_refresh_token = SecureRandom.urlsafe_base64
-      user.refresh_token.create!(token: new_refresh_token)
+      user.refresh_tokens.create!(token: new_refresh_token)
 
       # Create new access token
       jwt, = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil)
