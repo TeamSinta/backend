@@ -22,10 +22,12 @@ class User < ApplicationRecord
         user.password = Devise.friendly_token[0, 20]
         user.password = "password"
       end
+
       user.refresh_tokens.create(token: access_token['refresh_token'])
       user
     else
       puts "There's no access token to handle."
     end
   end
+
 end

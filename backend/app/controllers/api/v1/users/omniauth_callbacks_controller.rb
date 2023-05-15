@@ -57,6 +57,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     if user
       # Invalidate(destroy) the refresh token
       user.refresh_tokens.find_by(token: refresh_token).destroy
+      render json: { user: 'refresh token deleted' }, status: :ok
 
       head :no_content
     else

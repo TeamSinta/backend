@@ -33,3 +33,5 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
     params.require(:user).permit(:email, :password)
   end
 end
+
+# THIS IS CURRENTLY UNUSED
