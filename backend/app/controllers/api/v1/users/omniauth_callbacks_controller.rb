@@ -46,7 +46,11 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
   end
 
   def logout
-    refresh_token = params[:refresh_token]
+    puts "n\ Logout Method Activated"
+
+    refresh_token = request.headers['Authorization'].split('Bearer ').last
+
+    puts "Refresh token: #{refresh_token}"
 
     user = User.joins(:refresh_tokens).find_by(refresh_tokens: { token: refresh_token })
 
