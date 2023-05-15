@@ -18,6 +18,7 @@ Rails.application.routes.draw do
           namespace :users do
           get '/auth/google_oauth2/callback', to: 'omniauth_callbacks#google_oauth2'
           post '/refresh_token', to: 'omniauth_callbacks#refresh_jwt'
+          delete '/logout', to: 'omniauth_callbacks#logout'
         end
       end
     end

@@ -29,12 +29,34 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     user = User.joins(:refresh_tokens).find_by(refresh_tokens: { token: refresh_token })
 
     if user
-      # Gen new token
+      # Destroy old token
+      user.refresh_tokens.find_by(token: refresh_token).destroy
+
+      # Create new Refresh Token
+      new_refresh_token = SecureRandom.urlsafe_base64
+      user.refresh_token.create!(token: new_refresh_token)
+
+      # Create new access token
       jwt, = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil)
 
-      render json: { accessToken: jwt, refreshToken: refresh_token }
+      render json: { accessToken: jwt, refreshToken: new_refresh_token }
     else
       render json: { error: 'Invalid refresh token' }
+    end
+  end
+
+  def logout
+    refresh_token = params[:refresh_token]
+
+    user = User.joins(:refresh_tokens).find_by(refresh_tokens: { token: refresh_token })
+
+    if user
+      # Invalidate(destroy) the refresh token
+      user.refresh_tokens.find_by(token: refresh_token).destroy
+
+      head :no_content
+    else
+      render json: { error: 'Invalid refresh token' }, status: :unauthorized
     end
   end
 
