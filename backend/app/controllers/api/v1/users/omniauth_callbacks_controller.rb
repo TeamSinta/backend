@@ -43,7 +43,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
 
       render json: { accessToken: jwt, refreshToken: new_refresh_token.token }
     else
-      render json: { error: "Couldn't find user with that refresh token" }
+      raise ApiException::Unauthorized.new("Invalid or expired refresh token.")
     end
   end
 
