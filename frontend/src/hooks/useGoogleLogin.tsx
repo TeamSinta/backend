@@ -31,7 +31,7 @@ const GoogleLogin = (): GoogleLoginReturnType => {
 
       // Log user info
       console.log("User Information:", response.data.user);
-      console.log("Access Token:", response.data.accessToken);
+      console.log("JWT Token:", response.data.accessToken);
       console.log("Refresh Token:", response.data.refreshToken);
     },
     onError: (errorResponse) => {
