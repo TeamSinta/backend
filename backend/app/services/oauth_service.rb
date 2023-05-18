@@ -1,3 +1,9 @@
+# frozen_string_literal: true
+
+# The OauthService is responsible for handling OAuth interactions
+# with the Google Authorization service. This includes both authenticating
+# authorization codes and refreshing access tokens. It makes HTTP requests
+# to Google's servers and returns the response.
 class OauthService
   def self.authenticate(auth_code)
     conn = Faraday.new
@@ -15,9 +21,14 @@ class OauthService
     if response.status == 200
       JSON.parse(response.body)
     else
-      puts 'Failed authenticate user.'
-      puts "Response status: #{response.status}"
-      puts "Response body: #{response.body}"
+      case response.status
+      when 401
+        raise ApiException::Unauthorized, 'Bad Client ID or Client Secret'
+      when 403
+        raise ApiException::Forbidden, 'Invalid Authorization Code'
+      else
+        raise ApiException::ServiceError, "Unexpected response code: #{response.status}."
+      end
     end
   end
 
@@ -38,9 +49,9 @@ class OauthService
     else
       case response.status
       when 401
-        raise ApiException::Unauthorized.new('Invalid or expired refresh token.')
+        raise ApiException::Unauthorized, 'Invalid or expired refresh token.'
       else
-        raise ApiException::ServiceError.new("Unexpected response code: #{response.status}.")
+        raise ApiException::ServiceError, "Unexpected response code: #{response.status}."
       end
     end
   end

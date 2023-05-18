@@ -46,4 +46,12 @@ module ApiException
       super
     end
   end
+
+  class ServiceError < BaseError
+    def initialize(msg = nil)
+      @status_code = 500
+      @error_code = 50001
+      super
+    end
+  end
 end
