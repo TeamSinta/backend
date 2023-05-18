@@ -17,7 +17,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
         user: @user
       }
     else
-      puts 'user login failed'
+      raise ApiException::Unauthorized
     end
   end
 
@@ -63,7 +63,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
 
       head :no_content
     else
-      render json: { error: 'Invalid refresh token' }, status: :unauthorized
+      raise ApiException::Unauthorized.new("No user session found.")
     end
   end
 

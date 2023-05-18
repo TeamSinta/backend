@@ -27,7 +27,7 @@ class User < ApplicationRecord
       user.refresh_tokens.create(token: SecureRandom.urlsafe_base64, expiration_date: Time.now + 1.month)
       user
     else
-      puts "There's no access token to handle."
+      raise ApiException::BadRequest.new
     end
   end
 end
