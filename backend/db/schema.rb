@@ -29,10 +29,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_061608) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "jti", null: false
-    t.string "name"
+    t.string "first_name"
+    t.string "last_name"
     t.string "provider"
     t.string "username"
-    t.string "role"
+    t.integer "role"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
   end
