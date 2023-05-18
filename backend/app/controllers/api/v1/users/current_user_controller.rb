@@ -4,3 +4,5 @@ class Api::V1::Users::CurrentUserController < ApplicationController
     render json: UserSerializer.new(current_user).serializable_hash[:data][:attributes], status: :ok
   end
 end
+
+# THIS IS CURRENTLY UNUSED

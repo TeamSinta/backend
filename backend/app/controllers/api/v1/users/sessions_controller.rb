@@ -8,5 +8,4 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
   end
 end
 
-
 # THIS IS CURRENTLY UNUSED. NOT SURE IF NEEDED.

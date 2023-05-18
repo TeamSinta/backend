@@ -11,16 +11,16 @@ class User < ApplicationRecord
 
   def self.from_omniauth(authorization_code)
     puts "Authorization Code: #{authorization_code}"
-    access_token = OauthService.get_access_token(authorization_code)
+    authentication_response = OauthService.authenticate(authorization_code)
 
     # Decode User Information from Access Token ID and create/find user
-    if access_token
-      user_info = JWT.decode(access_token['id_token'], nil, false)[0]
+    if authentication_response
+      user_info = JWT.decode(authentication_response['id_token'], nil, false)[0]
       user = User.find_or_create_by!(email: user_info['email']) do |user|
         user.name = user_info['name']
         user.email = user_info['email']
         user.password = Devise.friendly_token[0, 20]
-        user.password = "password"
+        user.password = 'password'
       end
 
       user.refresh_tokens.create(token: access_token['refresh_token'])

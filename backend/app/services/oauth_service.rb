@@ -1,5 +1,5 @@
 class OauthService
-  def self.get_access_token(auth_code)
+  def self.authenticate(auth_code)
     conn = Faraday.new
     response = conn.post(ENV['GOOGLE_AUTHORIZATION_URL']) do |req|
       req.headers['Content-Type'] = 'application/x-www-form-urlencoded'

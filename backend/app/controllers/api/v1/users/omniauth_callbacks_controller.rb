@@ -21,14 +21,18 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     end
   end
 
-  def refresh_jwt
+  def update_token
     refresh_token = params[:refresh_token]
+    response = OauthService.refresh_access_token(refresh_token)
 
-    tokens = OauthService.refresh_access_token(refresh_token)
-
-    user = User.joins(:refresh_tokens).find_by(refresh_tokens: { token: refresh_token })
-
+    if response
+      # Take out the tokens from the response from Google.
+      new_access_token = response["access_token"]
+      new_refresh_token = response["refresh_token"]
+    end
     if user
+
+      user = User.joins(:refresh_tokens).find_by(refresh_tokens: { token: refresh_token })
       # Destroy old token
       user.refresh_tokens.find_by(token: refresh_token).destroy
 
