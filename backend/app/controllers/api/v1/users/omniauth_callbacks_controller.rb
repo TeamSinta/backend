@@ -24,15 +24,19 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
   def update_token
     refresh_token = params[:refresh_token]
 
-    user = User.joins(:refresh_tokens).find_by(refresh_tokens: { token: refresh_token })
+    # Finds user by token id and make's sure it didn't expire.
+    user = User.joins(:refresh_tokens)
+               .where(refresh_tokens: {
+                        token: refresh_token,
+                        expires_at: Time.now..Float::INFINITY
+                      }).first
 
     if user
       # Destroy old token
       user.refresh_tokens.find_by(token: refresh_token).destroy
 
       # Create new Refresh Token
-      new_refresh_token = SecureRandom.urlsafe_base64
-      user.refresh_tokens.create!(token: new_refresh_token)
+      user.refresh_tokens.create!(token: SecureRandom.urlsafe_base64, expires_at: Time.now + 1.month)
 
       # Create new access token
       jwt, = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil)
