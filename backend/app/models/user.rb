@@ -13,21 +13,19 @@ class User < ApplicationRecord
     puts "Authorization Code: #{authorization_code}"
     authentication_response = OauthService.authenticate(authorization_code)
 
-    # Decode User Information from Access Token ID and create/find user
     if authentication_response
       user_info = JWT.decode(authentication_response['id_token'], nil, false)[0]
       user = User.find_or_create_by!(email: user_info['email']) do |user|
         user.name = user_info['name']
         user.email = user_info['email']
-        user.password = Devise.friendly_token[0, 20]
+        #user.password = Devise.friendly_token[0, 20]
         user.password = 'password'
       end
-
-      user.refresh_tokens.create(token: access_token['refresh_token'])
+      new_refresh_token = SecureRandom.urlsafe_base64
+      user.refresh_tokens.create(token: new_refresh_token)
       user
     else
       puts "There's no access token to handle."
     end
   end
-
 end

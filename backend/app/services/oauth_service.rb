@@ -15,7 +15,7 @@ class OauthService
     if response.status == 200
       JSON.parse(response.body)
     else
-      puts 'Failed to get access_token.'
+      puts 'Failed authenticate user.'
       puts "Response status: #{response.status}"
       puts "Response body: #{response.body}"
     end
