@@ -21,8 +21,7 @@ class User < ApplicationRecord
         #user.password = Devise.friendly_token[0, 20]
         user.password = 'password'
       end
-      new_refresh_token = SecureRandom.urlsafe_base64
-      user.refresh_tokens.create(token: new_refresh_token)
+      user.refresh_tokens.create(token: SecureRandom.urlsafe_base64, expires_at: Time.now + 1.month)
       user
     else
       puts "There's no access token to handle."
