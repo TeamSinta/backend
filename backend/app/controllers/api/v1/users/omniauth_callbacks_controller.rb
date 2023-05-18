@@ -23,16 +23,10 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
 
   def update_token
     refresh_token = params[:refresh_token]
-    response = OauthService.refresh_access_token(refresh_token)
 
-    if response
-      # Take out the tokens from the response from Google.
-      new_access_token = response["access_token"]
-      new_refresh_token = response["refresh_token"]
-    end
+    user = User.joins(:refresh_tokens).find_by(refresh_tokens: { token: refresh_token })
+
     if user
-
-      user = User.joins(:refresh_tokens).find_by(refresh_tokens: { token: refresh_token })
       # Destroy old token
       user.refresh_tokens.find_by(token: refresh_token).destroy
 
@@ -45,7 +39,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
 
       render json: { accessToken: jwt, refreshToken: new_refresh_token }
     else
-      render json: { error: 'Invalid refresh token' }
+      render json: { error: "Couldn't find user with that refresh token" }
     end
   end
 
@@ -61,7 +55,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     if user
       # Invalidate(destroy) the refresh token
       user.refresh_tokens.find_by(token: refresh_token).destroy
-      render json: { user: 'refresh token deleted' }, status: :ok
+      render json: { user: 'refresh token deleted, so user is logged out' }, status: :ok
 
       head :no_content
     else
