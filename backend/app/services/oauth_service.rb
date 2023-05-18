@@ -13,7 +13,6 @@ class OauthService
     end
 
     if response.status == 200
-      puts "RESPONSE: #{response}"
       JSON.parse(response.body)
     else
       puts 'Failed authenticate user.'
@@ -37,9 +36,12 @@ class OauthService
     if response.status == 200
       JSON.parse(response.body)
     else
-      puts 'Failed to refresh access_token'
-      puts "Response status: #{response.status}"
-      puts "Response body: #{response.body}"
+      case response.status
+      when 401
+        raise ApiException::Unauthorized.new('Invalid or expired refresh token.')
+      else
+        raise ApiException::ServiceError.new("Unexpected response code: #{response.status}.")
+      end
     end
   end
 end
