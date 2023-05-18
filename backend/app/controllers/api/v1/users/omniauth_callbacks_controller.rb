@@ -7,7 +7,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     puts 'Found user info, now back at Controller.....'
 
     if @user.persisted?
-      puts "#{@user.name} is logged in"
+      puts "#{@user.first_name} is logged in"
 
       access_token, = Warden::JWTAuth::UserEncoder.new.call(@user, :user, nil)
 
@@ -28,7 +28,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     user = User.joins(:refresh_tokens)
                .where(refresh_tokens: {
                         token: refresh_token,
-                        expires_at: Time.now..Float::INFINITY
+                        expiration_date: Time.now..Float::INFINITY
                       }).first
 
     if user
@@ -36,12 +36,12 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
       user.refresh_tokens.find_by(token: refresh_token).destroy
 
       # Create new Refresh Token
-      user.refresh_tokens.create!(token: SecureRandom.urlsafe_base64, expires_at: Time.now + 1.month)
+      new_refresh_token = user.refresh_tokens.create!(token: SecureRandom.urlsafe_base64, expiration_date: Time.now + 1.month)
 
       # Create new access token
       jwt, = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil)
 
-      render json: { accessToken: jwt, refreshToken: new_refresh_token }
+      render json: { accessToken: jwt, refreshToken: new_refresh_token.token }
     else
       render json: { error: "Couldn't find user with that refresh token" }
     end

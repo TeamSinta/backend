@@ -1,6 +1,10 @@
 class Api::V1::Users::UsersController < ApplicationController
-  # skip_before_action :verify_authenticity_token
+  # before action and profile are only for testing authentication during development.
+  before_action :authenticate_user!, only: [:profile]
 
+  def profile
+    render json: { user: current_user.as_json }
+  end
 
   def show
     @user = User.find(params[:id])

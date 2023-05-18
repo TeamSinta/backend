@@ -13,6 +13,7 @@ class OauthService
     end
 
     if response.status == 200
+      puts "RESPONSE: #{response}"
       JSON.parse(response.body)
     else
       puts 'Failed authenticate user.'
