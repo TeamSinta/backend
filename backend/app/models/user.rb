@@ -21,8 +21,7 @@ class User < ApplicationRecord
         user.last_name = user_info['family_name']
         user.email = user_info['email']
         user.photo = user_info['picture']
-        #user.password = Devise.friendly_token[0, 20]
-        user.password = 'password'
+        user.password = Devise.friendly_token[0, 20]
         user.provider = 'google'
         user.role = 1
       end

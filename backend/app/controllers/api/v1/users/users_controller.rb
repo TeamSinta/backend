@@ -12,11 +12,27 @@ class Api::V1::Users::UsersController < ApplicationController
   end
 
   def destroy
-    @user = User.find(params[:id])
-    @user.destroy
+    access_token = request.headers['Authorization'].split('Bearer ').last
+    user_id = decode_jwt(access_token)
+
+    user = User.find(user_id)
+
+    if user
+      user.destroy
+      render json: { message: 'User was successfully deleted' }
+    else
+      raise ApiException::NotFound.new, 'User not found.'
+    end
+  rescue JWT::DecodeError
+    raise ApiException::Unauthorized.new, 'Invalid or expired access token'
   end
 
   private
+
+  def decode_jwt(token)
+    decoded_token = JWT.decode(token, nil, false)
+    decoded_token[0]['user_id']
+  end
 
   def user_params
     params.require(:user).permit(:first_name, :last_name, :role, :email)

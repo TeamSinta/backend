@@ -3,7 +3,8 @@ Rails.application.routes.draw do
 
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
-    sign_out: 'logout'
+    sign_out: 'logout',
+    destroy: 'destroy'
   },
   controllers: {
     omniauth_callbacks: 'api/v1/users/omniauth_callbacks',
@@ -18,6 +19,7 @@ Rails.application.routes.draw do
           get '/auth/google_oauth2/callback', to: 'omniauth_callbacks#google_oauth2'
           post '/refresh_token', to: 'omniauth_callbacks#update_token'
           delete '/logout', to: 'omniauth_callbacks#logout'
+          delete '/destroy', to: 'users#destroy'
         end
       end
     end
