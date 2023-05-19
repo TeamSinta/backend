@@ -8,5 +8,6 @@ class UpdateUserColumns < ActiveRecord::Migration[7.0]
     add_column :users, :provider, :string
     add_column :users, :username, :string
     add_column :users, :role, :integer
+    add_column :users, :photo, :string
   end
 end

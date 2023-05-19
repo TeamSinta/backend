@@ -34,6 +34,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_18_061608) do
     t.string "provider"
     t.string "username"
     t.integer "role"
+    t.string "photo"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
   end
