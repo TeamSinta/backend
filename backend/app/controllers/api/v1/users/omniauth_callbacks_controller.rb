@@ -31,8 +31,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
   end
 
   def update_token
-    refresh_token = params[:refresh_token]
-
+    refresh_token = request.headers['Authorization'].split('Bearer ').last
     # Finds user by token id and make's sure it didn't expire.
     user = User.joins(:refresh_tokens)
                .where(refresh_tokens: {
@@ -52,7 +51,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
 
       render json: { accessToken: jwt, refreshToken: new_refresh_token.token }
     else
-      raise ApiException::Unauthorized.new("Invalid or expired refresh token.")
+      raise ApiException::Unauthorized.new, 'Invalid or expired refresh token.'
     end
   end
 
@@ -68,7 +67,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     if user
       # Invalidate(destroy) the refresh token
       user.refresh_tokens.find_by(token: refresh_token).destroy
-      render json: { user: 'refresh token deleted, so user is logged out' }, status: :ok
+      render json: { user: 'Refresh token deleted, so user is logged out' }, status: :ok
 
       head :no_content
     else
