@@ -26,10 +26,15 @@ import { ReactComponent as Close } from "assets/svg/close.svg";
 import { ReactComponent as ArrowDown } from "assets/svg/arrowDown.svg";
 import { ReactComponent as Door } from "assets/svg/door.svg";
 import { ReactComponent as Edit } from "assets/svg/edit.svg";
+import { ReactComponent as Logo } from "assets/svg/sinta-logo.svg";
 import { ReactComponent as Search } from "assets/svg/search.svg";
 import { ReactComponent as SelectArrowOpen } from "assets/svg/selectArrowOpen.svg";
 
 import { type IIconProps } from "./iconType";
+
+export const SintaIcon = (props: IIconProps): JSX.Element => {
+  return <Logo {...props} />;
+};
 
 export const HambergerIcon = (props: IIconProps): JSX.Element => {
   return <Hamburger {...props} />;

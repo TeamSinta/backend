@@ -1,8 +1,8 @@
 const colors = {
   accentPurple: "#6462F1",
-  palePurple: "#fff500",
+  palePurple: "#CECDEE",
   white: "#ffffff",
-  lightPurple: "#f6f6fb",
+  lightPurple: "#d9d2e9",
   lightGrey: "#f5f5f5",
   black: "#121212",
   secondary: "#737984",
