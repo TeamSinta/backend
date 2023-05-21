@@ -9,12 +9,21 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     if @user.persisted?
       puts "#{@user.first_name} is logged in"
 
-      access_token, = Warden::JWTAuth::UserEncoder.new.call(@user, :user, nil)
+      access_token, = Warden::JWTAuth::UserEncoder.new.call(
+        @user, {
+          user_id: @user.id,
+          first_name: @user.first_name,
+          last_name: @user.last_name,
+          email: @user.email,
+          photo: @user.photo,
+          role: @user.role,
+          username: @user.username
+        }.to_json, nil
+      )
 
       render json: {
         accessToken: access_token,
-        refreshToken: @user.refresh_tokens.last.token,
-        user: @user
+        refreshToken: @user.refresh_tokens.last.token
       }
     else
       raise ApiException::Unauthorized

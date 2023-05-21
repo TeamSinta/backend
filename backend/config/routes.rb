@@ -19,7 +19,7 @@ Rails.application.routes.draw do
           get '/auth/google_oauth2/callback', to: 'omniauth_callbacks#google_oauth2'
           post '/refresh_token', to: 'omniauth_callbacks#update_token'
           delete '/logout', to: 'omniauth_callbacks#logout'
-          delete '/destroy/:id', to: 'users#destroy'
+          delete '/destroy', to: 'users#destroy'
         end
       end
     end
