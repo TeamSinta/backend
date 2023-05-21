@@ -30,9 +30,8 @@ const GoogleLogin = (): GoogleLoginReturnType => {
       setCookies("refresh_token", refreshToken);
 
       // Log user info
-      console.log("User Information:", response.data.user);
-      console.log("JWT Token:", response.data.accessToken);
-      console.log("Refresh Token:", response.data.refreshToken);
+      console.log("access_token:", response.data.accessToken);
+      console.log("refresh_token:", response.data.refreshToken);
     },
     onError: (errorResponse) => {
       console.log(errorResponse);
