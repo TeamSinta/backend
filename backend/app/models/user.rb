@@ -28,7 +28,7 @@ class User < ApplicationRecord
       user.refresh_tokens.create(token: SecureRandom.urlsafe_base64, expiration_date: Time.now + 1.month)
       user
     else
-      raise ApiException::BadRequest.new
+      raise ApiException::BadRequest.new, 'Unable to authenticate user and get data'
     end
   end
 end

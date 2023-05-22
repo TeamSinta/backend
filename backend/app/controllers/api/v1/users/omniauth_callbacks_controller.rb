@@ -1,4 +1,6 @@
+# The `OmniauthCallbacksController` handles the callbacks from the Google OAuth2 authentication service.
 class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  # Handles the callback from the Google OAuth2 authentication service
   def google_oauth2
     puts "\nGoogle Oauth2 Controller Reached 👌Passing over to create a user..."
     code = params[:code]
@@ -70,6 +72,6 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
   end
 
   def failure
-    puts 'Omniauth Controller Failure'
+     raise ApiException::Unauthorized.new("No user session found.")
   end
 end
