@@ -12,12 +12,6 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
       access_token, = Warden::JWTAuth::UserEncoder.new.call(
         @user, {
           user_id: @user.id,
-          first_name: @user.first_name,
-          last_name: @user.last_name,
-          email: @user.email,
-          photo: @user.photo,
-          role: @user.role,
-          username: @user.username
         }.to_json, nil
       )
 
