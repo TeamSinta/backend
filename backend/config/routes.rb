@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   },
   controllers: {
     omniauth_callbacks: 'api/v1/users/omniauth_callbacks',
+    sessions: 'api/v1/users/sessions',
     users: 'api/v1/users/users'
   }
 
@@ -15,8 +16,8 @@ Rails.application.routes.draw do
         namespace :users do
           get 'profile', to: 'users#profile'
           get '/auth/google_oauth2/callback', to: 'omniauth_callbacks#google_oauth2'
-          post '/refresh_token', to: 'omniauth_callbacks#update_token'
-          delete '/logout', to: 'omniauth_callbacks#logout'
+          post '/refresh_token', to: 'sessions#update_token'
+          delete '/logout', to: 'sessions#logout'
           delete '/destroy', to: 'users#destroy'
         end
       end
