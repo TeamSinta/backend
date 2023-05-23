@@ -13,30 +13,13 @@ class Api::V1::Users::UsersController < ApplicationController
 
   def destroy
     if current_user
-      render json: { user: current_user.first_name }
-      puts "Current user is: #{current_user.email}"
       current_user.destroy
-      render json: { message: 'User was successfully deleted' }
+      render json: { message: 'User and user data was successfully deleted' }
     else
       raise ApiException::NotFound.new, 'User not found.'
     end
-    rescue JWT::DecodeError
-      raise ApiException::Unauthorized.new, 'Invalid or expired access token'
-      # access_token = request.headers['Authorization'].split('Bearer ').last
-      # user_id = decode_jwt(access_token)
-      # user = current_user
-      # puts "User is: #{user.email}"
-
-      #user = User.find(user_id)
-
-      #   if user
-      #     user.destroy
-      #     render json: { message: 'User was successfully deleted' }
-      #   else
-      #     raise ApiException::NotFound.new, 'User not found.'
-      #   end
-      # rescue JWT::DecodeError
-      #   raise ApiException::Unauthorized.new, 'Invalid or expired access token'
+  rescue JWT::DecodeError
+    raise ApiException::Unauthorized.new, 'Invalid or expired access token'
   end
 
   private
