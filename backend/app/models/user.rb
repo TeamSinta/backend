@@ -1,3 +1,6 @@
+# User model representing user accounts in the application.
+# Includes Devise modules for authentication and JWT token management.
+# Provides a class method for authenticating users with an authorization code.
 class User < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
   has_many :refresh_tokens, dependent: :destroy
@@ -8,10 +11,6 @@ class User < ApplicationRecord
          :jwt_authenticatable,
          omniauth_providers: [:google_oauth2],
          jwt_revocation_strategy: self
-
-  # def jwt_payload
-  #   { user_id: id, scope: 'user' }
-  # end
 
   def self.from_omniauth(authorization_code)
     puts "Authorization Code: #{authorization_code}"
@@ -25,8 +24,7 @@ class User < ApplicationRecord
         user.last_name = user_info['family_name']
         user.email = user_info['email']
         user.photo = user_info['picture']
-        user.password = "password"
-        #user.password = Devise.friendly_token[0, 20]
+        user.password = Devise.friendly_token[0, 20]
         user.provider = 'google'
         user.role = 1
       end
