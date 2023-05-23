@@ -1,6 +1,6 @@
 class Api::V1::Users::UsersController < ApplicationController
   # before action and profile are only for testing authentication during development.
-  before_action :authenticate_user!, only: [:profile]
+  before_action :authenticate_user!, only: [:profile, :destroy]
 
   def profile
     render json: { user: current_user.as_json }
@@ -12,20 +12,31 @@ class Api::V1::Users::UsersController < ApplicationController
   end
 
   def destroy
-    access_token = request.headers['Authorization'].split('Bearer ').last
-    user_id = decode_jwt(access_token)
-    puts "destroy method user_id: #{user_id}"
-
-    user = User.find(user_id)
-
-    if user
-      user.destroy
+    if current_user
+      render json: { user: current_user.first_name }
+      puts "Current user is: #{current_user.email}"
+      current_user.destroy
       render json: { message: 'User was successfully deleted' }
     else
       raise ApiException::NotFound.new, 'User not found.'
     end
-  rescue JWT::DecodeError
-    raise ApiException::Unauthorized.new, 'Invalid or expired access token'
+    rescue JWT::DecodeError
+      raise ApiException::Unauthorized.new, 'Invalid or expired access token'
+      # access_token = request.headers['Authorization'].split('Bearer ').last
+      # user_id = decode_jwt(access_token)
+      # user = current_user
+      # puts "User is: #{user.email}"
+
+      #user = User.find(user_id)
+
+      #   if user
+      #     user.destroy
+      #     render json: { message: 'User was successfully deleted' }
+      #   else
+      #     raise ApiException::NotFound.new, 'User not found.'
+      #   end
+      # rescue JWT::DecodeError
+      #   raise ApiException::Unauthorized.new, 'Invalid or expired access token'
   end
 
   private

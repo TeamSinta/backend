@@ -11,10 +11,8 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     if @user.persisted?
       puts "#{@user.first_name} is logged in"
 
-      access_token, = Warden::JWTAuth::UserEncoder.new.call(
-        @user, {
-          user_id: @user.id,
-        }.to_json, nil
+      access_token,  = Warden::JWTAuth::UserEncoder.new.call(
+        @user, :user, nil
       )
 
       render json: {
@@ -63,15 +61,15 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     if user
       # Invalidate(destroy) the refresh token
       user.refresh_tokens.find_by(token: refresh_token).destroy
-      render json: { user: 'Refresh token deleted, so user is logged out' }, status: :ok
+      render json: { user: 'User token deleted, so user is logged out' }, status: :ok
 
-      head :no_content
+     # head :no_content
     else
       raise ApiException::Unauthorized.new("No user session found.")
     end
   end
 
   def failure
-     raise ApiException::Unauthorized.new("No user session found.")
+    raise ApiException::BadRequest.new, 'Unable to finialize user login action'
   end
 end
