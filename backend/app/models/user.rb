@@ -13,12 +13,10 @@ class User < ApplicationRecord
          jwt_revocation_strategy: self
 
   def self.from_omniauth(authorization_code)
-    puts "Authorization Code: #{authorization_code}"
     authentication_response = OauthService.authenticate(authorization_code)
 
     if authentication_response
       user_info = JWT.decode(authentication_response['id_token'], nil, false)[0]
-      puts user_info
       user = User.find_or_create_by!(email: user_info['email']) do |user|
         user.first_name = user_info['given_name']
         user.last_name = user_info['family_name']

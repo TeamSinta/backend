@@ -1,5 +1,4 @@
 # Controller for handling session-related actions such as token updates and logout.
-
 class Api::V1::Users::SessionsController < ApplicationController
   def update_token
     refresh_token = request.headers['Authorization'].split('Bearer ').last

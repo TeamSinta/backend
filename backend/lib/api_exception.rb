@@ -1,4 +1,9 @@
+# ApiException module defines a set of custom exception classes and a handler module for exception handling.
+# The handler module is included in other classes to add exception handling functionality.
+# This is then included in application_controller so that this can be used throughout the application.
+
 module ApiException
+  # Handler module is included in other classes to add exception handling functionality.
   module Handler
     def self.included(klass)
       klass.class_eval do
