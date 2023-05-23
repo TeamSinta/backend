@@ -24,15 +24,6 @@ class Api::V1::Users::UsersController < ApplicationController
 
   private
 
-  def decode_jwt(token)
-    puts "Decoding token....\n"
-    decoded_token = JWT.decode(token, nil, false)[0]
-    user_info_hash = JSON.parse(decoded_token['scp'])
-    user_id = user_info_hash['user_id']
-    puts "user_id: #{user_id}"
-    user_id
-  end
-
   def user_params
     params.require(:user).permit(:first_name, :last_name, :role, :email)
   end
