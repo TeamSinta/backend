@@ -43,9 +43,6 @@
 # Ignore any JWT secret keys generated.
 /config/jwt/*.key
 
-# Ignore Devise secret key.
-/config/initializers/devise.rb
-
 # Ignore any dotenv local configuration files.
 /.env.local
 /.env.development.local
