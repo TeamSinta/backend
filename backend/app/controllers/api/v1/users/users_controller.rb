@@ -4,7 +4,7 @@ class Api::V1::Users::UsersController < ApplicationController
   before_action :authenticate_user!, only: [:profile, :destroy]
 
   def profile
-    render json: { user: current_user.as_json }
+    render json: {user: current_user.as_json}
   end
 
   def show
@@ -15,12 +15,12 @@ class Api::V1::Users::UsersController < ApplicationController
   def destroy
     if current_user
       current_user.destroy
-      render json: { message: 'User and user data was successfully deleted' }
+      render json: {message: "User and user data was successfully deleted"}
     else
-      raise ApiException::NotFound.new, 'User not found.'
+      raise ApiException::NotFound.new, "User not found."
     end
   rescue JWT::DecodeError
-    raise ApiException::Unauthorized.new, 'Invalid or expired access token'
+    raise ApiException::Unauthorized.new, "Invalid or expired access token"
   end
 
   private

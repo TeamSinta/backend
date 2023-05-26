@@ -9,7 +9,7 @@ module ApiException
       klass.class_eval do
         ApiException::BaseError.descendants.each do |error_class|
           rescue_from error_class do |err|
-            render status: err.status_code, json: { error_code: err.error_code, message: err.message }
+            render status: err.status_code, json: {error_code: err.error_code, message: err.message}
           end
         end
       end

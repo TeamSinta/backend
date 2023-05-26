@@ -6,7 +6,7 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     @user = User.from_omniauth(code)
 
     if @user.persisted?
-      access_token,  = Warden::JWTAuth::UserEncoder.new.call(
+      access_token, = Warden::JWTAuth::UserEncoder.new.call(
         @user, :user, nil
       )
 
@@ -20,6 +20,6 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
   end
 
   def failure
-    raise ApiException::BadRequest.new, 'Unable to finialize user login action'
+    raise ApiException::BadRequest.new, "Unable to finialize user login action"
   end
 end
