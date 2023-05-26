@@ -106,10 +106,6 @@ GEM
     faraday-net_http (3.0.2)
     globalid (1.1.0)
       activesupport (>= 5.0)
-    haml (6.1.1)
-      temple (>= 0.8.2)
-      thor
-      tilt
     hashie (5.0.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
@@ -172,11 +168,6 @@ GEM
     parser (3.2.2.1)
       ast (~> 2.4.1)
     pg (1.4.6)
-    prettier (3.2.2)
-      syntax_tree (>= 2.7.1)
-      syntax_tree-haml (>= 1.1.0)
-      syntax_tree-rbs (>= 0.2.0)
-    prettier_print (1.2.1)
     puma (5.6.5)
       nio4r (~> 2.0)
     racc (1.6.2)
@@ -215,7 +206,6 @@ GEM
       zeitwerk (~> 2.5)
     rainbow (3.1.1)
     rake (13.0.6)
-    rbs (3.1.0)
     regexp_parser (2.8.0)
     reline (0.3.2)
       io-console (~> 0.5)
@@ -240,19 +230,7 @@ GEM
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
-    syntax_tree (6.1.1)
-      prettier_print (>= 1.2.0)
-    syntax_tree-haml (4.0.3)
-      haml (>= 5.2)
-      prettier_print (>= 1.2.1)
-      syntax_tree (>= 6.0.0)
-    syntax_tree-rbs (1.0.0)
-      prettier_print
-      rbs
-      syntax_tree (>= 2.0.1)
-    temple (0.10.1)
     thor (1.2.1)
-    tilt (2.1.0)
     timeout (0.3.2)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -285,7 +263,6 @@ DEPENDENCIES
   jwt
   omniauth-google-oauth2
   pg
-  prettier
   puma (~> 5.0)
   rack-cors
   rails (~> 7.0.4, >= 7.0.4.3)

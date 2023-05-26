@@ -2,7 +2,29 @@
 # .rubocop.yml
 AllCops:
   NewCops: enable
-
+  Include:
+    - '**/*.rb'
+  Exclude:
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+    - '.git/**/*'
+    - 'config/**/*'
+    - 'test/**/*'
+    - 'db/**/*'
+    - 'bin/**/*'
 # Makes prettier and Rubocop not yell at each other.
 inherit_from:
   - node_modules/@prettier/plugin-ruby/rubocop.yml
+
+# Configs #
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+  # .rubocop.yml
+Style/NumericLiterals:
+  Enabled: false
