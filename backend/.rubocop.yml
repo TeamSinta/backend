@@ -14,6 +14,7 @@ AllCops:
     - 'db/**/*'
     - 'bin/**/*'
     - 'config/routes.rb'
+    - 'app/mailers/**'
 # Makes prettier and Rubocop not yell at each other.
 inherit_from:
   - node_modules/@prettier/plugin-ruby/rubocop.yml

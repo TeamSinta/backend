@@ -24,8 +24,6 @@ class User < ApplicationRecord
     user
   end
 
-  private
-
   def self.create_or_update_user(user_info)
     User
       .find_or_create_by!(email: user_info['email']) do |u|
