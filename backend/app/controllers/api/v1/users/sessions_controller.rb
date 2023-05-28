@@ -13,19 +13,18 @@ class Api::V1::Users::SessionsController < ApplicationController
         )
         .first
 
-    if user
-      user.refresh_tokens.find_by(token: refresh_token).destroy
-      new_refresh_token =
-        user.refresh_tokens.create!(
-          token: SecureRandom.urlsafe_base64,
-          expiration_date: Time.now + 1.month
-        )
-      jwt, = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil)
-
-      render json: { accessToken: jwt, refreshToken: new_refresh_token.token }
-    else
+    unless user
       raise ApiException::Unauthorized.new, 'Invalid or expired refresh token.'
     end
+    user.refresh_tokens.find_by(token: refresh_token).destroy
+    new_refresh_token =
+      user.refresh_tokens.create!(
+        token: SecureRandom.urlsafe_base64,
+        expiration_date: Time.now + 1.month
+      )
+    jwt, = Warden::JWTAuth::UserEncoder.new.call(user, :user, nil)
+
+    render json: { accessToken: jwt, refreshToken: new_refresh_token.token }
   end
 
   def logout
@@ -38,14 +37,11 @@ class Api::V1::Users::SessionsController < ApplicationController
         }
       )
 
-    if user
-      user.refresh_tokens.find_by(token: refresh_token).destroy
-      render json: {
-               user: 'User token deleted, so user is logged out'
-             },
-             status: :ok
-    else
-      raise ApiException::Unauthorized.new('No user session found.')
-    end
+    raise ApiException::Unauthorized, 'No user session found.' unless user
+    user.refresh_tokens.find_by(token: refresh_token).destroy
+    render json: {
+             user: 'User token deleted, so user is logged out'
+           },
+           status: :ok
   end
 end

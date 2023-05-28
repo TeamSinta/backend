@@ -1,10 +1,10 @@
 # API controller for managing user profiles, information retrieval, and account deletion.
 # Requires user authentication for profile and destroy actions.
 class Api::V1::Users::UsersController < ApplicationController
-  before_action :authenticate_user!, only: [:profile, :destroy]
+  before_action :authenticate_user!, only: %i[profile destroy]
 
   def profile
-    render json: {user: current_user.as_json}
+    render json: { user: current_user.as_json }
   end
 
   def show
@@ -13,14 +13,11 @@ class Api::V1::Users::UsersController < ApplicationController
   end
 
   def destroy
-    if current_user
-      current_user.destroy
-      render json: {message: "User and user data was successfully deleted"}
-    else
-      raise ApiException::NotFound.new, "User not found."
-    end
+    raise ApiException::NotFound.new, 'User not found.' unless current_user
+    current_user.destroy
+    render json: { message: 'User and user data was successfully deleted' }
   rescue JWT::DecodeError
-    raise ApiException::Unauthorized.new, "Invalid or expired access token"
+    raise ApiException::Unauthorized.new, 'Invalid or expired access token'
   end
 
   private

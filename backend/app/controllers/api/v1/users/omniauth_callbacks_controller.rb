@@ -5,21 +5,16 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     code = params[:code]
     @user = User.from_omniauth(code)
 
-    if @user.persisted?
-      access_token, = Warden::JWTAuth::UserEncoder.new.call(
-        @user, :user, nil
-      )
+    raise ApiException::Unauthorized unless @user.persisted?
+    access_token, = Warden::JWTAuth::UserEncoder.new.call(@user, :user, nil)
 
-      render json: {
-        accessToken: access_token,
-        refreshToken: @user.refresh_tokens.last.token
-      }
-    else
-      raise ApiException::Unauthorized
-    end
+    render json: {
+             accessToken: access_token,
+             refreshToken: @user.refresh_tokens.last.token
+           }
   end
 
   def failure
-    raise ApiException::BadRequest.new, "Unable to finialize user login action"
+    raise ApiException::BadRequest.new, 'Unable to finialize user login action'
   end
 end

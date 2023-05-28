@@ -13,6 +13,7 @@ AllCops:
     - 'test/**/*'
     - 'db/**/*'
     - 'bin/**/*'
+    - 'config/routes.rb'
 # Makes prettier and Rubocop not yell at each other.
 inherit_from:
   - node_modules/@prettier/plugin-ruby/rubocop.yml
@@ -25,6 +26,11 @@ Style/ClassAndModuleChildren:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
-  # .rubocop.yml
 Style/NumericLiterals:
   Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 25
