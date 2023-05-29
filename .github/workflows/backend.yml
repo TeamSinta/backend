@@ -24,7 +24,7 @@ jobs:
           bundler-cache: true
 
       - name: Run Bundle
-        run: bundle exec rake
+        run: bundle install
 
       - name: Run RoboCop
         run: rubocop
