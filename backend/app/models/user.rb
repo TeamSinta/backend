@@ -21,7 +21,7 @@ class User < ApplicationRecord
     end
     user_info = JWT.decode(authentication_response['id_token'], nil, false)[0]
     create_or_update_user(user_info)
-    user
+    # user
   end
 
   def self.create_or_update_user(user_info)
