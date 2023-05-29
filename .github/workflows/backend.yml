@@ -23,8 +23,8 @@ jobs:
           ruby-version: '3.0'
           bundler-cache: true
 
-      - name: Install dependencies
-        run: bundle Install
+      - name: Run Bundle
+        run: bundle exec rake
 
-      - name: Run RuboCop
-        run: bundle exec rubocop
+      - name: Run RoboCop
+        run: rubocop
