@@ -20,8 +20,11 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'
+          ruby-version: '3.0'
           bundler-cache: true
+
+      - name: Install dependencies
+        run: bundle Install
 
       - name: Run RuboCop
         run: bundle exec rubocop
