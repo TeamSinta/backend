@@ -24,7 +24,9 @@ jobs:
           bundler-cache: true
 
       - name: Run Bundle
+        working-directory: backend
         run: bundle install
 
       - name: Run RoboCop
+        working-directory: backend
         run: rubocop
