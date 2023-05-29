@@ -25,10 +25,8 @@ jobs:
 
       - name: Install dependencies
         working-directory: backend
-        run: |
-          gem install bundler
-          bundle install
+        run: bundle install
 
       - name: Run RuboCop
         working-directory: backend
-        run: bundle exec rubocop
+        run: rubocop
