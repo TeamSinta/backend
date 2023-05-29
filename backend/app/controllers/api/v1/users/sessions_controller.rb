@@ -10,7 +10,7 @@ class Api::V1::Users::SessionsController < ApplicationController
 
     destroy_refresh_token(user, refresh_token)
     new_refresh_token = create_new_refresh_token(user)
-    jwt = generate_jwt(user)
+    jwt, = generate_jwt(user)
     render json: { accessToken: jwt, refreshToken: new_refresh_token.token }
   rescue ApiException::Unauthorized => e
     render_exception(e)
