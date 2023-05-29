@@ -6,14 +6,12 @@ class Api::V1::Users::OmniauthCallbacksController < Devise::OmniauthCallbacksCon
     @user = User.from_omniauth(code)
 
     if @user.persisted?
-      access_token,  = Warden::JWTAuth::UserEncoder.new.call(
-        @user, :user, nil
-      )
+      access_token, = Warden::JWTAuth::UserEncoder.new.call(@user, :user, nil)
 
       render json: {
-        accessToken: access_token,
-        refreshToken: @user.refresh_tokens.last.token
-      }
+               accessToken: access_token,
+               refreshToken: @user.refresh_tokens.last.token
+             }
     else
       raise ApiException::Unauthorized
     end

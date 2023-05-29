@@ -1,7 +1,7 @@
 # API controller for managing user profiles, information retrieval, and account deletion.
 # Requires user authentication for profile and destroy actions.
 class Api::V1::Users::UsersController < ApplicationController
-  before_action :authenticate_user!, only: [:profile, :destroy]
+  before_action :authenticate_user!, only: %i[profile destroy]
 
   def profile
     render json: { user: current_user.as_json }
