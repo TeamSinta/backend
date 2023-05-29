@@ -36,4 +36,4 @@ jobs:
 
       - name: Run RuboCop
         working-directory: backend
-        run: rubocop
+        run: bundle exec rubocop
