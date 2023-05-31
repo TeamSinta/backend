@@ -1,0 +1,10 @@
+{
+	"editor.formatOnPaste": false,
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.codeActionsOnSave": {
+		"source.fixAll.rubocop": true,
+		"source.fixAll.prettier": true
+	},
+	"cSpell.words": ["Sinta"]
+}
