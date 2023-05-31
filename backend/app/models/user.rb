@@ -15,21 +15,38 @@ class User < ApplicationRecord
   def self.from_omniauth(authorization_code)
     authentication_response = OauthService.authenticate(authorization_code)
 
-    if authentication_response
-      user_info = JWT.decode(authentication_response['id_token'], nil, false)[0]
-      user = User.find_or_create_by!(email: user_info['email']) do |user|
-        user.first_name = user_info['given_name']
-        user.last_name = user_info['family_name']
-        user.email = user_info['email']
-        user.photo = user_info['picture']
-        user.password = Devise.friendly_token[0, 20]
-        user.provider = 'google'
-        user.role = 1
-      end
-      user.refresh_tokens.create(token: SecureRandom.urlsafe_base64, expiration_date: Time.now + 1.month)
-      user
-    else
-      raise ApiException::BadRequest.new, 'Unable to authenticate user and get data'
+    unless authentication_response
+      raise ApiException::BadRequest.new,
+            'Unable to authenticate user and get data'
     end
+    user_info = JWT.decode(authentication_response['id_token'], nil, false)[0]
+    create_or_update_user(user_info)
+  end
+
+  def self.create_or_update_user(user_info)
+    User
+      .find_or_create_by!(email: user_info['email']) do |user|
+        assign_user_attributes(user, user_info)
+      end
+      .tap { |user| create_refresh_token(user) }
+  end
+
+  def self.assign_user_attributes(user, user_info)
+    user.assign_attributes(
+      first_name: user_info['given_name'],
+      last_name: user_info['family_name'],
+      email: user_info['email'],
+      photo: user_info['picture'],
+      password: Devise.friendly_token[0, 20],
+      provider: 'google',
+      role: 1
+    )
+  end
+
+  def self.create_refresh_token(user)
+    user.refresh_tokens.create(
+      token: SecureRandom.urlsafe_base64,
+      expiration_date: Time.now + 1.month
+    )
   end
 end

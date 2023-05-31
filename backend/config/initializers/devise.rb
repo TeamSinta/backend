@@ -289,9 +289,9 @@ Devise.setup do |config|
   # so you need to do it manually. For the users scope, it would be:
   # config.omniauth_path_prefix = '/my_engine/users/auth'
   config.omniauth :google_oauth2,
-                  ENV["GOOGLE_CLIENT_ID"],
-                  ENV["GOOGLE_CLIENT_SECRET"],
-                  { scope: "email, profile" }
+    ENV["GOOGLE_CLIENT_ID"],
+    ENV["GOOGLE_CLIENT_SECRET"],
+    {scope: "email, profile"}
 
   # ==> Hotwire/Turbo configuration
   # When using Devise with Hotwire/Turbo, the http status for error responses
@@ -311,8 +311,8 @@ Devise.setup do |config|
   # jwt configuration
   config.jwt do |jwt|
     jwt.secret = Rails.application.credentials.fetch(:secret_key_base)
-    jwt.dispatch_requests = [['POST', %r{^/login$}]]
-    jwt.revocation_requests = [['DELETE', %r{^/logout$}]]
+    jwt.dispatch_requests = [["POST", %r{^/login$}]]
+    jwt.revocation_requests = [["DELETE", %r{^/logout$}]]
     jwt.expiration_time = 30.minutes.to_i
   end
 end
