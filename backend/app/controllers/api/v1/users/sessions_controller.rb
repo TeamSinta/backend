@@ -22,8 +22,6 @@ class Api::V1::Users::SessionsController < ApplicationController
 
     raise ApiException::Unauthorized, 'No user session found.' unless user
     destroy_refresh_token(user, refresh_token)
-
-      )
       .first
   end
 
