@@ -1,4 +1,4 @@
-# Handles the users sessions with updating tokens and logging out..
+# Handles the users sessions with updating tokens and logging out.
 class Api::V1::Users::SessionsController < ApplicationController
   def update_token
     refresh_token = extract_refresh_token
@@ -22,6 +22,28 @@ class Api::V1::Users::SessionsController < ApplicationController
 
     raise ApiException::Unauthorized, 'No user session found.' unless user
     destroy_refresh_token(user, refresh_token)
+
+    render json: {
+             user: 'User token deleted, so user is logged out'
+           },
+           status: :ok
+  end
+
+  private
+
+  def extract_refresh_token
+    request.headers['Authorization'].split('Bearer ').last
+  end
+
+  def find_user_by_refresh_token(refresh_token)
+    User
+      .joins(:refresh_tokens)
+      .where(
+        refresh_tokens: {
+          token: refresh_token,
+          expiration_date: Time.now..Float::INFINITY
+        }
+      )
       .first
   end
 
