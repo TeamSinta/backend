@@ -1,0 +1,48 @@
+name: Backend
+
+on:
+  push:
+    branches: [staging]
+  pull_request:
+    branches: [staging]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: backend/.nvmrc
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install prettier plugin ruby
+        run: npm install @prettier/plugin-ruby
+
+      - name: Install dependencies
+        working-directory: backend
+        run: |
+          npm ci
+          ls node_modules # Check if node_modules directory exists
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.2'
+          bundler-cache: false
+
+      - name: Install dependencies
+        working-directory: backend
+        run: bundle install
+
+      - name: Run RuboCop
+        working-directory: backend
+        run: bundle exec rubocop
