@@ -24,6 +24,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
 
+      - name: Install prettier plugin ruby
+        run: npm install @prettier/plugin-ruby
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -33,9 +36,6 @@ jobs:
       - name: Install dependencies
         working-directory: backend
         run: bundle install
-
-      - name: Install prettier plugin ruby
-        run: npm install --no-save @prettier/plugin-ruby
 
       - name: Run RuboCop
         working-directory: backend
