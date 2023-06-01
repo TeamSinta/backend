@@ -16,7 +16,7 @@ const GoogleLogin = (): GoogleLoginReturnType => {
     /* eslint-disable */
     onSuccess: async (codeResponse) => {
       const response = await instance.get(
-        `${process.env.REACT_APP_GOOGLE_OAUTH_CALLBACK_URL}`,
+        import.meta.env.VITE_GOOGLE_OAUTH_CALLBACK_URL,
         {
           params: {
             code: codeResponse.code,

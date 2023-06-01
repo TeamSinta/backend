@@ -17,5 +17,5 @@
     "jsx": "react-jsx",
     "baseUrl": "src"
   },
-  "include": ["src", ".eslintrc.js"]
+  "include": ["src", ".eslintrc.jsx"]
 }

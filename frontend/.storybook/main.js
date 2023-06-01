@@ -12,8 +12,11 @@ module.exports = {
     "@storybook/preset-create-react-app",
     "@storybook/addon-styling",
   ],
-  framework: "@storybook/react",
-  core: {
-    builder: "@storybook/builder-webpack5",
+  framework: {
+    name: "@storybook/react-vite",
+    options: {},
+  },
+  docs: {
+    autodocs: true,
   },
 };

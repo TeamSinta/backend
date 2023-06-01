@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { storiesOf } from "@storybook/react";
 import NavBar from "./Navbar";
 import { buttonData } from "./buttonData/ButtonData";
 
 import imageFile from "./SintaLogo.png";
 
-storiesOf("NavBar", module).add("NavBar Selection", (): JSX.Element => {
+export default {
+  title: "NavBar",
+};
+
+export const NavBarSelection = (): JSX.Element => {
   const [activeButtonId, setActiveButtonId] = useState(buttonData[0].id);
 
   const handleButtonClick = (buttonId: number): void => {
@@ -24,4 +27,8 @@ storiesOf("NavBar", module).add("NavBar Selection", (): JSX.Element => {
       }))}
     />
   );
-});
+};
+
+NavBarSelection.story = {
+  name: "NavBar Selection",
+};
