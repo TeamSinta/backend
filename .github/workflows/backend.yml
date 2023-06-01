@@ -34,9 +34,8 @@ jobs:
         working-directory: backend
         run: bundle install
 
-      - name: List files in working directory
-        working-directory: backend
-        run: ls -al
+      - name: Install prettier plugin ruby
+        run: npm install --no-save @prettier/plugin-ruby
 
       - name: Run RuboCop
         working-directory: backend
