@@ -1,4 +1,4 @@
-# Handles the users sessions with updating tokens and logging out.
+# Handles the users sessions with updating tokens and logging out..
 class Api::V1::Users::SessionsController < ApplicationController
   def update_token
     refresh_token = extract_refresh_token
