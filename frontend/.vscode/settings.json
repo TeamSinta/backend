@@ -6,5 +6,5 @@
     "source.fixAll.eslint": true,
     "source.fixAll.format": true
   },
-  "cSpell.words": ["Sinta"]
+  "cSpell.words": ["mainavbar", "sidenavbar", "Sinta", "topnavbar"]
 }

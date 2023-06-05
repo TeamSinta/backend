@@ -11,6 +11,7 @@ const colors = {
   green: "#dbfddc",
   purpleGrey: "rgba(15, 13, 98, .2)",
   pastelPurple: "#CECDEE",
+  whisperGrey: "#F6F6FB",
 };
 
 export type ColorTypes = typeof colors;

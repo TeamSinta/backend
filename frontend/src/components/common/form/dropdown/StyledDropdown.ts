@@ -72,7 +72,7 @@ export const DropdownLabel = styled(BodySMedium)`
 
 export const DropdownEl = styled.div`
   width: 100%;
-  background: ${(props) => props.theme.colors.lightGrey};
+  background: ${(props) => props.theme.colors.whisperGrey};
   border-radius: 12px;
   padding: 8px 16px;
   height: 40px;

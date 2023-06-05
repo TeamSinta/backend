@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    "paths": {
+      "@mui/styled-engine": [
+        "/Users/mshegow/code/msinta/teamsinta/frontend/node_modules/@mui/styled-engine-sc"
+      ]
+    },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

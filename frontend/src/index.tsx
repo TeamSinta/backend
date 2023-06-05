@@ -6,7 +6,7 @@ import GlobalFont from "styles/GlobalFont";
 import GlobalStyle from "styles/GlobalStyle";
 import { DefaultTheme } from "styles/StyleType";
 import App from "./App";
-import { store } from "./app/store";
+import { store } from "./assets/app/store";
 
 ReactDOM.render(
   <React.StrictMode>

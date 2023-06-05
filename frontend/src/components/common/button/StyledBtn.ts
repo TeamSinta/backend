@@ -23,7 +23,7 @@ export const ButtonLayout = styled.div<IButtonLayout>`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 9px 173px;
+  /* padding: 9px 173px; */
   gap: 10px;
   position: relative;
   border: 1px solid ${(props) => props.theme.colors.black};
