@@ -7,8 +7,8 @@ import {
   GoogleIcon,
   PlusIcon,
   RightBracketIcon,
-} from "../svgIcons/Icons";
-import { iconSW } from "../svgIcons/iconType";
+} from "../../svgIcons/Icons";
+import { iconSW } from "../../svgIcons/iconType";
 import TextIconBtn from "./TextIconBtn";
 
 const icons = {

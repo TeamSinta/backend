@@ -11,8 +11,8 @@ import {
   PlusIcon,
   RoleIcon,
   SettingIcon,
-} from "../svgIcons/Icons";
-import { iconLW } from "../svgIcons/iconType";
+} from "../../svgIcons/Icons";
+import { iconLW } from "../../svgIcons/iconType";
 import IconBtnLP from "./IconBtnLP";
 
 const icons = {

@@ -13,8 +13,8 @@ import {
   PaperIcon,
   PlusIcon,
   RightBracketIcon,
-} from "../svgIcons/Icons";
-import { iconSB } from "../svgIcons/iconType";
+} from "../../svgIcons/Icons";
+import { iconSB } from "../../svgIcons/iconType";
 import IconBtnS from "./IconBtnS";
 
 const icons = {

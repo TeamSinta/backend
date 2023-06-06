@@ -4,7 +4,7 @@ import Stack from "@mui/material/Stack";
 import { Box } from "@mui/material";
 
 import SearchInput from "components/common/form/serchInput/SearchInput";
-import TextIconBtn from "components/common/textIconBtn/TextIconBtn";
+import TextIconBtn from "components/common/buttons/textIconBtn/TextIconBtn";
 import { PlusIcon } from "components/common/svgIcons/Icons";
 import { iconSW } from "components/common/svgIcons/iconType";
 
