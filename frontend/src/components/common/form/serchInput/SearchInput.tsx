@@ -1,7 +1,8 @@
 import React from "react";
-import { SearchIcon } from "components/common/svgIcons/Icons";
-import { iconMB } from "components/common/svgIcons/iconType";
+
 import { InputIcon, SerchInputEl, SerchInputLayout } from "./StyledSerchInput";
+import { SearchIcon } from "@/components/common/svgIcons/Icons";
+import { iconMB } from "@/components/common/svgIcons/iconType";
 
 interface ISearchInput {
   disable: boolean;

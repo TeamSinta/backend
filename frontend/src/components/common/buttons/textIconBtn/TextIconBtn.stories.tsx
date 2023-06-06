@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
 import React from "react";
-import { type ComponentMeta, type ComponentStory } from "@storybook/react";
-import {
-  ArrowDownIcon,
-  AsteriskIcon,
-  GoogleIcon,
-  PlusIcon,
-  RightBracketIcon,
-} from "../../svgIcons/Icons";
-import { iconSW } from "../../svgIcons/iconType";
+import { type Meta, type StoryObj } from "@storybook/react";
 import TextIconBtn from "./TextIconBtn";
+import {
+  PlusIcon,
+  GoogleIcon,
+  RightBracketIcon,
+  AsteriskIcon,
+  ArrowDownIcon,
+} from "@/components/common/svgIcons/Icons";
+import { iconSW } from "@/components/common/svgIcons/iconType";
 
 const icons = {
   Plus: <PlusIcon {...iconSW} />,
@@ -19,8 +18,8 @@ const icons = {
   ArrowDown: <ArrowDownIcon {...iconSW} />,
 };
 
-export default {
-  title: "common/button/TextIconButton",
+const meta = {
+  title: "common/buttons/TextIconButton",
   component: TextIconBtn,
   argTypes: {
     icon: {
@@ -46,38 +45,23 @@ export default {
       description: "Disable or able",
     },
   },
-} as ComponentMeta<typeof TextIconBtn>;
+} as Meta<typeof TextIconBtn>;
+export default meta;
 
-const Template: ComponentStory<typeof TextIconBtn> = (arg) => {
-  let icon = arg.icon;
-  if (icon !== undefined) {
-    icon = icons[arg.icon as unknown as keyof typeof icons];
-  }
+type Story = StoryObj<typeof meta>;
 
-  if (icon === undefined) {
-    return <TextIconBtn {...arg} />;
-  } else {
-    const current = {
-      ...arg,
-      icon,
-    };
-    return <TextIconBtn {...current} />;
-  }
+export const Primary: Story = {
+  args: {
+    label: "Create",
+    icon: <PlusIcon {...iconSW} />,
+    disable: false,
+  },
 };
 
-export const Primary = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
-
-Primary.args = {
-  label: "Create",
-  icon: <PlusIcon {...iconSW} />,
-  disable: false,
-};
-
-export const Disable = Template.bind({});
-
-Disable.args = {
-  label: "Create",
-  icon: <PlusIcon {...iconSW} />,
-  disable: true,
+export const Disable: Story = {
+  args: {
+    label: "Create",
+    icon: <PlusIcon {...iconSW} />,
+    disable: true,
+  },
 };

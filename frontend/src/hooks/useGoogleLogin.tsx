@@ -1,7 +1,7 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { useCookies } from "react-cookie";
 
-import HttpService from "utils/axiosService/httpService";
+import HttpService from "@/utils/axiosService/httpService";
 
 interface GoogleLoginReturnType {
   signIn?: () => any | Promise<any>;

@@ -1,7 +1,7 @@
 import {
   BodySBold,
   BodySMedium,
-} from "components/common/typeScale/StyledTypeScale";
+} from "@/components/common/typeScale/StyledTypeScale";
 import styled, { css } from "styled-components";
 
 export enum DropdownLayoutType {

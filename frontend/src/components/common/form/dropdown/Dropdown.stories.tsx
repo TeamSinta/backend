@@ -1,9 +1,8 @@
-import React from "react";
-import { type ComponentMeta, type ComponentStory } from "@storybook/react";
+import { type Meta, type StoryObj } from "@storybook/react";
 import { DropdownLayoutType } from "./StyledDropdown";
 import Dropdown from "./Dropdown";
 
-export default {
+const meta = {
   title: "common/form/Dropdown",
   component: Dropdown,
   argTypes: {
@@ -30,36 +29,35 @@ export default {
       description: "Option to include inline icon or not",
     },
   },
-} as ComponentMeta<typeof Dropdown>;
+} as Meta<typeof Dropdown>;
+export default meta;
 
-const Template: ComponentStory<typeof Dropdown> = (arg): JSX.Element => {
-  return <Dropdown {...arg}></Dropdown>;
+type Story = StoryObj<typeof meta>;
+
+export const FlexLayout: Story = {
+  args: {
+    label: "stage",
+    layoutType: DropdownLayoutType.FLEX,
+    optionArr: [
+      { name: "BANANA", value: "banana" },
+      { name: "APPLE", value: "apple" },
+      { name: "ORANGE", value: "orange" },
+    ],
+    dropdownName: "fruit",
+    dropdownIconVisible: true,
+  },
 };
 
-export const flexLayout = Template.bind({});
-
-flexLayout.args = {
-  label: "stage",
-  layoutType: DropdownLayoutType.FLEX,
-  optionArr: [
-    { name: "BANANA", value: "banana" },
-    { name: "APPLE", value: "apple" },
-    { name: "ORANGE", value: "orange" },
-  ],
-  dropdownName: "fruit",
-  dropdownIconVisible: true,
-};
-
-export const blockLayout = Template.bind({});
-
-blockLayout.args = {
-  label: "stage",
-  layoutType: DropdownLayoutType.BLOCK,
-  optionArr: [
-    { name: "BANANA", value: "banana" },
-    { name: "APPLE", value: "apple" },
-    { name: "ORANGE", value: "orange" },
-  ],
-  dropdownName: "fruit",
-  dropdownIconVisible: true,
+export const BlockLayout: Story = {
+  args: {
+    label: "stage",
+    layoutType: DropdownLayoutType.BLOCK,
+    optionArr: [
+      { name: "BANANA", value: "banana" },
+      { name: "APPLE", value: "apple" },
+      { name: "ORANGE", value: "orange" },
+    ],
+    dropdownName: "fruit",
+    dropdownIconVisible: true,
+  },
 };

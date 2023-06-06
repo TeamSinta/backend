@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { SelectArrowOpenIcon } from "components/common/svgIcons/Icons";
-import { iconXSB } from "components/common/svgIcons/iconType";
+import { SelectArrowOpenIcon } from "@/components/common/svgIcons/Icons";
+import { iconXSB } from "@/components/common/svgIcons/iconType";
 import {
   DropdownArrowIconDiv,
   DropdownEl,

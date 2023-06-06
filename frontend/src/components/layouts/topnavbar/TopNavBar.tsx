@@ -3,13 +3,12 @@ import React from "react";
 import Stack from "@mui/material/Stack";
 import { Box } from "@mui/material";
 
-import SearchInput from "components/common/form/serchInput/SearchInput";
-import TextIconBtn from "components/common/buttons/textIconBtn/TextIconBtn";
-import { PlusIcon } from "components/common/svgIcons/Icons";
-import { iconSW } from "components/common/svgIcons/iconType";
-
 import { LogoImage } from "./StyledTopBarNav";
-import image from "../../../assets/svg/images/Homie.png";
+import image from "@/assets/images/Homie.png";
+import TextIconBtn from "@/components/common/buttons/textIconBtn/TextIconBtn";
+import SearchInput from "@/components/common/form/serchInput/SearchInput";
+import { PlusIcon } from "@/components/common/svgIcons/Icons";
+import { iconSW } from "@/components/common/svgIcons/iconType";
 
 // interface TopNavBarProps {
 

@@ -11,7 +11,8 @@ export const ButtonShadow = styled.div`
   right: 0.63px;
   top: 0;
   background: ${(props) => props.theme.colors.black};
-  border: 1px solid ${(props) => props.theme.colors.black};
+  outline: 1px solid ${(props) => props.theme.colors.black};
+  outline-offset: -1px;
   border-radius: 12px;
   transform: rotate(-0.4deg);
   transform-origin: right;
@@ -26,17 +27,17 @@ export const ButtonLayout = styled.div<IButtonLayout>`
   /* padding: 9px 173px; */
   gap: 10px;
   position: relative;
-  border: 1px solid ${(props) => props.theme.colors.black};
+  outline: 1px solid ${(props) => props.theme.colors.black};
+  outline-offset: -1px;
   border-radius: 12px;
 
   ${(props) => {
     if (props.disable) {
       return css`
         &::after {
-          width: 102%;
-          height: 50px;
+          width: 100%;
+          height: 100%;
           position: absolute;
-          top: -5%;
           background: ${props.theme.colors.white};
           content: " ";
           opacity: 0.3;

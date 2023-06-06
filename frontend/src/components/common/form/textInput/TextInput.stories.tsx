@@ -1,8 +1,7 @@
-import React from "react";
-import type { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import TextInput from "./TextInput";
 
-export default {
+const meta = {
   title: "common/form/TextInput",
   component: TextInput,
   argTypes: {
@@ -31,35 +30,34 @@ export default {
       description: "Input placeholder",
     },
   },
-} as ComponentMeta<typeof TextInput>;
+} as Meta<typeof TextInput>;
+export default meta;
 
-const Template: ComponentStory<typeof TextInput> = (arg): JSX.Element => {
-  return <TextInput {...arg}></TextInput>;
+type Story = StoryObj<typeof meta>;
+
+export const Primary: Story = {
+  args: {
+    label: "label",
+    disable: false,
+    placeholder: "placeholder",
+    error: false,
+  },
 };
 
-export const Primary = Template.bind({});
-
-Primary.args = {
-  label: "label",
-  disable: false,
-  placeholder: "placeholder",
-  error: false,
+export const Disable: Story = {
+  args: {
+    label: "label",
+    disable: true,
+    placeholder: "placeholder",
+    error: false,
+  },
 };
 
-export const Disable = Template.bind({});
-
-Disable.args = {
-  label: "label",
-  disable: true,
-  placeholder: "placeholder",
-  error: false,
-};
-
-export const Error = Template.bind({});
-
-Error.args = {
-  label: "label",
-  disable: false,
-  placeholder: "placeholder",
-  error: true,
+export const Error: Story = {
+  args: {
+    label: "label",
+    disable: false,
+    placeholder: "placeholder",
+    error: true,
+  },
 };

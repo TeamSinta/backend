@@ -1,10 +1,7 @@
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-
-import React from "react";
-import { type ComponentMeta, type ComponentStory } from "@storybook/react";
+import { type Meta, type StoryObj } from "@storybook/react";
 import Icons from "./Icons";
 
-export default {
+const meta = {
   title: "StyleGuid/Icons",
   component: Icons,
   argTypes: {
@@ -16,6 +13,11 @@ export default {
       description: "```iconSB```, ```iconMB```, ```iconLB```",
     },
   },
-} as ComponentMeta<typeof Icons>;
+} as Meta<typeof Icons>;
+export default meta;
 
-export const Primary: ComponentStory<typeof Icons> = () => <Icons />;
+type Story = StoryObj<typeof meta>;
+
+export const Primary: Story = {
+  args: {},
+};

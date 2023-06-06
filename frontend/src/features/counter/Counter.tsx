@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useState } from "react";
 
-import { useAppSelector, useAppDispatch } from "app/hooks";
+import { useAppSelector, useAppDispatch } from "@/app/hooks";
 import {
   decrement,
   increment,

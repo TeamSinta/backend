@@ -1,13 +1,15 @@
-import React from "react";
-import type { Story, Meta } from "@storybook/react";
+import type { StoryObj, Meta } from "@storybook/react";
 
 import SideNavBar from "./SideNavBar";
 
-export default {
+const meta = {
   title: "NavBar/SideNavBar",
   component: SideNavBar,
-} as Meta;
+} as Meta<typeof SideNavBar>;
+export default meta;
 
-const Template: Story = () => <SideNavBar />;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
+export const Primary: Story = {
+  args: {},
+};

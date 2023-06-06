@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
     "paths": {
+      "@/*": ["./src/*"],
       "@mui/styled-engine": [
         "/Users/mshegow/code/msinta/teamsinta/frontend/node_modules/@mui/styled-engine-sc"
       ]
     },
+    "baseUrl": ".",
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -19,8 +21,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "baseUrl": "src"
+    "jsx": "react-jsx"
   },
   "include": ["src", ".eslintrc.jsx"]
 }

@@ -8,4 +8,6 @@ export const IconBtnLPWrap = styled(ButtonLayout)`
   color: ${(props) => props.theme.colors.white};
 `;
 
-export const IconBtnLPIcon = styled.div``;
+export const IconBtnLPIcon = styled.div`
+  display: flex;
+`;

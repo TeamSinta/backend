@@ -1,8 +1,7 @@
-import React from "react";
-import type { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import SearchInput from "./SearchInput";
 
-export default {
+const meta = {
   title: "common/form/SearchInput",
   component: SearchInput,
   argTypes: {
@@ -19,22 +18,21 @@ export default {
       description: "Input placeholder",
     },
   },
-} as ComponentMeta<typeof SearchInput>;
+} as Meta<typeof SearchInput>;
+export default meta;
 
-const Template: ComponentStory<typeof SearchInput> = (arg): JSX.Element => {
-  return <SearchInput {...arg}></SearchInput>;
+type Story = StoryObj<typeof meta>;
+
+export const Primary: Story = {
+  args: {
+    disable: false,
+    placeholder: "Search for a role or candidate",
+  },
 };
 
-export const Primary = Template.bind({});
-
-Primary.args = {
-  disable: false,
-  placeholder: "Search for a role or candidate",
-};
-
-export const Disable = Template.bind({});
-
-Disable.args = {
-  disable: true,
-  placeholder: "Search for a role or candidate",
+export const Disable: Story = {
+  args: {
+    disable: true,
+    placeholder: "Search for a role or candidate",
+  },
 };

@@ -1,5 +1,6 @@
-import React from "react";
-import { type ComponentMeta, type ComponentStory } from "@storybook/react";
+import { type Meta, type StoryObj } from "@storybook/react";
+import { iconSB } from "@/components/common/svgIcons/iconType";
+import IconBtnS from "@/components/common/buttons/iconBtnS/IconBtnS";
 import {
   AsteriskIcon,
   BinIcon,
@@ -8,14 +9,12 @@ import {
   ChatIcon,
   CheckIcon,
   DocumentIcon,
-  HambergerIcon,
   GoogleIcon,
+  HambergerIcon,
   PaperIcon,
   PlusIcon,
   RightBracketIcon,
-} from "../../svgIcons/Icons";
-import { iconSB } from "../../svgIcons/iconType";
-import IconBtnS from "./IconBtnS";
+} from "@/components/common/svgIcons/Icons";
 
 const icons = {
   Asterisk: <AsteriskIcon {...iconSB} />,
@@ -32,9 +31,8 @@ const icons = {
   RightBracket: <RightBracketIcon {...iconSB} />,
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-export default {
-  title: "common/IconButtonS",
+const meta = {
+  title: "common/buttons/IconButtonS",
   component: IconBtnS,
   argTypes: {
     icon: {
@@ -54,35 +52,21 @@ export default {
       description: "Disable or able",
     },
   },
-} as ComponentMeta<typeof IconBtnS>;
+} as Meta<typeof IconBtnS>;
+export default meta;
 
-const Template: ComponentStory<typeof IconBtnS> = (arg) => {
-  let icon = arg.icon;
-  if (icon !== undefined) {
-    icon = icons[arg.icon as unknown as keyof typeof icons];
-  }
+type Story = StoryObj<typeof meta>;
 
-  if (icon === undefined) {
-    return <IconBtnS {...arg} />;
-  } else {
-    const current = {
-      ...arg,
-      icon,
-    };
-    return <IconBtnS {...current} />;
-  }
+export const Primary: Story = {
+  args: {
+    icon: <BinIcon {...iconSB} />,
+    disable: false,
+  },
 };
 
-export const Primary = Template.bind({});
-
-Primary.args = {
-  icon: <BinIcon {...iconSB} />,
-  disable: false,
-};
-
-export const Disable = Template.bind({});
-
-Disable.args = {
-  icon: <BinIcon {...iconSB} />,
-  disable: true,
+export const Disable: Story = {
+  args: {
+    icon: <BinIcon {...iconSB} />,
+    disable: true,
+  },
 };

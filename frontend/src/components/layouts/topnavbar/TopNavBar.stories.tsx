@@ -1,13 +1,14 @@
-import React from "react";
-import type { Story, Meta } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/react";
 import TopNavBar from "./TopNavBar";
 
-export default {
+const meta = {
   title: "NavBar/TopNavBar",
   component: TopNavBar,
-} as Meta;
+} as Meta<typeof TopNavBar>;
+export default meta;
 
-const Template: Story = () => <TopNavBar />;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
+export const Primary: Story = {
+  args: {},
+};

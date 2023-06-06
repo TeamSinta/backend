@@ -1,5 +1,6 @@
 import React from "react";
 import { TextBtnSWrap } from "./StyledTextBtnS";
+import { BodyMMedium } from "@/components/common/typeScale/StyledTypeScale";
 
 interface ITextBtnSProps {
   label?: string;
@@ -11,7 +12,9 @@ const TextBtnS = (props: ITextBtnSProps): JSX.Element => {
 
   return (
     <>
-      <TextBtnSWrap disable={disable}>{label}</TextBtnSWrap>
+      <TextBtnSWrap disable={disable}>
+        <BodyMMedium>{label}</BodyMMedium>
+      </TextBtnSWrap>
     </>
   );
 };

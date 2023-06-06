@@ -1,10 +1,8 @@
-import React from "react";
-import { type ComponentMeta, type ComponentStory } from "@storybook/react";
+import { type Meta, type StoryObj } from "@storybook/react";
 import TextBtnS from "./TextBtnS";
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-export default {
-  title: "common/TextButtonS",
+const meta = {
+  title: "common/buttons/TextButtonS",
   component: TextBtnS,
   argTypes: {
     label: {
@@ -20,22 +18,21 @@ export default {
       description: "Disable or able",
     },
   },
-} as ComponentMeta<typeof TextBtnS>;
+} as Meta<typeof TextBtnS>;
+export default meta;
 
-const Template: ComponentStory<typeof TextBtnS> = (arg) => {
-  return <TextBtnS {...arg} />;
+type Story = StoryObj<typeof meta>;
+
+export const Primary: Story = {
+  args: {
+    label: "No, leave candidate",
+    disable: false,
+  },
 };
 
-export const Primary = Template.bind({});
-
-Primary.args = {
-  label: "No, leave candidate",
-  disable: false,
-};
-
-export const Disable = Template.bind({});
-
-Disable.args = {
-  label: "No, leave candidate",
-  disable: true,
+export const Disable: Story = {
+  args: {
+    label: "No, leave candidate",
+    disable: true,
+  },
 };

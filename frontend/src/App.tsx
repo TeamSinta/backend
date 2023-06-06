@@ -12,7 +12,7 @@ import React from "react";
 //   background: ${(props) => props.theme.colors.accentPurple};
 //   color: ${(props) => props.theme.colors.white};
 // `;
-import MainNavBar from "components/layouts/mainavbar/MainNavbar";
+import MainNavBar from "@/components/layouts/mainavbar/MainNavbar";
 // I leave counter temporarily for reference for redux-toolkit.
 // I left google login button temporarily for reference & testing.
 

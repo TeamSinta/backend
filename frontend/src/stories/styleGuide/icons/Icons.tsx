@@ -27,9 +27,9 @@ import {
   SettingIcon,
   StarIcon,
   TimeIcon,
-} from "components/common/svgIcons/Icons";
-import { iconLB, iconMB, iconSB } from "components/common/svgIcons/iconType";
-import { H2Bold } from "components/common/typeScale/StyledTypeScale";
+} from "@/components/common/svgIcons/Icons";
+import { iconLB, iconMB, iconSB } from "@/components/common/svgIcons/iconType";
+import { H2Bold } from "@/components/common/typeScale/StyledTypeScale";
 import styled from "styled-components";
 
 const IconDiv = styled.div`

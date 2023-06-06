@@ -1,5 +1,4 @@
-import React from "react";
-import { type ComponentMeta, type ComponentStory } from "@storybook/react";
+import { StoryObj, Meta } from "@storybook/react";
 import {
   ArrowDownIcon,
   CalendarIcon,
@@ -11,8 +10,8 @@ import {
   PlusIcon,
   RoleIcon,
   SettingIcon,
-} from "../../svgIcons/Icons";
-import { iconLB } from "../../svgIcons/iconType";
+} from "@/components/common/svgIcons/Icons";
+import { iconLB } from "@/components/common/svgIcons/iconType";
 import IconBtnLW from "./IconBtnLW";
 
 const icons = {
@@ -28,19 +27,16 @@ const icons = {
   Setting: <SettingIcon {...iconLB} />,
 };
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-export default {
-  title: "common/IconButtonLW",
+const meta = {
+  title: "common/buttons/IconButtonLW",
   component: IconBtnLW,
   argTypes: {
     icon: {
       control: {
         type: "select",
-        options: Object.keys(icons),
-        mapping: {
-          icons,
-        },
       },
+      options: Object.keys(icons),
+      mapping: icons,
       description: "Icon components",
     },
     disable: {
@@ -50,35 +46,22 @@ export default {
       description: "Disable or able",
     },
   },
-} as ComponentMeta<typeof IconBtnLW>;
+} as Meta<typeof IconBtnLW>;
 
-const Template: ComponentStory<typeof IconBtnLW> = (arg) => {
-  let icon = arg.icon;
-  if (icon !== undefined) {
-    icon = icons[arg.icon as unknown as keyof typeof icons];
-  }
+export default meta;
 
-  if (icon === undefined) {
-    return <IconBtnLW {...arg} />;
-  } else {
-    const current = {
-      ...arg,
-      icon,
-    };
-    return <IconBtnLW {...current} />;
-  }
+type Story = StoryObj<typeof meta>;
+
+export const Primary: Story = {
+  args: {
+    icon: <EditIcon {...iconLB} />,
+    disable: false,
+  },
 };
 
-export const Primary = Template.bind({});
-
-Primary.args = {
-  icon: <EditIcon {...iconLB} />,
-  disable: false,
-};
-
-export const Disable = Template.bind({});
-
-Disable.args = {
-  icon: <EditIcon {...iconLB} />,
-  disable: true,
+export const Disable: Story = {
+  args: {
+    icon: <EditIcon {...iconLB} />,
+    disable: true,
+  },
 };

@@ -12,7 +12,7 @@ import {
   BodyMMedium,
   BodySBold,
   BodySMedium,
-} from "components/common/typeScale/StyledTypeScale";
+} from "@/components/common/typeScale/StyledTypeScale";
 
 interface ITypeScaleProps {
   label?: string;

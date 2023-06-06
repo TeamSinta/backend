@@ -1,9 +1,8 @@
-import type { ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react";
 import TextBtnL from "./TextBtnL";
-import React from "react";
 
-export default {
-  title: "common/button/TextBtnL",
+const meta = {
+  title: "common/buttons/TextBtnL",
   component: TextBtnL,
   argTypes: {
     label: {
@@ -19,23 +18,21 @@ export default {
       description: "Disable or able",
     },
   },
-} as const;
+} as Meta<typeof TextBtnL>;
+export default meta;
 
-const Template: ComponentStory<typeof TextBtnL> = (args) => (
-  <TextBtnL {...args} />
-);
+type Story = StoryObj<typeof meta>;
 
-export const Primary = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
-
-Primary.args = {
-  label: "Invite",
-  disable: false,
+export const Primary: Story = {
+  args: {
+    label: "Invite",
+    disable: false,
+  },
 };
 
-export const Disable = Template.bind({});
-
-Disable.args = {
-  label: "Invite",
-  disable: true,
+export const Disable: Story = {
+  args: {
+    label: "Invite",
+    disable: false,
+  },
 };

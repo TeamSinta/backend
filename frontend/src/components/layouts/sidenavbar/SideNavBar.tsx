@@ -9,19 +9,18 @@ import {
   NavButton,
   LogoImage,
 } from "./StyledSideNavBar";
-import Dropdown from "../../common/form/dropdown/Dropdown";
-import { DropdownLayoutType } from "../../common/form/dropdown/StyledDropdown";
-
+import Dropdown from "@/components/common/form/dropdown/Dropdown";
+import { DropdownLayoutType } from "@/components/common/form/dropdown/StyledDropdown";
 import {
   DashboardIcon,
   RoleIcon,
+  CandidateIcon,
   CalendarIcon,
   SettingIcon,
   DoorIcon,
-  CandidateIcon,
-} from "components/common/svgIcons/Icons";
-import { iconMB } from "components/common/svgIcons/iconType";
-import image from "../../../assets/svg/images/SintaLogo.png";
+} from "@/components/common/svgIcons/Icons";
+import { iconMB } from "@/components/common/svgIcons/iconType";
+import image from "@/assets/images/SintaLogo.png";
 
 export interface NavBarProps {
   logo: string;
