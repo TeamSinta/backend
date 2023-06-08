@@ -11,6 +11,7 @@ module.exports = {
     "@storybook/addon-interactions",
     "@storybook/preset-create-react-app",
     "@storybook/addon-styling",
+    "storybook-addon-react-router-v6",
   ],
   framework: {
     name: "@storybook/react-vite",

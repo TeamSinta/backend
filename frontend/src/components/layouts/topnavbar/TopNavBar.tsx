@@ -1,5 +1,3 @@
-import React from "react";
-
 import Stack from "@mui/material/Stack";
 import { Box } from "@mui/material";
 
@@ -9,14 +7,15 @@ import TextIconBtn from "@/components/common/buttons/textIconBtn/TextIconBtn";
 import SearchInput from "@/components/common/form/serchInput/SearchInput";
 import { PlusIcon } from "@/components/common/svgIcons/Icons";
 import { iconSW } from "@/components/common/svgIcons/iconType";
+import styled from "styled-components";
 
-// interface TopNavBarProps {
-
-// }
+const StyledTobNavBar = styled(Box)`
+  grid-area: header;
+`;
 
 const TopNavBar = (): JSX.Element => {
   return (
-    <Box sx={{ width: "100" }} className="m-all-8">
+    <StyledTobNavBar sx={{ width: "100%" }} className="p-all-8">
       <Stack direction="row" spacing={2} alignItems="center">
         <Box sx={{ width: "100%" }}>
           <SearchInput
@@ -35,7 +34,7 @@ const TopNavBar = (): JSX.Element => {
         </Box>
         <LogoImage src={image} alt="Homie Logo" />
       </Stack>
-    </Box>
+    </StyledTobNavBar>
   );
 };
 

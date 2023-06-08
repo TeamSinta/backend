@@ -1,13 +1,12 @@
 import React, { type ReactElement } from "react";
-import { Link as RouterLink, MemoryRouter } from "react-router-dom";
-import Link from "@mui/material/Link";
-import { StaticRouter } from "react-router-dom/server";
-
+import { Link, useLocation } from "react-router-dom";
 import {
   StyledStack,
   DropWrapper,
   NavButton,
   LogoImage,
+  StyledSideNavBarTitle,
+  StyledSideNavLinksWrap,
 } from "./StyledSideNavBar";
 import Dropdown from "@/components/common/form/dropdown/Dropdown";
 import { DropdownLayoutType } from "@/components/common/form/dropdown/StyledDropdown";
@@ -22,31 +21,15 @@ import {
 import { iconMB } from "@/components/common/svgIcons/iconType";
 import image from "@/assets/images/SintaLogo.png";
 
-export interface NavBarProps {
-  logo: string;
-  buttonData: Array<{
-    id: number;
-    text: string;
-    onClick: () => void;
-    active: boolean;
-    icon: JSX.Element;
-  }>;
-}
-
-export interface NavButtonLinkProps {
+export interface INavButtonLink {
   to: string;
   icon: JSX.Element;
   text: string;
 }
 
-export interface NavLinkProps {
-  to: string;
-  children: React.ReactNode;
-}
-
 const args = {
   label: "",
-  layoutType: DropdownLayoutType.FLEX,
+  layoutType: DropdownLayoutType.BLOCK,
   optionArr: [
     { name: "Sinta ", value: "Sinta" },
     { name: "Google", value: "Google" },
@@ -56,95 +39,91 @@ const args = {
   dropdownIconVisible: true,
 };
 
-function Router(props: { children?: React.ReactNode }): any {
-  const { children } = props;
-  if (typeof window === "undefined") {
-    return <StaticRouter location="/">{children}</StaticRouter>;
-  }
+const navButtonLinks: INavButtonLink[] = [
+  {
+    text: "Dashboard",
+    to: "/dashboard",
+    icon: <DashboardIcon {...iconMB} />,
+  },
+  {
+    text: "Roles",
+    to: "/roles",
+    icon: <RoleIcon {...iconMB} />,
+  },
+  {
+    text: "Candidates",
+    to: "/candidates",
+    icon: <CandidateIcon {...iconMB} />,
+  },
+  {
+    text: "Calendar",
+    to: "/calendar",
+    icon: <CalendarIcon {...iconMB} />,
+  },
+];
 
-  return <MemoryRouter>{children}</MemoryRouter>;
-}
-
-const NavLink = ({ to, children }: NavLinkProps): ReactElement => (
-  <Link style={{ textDecoration: "none" }} component={RouterLink} to={to}>
-    {children}
-  </Link>
-);
-
-const NavButtonLink = ({
-  to,
-  icon,
-  text,
-}: NavButtonLinkProps): ReactElement => (
-  <NavLink to={to}>
-    <NavButton direction="row">
-      {icon}
-      {text}
-    </NavButton>
-  </NavLink>
-);
+const navConfigLinks: INavButtonLink[] = [
+  {
+    text: "Logout",
+    to: "/logout",
+    icon: <DoorIcon {...iconMB} />,
+  },
+  {
+    text: "Settings",
+    to: "/settings",
+    icon: <SettingIcon {...iconMB} />,
+  },
+];
 
 const SideNavBar = (): ReactElement => {
+  let location = useLocation();
+
   return (
-    <Router>
-      <StyledStack
-        className="p-top-3"
-        direction="column"
-        alignItems="center"
-        spacing={8}
-      >
-        <div>
-          <LogoImage
-            className="m-top-3 m-bottom"
-            src={image}
-            alt="Sinta Logo"
-          />
-        </div>
+    <StyledStack
+      className="p-top-3"
+      direction="column"
+      alignItems="center"
+      spacing={8}
+    >
+      <div>
+        <LogoImage className="m-top-3 m-bottom" src={image} alt="Sinta Logo" />
+      </div>
 
-        <div>
-          <p style={{ color: "#7B7B7E" }} className="m-bottom-4">
-            Workspace
-          </p>
-          <DropWrapper>
-            <Dropdown {...args} />
-          </DropWrapper>
-        </div>
+      <StyledSideNavLinksWrap>
+        <StyledSideNavBarTitle>Workspace</StyledSideNavBarTitle>
+        <DropWrapper>
+          <Dropdown {...args} />
+        </DropWrapper>
+      </StyledSideNavLinksWrap>
 
-        <div>
-          <p className="m-bottom-4" style={{ color: "#7B7B7E" }}>
-            Pages
-          </p>
-          <NavButtonLink
-            to="/"
-            icon={<DashboardIcon {...iconMB} />}
-            text="Dashboard"
-          />
-          <NavButtonLink to="/" icon={<RoleIcon {...iconMB} />} text="Roles" />
-          <NavButtonLink
-            to="/"
-            icon={<CandidateIcon {...iconMB} />}
-            text="Candidates"
-          />
-          <NavButtonLink
-            to="/"
-            icon={<CalendarIcon {...iconMB} />}
-            text="Calendar"
-          />
-        </div>
+      <StyledSideNavLinksWrap>
+        <StyledSideNavBarTitle>Pages</StyledSideNavBarTitle>
+        {navButtonLinks.map((navButtonLink: INavButtonLink, index: number) => (
+          <NavButton
+            direction="row"
+            key={index}
+            className={location.pathname === navButtonLink.to ? "active" : ""}
+          >
+            <Link to={navButtonLink.to} className="link">
+              {navButtonLink.icon}
+              {navButtonLink.text}
+            </Link>
+          </NavButton>
+        ))}
+      </StyledSideNavLinksWrap>
 
-        <div>
-          <p className="m-bottom-4" style={{ color: "#7B7B7E" }}>
-            Config
-          </p>
-          <NavButtonLink
-            to="/"
-            icon={<SettingIcon {...iconMB} />}
-            text="Settings"
-          />
-          <NavButtonLink to="/" icon={<DoorIcon {...iconMB} />} text="Logout" />
-        </div>
-      </StyledStack>
-    </Router>
+      <StyledSideNavLinksWrap>
+        <StyledSideNavBarTitle>Config</StyledSideNavBarTitle>
+        {navConfigLinks.map((navConfigLink: INavButtonLink, index: number) => (
+          <NavButton direction="row" key={index}>
+            <Link to={navConfigLink.to} className="link">
+              {navConfigLink.icon}
+              {navConfigLink.text}
+            </Link>
+          </NavButton>
+        ))}
+      </StyledSideNavLinksWrap>
+    </StyledStack>
   );
 };
 

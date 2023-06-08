@@ -36,6 +36,7 @@ export const DropdownArrowIconDiv = styled.div<IDropdownOpen>`
   right: 16px;
   transform: translateY(50%);
   bottom: 50%;
+
   ${(props) =>
     props.open
       ? css`
@@ -56,7 +57,7 @@ export const DropdownLayout = styled.div<IDropdownLayout>`
   display: flex;
   flex-direction: ${(props) =>
     props.layoutType === DropdownLayoutType.FLEX ? "row" : "column"};
-  gap: 8px;
+  /* gap: 8px; */
   position: relative;
 `;
 
@@ -88,6 +89,8 @@ export const DropdownEl = styled.div`
 
   &:hover {
     cursor: pointer;
+    background: ${(props) => props.theme.colors.palePurple};
+    transition: 0.2s ease-in-out;
   }
 `;
 

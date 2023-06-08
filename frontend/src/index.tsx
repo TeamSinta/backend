@@ -1,21 +1,20 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-import { ThemeProvider } from "styled-components";
 import GlobalFont from "@/styles/GlobalFont";
 import GlobalStyle from "@/styles/GlobalStyle";
 import { DefaultTheme } from "@/styles/StyleType";
+import React from "react";
+import ReactDOM from "react-dom";
+import { ThemeProvider } from "styled-components";
 import App from "./App";
-import { store } from "@/assets/app/store";
+import { BrowserRouter as Router } from "react-router-dom";
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={DefaultTheme}>
       <GlobalStyle />
       <GlobalFont />
-      <Provider store={store}>
+      <Router>
         <App />
-      </Provider>
+      </Router>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")

@@ -9,6 +9,7 @@ export const StyledStack = styled(Stack)`
   top: 0px;
   padding-left: 16px;
   padding-right: 16px;
+  grid-area: side;
 `;
 
 export const LogoImage = styled.img`
@@ -20,20 +21,34 @@ export const NavButton = styled(Stack)`
   height: 44px;
   width: 148px;
   color: ${(props) => props.theme.colors.black};
-  padding: 0px;
   gap: 8px;
-  border-radius: 4px;
+  border-radius: 12px;
   align-items: center;
-  padding-left: 16px;
 
   &:hover {
     background: ${(props) => props.theme.colors.palePurple};
     cursor: pointer;
-    transition: background-color 0.1s ease-in;
+    transition: 0.2s ease-in-out;
+    transform: none;
     flex: none;
     order: 0;
     flex-grow: 0;
+    border: 1px solid ${(props) => props.theme.colors.black};
+  }
+
+  &.active {
+    background: ${(props) => props.theme.colors.palePurple};
+    border: 1px solid ${(props) => props.theme.colors.black};
+  }
+
+  .link {
+    width: 100%;
+    height: 100;
+    height: 100%;
+    display: flex;
+    align-content: center;
     align-items: center;
+    gap: 8px;
     padding-left: 16px;
   }
 `;
@@ -41,5 +56,26 @@ export const NavButton = styled(Stack)`
 export const DropWrapper = styled(Stack)`
   height: 40px;
   width: 148px;
+`;
+
+export const StyledLink = styled.link`
+  width: 100%;
+  height: 100;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+`;
+
+export const StyledSideNavBarTitle = styled.p`
+  color: "#7B7B7E";
+  padding-left: 16px;
+  margin-bottom: 4px;
+`;
+
+export const StyledSideNavLinksWrap = styled.div`
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 `;
