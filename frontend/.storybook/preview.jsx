@@ -3,6 +3,8 @@ import { ThemeProvider } from "styled-components";
 import GlobalFont from "../src/styles/GlobalFont";
 import { DefaultTheme } from "../src/styles/StyleType";
 import { BrowserRouter as Router } from "react-router-dom";
+import { store } from "../src/app/store";
+import { Provider } from "react-redux";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -16,6 +18,7 @@ export const parameters = {
 
 export const decorators = [
   (Story) => (
+    // <Provider store={store}>
     <ThemeProvider theme={DefaultTheme}>
       <GlobalStyle />
       <GlobalFont />
@@ -23,5 +26,6 @@ export const decorators = [
         <Story />
       </Router>
     </ThemeProvider>
+    // </Provider>
   ),
 ];

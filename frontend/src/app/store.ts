@@ -1,10 +1,15 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
+import modalReducer from "@/features/modal/modalSlice";
+import roleReducer from "@/features/roles/rolesSlice";
+import inviteMemberReducer from "@/features/inviteMember/inviteMemberSlice";
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
+    modal: modalReducer,
+    role: roleReducer,
+    inviteMember: inviteMemberReducer,
   },
 });
 

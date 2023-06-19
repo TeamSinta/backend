@@ -1,12 +1,13 @@
-import { TextBtnLWrap } from "./StyledTextBtnL";
-import { ButtonShadow } from "../button/StyledBtn";
 import type { ReactElement } from "react";
 import React from "react";
+import { TextBtnLWrap } from "./StyledTextBtnL";
 
 interface TextBtnWrapProps {
   disable: boolean;
   label?: string;
-  onClick?: () => void;
+  onClick?: (
+    event?: React.MouseEvent<HTMLButtonElement, MouseEvent> | unknown
+  ) => void;
 }
 
 const TextBtnL = (props: TextBtnWrapProps): ReactElement => {
@@ -18,7 +19,6 @@ const TextBtnL = (props: TextBtnWrapProps): ReactElement => {
     <>
       <TextBtnLWrap disable={disable} onClick={onClick}>
         {label}
-        <ButtonShadow />
       </TextBtnLWrap>
     </>
     // </div>

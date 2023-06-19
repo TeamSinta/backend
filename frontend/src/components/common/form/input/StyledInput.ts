@@ -17,8 +17,14 @@ export const Input = styled.input`
   background: ${(props) => props.theme.colors.lightGrey};
   border: none;
   outline: none;
-  padding: 8px 16px;
+  padding: 16px 10px;
   font-family: "Chillax";
+  height: 40px;
+  width: inherit;
+
+  :disabled {
+    cursor: not-allowed;
+  }
 `;
 
 export const InputError = styled.div`
