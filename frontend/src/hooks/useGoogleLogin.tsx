@@ -4,10 +4,11 @@ import { useCookies } from "react-cookie";
 import HttpService from "@/utils/axiosService/httpService";
 
 interface GoogleLoginReturnType {
-  signIn?: () => any | Promise<any>;
+  signIn: () => void;
 }
 
 const GoogleLogin = (): GoogleLoginReturnType => {
+  console.log("test!");
   const [, setCookies] = useCookies(["access_token", "refresh_token"]);
   const instance = HttpService();
 

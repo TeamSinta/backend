@@ -27,6 +27,7 @@ export const Primary: Story = {
   args: {
     disable: false,
     placeholder: "Search for a role or candidate",
+    error: false,
   },
 };
 
@@ -34,5 +35,14 @@ export const Disable: Story = {
   args: {
     disable: true,
     placeholder: "Search for a role or candidate",
+    error: false,
+  },
+};
+
+export const Error: Story = {
+  args: {
+    disable: false,
+    placeholder: "Search for a role or candidate",
+    error: true,
   },
 };

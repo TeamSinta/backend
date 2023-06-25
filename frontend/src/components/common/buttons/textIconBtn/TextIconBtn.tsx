@@ -1,26 +1,53 @@
-import { ButtonShadow } from "../button/StyledBtn";
-import { TextIconBtnIcon, TextIconBtnWrap } from "./StyledTextIconBtn";
+import ElWrap from "@/components/layouts/elWrap/ElWrap";
+import {
+  BodyLMedium,
+  BodyMMedium,
+  BodySMedium,
+} from "../../typeScale/StyledTypeScale";
+import {
+  IBtnProps,
+  StyledBtnLL,
+  StyledBtnXL,
+  StyledButton,
+} from "../button/StyledBtn";
 
-interface ITextIconBtnProps {
-  label?: string;
-  icon: JSX.Element;
-  disable: boolean;
-  onClick?: () => void;
-  // style?: React.CSSProperties;
-}
-
-const TextIconBtn = (props: ITextIconBtnProps): JSX.Element => {
-  const { label, icon, disable, onClick } = props;
+export const TextIconBtnL = (props: IBtnProps): JSX.Element => {
+  const { label, icon, disable, onClick, className } = props;
 
   return (
     <>
-      <TextIconBtnWrap disable={disable} onClick={onClick}>
-        {label}
-        <TextIconBtnIcon>{icon}</TextIconBtnIcon>
-        <ButtonShadow />
-      </TextIconBtnWrap>
+      <StyledButton onClick={onClick} disabled={disable} className={className}>
+        <BodyMMedium>{label}</BodyMMedium>
+        <div>{icon}</div>
+      </StyledButton>
     </>
   );
 };
 
-export default TextIconBtn;
+export const TextIconBtnXL = (props: IBtnProps): JSX.Element => {
+  const { label, icon, disable, onClick, className } = props;
+
+  return (
+    <>
+      <StyledBtnXL onClick={onClick} disabled={disable} className={className}>
+        <div>{icon}</div>
+        <BodyLMedium>{label}</BodyLMedium>
+      </StyledBtnXL>
+    </>
+  );
+};
+
+export const TextIconBtnLL = (props: IBtnProps): JSX.Element => {
+  const { label, icon, disable, onClick, className } = props;
+
+  return (
+    <>
+      <StyledBtnLL onClick={onClick} disabled={disable} className={className}>
+        <div>{icon}</div>
+        <ElWrap w={91} h={36}>
+          <BodySMedium>{label}</BodySMedium>
+        </ElWrap>
+      </StyledBtnLL>
+    </>
+  );
+};

@@ -1,4 +1,4 @@
-import { Loading } from "../utils/utilInterface";
+import { Loading } from "../utils/utilEnum";
 
 export interface IInviteMemberCreateSlice {
   invited_member: {

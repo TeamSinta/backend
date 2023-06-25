@@ -1,10 +1,5 @@
-import React from "react";
-import {
-  Input,
-  InputError,
-  InputLabel,
-  InputLayout,
-} from "../input/StyledInput";
+import React, { useEffect, useState } from "react";
+import { Input, InputError, InputLayout } from "../input/StyledInput";
 
 export interface ITextInput {
   label: string;
@@ -17,17 +12,24 @@ export interface ITextInput {
 }
 
 const TextInput = (props: ITextInput): JSX.Element => {
-  const { disable, label, placeholder, error, onChange, name, value } = props;
+  const { disable, placeholder, error, onChange, name, value } = props;
+  const [inputValue, setInputValue] = useState<{ [key: string]: string }>({
+    name: value,
+  });
+
+  useEffect(() => {
+    setInputValue({ name: value });
+  }, [value]);
 
   return (
     <InputLayout>
-      <InputLabel>{label}</InputLabel>
       <Input
         name={name}
         disabled={disable}
         placeholder={placeholder}
         onChange={onChange}
-        value={value}
+        className={error ? "error" : ""}
+        value={inputValue[name]}
       />
       {error ? <InputError /> : <></>}
     </InputLayout>

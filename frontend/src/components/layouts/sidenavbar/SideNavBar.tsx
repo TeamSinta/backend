@@ -1,25 +1,24 @@
-import React, { type ReactElement } from "react";
-import { Link, useLocation } from "react-router-dom";
+import image from "@/assets/images/SintaLogo.png";
 import {
-  StyledStack,
+  CalendarIcon,
+  CandidateIcon,
+  DashboardIcon,
+  DoorIcon,
+  RoleIcon,
+  SettingIcon,
+} from "@/components/common/svgIcons/Icons";
+import { BodyMMedium } from "@/components/common/typeScale/StyledTypeScale";
+import { type ReactElement } from "react";
+import { Link, useLocation } from "react-router-dom";
+import SideNavBarDropdown from "./SideNavBarDropdown";
+import {
   DropWrapper,
-  NavButton,
   LogoImage,
+  NavButton,
   StyledSideNavBarTitle,
   StyledSideNavLinksWrap,
+  StyledStack,
 } from "./StyledSideNavBar";
-import Dropdown from "@/components/common/form/dropdown/Dropdown";
-import { DropdownLayoutType } from "@/components/common/form/dropdown/StyledDropdown";
-import {
-  DashboardIcon,
-  RoleIcon,
-  CandidateIcon,
-  CalendarIcon,
-  SettingIcon,
-  DoorIcon,
-} from "@/components/common/svgIcons/Icons";
-import { iconMB } from "@/components/common/svgIcons/iconType";
-import image from "@/assets/images/SintaLogo.png";
 
 export interface INavButtonLink {
   to: string;
@@ -28,8 +27,6 @@ export interface INavButtonLink {
 }
 
 const args = {
-  label: "",
-  layoutType: DropdownLayoutType.BLOCK,
   optionArr: [
     { name: "Sinta ", value: "Sinta" },
     { name: "Google", value: "Google" },
@@ -43,22 +40,22 @@ const navButtonLinks: INavButtonLink[] = [
   {
     text: "Dashboard",
     to: "/dashboard",
-    icon: <DashboardIcon {...iconMB} />,
+    icon: <DashboardIcon />,
   },
   {
     text: "Roles",
     to: "/roles",
-    icon: <RoleIcon {...iconMB} />,
+    icon: <RoleIcon />,
   },
   {
     text: "Candidates",
     to: "/candidates",
-    icon: <CandidateIcon {...iconMB} />,
+    icon: <CandidateIcon />,
   },
   {
     text: "Calendar",
     to: "/calendar",
-    icon: <CalendarIcon {...iconMB} />,
+    icon: <CalendarIcon />,
   },
 ];
 
@@ -66,12 +63,12 @@ const navConfigLinks: INavButtonLink[] = [
   {
     text: "Logout",
     to: "/logout",
-    icon: <DoorIcon {...iconMB} />,
+    icon: <DoorIcon />,
   },
   {
     text: "Settings",
     to: "/settings",
-    icon: <SettingIcon {...iconMB} />,
+    icon: <SettingIcon />,
   },
 ];
 
@@ -92,7 +89,7 @@ const SideNavBar = (): ReactElement => {
       <StyledSideNavLinksWrap>
         <StyledSideNavBarTitle>Workspace</StyledSideNavBarTitle>
         <DropWrapper>
-          <Dropdown {...args} />
+          <SideNavBarDropdown {...args} />
         </DropWrapper>
       </StyledSideNavLinksWrap>
 
@@ -106,7 +103,7 @@ const SideNavBar = (): ReactElement => {
           >
             <Link to={navButtonLink.to} className="link">
               {navButtonLink.icon}
-              {navButtonLink.text}
+              <BodyMMedium>{navButtonLink.text}</BodyMMedium>
             </Link>
           </NavButton>
         ))}
@@ -118,7 +115,7 @@ const SideNavBar = (): ReactElement => {
           <NavButton direction="row" key={index}>
             <Link to={navConfigLink.to} className="link">
               {navConfigLink.icon}
-              {navConfigLink.text}
+              <BodyMMedium>{navConfigLink.text}</BodyMMedium>
             </Link>
           </NavButton>
         ))}

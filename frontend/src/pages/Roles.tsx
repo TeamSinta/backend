@@ -1,27 +1,28 @@
 import { AppDispatch } from "@/app/store";
-import TextIconBtn from "@/components/common/buttons/textIconBtn/TextIconBtn";
-import GlobalModal from "@/components/common/modal/GlobalModal";
+import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBtn";
+import GlobalModal, { MODAL_TYPE } from "@/components/common/modal/GlobalModal";
 import { PlusIcon } from "@/components/common/svgIcons/Icons";
-import { iconLW } from "@/components/common/svgIcons/iconType";
 import { H1 } from "@/components/common/typeScale/StyledTypeScale";
-import CreateDepartment from "@/components/pages/roles/CreateDepartment";
 import { openModal } from "@/features/modal/modalSlice";
 import { getMemberAsync } from "@/features/roles/rolesSlice";
+import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 const textIconBtnArg = {
   label: "CreateDepartment",
-  icon: <PlusIcon {...iconLW} />,
+  icon: <PlusIcon />,
   disable: false,
+  className: BackgroundColor.ACCENT_PURPLE,
 };
 
 const Roles = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const handleOpenLoginModal = () => {
+  const handleOpenModal = () => {
+    console.log("test");
     dispatch(
       openModal({
-        modalType: "Modal",
+        modalType: MODAL_TYPE.CREATE_DEP,
       })
     );
   };
@@ -34,10 +35,13 @@ const Roles = () => {
     <>
       <H1>Roles</H1>
       {/* ===== I will move this part when Sammy finish tab task : START=====*/}
-      <TextIconBtn {...textIconBtnArg} onClick={handleOpenLoginModal} />
-      <GlobalModal title="Create New Department">
-        <CreateDepartment></CreateDepartment>
-      </GlobalModal>
+      <TextIconBtnL
+        {...textIconBtnArg}
+        onClick={() => {
+          handleOpenModal();
+        }}
+      />
+      <GlobalModal title="Create New Department"></GlobalModal>
       {/* ============================= END ================================== */}
     </>
   );

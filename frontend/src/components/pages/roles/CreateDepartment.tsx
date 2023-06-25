@@ -1,12 +1,13 @@
 import { AppDispatch } from "@/app/store";
-import TextIconBtn from "@/components/common/buttons/textIconBtn/TextIconBtn";
+import Photo from "@/components/common/buttons/photo/Photo";
+import Photos from "@/components/common/buttons/photo/Photos";
+import { PhotoContainer } from "@/components/common/buttons/photo/StyledPhoto";
+import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBtn";
 import Invite from "@/components/common/form/invite/Invite";
-import Photo from "@/components/common/form/photo/Photo";
-import Photos from "@/components/common/form/photo/Photos";
 import TextInput from "@/components/common/form/textInput/TextInput";
 import { PlusIcon } from "@/components/common/svgIcons/Icons";
-import { iconLW } from "@/components/common/svgIcons/iconType";
 import { BodySMedium } from "@/components/common/typeScale/StyledTypeScale";
+import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import { inviteMemberSliceReset } from "@/features/inviteMember/inviteMemberSlice";
 import { closeModal } from "@/features/modal/modalSlice";
 import { IMember } from "@/features/roles/rolesInterface";
@@ -18,9 +19,9 @@ import {
   selectedMember,
   setCreateDepTitleInput,
 } from "@/features/roles/rolesSlice";
+import { BackgroundColor, PhotoType } from "@/features/utils/utilEnum";
 import { useDispatch, useSelector } from "react-redux";
 import { CreateDepWrap } from "./StyledRoles";
-import { PhotoContainer } from "@/components/common/form/photo/StyledPhoto";
 
 const titleInputArg = {
   label: "Title",
@@ -32,12 +33,14 @@ const titleInputArg = {
 
 const textIconBtnArg = {
   label: "CreateDepartment",
-  icon: <PlusIcon {...iconLW} />,
+  icon: <PlusIcon />,
   disable: false,
+  className: BackgroundColor.ACCENT_PURPLE,
 };
 
 const CreateDepartment = () => {
   const { members, title } = useSelector(selectRole);
+  console.log(members);
   const dispatch = useDispatch<AppDispatch>();
 
   const onMemberSelectd = (memberIdx: number) => {
@@ -69,12 +72,18 @@ const CreateDepartment = () => {
         <BodySMedium>Members</BodySMedium>
         <Photos>
           {members.map((member: IMember, index: number) => (
-            <Photo {...member} key={index} onSelect={onMemberSelectd} />
+            <ElWrap w={40} h={40} key={index}>
+              <Photo
+                photoType={PhotoType.L}
+                {...member}
+                onSelect={onMemberSelectd}
+              />
+            </ElWrap>
           ))}
         </Photos>
       </PhotoContainer>
       <Invite />
-      <TextIconBtn {...textIconBtnArg} onClick={onCreateDepartmentClick} />
+      <TextIconBtnL {...textIconBtnArg} onClick={onCreateDepartmentClick} />
     </CreateDepWrap>
   );
 };

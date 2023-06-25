@@ -1,23 +1,28 @@
-import React from "react";
-
-import { InputIcon, SerchInputEl, SerchInputLayout } from "./StyledSerchInput";
 import { SearchIcon } from "@/components/common/svgIcons/Icons";
-import { iconMB } from "@/components/common/svgIcons/iconType";
+import {
+  SerchInputLayout,
+  InputIcon,
+  SerchInputEl,
+} from "../input/StyledInput";
 
 interface ISearchInput {
   disable: boolean;
   placeholder: string;
-  style?: React.CSSProperties;
+  error: boolean;
 }
 
 const SearchInput = (props: ISearchInput): JSX.Element => {
-  const { disable, placeholder } = props;
+  const { disable, placeholder, error } = props;
   return (
     <SerchInputLayout>
       <InputIcon>
-        <SearchIcon {...iconMB} />
+        <SearchIcon />
       </InputIcon>
-      <SerchInputEl disabled={disable} placeholder={placeholder} />
+      <SerchInputEl
+        className={error ? "error" : ""}
+        disabled={disable}
+        placeholder={placeholder}
+      />
     </SerchInputLayout>
   );
 };

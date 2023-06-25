@@ -1,18 +1,19 @@
-import { MockMembers } from "../roles/rolesAPI";
-import { IMockMembers } from "../roles/rolesInterface";
+import { instance } from "@/utils/axiosService/customAxios";
 import { IInviteMember } from "./inviteMemberInterface";
 
-export const postInviteMember = (inviteMember: IInviteMember) => {
-  //MOCK DATA
-  const invitedMember = {
-    member_idx: Math.random(),
-    member_name: "Sammy Kavanagh",
-    member_url: "",
-    member_type: inviteMember.admin ? "admin" : "member",
-  };
+const baseURL = "/inviteMember";
 
-  MockMembers.push(invitedMember);
-  return new Promise<{ data: IMockMembers }>((resolve) =>
-    setTimeout(() => resolve({ data: invitedMember }), 500)
-  );
+export const postInviteMember = async (inviteMember: IInviteMember) => {
+  return await instance
+    .post(baseURL, JSON.stringify(inviteMember), {
+      headers: {
+        "content-type": "text/json",
+      },
+    })
+    .then((result) => {
+      return result.data;
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 };

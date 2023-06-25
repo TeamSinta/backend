@@ -1,6 +1,6 @@
 import { RootState } from "@/app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Loading } from "../utils/utilInterface";
+import { Loading } from "../utils/utilEnum";
 import { fetchMembers } from "./rolesAPI";
 import { IMember, RolesCreateSlice } from "./rolesInterface";
 

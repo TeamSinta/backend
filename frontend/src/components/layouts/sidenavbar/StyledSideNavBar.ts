@@ -25,6 +25,12 @@ export const NavButton = styled(Stack)`
   border-radius: 12px;
   align-items: center;
 
+  svg {
+    stroke: ${(props) => props.theme.colors.black};
+    width: 24px;
+    height: 24px;
+  }
+
   &:hover {
     background: ${(props) => props.theme.colors.palePurple};
     cursor: pointer;
@@ -54,7 +60,7 @@ export const NavButton = styled(Stack)`
 `;
 
 export const DropWrapper = styled(Stack)`
-  height: 40px;
+  height: auto !important;
   width: 148px;
 `;
 

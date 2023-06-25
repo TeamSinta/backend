@@ -3,6 +3,9 @@ module.exports = {
     "../src/**/*.stories.@(js|jsx|ts|tsx)",
     "../src/**/**/*.stories.@(js|jsx|ts|tsx)",
     "../src/**/**/**/*.stories.@(js|jsx|ts|tsx)",
+    "../src/**/*.mdx",
+    "../src/**/**/*.mdx",
+    "../src/**/**/**/*.mdx",
   ],
   addons: [
     "@storybook/addon-links",
@@ -11,6 +14,7 @@ module.exports = {
     "@storybook/preset-create-react-app",
     "@storybook/addon-styling",
     "storybook-addon-react-router-v6",
+    "@storybook/addon-docs",
   ],
   framework: {
     name: "@storybook/react-vite",

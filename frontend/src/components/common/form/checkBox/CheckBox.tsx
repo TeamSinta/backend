@@ -1,5 +1,6 @@
 import { BodySMedium } from "@/components/common/typeScale/StyledTypeScale";
 import { CheckBoxWrap, CheckInput } from "./StyledCheckBox";
+import { useEffect, useState } from "react";
 
 export interface ICheckBoxProps {
   label: String;
@@ -9,20 +10,25 @@ export interface ICheckBoxProps {
   disabled: boolean;
 }
 
-const CheckBox = ({
-  label,
-  onChange,
-  inputName,
-  checked,
-  disabled,
-}: ICheckBoxProps) => {
+const CheckBox = (props: ICheckBoxProps) => {
+  const { label, onChange, inputName, checked, disabled } = props;
+
+  const [check, setCheck] = useState(checked);
+
+  useEffect(() => {
+    setCheck(checked);
+  }, [checked]);
+
   return (
     <CheckBoxWrap>
       <CheckInput
         name={inputName}
         type="checkbox"
-        onChange={onChange}
-        checked={checked}
+        onChange={(e) => {
+          onChange(e);
+          setCheck(check ? false : true);
+        }}
+        checked={check}
         disabled={disabled}
       ></CheckInput>
       <BodySMedium>{label}</BodySMedium>

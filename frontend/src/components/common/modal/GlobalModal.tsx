@@ -2,18 +2,18 @@ import { closeModal, selectModal } from "@/features/modal/modalSlice";
 import ReactDOM from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { CloseIcon } from "../svgIcons/Icons";
-import { iconLB } from "../svgIcons/iconType";
 import { H2Bold } from "../typeScale/StyledTypeScale";
 import Modal from "./Modal";
 import { CloseDiv, ModalHeaderWrap } from "./StyledModal";
+import CreateDepartment from "@/components/pages/roles/CreateDepartment";
 
-enum MODAL_TYPE {
-  Modal = "Modal",
+export enum MODAL_TYPE {
+  CREATE_DEP = "CREATE_DEP",
+  TEST = "TEST",
   // ModalL = "ModalL",
 }
 
 interface IGlobalModal {
-  children: JSX.Element | JSX.Element[];
   title: string;
 }
 
@@ -36,7 +36,7 @@ export const ModalHeader = ({ title }: IModalHeader) => {
           dispatch(closeModal());
         }}
       >
-        <CloseIcon {...iconLB} />
+        <CloseIcon />
       </CloseDiv>
     </ModalHeaderWrap>
   );
@@ -49,12 +49,22 @@ const ModalPortal = ({ children }: IModalPortal) => {
 
 const GlobalModal = (props: IGlobalModal): JSX.Element => {
   const { modalType, isOpen } = useSelector(selectModal);
-  const { children, title } = props;
+  const { title } = props;
 
   const renderModal = () => {
     switch (modalType) {
-      case MODAL_TYPE.Modal:
-        return <Modal title={title}>{children}</Modal>;
+      case MODAL_TYPE.CREATE_DEP:
+        return (
+          <Modal title={title}>
+            <CreateDepartment />
+          </Modal>
+        );
+      case MODAL_TYPE.TEST:
+        return (
+          <Modal title={"test"}>
+            <H2Bold>Test</H2Bold>
+          </Modal>
+        );
     }
   };
 

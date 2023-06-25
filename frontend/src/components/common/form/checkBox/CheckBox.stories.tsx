@@ -1,38 +1,10 @@
-import { Meta, StoryObj } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import { useEffect, useState } from "react";
-import CheckBox, { ICheckBoxProps } from "./CheckBox";
-
-const CheckBoxStoryComponent = (props: ICheckBoxProps) => {
-  const { label, inputName, checked, disabled } = props;
-
-  const [check, setCheck] = useState(checked);
-
-  useEffect(() => {
-    setCheck(checked);
-  }, [checked, disabled]);
-
-  return (
-    <CheckBox
-      onChange={
-        disabled
-          ? () => {}
-          : (e) => {
-              action("change")(e);
-              setCheck(e.target.checked);
-            }
-      }
-      label={label}
-      inputName={inputName}
-      checked={check}
-      disabled={disabled}
-    />
-  );
-};
+import { Meta, StoryObj } from "@storybook/react";
+import CheckBox from "./CheckBox";
 
 const meta = {
   title: "common/form/CheckBox",
-  component: CheckBoxStoryComponent,
+  component: CheckBox,
   argTypes: {
     label: {
       description: "Label name next to the checkbox",
@@ -50,7 +22,7 @@ const meta = {
       description: "Event triggered when the checkbox is clicked",
     },
   },
-} as Meta<typeof CheckBoxStoryComponent>;
+} as Meta<typeof CheckBox>;
 export default meta;
 
 type Story = StoryObj<typeof meta>;
@@ -61,7 +33,7 @@ export const Primary: Story = {
     inputName: "Check Box",
     checked: false,
     disabled: false,
-    onChange: () => {},
+    onChange: action("Change Handler"),
   },
 };
 
@@ -71,7 +43,7 @@ export const Checked: Story = {
     inputName: "Check Box",
     checked: true,
     disabled: false,
-    onChange: () => {},
+    onChange: action("Change Handler"),
   },
 };
 

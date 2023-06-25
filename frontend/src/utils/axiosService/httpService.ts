@@ -10,8 +10,8 @@ import { useEffect } from "react";
 const HttpService = (): AxiosInstance => {
   const instance = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
+    // baseURL: "http://localhost:3000",
   });
-
   // Request Handler
   const requestHandler = (
     config: InternalAxiosRequestConfig
@@ -33,6 +33,7 @@ const HttpService = (): AxiosInstance => {
 
   // Request Error Handler
   const onRequestError = async (error: AxiosError): Promise<AxiosError> => {
+    console.log("Here");
     console.error(`[request error] [${JSON.stringify(error)}]`);
     return await Promise.reject(error);
   };
@@ -57,7 +58,6 @@ const HttpService = (): AxiosInstance => {
       responseHandler,
       onResponseError
     );
-
     return () => {
       instance.interceptors.request.eject(requestInterceptor);
       instance.interceptors.response.eject(responseInterceptor);

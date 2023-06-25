@@ -3,6 +3,20 @@ import SideNavBar from "./components/layouts/sidenavbar/SideNavBar";
 import { StyledMain } from "./components/layouts/container/StyledContainer";
 import Container from "./components/layouts/container/Container";
 import Routers from "./router/Routers";
+import { Counter } from "./features/counter/Counter";
+
+// Node: server, Brower : worker.
+if (typeof window === "undefined") {
+  (async () => {
+    const { server } = await import("@/mocks/server");
+    server.listen();
+  })();
+} else {
+  (async () => {
+    const { worker } = await import("@/mocks/browser");
+    worker.start({ onUnhandledRequest: "bypass" });
+  })();
+}
 
 function App() {
   return (
@@ -14,6 +28,7 @@ function App() {
           <Routers></Routers>
         </StyledMain>
       </Container>
+      <Counter />
     </>
   );
 }

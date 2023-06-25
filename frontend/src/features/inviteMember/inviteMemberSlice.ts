@@ -1,11 +1,11 @@
+import { RootState } from "@/app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Loading } from "../utils/utilInterface";
+import { Loading } from "../utils/utilEnum";
 import {
   IInviteMember,
   IInviteMemberCreateSlice,
 } from "./inviteMemberInterface";
 import { postInviteMember } from "./inviteMemberAPI";
-import { RootState } from "@/app/store";
 
 export const initialState: IInviteMemberCreateSlice = {
   invited_member: {
@@ -26,7 +26,7 @@ export const postInviteMemberAsync = createAsyncThunk(
   "inviteMember/postInviteMember",
   async (inviteMember: IInviteMember) => {
     const response = await postInviteMember(inviteMember);
-    return response.data;
+    return response;
   }
 );
 //[Where]: How
@@ -38,19 +38,18 @@ export const inviteMemberSlice = createSlice({
       state.status = Loading.PENDING;
     });
     builder.addCase(postInviteMemberAsync.fulfilled, (state, action) => {
-      state.invite_member.member_email = "";
-      state.invite_member.admin = false;
+      // Object.assign(state.invite_member, initialState.invite_member);
       state.invited_member = { ...action.payload, selected: false };
       state.status = Loading.FULFILLED;
     });
   },
   reducers: {
-    //[Invite] : checked invite member as admin
+    // [Invite] : checked invite member as admin
     setInviteAsAdmin: (state, actions) => {
       const { admin } = actions.payload;
       state.invite_member.admin = admin;
     },
-    //[Invite] : invite member email adress
+    // [Invite] : invite member email adress
     setInviteMemberInput: (state, actions) => {
       const { invite_member } = actions.payload;
       state.invite_member.member_email = invite_member;

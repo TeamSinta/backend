@@ -6,37 +6,50 @@ import {
   setInviteMemberInput,
 } from "@/features/inviteMember/inviteMemberSlice";
 import { addInvitedMember } from "@/features/roles/rolesSlice";
-import { Loading } from "@/features/utils/utilInterface";
+import { BackgroundColor, Loading } from "@/features/utils/utilEnum";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import TextBtnL from "../../buttons/textBtnL/TextBtnL";
+import { TextBtnL } from "../../buttons/textBtn/TextBtn";
 import CheckBox from "../checkBox/CheckBox";
 import { Input } from "../input/StyledInput";
 import { InviteContainer, InviteWrap } from "./StyledInvite";
-import { useState } from "react";
+import ElWrap from "@/components/layouts/elWrap/ElWrap";
 
 const TextBtnLProps = {
   disable: false,
   label: "invite",
   onclick: () => {},
+  className: BackgroundColor.WHITE,
 };
 
+export interface IInviteProps {
+  invite_member: {
+    member_email: string;
+    admin: boolean;
+  };
+  status:
+    | Loading.FULFILLED
+    | Loading.PENDING
+    | Loading.UNSEND
+    | Loading.REJECTED;
+}
+
 const Invite = () => {
-  const { status, invite_member } = useSelector(selectInviteMember);
+  //redux
+  const { invite_member, status } = useSelector(selectInviteMember);
   const dispatch = useDispatch<AppDispatch>();
 
   const [inviteMemberEmail, setInviteMemberEmail] = useState(
     invite_member.member_email
   );
-
   const [inviteMemberAdmin, setInviteMemberAdmin] = useState(
     invite_member.admin
   );
+  const [apiStatus, setApiStatus] = useState(status);
 
-  if (status === Loading.PENDING) {
+  if (apiStatus === Loading.PENDING) {
     TextBtnLProps.disable = true;
-  }
-
-  if (status === Loading.FULFILLED || status === Loading.UNSEND) {
+  } else {
     TextBtnLProps.disable = false;
   }
 
@@ -51,11 +64,17 @@ const Invite = () => {
   };
 
   const onIviteMemberClick = () => {
-    dispatch(postInviteMemberAsync(invite_member)).then((action) => {
-      dispatch(addInvitedMember({ invitedMember: action.payload }));
-      setInviteMemberEmail("");
-      setInviteMemberAdmin(false);
-    });
+    setApiStatus(Loading.PENDING);
+    console.log(invite_member);
+    dispatch(postInviteMemberAsync(invite_member))
+      .then((action) => {
+        dispatch(addInvitedMember({ invitedMember: action.payload }));
+      })
+      .then(() => {
+        setInviteMemberEmail("");
+        setInviteMemberAdmin(false);
+        setApiStatus(Loading.FULFILLED);
+      });
   };
 
   return (
@@ -68,12 +87,16 @@ const Invite = () => {
             onInviteMemberChange(e);
           }}
           value={inviteMemberEmail}
-          disabled={status === Loading.PENDING ? true : false}
+          disabled={apiStatus === Loading.PENDING ? true : false}
         />
-        <TextBtnL
-          {...TextBtnLProps}
-          onClick={status === Loading.PENDING ? () => {} : onIviteMemberClick}
-        />
+        <ElWrap w={120}>
+          <TextBtnL
+            {...TextBtnLProps}
+            onClick={
+              apiStatus === Loading.PENDING ? () => {} : onIviteMemberClick
+            }
+          />
+        </ElWrap>
       </InviteContainer>
       <CheckBox
         label="Invite as Admin"
@@ -82,7 +105,7 @@ const Invite = () => {
         }}
         inputName={"admin"}
         checked={inviteMemberAdmin}
-        disabled={status === Loading.PENDING ? true : false}
+        disabled={apiStatus === Loading.PENDING ? true : false}
       />
     </InviteWrap>
   );

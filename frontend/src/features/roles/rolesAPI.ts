@@ -1,12 +1,5 @@
 import { IMockMembers } from "./rolesInterface";
 
-// interface IMockMembers {
-//   member_idx: number;
-//   member_name: string;
-//   member_url: string;
-//   member_type: string;
-// }
-
 export const MockMembers = [
   {
     member_idx: 1,

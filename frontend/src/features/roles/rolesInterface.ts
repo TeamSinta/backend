@@ -1,4 +1,4 @@
-import { Loading } from "../utils/utilInterface";
+import { Loading } from "../utils/utilEnum";
 
 export interface IMockMembers {
   member_idx: number;

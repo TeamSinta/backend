@@ -2,7 +2,7 @@ const colors = {
   accentPurple: "#6462F1",
   palePurple: "#CECDEE",
   white: "#ffffff",
-  lightPurple: "#d9d2e9",
+  lightPurple: "#F6F6FB",
   lightGrey: "#f5f5f5",
   black: "#121212",
   secondary: "#737984",

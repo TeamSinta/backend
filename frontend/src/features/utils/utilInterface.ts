@@ -1,6 +1,0 @@
-export enum Loading {
-  UNSEND = "UNSEND",
-  PENDING = "PENDING",
-  FULFILLED = "FULFILLED",
-  REJECTED = "REJECTED",
-}

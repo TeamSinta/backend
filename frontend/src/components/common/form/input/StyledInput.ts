@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { BodySMedium } from "../../typeScale/StyledTypeScale";
 
 export const InputLayout = styled.div`
   width: 100%;
@@ -9,8 +8,6 @@ export const InputLayout = styled.div`
   height: 66px;
   position: relative;
 `;
-
-export const InputLabel = styled(BodySMedium)``;
 
 export const Input = styled.input`
   border-radius: 12px;
@@ -24,6 +21,11 @@ export const Input = styled.input`
 
   :disabled {
     cursor: not-allowed;
+    opacity: 0.30000001192092896;
+  }
+
+  &.error {
+    box-shadow: 0px 2px 0px 0px ${(props) => props.theme.colors.red};
   }
 `;
 
@@ -35,4 +37,26 @@ export const InputError = styled.div`
   bottom: 6px;
   border-radius: 12px;
   z-index: -999;
+`;
+
+export const SerchInputLayout = styled.div`
+  position: relative;
+`;
+
+export const SerchInputEl = styled(Input)`
+  padding: 8px 8px 8px 40px;
+  width: 100%;
+`;
+
+export const InputIcon = styled.div`
+  position: absolute;
+  display: flex;
+  left: 9px;
+  align-items: center;
+  height: 100%;
+  svg {
+    width: 20px;
+    height: 20px;
+    stroke: ${(props) => props.theme.colors.black};
+  }
 `;
