@@ -19,3 +19,7 @@ class Comment(models.Model):
     comment_text = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class QuestionBank(models.Model):
+    name = models.CharField(max_length=255)
+    questions = models.ManyToManyField(Question)
