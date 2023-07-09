@@ -1,7 +1,7 @@
 import { PhotosWrap } from "./StyledPhoto";
 
 interface IPhotosProps {
-  children: JSX.Element[];
+  children: JSX.Element[] | JSX.Element;
 }
 
 const Photos = ({ children }: IPhotosProps) => {

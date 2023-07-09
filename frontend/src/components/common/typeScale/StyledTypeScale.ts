@@ -38,6 +38,7 @@ export const BodyMBold = styled(BodyLBold)`
 
 export const BodyMMedium = styled(BodyLMedium)`
   font-size: 14px;
+  width: fit-content;
 `;
 
 export const BodySBold = styled(BodyLBold)`

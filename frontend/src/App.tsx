@@ -6,16 +6,18 @@ import Routers from "./router/Routers";
 import { Counter } from "./features/counter/Counter";
 
 // Node: server, Brower : worker.
-if (typeof window === "undefined") {
-  (async () => {
-    const { server } = await import("@/mocks/server");
-    server.listen();
-  })();
-} else {
-  (async () => {
-    const { worker } = await import("@/mocks/browser");
-    worker.start({ onUnhandledRequest: "bypass" });
-  })();
+if (import.meta.env.VITE_ENV !== "develop") {
+  if (typeof window === "undefined") {
+    (async () => {
+      const { server } = await import("@/mocks/server");
+      server.listen();
+    })();
+  } else {
+    (async () => {
+      const { worker } = await import("@/mocks/browser");
+      worker.start({ onUnhandledRequest: "bypass" });
+    })();
+  }
 }
 
 function App() {
