@@ -16,23 +16,21 @@ const GoogleLogin = (): GoogleLoginReturnType => {
     flow: "auth-code",
     /* eslint-disable */
     onSuccess: async (codeResponse) => {
-      const response = await instance.get(
+      const response = await instance.post(
         import.meta.env.VITE_GOOGLE_OAUTH_CALLBACK_URL,
         {
-          params: {
-            code: codeResponse.code,
-          },
+          code: codeResponse.code,
         }
       );
       // Extract the access token and refresh token from the response
-      const { accessToken, refreshToken } = response.data;
+      const { access, refresh } = response.data;
       // Store the access token and refresh token in cookies or local storage
-      setCookies("access_token", accessToken);
-      setCookies("refresh_token", refreshToken);
+      setCookies("access_token", access);
+      setCookies("refresh_token", refresh);
 
-      // Log user info
-      console.log("access_token:", response.data.accessToken);
-      console.log("refresh_token:", response.data.refreshToken);
+      // Remove this when we dont need it anymore
+      console.log("access_token:", response.data.access);
+      console.log("refresh_token:", response.data.refresh);
     },
     onError: (errorResponse) => {
       console.log(errorResponse);

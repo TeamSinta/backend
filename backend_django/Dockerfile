@@ -1,6 +1,6 @@
 FROM python:3.8
 
-# Set environment varibles
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
@@ -13,3 +13,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project
 COPY . /backend_django/
+
+# Copy script
+COPY runserver.sh /backend_django/
+
+# Grant execute permission to the script
+RUN chmod +x /backend_django/runserver.sh
+
+# Specify the entrypoint
+ENTRYPOINT ["bash", "/backend_django/runserver.sh"]

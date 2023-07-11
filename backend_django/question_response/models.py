@@ -1,11 +1,13 @@
 from django.db import models
-from user.models import User
+from user.models import CustomUser
 from interview.models import InterviewRoundQuestion
 from pgvector.django import VectorField
 
+
 class Answer(models.Model):
     question = models.ForeignKey(InterviewRoundQuestion, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
 
 class AnswerChunk(models.Model):
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
@@ -13,6 +15,7 @@ class AnswerChunk(models.Model):
     answer_text_embeddings = VectorField(dimensions=1536, null=True)
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(auto_now=True)
+
 
 class InterviewerFeedback(models.Model):
     class EmojiChoice(models.IntegerChoices):
@@ -29,7 +32,7 @@ class InterviewerFeedback(models.Model):
         FOUR = 4
         FIVE = 5
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
     note = models.TextField()
     reaction = models.IntegerField(choices=EmojiChoice.choices)

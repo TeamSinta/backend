@@ -5,21 +5,40 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('question', '0003_remove_question_interview_round'),
-        ('interview', '0001_initial'),
+        ("question", "0003_remove_question_interview_round"),
+        ("interview", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='InterviewRoundQuestion',
+            name="InterviewRoundQuestion",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('interview_round', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='interview.interviewround')),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='question.question')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "interview_round",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="interview.interviewround",
+                    ),
+                ),
+                (
+                    "question",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="question.question",
+                    ),
+                ),
             ],
         ),
     ]

@@ -4,6 +4,7 @@ import { StyledMain } from "./components/layouts/container/StyledContainer";
 import Container from "./components/layouts/container/Container";
 import Routers from "./router/Routers";
 import { Counter } from "./features/counter/Counter";
+import GoogleLoginButton from "./components/pages/login/googleLoginBtn/GoogleLoginButton";
 
 // Node: server, Brower : worker.
 if (import.meta.env.VITE_ENV !== "develop") {
@@ -27,6 +28,7 @@ function App() {
         <SideNavBar />
         <TopNavBar />
         <StyledMain className="p-all-8">
+          <GoogleLoginButton /> {/* TEMP for authentication testing purposes */}
           <Routers></Routers>
         </StyledMain>
       </Container>

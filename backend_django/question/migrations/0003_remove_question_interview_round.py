@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('question', '0002_remove_competency_question_remove_question_review_and_more'),
+        ("question", "0002_remove_competency_question_remove_question_review_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='question',
-            name='interview_round',
+            model_name="question",
+            name="interview_round",
         ),
     ]

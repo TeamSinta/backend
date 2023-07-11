@@ -13,6 +13,7 @@
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -21,3 +22,19 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# backend env
+/backend_django/.env
+/backend_django/*/*.pyc
+
+# caches
+**/__pycache__/
+/__pycache__/
+**/*.pyc
+*/*.pyc
+/*.pyc
+
+
+# db
+database
+/database

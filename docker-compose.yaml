@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   db:
-    build: 
+    build:
       context: ./database
     volumes:
       - dbdata:/var/lib/postgresql/data
@@ -33,4 +33,3 @@ volumes:
 
 networks:
   backend:
-

@@ -5,23 +5,26 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('question', '0001_initial'),
+        ("question", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='competency',
-            name='question',
+            model_name="competency",
+            name="question",
         ),
         migrations.RemoveField(
-            model_name='question',
-            name='review',
+            model_name="question",
+            name="review",
         ),
         migrations.AddField(
-            model_name='question',
-            name='competency',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='question.competency'),
+            model_name="question",
+            name="competency",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="question.competency",
+            ),
         ),
     ]

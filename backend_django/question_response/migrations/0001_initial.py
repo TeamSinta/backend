@@ -5,34 +5,95 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('user', '0001_initial'),
-        ('question', '0002_remove_competency_question_remove_question_review_and_more'),
+        ("user", "0001_initial"),
+        ("question", "0002_remove_competency_question_remove_question_review_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Answer',
+            name="Answer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('transcript_chunk', models.TextField()),
-                ('start_time', models.DateTimeField(auto_now_add=True)),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='question.question')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user.user')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("transcript_chunk", models.TextField()),
+                ("start_time", models.DateTimeField(auto_now_add=True)),
+                (
+                    "question",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="question.question",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="user.CustomUser",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='InterviewerFeedback',
+            name="InterviewerFeedback",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('note', models.TextField()),
-                ('reaction', models.IntegerField(choices=[(1, 'Fire'), (2, 'Thumbs Up'), (3, 'Thumbs Down'), (4, 'Heart'), (5, 'Laugh')])),
-                ('score', models.IntegerField(choices=[(1, 'One'), (2, 'Two'), (3, 'Three'), (4, 'Four'), (5, 'Five')])),
-                ('answer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='question_response.answer')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user.user')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("note", models.TextField()),
+                (
+                    "reaction",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Fire"),
+                            (2, "Thumbs Up"),
+                            (3, "Thumbs Down"),
+                            (4, "Heart"),
+                            (5, "Laugh"),
+                        ]
+                    ),
+                ),
+                (
+                    "score",
+                    models.IntegerField(
+                        choices=[
+                            (1, "One"),
+                            (2, "Two"),
+                            (3, "Three"),
+                            (4, "Four"),
+                            (5, "Five"),
+                        ]
+                    ),
+                ),
+                (
+                    "answer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="question_response.answer",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="user.CustomUser",
+                    ),
+                ),
             ],
         ),
     ]
