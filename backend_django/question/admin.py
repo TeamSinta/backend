@@ -5,3 +5,4 @@ from .models import Question, Competency, Comment
 admin.site.register(Question)
 admin.site.register(Competency)
 admin.site.register(Comment)
+# Register your models here.

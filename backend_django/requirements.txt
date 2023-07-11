@@ -3,3 +3,4 @@ psycopg2>=2.8.6,<2.8.7
 djangorestframework>=3.12
 django-cors-headers>=3.7
 psycopg2-binary>=2.8
+pgvector

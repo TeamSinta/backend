@@ -1,0 +1,15 @@
+# Start from the PostgreSQL base image
+FROM postgres
+
+# Install dependencies for building the extension
+RUN apt-get update && apt-get install -y git build-essential postgresql-server-dev-all
+
+# Clone and build pgvector
+RUN cd /tmp && \
+    git clone --branch v0.4.4 https://github.com/pgvector/pgvector.git && \
+    cd pgvector && \
+    make && \
+    make install
+
+# Copy init.sql to the docker entrypoint
+COPY init.sql /docker-entrypoint-initdb.d/

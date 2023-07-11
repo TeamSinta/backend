@@ -3,6 +3,7 @@ from user.models import User, Company
 from question.models import Question
 from django.utils import timezone
 
+# Create your models here.
 class InterviewRound(models.Model):
     title = models.CharField(max_length=200)
     candidate = models.ForeignKey(User, related_name='candidate', on_delete=models.CASCADE)
