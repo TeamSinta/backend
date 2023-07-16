@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Input, InputError, InputLayout } from "../input/StyledInput";
 
 export interface ITextInput {
-  label: string;
   disable: boolean;
   placeholder: string;
   error: boolean;

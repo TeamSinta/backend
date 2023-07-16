@@ -5,16 +5,19 @@ import { CloseIcon } from "../svgIcons/Icons";
 import { H2Bold } from "../typeScale/StyledTypeScale";
 import Modal from "./Modal";
 import { CloseDiv, ModalHeaderWrap } from "./StyledModal";
-import CreateDepartment from "@/components/pages/roles/CreateDepartment";
+
+import CreateInterviews from "@/components/common/modal/modalContents/CreateInterviews";
+import CreateDepartment from "./modalContents/CreateDepartment";
+import SelectValue from "./modalContents/SelectValues";
+import ModalL from "./ModalL";
+import SelectTemplate from "./modalContents/SelectTemplate";
 
 export enum MODAL_TYPE {
   CREATE_DEP = "CREATE_DEP",
-  TEST = "TEST",
+  CREATE_INT = "CREATE_INT",
+  SELECT_VAL = "SELECT_VAL",
+  SELECT_TEM = "SELECT_TEM",
   // ModalL = "ModalL",
-}
-
-interface IGlobalModal {
-  title: string;
 }
 
 interface IModalHeader {
@@ -47,23 +50,34 @@ const ModalPortal = ({ children }: IModalPortal) => {
   return ReactDOM.createPortal(children, el);
 };
 
-const GlobalModal = (props: IGlobalModal): JSX.Element => {
+const GlobalModal = (): JSX.Element => {
   const { modalType, isOpen } = useSelector(selectModal);
-  const { title } = props;
 
   const renderModal = () => {
     switch (modalType) {
       case MODAL_TYPE.CREATE_DEP:
         return (
-          <Modal title={title}>
+          <Modal title="Create New Departments">
             <CreateDepartment />
           </Modal>
         );
-      case MODAL_TYPE.TEST:
+      case MODAL_TYPE.CREATE_INT:
         return (
-          <Modal title={"test"}>
-            <H2Bold>Test</H2Bold>
+          <Modal title="Create New Interviews">
+            <CreateInterviews />
           </Modal>
+        );
+      case MODAL_TYPE.SELECT_VAL:
+        return (
+          <Modal title="Select your values">
+            <SelectValue />
+          </Modal>
+        );
+      case MODAL_TYPE.SELECT_TEM:
+        return (
+          <ModalL title="Select your values">
+            <SelectTemplate />
+          </ModalL>
         );
     }
   };

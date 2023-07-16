@@ -64,6 +64,7 @@ export const DropdownLayout = styled.div`
   flex-direction: column;
   position: relative;
   gap: 8px;
+  width: 100%;
   :hover {
     border-radius: 12px;
   }
@@ -171,8 +172,9 @@ export const OptionUl = styled.ul<IDropdownOpen>`
           width: 100%;
           opacity: 1;
           visibility: visible;
-          transition: opacity 0.3s ease, visibility 0.3s ease,
-            transform 0.3s cubic-bezier(0.4, 0.6, 0.5, 1.32);
+          /* transition: opacity 0.3s ease, visibility 0.3s ease,
+            transform 0.3s cubic-bezier(0.4, 0.6, 0.5, 1.32); */
+          /* transition: 0.2s ease-in; */
           background: ${(props) => props.theme.colors.palePurple};
           border-radius: 6px;
           overflow-x: hidden;
@@ -203,7 +205,7 @@ export const OptionUl = styled.ul<IDropdownOpen>`
           transform-origin: 0 0;
           transition: opacity 0.2s ease, visibility 0.2s ease,
             transform 0.3s cubic-bezier(0.4, 0.6, 0.5, 1.32);
-          transform: scale(0.8) translate(0, 4px);
+          /* transform: scale(0.8) translate(0, 4px); */
           ${OptionLi} {
             opacity: 0;
             transition: all 0.3s ease;

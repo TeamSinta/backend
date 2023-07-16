@@ -12,11 +12,12 @@ import ElWrap from "../elWrap/ElWrap";
 
 const StyledTobNavBar = styled(Box)`
   grid-area: header;
+  padding: 30px 30px 24px 30px;
 `;
 
 const TopNavBar = (): JSX.Element => {
   return (
-    <StyledTobNavBar sx={{ width: "100%" }} className="p-all-8">
+    <StyledTobNavBar sx={{ width: "100%" }}>
       <Stack direction="row" spacing={2} alignItems="center">
         <Box sx={{ width: "100%" }}>
           <SearchInput

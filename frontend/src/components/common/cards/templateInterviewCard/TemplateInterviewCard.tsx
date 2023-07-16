@@ -11,22 +11,25 @@ import {
   CardCover,
   CardSubTitle,
 } from "../card/StyledCard";
+import { IQuestion } from "@/features/interviews/interviesInterface";
 
 interface ITemplateInterviewCardProps {
   title: string;
   //temporary
-  questions: undefined[];
+  questions: IQuestion[];
   disable: boolean;
+  onClick: () => void;
 }
 
 const TemplateInterviewCard = (props: ITemplateInterviewCardProps) => {
   const [hover, setHover] = useState(false);
-  const { title, questions, disable } = props;
+  const { title, questions, disable, onClick } = props;
 
   return (
-    <ElWrap w={370} h={216}>
+    <ElWrap w={312} h={216}>
       <Card
         className={(hover ? "hover" : "").concat(disable ? " disable" : "")}
+        onClick={onClick}
       >
         <CardButtons>
           <ElWrap w={32}>
@@ -43,7 +46,7 @@ const TemplateInterviewCard = (props: ITemplateInterviewCardProps) => {
             <IconBtnM
               icon={<PlusIcon />}
               disable={false}
-              onClick={() => {}}
+              onClick={onClick}
               className={BackgroundColor.WHITE}
             />
           </ElWrap>

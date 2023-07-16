@@ -6,6 +6,12 @@ export const ModalHeaderWrap = styled.div`
 `;
 
 export const CloseDiv = styled.div`
+  svg {
+    stroke: ${(props) => props.theme.colors.black};
+    width: 24px;
+    height: 24px;
+  }
+
   :hover {
     cursor: pointer;
   }
@@ -40,7 +46,15 @@ export const ModalContainer = styled.div`
   transform: translate(-50%, -50%);
   background: ${(props) => props.theme.colors.white};
   display: flex;
-  gap: 30px;
+  gap: 24px;
   flex-direction: column;
   z-index: 999;
+  position: relative;
+`;
+
+export const ModalContainerL = styled(ModalContainer)`
+  width: 1140px;
+  height: 715px;
+  gap: 30px;
+  flex-direction: row;
 `;

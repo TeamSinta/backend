@@ -36,8 +36,10 @@ const DropdownFilter = (props: IDropdown): JSX.Element => {
   const onSelectOpen = (): void => {
     if (open) {
       setOpen(false);
+      setShadow(false);
     } else {
       setOpen(true);
+      setShadow(true);
     }
   };
 
@@ -53,7 +55,7 @@ const DropdownFilter = (props: IDropdown): JSX.Element => {
         {label ? <DropdownLabel>{label}</DropdownLabel> : <></>}
         <DropdownWrap
           onMouseEnter={() => {
-            setShadow(true);
+            open ? setShadow(false) : setShadow(true);
           }}
           onMouseLeave={() => {
             setShadow(false);

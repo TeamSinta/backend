@@ -21,7 +21,7 @@ import {
 } from "@/features/roles/rolesSlice";
 import { BackgroundColor, PhotoType } from "@/features/utils/utilEnum";
 import { useDispatch, useSelector } from "react-redux";
-import { CreateDepWrap } from "./StyledRoles";
+import { ModalContentWrap } from "./StyledModalContents";
 
 const titleInputArg = {
   label: "Title",
@@ -40,7 +40,6 @@ const textIconBtnArg = {
 
 const CreateDepartment = () => {
   const { members, title } = useSelector(selectRole);
-  console.log(members);
   const dispatch = useDispatch<AppDispatch>();
 
   const onMemberSelectd = (memberIdx: number) => {
@@ -60,7 +59,7 @@ const CreateDepartment = () => {
   };
 
   return (
-    <CreateDepWrap>
+    <ModalContentWrap>
       <TextInput
         {...titleInputArg}
         onChange={(e) => {
@@ -84,7 +83,7 @@ const CreateDepartment = () => {
       </PhotoContainer>
       <Invite />
       <TextIconBtnL {...textIconBtnArg} onClick={onCreateDepartmentClick} />
-    </CreateDepWrap>
+    </ModalContentWrap>
   );
 };
 

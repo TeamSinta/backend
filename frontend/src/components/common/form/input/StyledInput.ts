@@ -5,7 +5,6 @@ export const InputLayout = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  height: 66px;
   position: relative;
 `;
 
@@ -15,9 +14,10 @@ export const Input = styled.input`
   border: none;
   outline: none;
   padding: 16px 10px;
-  font-family: "Chillax";
+  font: inherit;
   height: 40px;
   width: inherit;
+  font-size: 14px;
 
   :disabled {
     cursor: not-allowed;
@@ -59,4 +59,24 @@ export const InputIcon = styled.div`
     height: 20px;
     stroke: ${(props) => props.theme.colors.black};
   }
+`;
+
+export const StyledTextarea = styled.textarea`
+  border: none;
+  line-height: 150%;
+  overflow: auto;
+  outline: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  resize: none;
+  border-radius: 12px;
+  padding: 16px 10px;
+  height: 82px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${(props) => props.theme.colors.lightGrey};
+  font: inherit;
+  font-size: 14px;
 `;

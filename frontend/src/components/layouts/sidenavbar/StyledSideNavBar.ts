@@ -3,7 +3,8 @@ import styled from "styled-components";
 
 export const StyledStack = styled(Stack)`
   background-color: ${(props) => props.theme.colors.whisperGrey};
-  height: 100vh;
+  min-height: 100vh;
+  height: auto !important;
   width: 180px;
   left: 0px;
   top: 0px;

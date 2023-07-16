@@ -3,6 +3,7 @@ import counterReducer from "../features/counter/counterSlice";
 import modalReducer from "@/features/modal/modalSlice";
 import roleReducer from "@/features/roles/rolesSlice";
 import inviteMemberReducer from "@/features/inviteMember/inviteMemberSlice";
+import interviewsReducer from "@/features/interviews/interviewsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     modal: modalReducer,
     role: roleReducer,
     inviteMember: inviteMemberReducer,
+    interviews: interviewsReducer,
   },
 });
 

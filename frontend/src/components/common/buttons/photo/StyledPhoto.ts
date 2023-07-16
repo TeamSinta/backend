@@ -86,10 +86,18 @@ export const PhotoCheckBoxDiv = styled.div<IPhotoCheckBoxDiv>`
 export const PhotosWrap = styled.div`
   display: flex;
   gap: 8px;
+  width: fit-content;
 `;
 
 export const PhotoContainer = styled.div`
   display: flex;
   gap: 8px;
   flex-direction: column;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;

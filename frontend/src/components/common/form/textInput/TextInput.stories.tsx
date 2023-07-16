@@ -37,7 +37,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    label: "label",
+    // label: "label",
     disable: false,
     placeholder: "placeholder",
     error: false,
@@ -46,7 +46,7 @@ export const Primary: Story = {
 
 export const Disable: Story = {
   args: {
-    label: "label",
+    // label: "label",
     disable: true,
     placeholder: "placeholder",
     error: false,
@@ -55,7 +55,7 @@ export const Disable: Story = {
 
 export const Error: Story = {
   args: {
-    label: "label",
+    // label: "label",
     disable: false,
     placeholder: "placeholder",
     error: true,
