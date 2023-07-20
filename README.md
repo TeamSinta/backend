@@ -14,7 +14,7 @@ Clone the repository from the source:
 git clone https://github.com/TeamSinta/teamsinta.git
 ```
 
-### Frontend Setup:
+## Frontend Setup:
 
 Navigate to the `frontend` directory:
 ```bash
@@ -39,7 +39,7 @@ npm start
 
 This will start the Vite development server, and your frontend will be accessible at http://localhost:3001 by default.
 
-## Storybook
+### Storybook
 
 Make sure you have done the above setup before trying to run storybook.
 
@@ -55,7 +55,7 @@ npm run storybook
 This will start the Storybook Frontend Documentation server, and your storybook will be accessible at http://localhost:6006/ by default.
 
 
-### Backend Setup:
+## Backend Setup:
 
 Navigate to the `backend_django` directory:
 ```bash
