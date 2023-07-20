@@ -25,7 +25,7 @@ Create a `.env` file to store project variables
 ```bash
 touch .env
 ```
-Copy and paste the variables found in the .env-file [here](https://www.notion.so/teamsinta/React-Frontend-0da83eabeb384987a7ae5914c229bb43?pvs=4#edc1efb6b4ec496f949249740ae6592c) into your newly created `.env` file.
+Copy and paste the variables found in the .env-file [here](https://www.notion.so/teamsinta/Setup-bf522b83eea142099865032cbf33906a?pvs=4#edc1efb6b4ec496f949249740ae6592c) into your newly created `.env` file.
 
 
 
