@@ -27,8 +27,6 @@ touch .env
 ```
 Copy and paste the variables found in the .env-file [here](https://www.notion.so/teamsinta/Setup-bf522b83eea142099865032cbf33906a?pvs=4#edc1efb6b4ec496f949249740ae6592c) into your newly created `.env` file.
 
-
-
 Install dependencies using npm (Node Package Manager):
 ```bash
 npm install
@@ -40,6 +38,21 @@ npm start
 ```
 
 This will start the Vite development server, and your frontend will be accessible at http://localhost:3001 by default.
+
+## Storybook
+
+Make sure you have done the above setup before trying to run storybook.
+
+Navigate to the `frontend` directory:
+```bash
+cd frontend
+```
+
+Run the storybook server:
+```bash
+npm run storybook
+```
+This will start the Storybook Frontend Documentation server, and your storybook will be accessible at http://localhost:6006/ by default.
 
 
 ### Backend Setup:
