@@ -3,10 +3,10 @@
 from django.db import migrations
 from pgvector.django import VectorExtension
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     dependencies = [
-        ('question_response', '0001_initial'),
+        ("question_response", "0001_initial"),
     ]
 
     operations = [

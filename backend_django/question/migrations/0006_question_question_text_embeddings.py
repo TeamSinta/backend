@@ -5,15 +5,14 @@ import pgvector.django
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('question', '0005_remove_question_competency_competency_question_and_more'),
+        ("question", "0005_remove_question_competency_competency_question_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='question',
-            name='question_text_embeddings',
+            model_name="question",
+            name="question_text_embeddings",
             field=pgvector.django.VectorField(dimensions=1536, null=True),
         ),
     ]

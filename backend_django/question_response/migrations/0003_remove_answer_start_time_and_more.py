@@ -6,35 +6,54 @@ import pgvector.django
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('interview', '0002_interviewroundquestion'),
-        ('question_response', '0002_auto_20230630_0149'),
+        ("interview", "0002_interviewroundquestion"),
+        ("question_response", "0002_auto_20230630_0149"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='answer',
-            name='start_time',
+            model_name="answer",
+            name="start_time",
         ),
         migrations.RemoveField(
-            model_name='answer',
-            name='transcript_chunk',
+            model_name="answer",
+            name="transcript_chunk",
         ),
         migrations.AlterField(
-            model_name='answer',
-            name='question',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='interview.interviewroundquestion'),
+            model_name="answer",
+            name="question",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="interview.interviewroundquestion",
+            ),
         ),
         migrations.CreateModel(
-            name='AnswerChunk',
+            name="AnswerChunk",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('answer_text', models.TextField()),
-                ('answer_text_embeddings', pgvector.django.VectorField(dimensions=1536, null=True)),
-                ('start_time', models.DateTimeField(auto_now_add=True)),
-                ('end_time', models.DateTimeField(auto_now=True)),
-                ('answer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='question_response.answer')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("answer_text", models.TextField()),
+                (
+                    "answer_text_embeddings",
+                    pgvector.django.VectorField(dimensions=1536, null=True),
+                ),
+                ("start_time", models.DateTimeField(auto_now_add=True)),
+                ("end_time", models.DateTimeField(auto_now=True)),
+                (
+                    "answer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="question_response.answer",
+                    ),
+                ),
             ],
         ),
     ]

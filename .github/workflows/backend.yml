@@ -11,38 +11,19 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: backend/.nvmrc
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
+      - name: Install pip
+        run: sudo apt install python3-pip
 
-      - name: Install prettier plugin ruby
-        run: npm install @prettier/plugin-ruby
+      - name: Install requirements
+        run: pip install -r backend_django/requirements.txt
 
-      - name: Install dependencies
-        working-directory: backend
+      - name: Formatting Check
         run: |
-          npm ci
-          ls node_modules # Check if node_modules directory exists
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2.1'
-          bundler-cache: false
-
-      - name: Install dependencies
-        working-directory: backend
-        run: bundle install
-
-      - name: Run RuboCop
-        working-directory: backend
-        run: bundle exec rubocop
+          pip install black
+          python -m black . --check --exclude="migrations/.*"

@@ -4,11 +4,9 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('question_response', '0002_alter_answer_user_alter_interviewerfeedback_user'),
-        ('question_response', '0003_remove_answer_start_time_and_more'),
+        ("question_response", "0002_alter_answer_user_alter_interviewerfeedback_user"),
+        ("question_response", "0003_remove_answer_start_time_and_more"),
     ]
 
-    operations = [
-    ]
+    operations = []

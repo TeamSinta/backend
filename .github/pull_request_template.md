@@ -7,7 +7,7 @@
 - When you've submitted the PR, on your PR page you can tag someone to review on the right hand side.
 - If possible, on your notion ticket please add the link to this PR on the section titled 'PR Link'
 - Finally, please message on slack the person you've tagged for review to let them know!
-- Have a great day - Any questions please contact Moe, Mattias, Suwon, Sammy, Yumi
+- Have a great day - Any questions please contact Moe, Mattias, Suwon, Sammy, Yumi, Shikhar
 
 - Please delete all the text above before you submit.
 -->
@@ -16,7 +16,7 @@
 
 <!-- Please include a summary of the change and which issue is fixed. List any dependencies that are required for this change. -->
 
-## Trello URL
+## Notion URL
 
 <!-- Please add the notion ticket URL here -->
 

@@ -1,0 +1,7 @@
+# Configuration for pre-commit format checking BE.
+repos:
+  - repo: https://github.com/ambv/black
+    rev: 23.7.0
+    hooks:
+      - id: black
+        language_version: python3.9

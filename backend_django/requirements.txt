@@ -10,3 +10,4 @@ django-allauth>=0.54.0
 djangorestframework-simplejwt>=5.2.2
 django-cors-headers>=4.1.0
 pgvector
+pre-commit

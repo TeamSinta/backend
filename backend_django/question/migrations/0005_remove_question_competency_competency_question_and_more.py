@@ -5,29 +5,45 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('question', '0004_auto_20230630_0151'),
+        ("question", "0004_auto_20230630_0151"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='question',
-            name='competency',
+            model_name="question",
+            name="competency",
         ),
         migrations.AddField(
-            model_name='competency',
-            name='question',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='question.question'),
+            model_name="competency",
+            name="question",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="question.question",
+            ),
         ),
         migrations.AddField(
-            model_name='question',
-            name='review',
-            field=models.IntegerField(choices=[(1, 'One'), (2, 'Two'), (3, 'Three'), (4, 'Four'), (5, 'Five')], default=None),
+            model_name="question",
+            name="review",
+            field=models.IntegerField(
+                choices=[
+                    (1, "One"),
+                    (2, "Two"),
+                    (3, "Three"),
+                    (4, "Four"),
+                    (5, "Five"),
+                ],
+                default=None,
+            ),
         ),
         migrations.AlterField(
-            model_name='comment',
-            name='question',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, to='question.question'),
+            model_name="comment",
+            name="question",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="question.question",
+            ),
         ),
     ]

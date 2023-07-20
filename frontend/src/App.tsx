@@ -5,6 +5,7 @@ import Container from "./components/layouts/container/Container";
 import Routers from "./router/Routers";
 import { Counter } from "./features/counter/Counter";
 import styled from "styled-components";
+import GoogleLoginButton from "./components/pages/login/googleLoginBtn/GoogleLoginButton";
 
 // Node: server, Brower : worker.
 if (import.meta.env.VITE_ENV !== "develop") {
@@ -37,6 +38,7 @@ function App() {
         <TopNavBar />
         <StyledMain className="p-all-8">
           <Routers></Routers>
+          <GoogleLoginButton />
         </StyledMain>
       </Container>
     </>
