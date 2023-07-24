@@ -1,21 +1,14 @@
 from django.db import models
 from user.models import CustomUser
 from interview.models import InterviewRoundQuestion
+from transcription.models import TranscriptChunk
 from pgvector.django import VectorField
 
-
 class Answer(models.Model):
-    question = models.ForeignKey(InterviewRoundQuestion, on_delete=models.CASCADE)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-
-
-class AnswerChunk(models.Model):
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
-    answer_text = models.TextField()
-    answer_text_embeddings = VectorField(dimensions=1536, null=True)
-    start_time = models.DateTimeField(auto_now_add=True)
-    end_time = models.DateTimeField(auto_now=True)
-
+    question = models.ForeignKey(InterviewRoundQuestion, on_delete=models.CASCADE, related_name='answer')
+    answer_text = models.TextField(null=True)
+    embedding = VectorField(dimensions=1536, null=True)
+    transcript_chunks = models.ManyToManyField(TranscriptChunk, related_name='answer')
 
 class InterviewerFeedback(models.Model):
     class EmojiChoice(models.IntegerChoices):

@@ -11,3 +11,9 @@ djangorestframework-simplejwt>=5.2.2
 django-cors-headers>=4.1.0
 pgvector
 pre-commit
+moviepy
+openai
+tenacity
+pandas
+factory_boy
+faker

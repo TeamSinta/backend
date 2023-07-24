@@ -12,7 +12,7 @@ yarn-error.log*
 # backend env
 /backend_django/.env
 /backend_django/*/*.pyc
-
+/backend_django/mock_*
 # caches
 **/__pycache__/
 /__pycache__/

@@ -4,6 +4,8 @@ from .models import Question, Competency, QuestionBank
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 import json
+# Create your views here.
+from openai_helper.utils import get_embedding
 
 
 @csrf_exempt
@@ -20,6 +22,7 @@ def create_question(request: HttpRequest) -> JsonResponse:
         question.question_text = question_text
         question.guidelines = guidelines
         question.reply_time = reply_time
+        question.embedding = get_embedding(question_text)
         question.created_at = datetime.now()
         question.updated_at = datetime.now()
 

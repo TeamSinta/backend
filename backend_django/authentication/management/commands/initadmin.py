@@ -3,10 +3,11 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from user.models import Company
 import os
-from dotenv import load_dotenv
-
+from dotenv import dotenv_values, load_dotenv
 load_dotenv()
+
 User = get_user_model()
+KEYS = dotenv_values("/backend_django/.env")
 
 
 # Creates the default superuser account.
@@ -17,7 +18,7 @@ class Command(BaseCommand):
         for user in settings.ADMINS:
             username = user[0].replace(" ", "")
             email = user[1]
-            password = os.getenv("SUPERUSER_PASSWORD")
+            password = KEYS["SUPERUSER_PASSWORD"]
             company, _ = Company.objects.get_or_create(name="Sinta")
             admin, created = User.objects.get_or_create(
                 username=username,

@@ -11,30 +11,30 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import load_dotenv
 import os
+from dotenv import dotenv_values, load_dotenv
 
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+KEYS = dotenv_values("/backend_django/.env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = KEYS["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "transcription.apps.TranscriptionConfig",
     "interview.apps.InterviewConfig",
     "question.apps.QuestionConfig",
     "question_response.apps.QuestionResponseConfig",
@@ -103,13 +103,13 @@ WSGI_APPLICATION = "app.wsgi.application"
 # }
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": "db",
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': KEYS['DB_USER'],
+        'PASSWORD': KEYS['DB_PASSWORD'],
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 
@@ -161,7 +161,7 @@ SITE_ID = 1
 AUTH_USER_MODEL = "user.CustomUser"
 
 # Default Admin Account
-ADMINS = [(os.getenv("SUPERUSER"), os.getenv("SUPERUSER_EMAIL"))]
+ADMINS = [(KEYS["SUPERUSER"], KEYS["SUPERUSER_EMAIL"])]
 
 # Rest Settings
 REST_FRAMEWORK = {
@@ -176,6 +176,8 @@ REST_AUTH = {
     "JWT_AUTH_COOKIE": "my-app-auth",
     "JWT_AUTH_REFRESH_COOKIE": "my-refresh-token",
 }
+
+APPEND_SLASH = False
 
 # CORS
 CORS_ALLOWED_ORIGINS = [
