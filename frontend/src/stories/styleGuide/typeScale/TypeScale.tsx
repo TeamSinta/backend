@@ -38,7 +38,9 @@ const TypeScale = ({ label }: ITypeScaleProps): JSX.Element => {
       <BodyLBold>Body L Bold : {label}</BodyLBold>
       <BodyLMedium>Body L Medium : {label}</BodyLMedium>
       <BodyMBold>Body M Bold : {label}</BodyMBold>
+
       <BodyMMedium>Body M Medium : {label}</BodyMMedium>
+
       <BodySBold>Body S Bold : {label}</BodySBold>
       <BodySMedium>Body S Medium : {label}</BodySMedium>
     </div>

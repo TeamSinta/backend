@@ -38,3 +38,8 @@ class InterviewRoundQuestion(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class InterviewerRoundInterviewer(models.Model):
+    interviewer = models.ForeignKey(User, related_name='interviewer', on_delete=models.CASCADE)
+    interview_round = models.ForeignKey(InterviewRound, on_delete=models.CASCADE)
