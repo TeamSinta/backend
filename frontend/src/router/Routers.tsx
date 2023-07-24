@@ -6,7 +6,6 @@ import DashBoard from "@/pages/Dashboard";
 import Interviews from "@/pages/Interviews";
 import NotFound from "@/pages/NotFound";
 import Roles from "@/pages/Roles";
-import InterviewDetails from "@/pages/InterviewDetails";
 import { Route, Routes } from "react-router-dom";
 
 const Routers = () => {
@@ -18,7 +17,6 @@ const Routers = () => {
       <Route path="/interviews" element={<Interviews />}>
         <Route path="/interviews/template" element={<TemplateList />} />
         <Route path="/interviews/template/:id" element={<QuestionList />} />
-        <Route path="/interviews/:id" element={<InterviewDetails />} />
       </Route>
       <Route path="/candidates" element={<Candidates />} />
       <Route path="/calendar" element={<Calendar />} />

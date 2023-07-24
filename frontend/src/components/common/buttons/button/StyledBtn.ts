@@ -162,7 +162,6 @@ export const StyledIconBtnS = styled(StyledButtonS)`
   svg {
     width: 24px;
     height: 24px;
-    fill: ${(props) => props.theme.colors.black};
     stroke: ${(props) => props.theme.colors.black};
     display: flex;
   }

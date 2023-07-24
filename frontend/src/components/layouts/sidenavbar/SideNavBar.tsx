@@ -87,18 +87,14 @@ const SideNavBar = (): ReactElement => {
       </div>
 
       <StyledSideNavLinksWrap>
-        <StyledSideNavBarTitle style={{ opacity: "0.5" }}>
-          Workspace
-        </StyledSideNavBarTitle>
+        <StyledSideNavBarTitle>Workspace</StyledSideNavBarTitle>
         <DropWrapper>
           <SideNavBarDropdown {...args} />
         </DropWrapper>
       </StyledSideNavLinksWrap>
 
       <StyledSideNavLinksWrap>
-        <StyledSideNavBarTitle style={{ opacity: "0.5" }}>
-          Pages
-        </StyledSideNavBarTitle>
+        <StyledSideNavBarTitle>Pages</StyledSideNavBarTitle>
         {navButtonLinks.map((navButtonLink: INavButtonLink, index: number) => (
           <NavButton
             direction="row"
@@ -114,9 +110,7 @@ const SideNavBar = (): ReactElement => {
       </StyledSideNavLinksWrap>
 
       <StyledSideNavLinksWrap>
-        <StyledSideNavBarTitle style={{ opacity: "0.5" }}>
-          Config
-        </StyledSideNavBarTitle>
+        <StyledSideNavBarTitle>Config</StyledSideNavBarTitle>
         {navConfigLinks.map((navConfigLink: INavButtonLink, index: number) => (
           <NavButton direction="row" key={index}>
             <Link to={navConfigLink.to} className="link">

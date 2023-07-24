@@ -23,7 +23,7 @@ export const NavButton = styled(Stack)`
   width: 148px;
   color: ${(props) => props.theme.colors.black};
   gap: 8px;
-  border-radius: 4px;
+  border-radius: 12px;
   align-items: center;
 
   svg {
@@ -45,7 +45,7 @@ export const NavButton = styled(Stack)`
 
   &.active {
     background: ${(props) => props.theme.colors.palePurple};
-    border: 1.2px solid ${(props) => props.theme.colors.black};
+    border: 1px solid ${(props) => props.theme.colors.black};
   }
 
   .link {

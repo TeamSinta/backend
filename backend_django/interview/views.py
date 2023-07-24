@@ -1,4 +1,3 @@
-
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -531,4 +530,3 @@ def delete_interview_round_question(
     except Exception as e:
         error_response = {"error": str(e)}
         return JsonResponse(error_response, status=400)
->>>>>>> f8c84a4ad48cd4118a939b04ee206b8c60ee4e2b

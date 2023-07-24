@@ -32,7 +32,7 @@ export const NameCheckBox = styled.div`
   margin: 0;
   width: 100%;
   height: 100%;
-  background-color: ${(props) => props.theme.colors.lightGrey};
+  background-color: #cecdee;
   border-radius: inherit;
   display: flex;
   align-items: center;
