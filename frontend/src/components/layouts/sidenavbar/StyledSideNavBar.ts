@@ -45,7 +45,7 @@ export const NavButton = styled(Stack)`
 
   &.active {
     background: ${(props) => props.theme.colors.palePurple};
-    border: 1px solid ${(props) => props.theme.colors.black};
+    border: 1.2px solid ${(props) => props.theme.colors.black};
   }
 
   .link {
