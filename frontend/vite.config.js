@@ -63,7 +63,7 @@ export default defineConfig({
     },
   },
   server: {
-    open: true,
+    open: false,
     port: 3001,
     host: true,
   },

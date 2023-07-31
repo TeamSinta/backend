@@ -11,5 +11,3 @@ admin.site.register(InterviewRound)
 admin.site.register(InterviewRoundQuestion)
 admin.site.register(Topic)
 admin.site.register(InterviewRoundInterviewer)
-
-# Register your models here.
