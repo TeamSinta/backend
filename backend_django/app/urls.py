@@ -25,4 +25,5 @@ urlpatterns = [
     path("api/question/", include("question.urls")),
     path("api/transcription/", include("transcription.urls")),
     path("api/question_response/", include("question_response.urls")),
+    path("api/summary/", include("summary.urls")),  # Add this line for the "summary" app
 ]

@@ -26,3 +26,29 @@ def get_answer_notes_for_question(context_text: str, question: str) -> str:
     )
 
     return response["choices"][0]["message"]["content"]
+
+
+def summarize_interview(qa_text: str) -> str:
+    """
+    This function summarizes a text of all the questions and answers in an interview.
+    
+    Args:
+        qa_text (str): The text of all the questions and answers in the interview.
+
+    Returns:
+        str: The summarized text.
+    """
+    context = '"""' + "".join(qa_text) + '"""'
+
+    response = openai.ChatCompletion.create(
+        model='gpt-3.5-turbo',
+        messages=[
+            {'role': 'system', 'content': "You are a shadow interviewer. You are incredible at summarizing chunks of interview after it's complete."},
+            {'role': 'assistant', 'content': "You will be given all the information in the context. This is the complete conversation from an interview. You are helping the interviewer gain insights from the interview. Respond in first person. Use 3-4 bullet points to summarize. Throw away any content not relevant to the summary."},
+            {'role': 'user', 'content': context}
+        ],
+        temperature=0,
+        top_p=1,
+    )
+
+    return response["choices"][0]["message"]["content"]
