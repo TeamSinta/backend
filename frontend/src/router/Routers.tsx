@@ -2,6 +2,7 @@ import QuestionList from "@/components/common/modal/modalContents/QuestionList";
 import TemplateList from "@/components/common/modal/modalContents/TemplateList";
 import Calendar from "@/pages/Calendar";
 import Candidates from "@/pages/Candidates";
+import { Conclusion } from "@/pages/Conclusion";
 import DashBoard from "@/pages/Dashboard";
 import Interviews from "@/pages/Interviews";
 import NotFound from "@/pages/NotFound";
@@ -22,6 +23,7 @@ const Routers = () => {
       </Route>
       <Route path="/candidates" element={<Candidates />} />
       <Route path="/calendar" element={<Calendar />} />
+      <Route path="/conclusion" element={<Conclusion />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 // import TopNavBar from "components/layouts/topNavbar/TopNavBar";
 import SideNavBar from "../sidenavbar/SideNavBar";
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Paper } from "@mui/material";
 import TopNavBar from "../topnavbar/TopNavBar";
 
 const MainNavBar = (): JSX.Element => {

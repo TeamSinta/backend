@@ -30,7 +30,35 @@ import { ReactComponent as Logo } from "@/assets/svg/sinta-logo.svg";
 import { ReactComponent as Search } from "@/assets/svg/search.svg";
 import { ReactComponent as SelectArrowOpen } from "@/assets/svg/selectArrowOpen.svg";
 import { ReactComponent as TwoArrow } from "@/assets/svg/twoArrow.svg";
+import { ReactComponent as RightArrow } from "@/assets/svg/rightArrow.svg";
+import { ReactComponent as LeftArrow } from "@/assets/svg/leftArrow.svg";
 
+import { ReactComponent as FullScreen } from "@/assets/svg/fullscreen.svg";
+import { ReactComponent as Play } from "@/assets/svg/play.svg";
+import { ReactComponent as Pause } from "@/assets/svg/pause.svg";
+import { ReactComponent as Mute } from "@/assets/svg/mute.svg";
+import { ReactComponent as Sound } from "@/assets/svg/sound.svg";
+import { ReactComponent as Email } from "@/assets/svg/email.svg";
+import { ReactComponent as Map } from "@/assets/svg/map.svg";
+import { ReactComponent as Phone } from "@/assets/svg/phone.svg";
+import { ReactComponent as Resume } from "@/assets/svg/resume.svg";
+import { ReactComponent as Linkedin } from "@/assets/svg/linkedin.svg";
+import { ReactComponent as Pencil } from "@/assets/svg/pencil.svg";
+import { ReactComponent as BottomArrow } from "@/assets/svg/bottomArrow.svg";
+import { ReactComponent as Wrong } from "@/assets/svg/wrongIcon.svg";
+import { ReactComponent as Dislike } from "@/assets/svg/dislike.svg";
+import { ReactComponent as Like } from "@/assets/svg/like.svg";
+import { ReactComponent as Neutral } from "@/assets/svg/neutral.svg";
+import { ReactComponent as StarSign } from "@/assets/svg/starIcon.svg";
+
+import { ReactComponent as NavCam } from "@/assets/svg/nav-cam.svg";
+import { ReactComponent as NavFullScreen } from "@/assets/svg/nav-fullscreen.svg";
+import { ReactComponent as NavScreenShare } from "@/assets/svg/nav-screenshare.svg";
+import { ReactComponent as NavMic } from "@/assets/svg/mic.svg";
+
+import { ReactComponent as NavFlag } from "@/assets/svg/flag.svg";
+import { ReactComponent as NavBookmark } from "@/assets/svg/bookmark.svg";
+import { ReactComponent as Circle } from "@/assets/svg/circle.svg";
 export const SintaIcon = (): JSX.Element => {
   return <Logo />;
 };
@@ -153,4 +181,92 @@ export const SelectArrowOpenIcon = (): JSX.Element => {
 
 export const TwoArrowIcon = (): JSX.Element => {
   return <TwoArrow />;
+};
+
+export const RightArrowIcon = (): JSX.Element => {
+  return <RightArrow />;
+};
+export const LeftArrowIcon = (): JSX.Element => {
+  return <LeftArrow />;
+};
+export const PlayIcon = (): JSX.Element => {
+  return <Play />;
+};
+export const PauseIcon = (): JSX.Element => {
+  return <Pause />;
+};
+export const SoundIcon = (): JSX.Element => {
+  return <Sound />;
+};
+export const MuteIcon = (): JSX.Element => {
+  return <Mute />;
+};
+export const EmailIcon = (): JSX.Element => {
+  return <Email />;
+};
+export const LinkedinIcon = (): JSX.Element => {
+  return <Linkedin />;
+};
+export const PhoneIcon = (): JSX.Element => {
+  return <Phone />;
+};
+export const ResumeIcon = (): JSX.Element => {
+  return <Resume />;
+};
+export const MapIcon = (): JSX.Element => {
+  return <Map />;
+};
+
+export const PencilIcon = (): JSX.Element => {
+  return <Pencil />;
+};
+
+export const BottomArrowIcon = (): JSX.Element => {
+  return <BottomArrow />;
+};
+export const LikeIcon = (): JSX.Element => {
+  return <Like />;
+};
+export const DislikeIcon = (): JSX.Element => {
+  return <Dislike />;
+};
+export const WrongIcon = (): JSX.Element => {
+  return <Wrong />;
+};
+export const TopStarIcon = (): JSX.Element => {
+  return <StarSign />;
+};
+export const NeutralIcon = (): JSX.Element => {
+  return <Neutral />;
+};
+export const FullScreenIcon = (): JSX.Element => {
+  return <FullScreen />;
+};
+
+export const NavFullScreenIcon = (): JSX.Element => {
+  return <NavFullScreen />;
+};
+
+export const NavCamIcon = (): JSX.Element => {
+  return <NavCam />;
+};
+
+export const NavMicIcon = (): JSX.Element => {
+  return <NavMic />;
+};
+
+export const NavScreenShareIcon = (): JSX.Element => {
+  return <NavScreenShare />;
+};
+
+export const NavBookmarkIcon = (): JSX.Element => {
+  return <NavBookmark />;
+};
+
+export const NavFlagIcon = (): JSX.Element => {
+  return <NavFlag />;
+};
+
+export const NavCircle = (): JSX.Element => {
+  return <Circle />;
 };
