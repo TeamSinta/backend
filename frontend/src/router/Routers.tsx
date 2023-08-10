@@ -4,6 +4,7 @@ import Calendar from "@/pages/Calendar";
 import Candidates from "@/pages/Candidates";
 import { Conclusion } from "@/pages/Conclusion";
 import DashBoard from "@/pages/Dashboard";
+import Interview from "@/pages/Interview/Interview";
 import Interviews from "@/pages/Interviews";
 import NotFound from "@/pages/NotFound";
 import Roles from "@/pages/Roles";
@@ -25,6 +26,7 @@ const Routers = () => {
       <Route path="/calendar" element={<Calendar />} />
       <Route path="/conclusion" element={<Conclusion />} />
       <Route path="*" element={<NotFound />} />
+      <Route path="/interview" element={<Interview />} />
     </Routes>
   );
 };

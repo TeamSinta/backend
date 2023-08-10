@@ -1,2 +1,2 @@
-import { RatingComponent } from "./RatingComponent";
-export { RatingComponent };
+import { RatingComponent, RatingComponentL } from "./RatingComponent";
+export { RatingComponent, RatingComponentL };

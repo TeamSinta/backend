@@ -807,3 +807,190 @@ export const SaveIcon = (props: ICustomIconProps): JSX.Element => {
     </svg>
   );
 };
+
+export const MicIcon = (props: ICustomIconProps): JSX.Element => {
+  const { width, height, active } = props;
+  const viewBox = "0 0 " + width + " " + height;
+
+  if (active === 0) {
+    return (
+      <svg
+        width={width}
+        height={height}
+        viewBox={viewBox}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          width="40"
+          height="40"
+          rx="12"
+          fill="#FF1A61"
+          fill-opacity="0.31"
+        />
+        <path
+          d="M26.86 13.25L14 26.11"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M20.3594 25.0201C21.9958 25.0201 23.5651 24.37 24.7222 23.2129C25.8793 22.0558 26.5294 20.4865 26.5294 18.8501"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M14.1895 18.8501C14.1901 19.7604 14.3922 20.6592 14.7812 21.4821C15.1702 22.3051 15.7365 23.0318 16.4395 23.6101"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M20.3594 27.36V25.02"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M18.6694 21.44C18.222 21.1724 17.852 20.7928 17.596 20.3386C17.34 19.8844 17.2067 19.3714 17.2094 18.85V15.05C17.2028 14.6518 17.2755 14.2564 17.4232 13.8866C17.571 13.5168 17.791 13.1802 18.0702 12.8963C18.3494 12.6124 18.6824 12.3869 19.0497 12.233C19.417 12.0792 19.8112 11.9999 20.2094 12H20.4194C20.8176 11.9999 21.2118 12.0792 21.5791 12.233C21.9464 12.3869 22.2794 12.6124 22.5586 12.8963C22.8378 13.1802 23.0578 13.5168 23.2055 13.8866C23.3533 14.2564 23.426 14.6518 23.4194 15.05V16.34"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    );
+  } else {
+    return (
+      <svg
+        width={width}
+        height={height}
+        viewBox={viewBox}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          width="40"
+          height="40"
+          rx="12"
+          fill="#908C98"
+          fill-opacity="0.5"
+        />
+        <path
+          d="M13.9297 19.11C13.9297 22.5179 16.6916 25.2798 20.0995 25.2798C23.5075 25.2798 26.2694 22.5179 26.2694 19.11"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M20.1 27.6223V25.2803"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M20.2056 22.1537H19.9953C18.3112 22.1537 16.9453 20.7886 16.9453 19.1037V15.3116C16.9453 13.6275 18.3112 12.2616 19.9953 12.2616H20.2056C21.8898 12.2616 23.2556 13.6275 23.2556 15.3116V19.1037C23.2556 20.7886 21.8898 22.1537 20.2056 22.1537Z"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    );
+  }
+};
+
+export const CamIcon = (props: ICustomIconProps): JSX.Element => {
+  const { width, height, active } = props;
+  const viewBox = "0 0 " + width + " " + height;
+  if (active === 1) {
+    return (
+      <svg
+        width={width}
+        height={height}
+        viewBox={viewBox}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          width="40"
+          height="40"
+          rx="12"
+          fill="#908C98"
+          fill-opacity="0.5"
+        />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M23.18 23.017C23.18 24.6779 22.0483 25.8512 20.2383 25.8512H15.0575C13.2492 25.8512 12.125 24.6779 12.125 23.017V17.217C12.125 15.557 13.2492 14.3754 15.0667 14.3754H20.2383C22.0483 14.3754 23.18 15.557 23.18 17.217V23.017Z"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M23.1797 19.3972L26.5939 16.6022C27.1355 16.1564 27.958 16.5439 27.958 17.2497V22.9764C27.958 23.683 27.1355 24.0689 26.5939 23.6239L23.1797 20.8289"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    );
+  } else {
+    return (
+      <svg
+        width="40"
+        height="40"
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          width="40"
+          height="40"
+          rx="12"
+          fill="#FF1A61"
+          fill-opacity="0.31"
+        />
+        <path
+          d="M23.959 19.7101L27.339 16.9201C27.4632 16.8084 27.6179 16.7362 27.7834 16.7128C27.9489 16.6895 28.1175 16.716 28.2678 16.789C28.4181 16.862 28.5432 16.9782 28.6272 17.1227C28.7111 17.2672 28.75 17.4334 28.739 17.6001V23.3201C28.7387 23.4788 28.6934 23.6341 28.6085 23.7681C28.5236 23.9021 28.4024 24.0094 28.2591 24.0774C28.1157 24.1454 27.956 24.1714 27.7985 24.1524C27.641 24.1334 27.4921 24.0702 27.369 23.9701L23.959 21.1801"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M24.86 14L12 26.86"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M23.9595 19.71V23.33C23.9762 23.716 23.9108 24.1012 23.7676 24.46C23.6244 24.8189 23.4066 25.1433 23.1287 25.4118C22.8508 25.6802 22.5191 25.8866 22.1555 26.0173C21.7919 26.148 21.4047 26.2 21.0195 26.17H16.9395"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M13.5891 25.2698C13.1254 24.7317 12.8793 24.0398 12.8991 23.3298V17.5298C12.8822 17.1428 12.9478 16.7567 13.0916 16.3971C13.2354 16.0375 13.4541 15.7126 13.7331 15.4439C14.0121 15.1753 14.3451 14.9692 14.7099 14.8391C15.0747 14.7091 15.4631 14.6582 15.8491 14.6898H21.0191C21.4361 14.675 21.8516 14.7475 22.239 14.9025C22.6264 15.0574 22.9773 15.2915 23.2691 15.5898"
+          stroke="white"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    );
+  }
+};

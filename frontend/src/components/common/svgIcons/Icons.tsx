@@ -59,6 +59,9 @@ import { ReactComponent as NavMic } from "@/assets/svg/mic.svg";
 import { ReactComponent as NavFlag } from "@/assets/svg/flag.svg";
 import { ReactComponent as NavBookmark } from "@/assets/svg/bookmark.svg";
 import { ReactComponent as Circle } from "@/assets/svg/circle.svg";
+
+import { ReactComponent as CamHide } from "@/assets/svg/camHide.svg";
+import { ReactComponent as MicMute } from "@/assets/svg/micMute.svg";
 export const SintaIcon = (): JSX.Element => {
   return <Logo />;
 };
@@ -269,4 +272,12 @@ export const NavFlagIcon = (): JSX.Element => {
 
 export const NavCircle = (): JSX.Element => {
   return <Circle />;
+};
+
+export const MicMuteIcon = (): JSX.Element => {
+  return <MicMute />;
+};
+
+export const CamHideIcon = (): JSX.Element => {
+  return <CamHide />;
 };

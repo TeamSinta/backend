@@ -31,16 +31,23 @@ const DivSample = styled.div`
 `;
 
 function App() {
+  const interview = window?.location?.pathname.includes("interview");
   return (
     <>
-      <Container>
-        <SideNavBar />
-        <TopNavBar />
-        <StyledMain className="p-all-8">
-          <Routers></Routers>
-          <GoogleLoginButton />
-        </StyledMain>
-      </Container>
+      {interview ? (
+        <Routers></Routers>
+      ) : (
+        <>
+          <Container>
+            <SideNavBar />
+            <TopNavBar />
+            <StyledMain className="p-all-8">
+              <Routers></Routers>
+              <GoogleLoginButton />
+            </StyledMain>
+          </Container>
+        </>
+      )}
     </>
   );
 }

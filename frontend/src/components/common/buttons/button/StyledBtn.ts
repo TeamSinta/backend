@@ -263,6 +263,48 @@ export const StyledRatingBtnM = styled.button`
 
   }
 `;
+
+export const StyledRatingBtnL = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color:white;
+  border: 0;
+  position: relative;
+  outline: 1px solid ${(props) => props.theme.colors.black};
+  outline-offset: -1px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 0px #121212;
+  height:40px;
+  width: 100%;
+  text-align:center;
+
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  ${(props) =>
+    !props.disabled &&
+    `
+    :hover {
+      cursor: pointer;
+      box-shadow: 0px 4px 0px #121212;
+      transition: 0.5s;
+    }
+
+    :active {
+      box-shadow: 0px 0px 0px #121212;
+      transform: translateY(4px);
+    }
+
+
+    `}
+
+  }
+`;
 export const VideoControlBtnM = styled.button`
   display: flex;
   justify-content: center;
