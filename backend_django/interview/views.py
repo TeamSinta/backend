@@ -530,4 +530,3 @@ def delete_interview_round_question(
     except Exception as e:
         error_response = {"error": str(e)}
         return JsonResponse(error_response, status=400)
-

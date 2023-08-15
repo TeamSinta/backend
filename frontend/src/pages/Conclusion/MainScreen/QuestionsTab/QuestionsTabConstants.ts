@@ -25,6 +25,37 @@ const questionTabInfo = {
       duration: "00:00:23-00:02:59",
       competency: "Web Tools",
     },
+    {
+      question: "Walk me through your workflow?",
+      duration: "00:00:23-00:02:59",
+      competency: "Leadership",
+    },
+    {
+      question: "What kind of research methods do you use?",
+      duration: "00:00:23-00:02:59",
+      competency: "Web Tools",
+    },
+    {
+      question: "Walk me through your workflow?",
+      duration: "00:00:23-00:02:59",
+      competency: "Leadership",
+    },
+    {
+      question: "What kind of research methods do you use?",
+      duration: "00:00:23-00:02:59",
+      competency: "Web Tools",
+    },
+    {
+      question: "Walk me through your workflow?",
+      duration: "00:00:23-00:02:59",
+      competency: "Leadership",
+    },
+    {
+      question: "What kind of research methods do you use?",
+      duration: "00:00:23-00:02:59",
+      competency: "Web Tools",
+    },
+
     // Add more FAQ entries as needed
   ],
 };

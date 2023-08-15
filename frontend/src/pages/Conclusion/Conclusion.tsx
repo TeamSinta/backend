@@ -2,44 +2,53 @@ import { H1 } from "@/components/common/typeScale/StyledTypeScale";
 import React, { useMemo, useState } from "react";
 import TopBar from "./TopBar.jsx";
 import MainScreen from "./MainScreen/MainScreen.js";
-import {
-  RightArrowIcon,
-  TwoArrowIcon,
-} from "@/components/common/svgIcons/Icons.js";
-import { IconBtnM } from "@/components/common/buttons/iconBtn/IconBtn.js";
-import {
-  StyledButton,
-  StyledIconBtn,
-  StyledIconBtnM,
-} from "@/components/common/buttons/button/StyledBtn.js";
-import ElWrap from "@/components/layouts/elWrap/ElWrap.js";
-const Conclusion = () => {
+import { RightArrowIcon } from "@/components/common/svgIcons/Icons.js";
+import { StyledIconBtnM } from "@/components/common/buttons/button/StyledBtn.js";
+import styled from "styled-components";
+
+const HeaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const IconWrapper = styled.div`
+  width: 35px;
+`;
+
+const Title = styled.span`
+  font-size: 20px;
+  margin-left: 10px;
+`;
+
+const MainWrapper = styled.div`
+  padding: 20px;
+  padding-left: 10px;
+  padding-right: 0px;
+`;
+
+const Conclusion: React.FC = () => {
   const header = useMemo(() => {
     return (
-      <H1>
-        <span style={{ display: "flex", alignItems: "center" }}>
-          <ElWrap w={35}>
-            <StyledIconBtnM>
-              <RightArrowIcon />
-            </StyledIconBtnM>
-          </ElWrap>
-          <span style={{ marginLeft: "10px" }}>Conclusions </span>
-        </span>
-      </H1>
+      <HeaderWrapper>
+        <IconWrapper>
+          <StyledIconBtnM>
+            <RightArrowIcon />
+          </StyledIconBtnM>
+        </IconWrapper>
+        <Title>
+          <H1>Conclusions</H1>
+        </Title>
+      </HeaderWrapper>
     );
   }, []);
 
   return (
     <>
       {header}
-      <div
-        style={{ padding: "20px", paddingLeft: "10px", paddingRight: "0px" }}
-      >
+      <MainWrapper>
         <TopBar />
-      </div>
-      <div>
-        <MainScreen />
-      </div>
+      </MainWrapper>
+      <MainScreen />
     </>
   );
 };

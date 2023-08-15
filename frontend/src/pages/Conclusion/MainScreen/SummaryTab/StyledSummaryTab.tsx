@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Grid } from "@mui/material";
 export const StyledSummaryTitle = styled.span`
    {
     font-weight: bold;
@@ -12,6 +13,19 @@ export const StyledSummaryDescription = styled.div`
     font-size: 12px;
     line-height: 15px;
   }
+`;
+
+export const AIGeneratedImageContainer = styled.span`
+  margin-left: 5px;
+  margin-right: 5px;
+  float: right;
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  align: center;
 `;
 
 export const StyledRoundBox = styled.div`
@@ -38,7 +52,7 @@ export const StyledDecisionButton = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    /* padding: 10px 28px; */
+    padding: 10px 28px;
     gap: 10px;
     background: transparent;
     border: 0;
@@ -47,15 +61,27 @@ export const StyledDecisionButton = styled.div`
     outline-offset: -1px;
     border-radius: 12px;
     box-shadow: 0px 2px 0px #121212;
-    height: 40px;
+    height: 200%;
     width: 100%;
-
+    background-color: ${(props) =>
+      props.activeValue === 1
+        ? "#DBFDDC"
+        : props.activeValue === 2
+        ? "#FABBCF"
+        : "#FFFFFF"};
+    
     :hover {
       cursor: pointer;
       box-shadow: 0px 4px 0px #121212;
       transition: 0.5s;
+      background-color: ${(props) =>
+        props.activeValue === 1
+          ? "#B3E2B2"
+          : props.activeValue === 2
+          ? "#F49FB4"
+          : "#D3D3D3"};  // Lighter colors on hover
     }
-
+  
     :active {
       box-shadow: 0px 0px 0px #121212;
       transform: translateY(4px);
@@ -87,4 +113,21 @@ export const StyledSummaryTab = styled.div`
    {
     margin: 15px 10px;
   }
+`;
+
+export const StyledButtonContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  font-size: 10px;
+`;
+
+export const StyledDecisionGrid = styled(Grid)`
+  padding: 20px;
+`;
+
+export const ButtonStyling = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;

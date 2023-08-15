@@ -1,19 +1,47 @@
 import React from "react";
+import styled, { css } from "styled-components";
 
-export const QuestionCollapsible: React.FC<any> = (data: any) => {
-  const { question, index, activeIndex } = data;
+interface QuestionCollapsibleProps {
+  question: string;
+  index: number;
+  activeIndex: number;
+}
+
+interface StyledAngleIconProps {
+  active: boolean;
+}
+
+const StyledAngleIcon = styled.i<StyledAngleIconProps>`
+  margin-left: 10px;
+  ${
+    (props) =>
+      props.active
+        ? css`
+            &::before {
+              content: "\f106";
+            }
+          ` // unicode for fa-angle-up
+        : css`
+            &::before {
+              content: "\f107";
+            }
+          ` // unicode for fa-angle-down
+  };
+`;
+
+export const QuestionCollapsible: React.FC<QuestionCollapsibleProps> = ({
+  question,
+  index,
+  activeIndex,
+}) => {
+  const isActive = activeIndex === index;
 
   return (
-    <div className={` ${activeIndex === index ? "active" : ""}`}>
+    <div className={isActive ? "active" : ""}>
       <p>
-        {question?.question}{" "}
+        {question}{" "}
         <span>
-          <i
-            style={{ marginLeft: "10px" }}
-            className={`fa ${
-              activeIndex === index ? "fa-angle-up" : "fa-angle-down"
-            }`}
-          ></i>
+          <StyledAngleIcon className="fa" active={isActive} />
         </span>
       </p>
     </div>

@@ -4,6 +4,7 @@ from .models import Question, Competency, QuestionBank
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 import json
+
 # Create your views here.
 from openai_helper.utils import get_embedding
 

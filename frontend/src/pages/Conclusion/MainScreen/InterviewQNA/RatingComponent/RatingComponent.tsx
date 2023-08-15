@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-
-import { StyledIcon } from "./StyledRatingComponent";
+import React, { useState } from "react";
 import {
   StyledIconBtnM,
   StyledRatingBtnL,
@@ -15,150 +13,44 @@ import {
   LikeIcon,
   TopStarIcon,
 } from "@/components/common/svgIcons/Icons";
+import { Grid } from "@mui/material";
 
-interface Props {
-  question: any;
-  setRating(rate: any, question: any): any;
-  rating: number;
-  width?: number;
-  height?: number;
+interface RatingButtonProps extends ICustomIconProps {
+  Icon: React.FunctionComponent;
+  activeColor?: string;
+  activeIcon: boolean;
 }
 
-export const WrongButton = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
-  if (active === 1) {
-    return (
-      <div style={{ marginRight: "5px" }}>
-        {" "}
-        <ElWrap w={24}>
-          <StyledRatingBtnM
-            style={{
-              background: "#FABBCF",
-              boxShadow: "none",
-            }}
-          >
-            <WrongIcon />
-          </StyledRatingBtnM>
-        </ElWrap>
-      </div>
-    );
-  } else {
-    return (
-      <div style={{ marginRight: "5px" }}>
-        <ElWrap w={24}>
-          <StyledRatingBtnM>
-            <WrongIcon />
-          </StyledRatingBtnM>
-        </ElWrap>
-      </div>
-    );
-  }
-};
+interface PredefinedRatingsProps {
+  rating: number;
+}
 
-export const DislikeButton = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
-  if (active === 2) {
-    return (
-      <div style={{ marginRight: "5px" }}>
-        <ElWrap w={24}>
-          <StyledRatingBtnM
-            style={{ background: "#FABBCF", boxShadow: "none" }}
-          >
-            <DislikeIcon />
-          </StyledRatingBtnM>
-        </ElWrap>
-      </div>
-    );
-  } else {
-    return (
-      <div style={{ marginRight: "5px" }}>
-        {" "}
-        <ElWrap w={24}>
-          <StyledRatingBtnM>
-            <DislikeIcon />
-          </StyledRatingBtnM>
-        </ElWrap>
-      </div>
-    );
-  }
-};
+export const buttons = [
+  { Icon: WrongIcon, color: "#FABBCF", rate: 1 },
+  { Icon: DislikeIcon, color: "#FABBCF", rate: 2 },
+  { Icon: NeutralIcon, color: "#FFFABF", rate: 3 },
+  { Icon: LikeIcon, color: "#DBFDDC", rate: 4 },
+  { Icon: TopStarIcon, color: "#DBFDDC", rate: 5 },
+];
 
-export const NeutralButton = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
-  if (active === 3) {
-    return (
-      <div style={{ marginRight: "5px" }}>
-        {" "}
-        <ElWrap w={24}>
-          <StyledRatingBtnM
-            style={{ background: "#FFFABF", boxShadow: "none" }}
-          >
-            <NeutralIcon />
-          </StyledRatingBtnM>
-        </ElWrap>
-      </div>
-    );
-  } else {
-    return (
-      <div style={{ marginRight: "5px" }}>
-        {" "}
-        <ElWrap w={24}>
-          <StyledRatingBtnM>
-            <NeutralIcon />
-          </StyledRatingBtnM>
-        </ElWrap>
-      </div>
-    );
-  }
-};
-
-export const LikeButton = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
-  if (active === 4) {
-    return (
-      <div style={{ marginRight: "5px" }}>
-        <ElWrap w={24}>
-          <StyledRatingBtnM
-            style={{ background: "#DBFDDC", boxShadow: "none" }}
-          >
-            <LikeIcon />
-          </StyledRatingBtnM>
-        </ElWrap>
-      </div>
-    );
-  } else {
-    return (
-      <div style={{ marginRight: "5px" }}>
-        {" "}
-        <ElWrap w={24}>
-          <StyledRatingBtnM>
-            <LikeIcon />
-          </StyledRatingBtnM>
-        </ElWrap>
-      </div>
-    );
-  }
-};
-
-export const TopStarButton = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
-  if (active === 5) {
-    return (
+export const RatingButton: React.FC<RatingButtonProps> = ({
+  activeIcon,
+  Icon,
+  activeColor = "",
+}) => {
+  return (
+    <div style={{ marginRight: "5px" }}>
       <ElWrap w={24}>
-        <StyledRatingBtnM style={{ background: "#DBFDDC", boxShadow: "none" }}>
-          <TopStarIcon />
+        <StyledRatingBtnM
+          style={
+            activeIcon ? { background: activeColor, boxShadow: "none" } : {}
+          }
+        >
+          <Icon />
         </StyledRatingBtnM>
       </ElWrap>
-    );
-  } else {
-    return (
-      <ElWrap w={24}>
-        <StyledRatingBtnM>
-          <TopStarIcon />
-        </StyledRatingBtnM>
-      </ElWrap>
-    );
-  }
+    </div>
+  );
 };
 
 export const WrongButtonL = (props: ICustomIconProps): JSX.Element => {
@@ -298,55 +190,32 @@ export const TopStarButtonL = (props: ICustomIconProps): JSX.Element => {
   }
 };
 
-export function RatingComponent({
+export const RatingComponent: React.FC<any> = ({
   question,
   setRating,
   rating,
-  width = 0,
-  height = 0,
-}: Props) {
+}) => {
   const [activeTab, setActiveTab] = useState<any>(null);
+
   const handleRating = (rate: any) => {
     setActiveTab(rate);
     setRating(rate, question);
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-
-        margin: "0px",
-      }}
-    >
-      <StyledIcon>
-        <span onClick={() => handleRating(1)}>
-          <WrongButton width={width} height={height} active={activeTab} />
-        </span>{" "}
-      </StyledIcon>
-      <StyledIcon>
-        <span onClick={() => handleRating(2)}>
-          <DislikeButton width={width} height={height} active={activeTab} />
-        </span>{" "}
-      </StyledIcon>{" "}
-      <StyledIcon>
-        <span onClick={() => handleRating(3)}>
-          <NeutralButton width={width} height={height} active={activeTab} />
-        </span>{" "}
-      </StyledIcon>{" "}
-      <StyledIcon>
-        <span onClick={() => handleRating(4)}>
-          <LikeButton width={width} height={height} active={activeTab} />
-        </span>{" "}
-      </StyledIcon>{" "}
-      <StyledIcon>
-        <span onClick={() => handleRating(5)}>
-          <TopStarButton width={width} height={height} active={activeTab} />
+    <div style={{ display: "flex", margin: "0px" }}>
+      {buttons.map(({ Icon, color, rate }) => (
+        <span onClick={() => handleRating(rate)}>
+          <RatingButton
+            activeIcon={activeTab === rate}
+            Icon={Icon}
+            activeColor={color}
+          />
         </span>
-      </StyledIcon>
+      ))}
     </div>
   );
-}
+};
 
 export function RatingComponentL({
   question,
@@ -370,31 +239,87 @@ export function RatingComponentL({
         justifyContent: "space-between",
       }}
     >
-      <StyledIcon>
+      <StyledIconBtnM>
         <span onClick={() => handleRating(1)}>
           <WrongButtonL width={width} height={height} active={activeTab} />
         </span>{" "}
-      </StyledIcon>
-      <StyledIcon>
+      </StyledIconBtnM>
+      <StyledIconBtnM>
         <span onClick={() => handleRating(2)}>
           <DislikeButtonL width={width} height={height} active={activeTab} />
         </span>{" "}
-      </StyledIcon>{" "}
-      <StyledIcon>
+      </StyledIconBtnM>{" "}
+      <StyledIconBtnM>
         <span onClick={() => handleRating(3)}>
           <NeutralButtonL width={width} height={height} active={activeTab} />
         </span>{" "}
-      </StyledIcon>{" "}
-      <StyledIcon>
+      </StyledIconBtnM>{" "}
+      <StyledIconBtnM>
         <span onClick={() => handleRating(4)}>
           <LikeButtonL width={width} height={height} active={activeTab} />
         </span>{" "}
-      </StyledIcon>{" "}
-      <StyledIcon>
+      </StyledIconBtnM>{" "}
+      <StyledIconBtnM>
         <span onClick={() => handleRating(5)}>
           <TopStarButtonL width={width} height={height} active={activeTab} />
         </span>
-      </StyledIcon>
+      </StyledIconBtnM>
     </div>
   );
 }
+
+export const PredefinedRatingsAndCompetency: React.FC<any> = ({
+  competency,
+  rating,
+}) => {
+  const getCompetencyStyle = (rating: string) => {
+    console.log("buttons", rating);
+
+    const color = buttons.find((button) => button.rate === rating)?.color;
+
+    return {
+      borderRadius: "10px",
+      backgroundColor: color ?? "white",
+      padding: "7px 16px",
+      border: "1px solid #121212",
+      fontSize: "10px",
+      gap: "10px",
+    };
+  };
+
+  return (
+    <>
+      <Grid xs={12} md={6}>
+        <div>
+          <span style={getCompetencyStyle(rating)}>{competency}</span>{" "}
+        </div>
+      </Grid>
+      <Grid xs={12} md={3}>
+        <div className="container">
+          {" "}
+          <div className="icon">
+            <PredefinedRatingsComponent rating={rating} />{" "}
+          </div>
+        </div>
+      </Grid>
+    </>
+  );
+};
+
+export const PredefinedRatingsComponent: React.FC<PredefinedRatingsProps> = ({
+  rating,
+}) => {
+  return (
+    <div style={{ display: "flex", margin: "0px" }}>
+      {buttons.map(({ Icon, color, rate }) => (
+        <span key={rate}>
+          <RatingButton
+            Icon={Icon}
+            activeColor={color}
+            activeIcon={rating === rate}
+          />
+        </span>
+      ))}
+    </div>
+  );
+};

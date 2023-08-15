@@ -4,11 +4,15 @@ from interview.models import InterviewRoundQuestion
 from transcription.models import TranscriptChunk
 from pgvector.django import VectorField
 
+
 class Answer(models.Model):
-    question = models.ForeignKey(InterviewRoundQuestion, on_delete=models.CASCADE, related_name='answer')
+    question = models.ForeignKey(
+        InterviewRoundQuestion, on_delete=models.CASCADE, related_name="answer"
+    )
     answer_text = models.TextField(null=True)
     embedding = VectorField(dimensions=1536, null=True)
-    transcript_chunks = models.ManyToManyField(TranscriptChunk, related_name='answer')
+    transcript_chunks = models.ManyToManyField(TranscriptChunk, related_name="answer")
+
 
 class InterviewerFeedback(models.Model):
     class EmojiChoice(models.IntegerChoices):

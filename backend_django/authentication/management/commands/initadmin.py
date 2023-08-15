@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from user.models import Company
 import os
 from dotenv import dotenv_values, load_dotenv
+
 load_dotenv()
 
 User = get_user_model()

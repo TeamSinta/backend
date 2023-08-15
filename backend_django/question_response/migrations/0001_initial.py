@@ -7,35 +7,96 @@ import pgvector.django
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('transcription', '0001_initial'),
-        ('interview', '0001_initial'),
+        ("transcription", "0001_initial"),
+        ("interview", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Answer',
+            name="Answer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('answer_text', models.TextField(null=True)),
-                ('embedding', pgvector.django.VectorField(dimensions=1536, null=True)),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='answer', to='interview.interviewroundquestion')),
-                ('transcript_chunks', models.ManyToManyField(related_name='answer', to='transcription.transcriptchunk')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("answer_text", models.TextField(null=True)),
+                ("embedding", pgvector.django.VectorField(dimensions=1536, null=True)),
+                (
+                    "question",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="answer",
+                        to="interview.interviewroundquestion",
+                    ),
+                ),
+                (
+                    "transcript_chunks",
+                    models.ManyToManyField(
+                        related_name="answer", to="transcription.transcriptchunk"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='InterviewerFeedback',
+            name="InterviewerFeedback",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('note', models.TextField()),
-                ('reaction', models.IntegerField(choices=[(1, 'Fire'), (2, 'Thumbs Up'), (3, 'Thumbs Down'), (4, 'Heart'), (5, 'Laugh')])),
-                ('score', models.IntegerField(choices=[(1, 'One'), (2, 'Two'), (3, 'Three'), (4, 'Four'), (5, 'Five')])),
-                ('answer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='question_response.answer')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("note", models.TextField()),
+                (
+                    "reaction",
+                    models.IntegerField(
+                        choices=[
+                            (1, "Fire"),
+                            (2, "Thumbs Up"),
+                            (3, "Thumbs Down"),
+                            (4, "Heart"),
+                            (5, "Laugh"),
+                        ]
+                    ),
+                ),
+                (
+                    "score",
+                    models.IntegerField(
+                        choices=[
+                            (1, "One"),
+                            (2, "Two"),
+                            (3, "Three"),
+                            (4, "Four"),
+                            (5, "Five"),
+                        ]
+                    ),
+                ),
+                (
+                    "answer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="question_response.answer",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

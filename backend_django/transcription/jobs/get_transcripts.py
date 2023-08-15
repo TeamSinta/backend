@@ -11,34 +11,38 @@ from question_response.models import Answer
 BASE_URL = "https://api.assemblyai.com/v2"
 TRANSCRIPT_ENDPOINT = f"{BASE_URL}/transcript"
 
+
 def generate_wav_from_video(video_path):
     video_filename = os.path.basename(video_path)
-    audio_filename = os.path.splitext(video_filename)[0] + '.wav'
+    audio_filename = os.path.splitext(video_filename)[0] + ".wav"
     audio_path = os.path.join(os.path.dirname(video_path), audio_filename)
 
     print(audio_path)
-    
+
     video = VideoFileClip(video_path)
     audio = video.audio
-    audio.write_audiofile(audio_path, codec='pcm_s16le')
+    audio.write_audiofile(audio_path, codec="pcm_s16le")
 
     return audio_path
 
+
 def convert_to_minutes(milliseconds):
-    minutes = time.strftime("%M:%S", time.gmtime(milliseconds/1000))
+    minutes = time.strftime("%M:%S", time.gmtime(milliseconds / 1000))
     return minutes
+
 
 def _generate_headers():
     # TODO: Get the .env file from cloud storage
     env_values = dotenv_values("/backend_django/.env")
     headers = {
         "authorization": env_values["ASSEMBLY_AI_KEY"],
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
     return headers
 
+
 def generate_transcriptions_from_assembly(interview_round_id, video_path):
-    #TODO: Clean up video and audio path
+    # TODO: Clean up video and audio path
     headers = _generate_headers()
     audio_path = generate_wav_from_video(video_path)
     audio_filename = os.path.splitext(os.path.basename(audio_path))[0]
@@ -46,22 +50,16 @@ def generate_transcriptions_from_assembly(interview_round_id, video_path):
 
     transcription_json = f"{audio_path_root}/{audio_filename}_transcription_result.json"
 
-    with open(audio_path , "rb") as f:
-        response = requests.post(BASE_URL + "/upload",
-                                headers=headers,
-                                data=f)
-        
+    with open(audio_path, "rb") as f:
+        response = requests.post(BASE_URL + "/upload", headers=headers, data=f)
+
         print(response.json())
 
         upload_url = response.json()["upload_url"]
 
     # request parameters where Speaker Diarization has been enabled
     # TODO: Modify speakers expected based on interview data
-    data = {
-        "audio_url": upload_url,
-        "speaker_labels": True,
-        "speakers_expected": 2
-    }
+    data = {"audio_url": upload_url, "speaker_labels": True, "speakers_expected": 2}
 
     response = requests.post(TRANSCRIPT_ENDPOINT, json=data, headers=headers)
 
@@ -71,20 +69,19 @@ def generate_transcriptions_from_assembly(interview_round_id, video_path):
     while True:
         transcription_result = requests.get(polling_endpoint, headers=headers).json()
 
-        if transcription_result['status'] == 'completed':
-            with open(transcription_json, 'a+') as file:
+        if transcription_result["status"] == "completed":
+            with open(transcription_json, "a+") as file:
                 file.seek(0)  # Move the file pointer to the beginning
                 content = file.read().strip()
                 if content:
-                    file.write('\n')  # Add a newline if the file is not empty
+                    file.write("\n")  # Add a newline if the file is not empty
                 json.dump(transcription_result, file, indent=2)
             break
-        elif transcription_result['status'] == 'error':
+        elif transcription_result["status"] == "error":
             raise RuntimeError(f"Transcription failed: {transcription_result['error']}")
         else:
             time.sleep(3)
 
-    
     # TODO: CONFIRM WHETHER THE SPEAKER LABELS ARE CORRECT
 
     interview_round = InterviewRound.objects.get(id=interview_round_id)

@@ -1,173 +1,205 @@
 import React, { useState } from "react";
-import {
-  ClockIcon,
-  SoundLevelIcon,
-} from "@/components/common/svgIcons/CustomIcons";
-import {
-  ChatStyled,
-  IndexStyle,
-  InterviewContainerStyle,
-} from "../InterviewQNA";
+import { IndexStyle, InterviewContainerStyle } from "../InterviewQNA";
 import { Grid } from "@mui/material";
 import { QuestionCollapsible } from "../QuestionCollapsible";
-import { ChatIcon } from "@/components/common/svgIcons/Icons";
-import { RatingComponent } from "../RatingComponent";
-export const QuestionMeta: React.FC<any> = ({
-  question,
-  width = "",
-  height = "",
-}) => {
+import { ClockIcon } from "@/components/common/svgIcons/CustomIcons";
+import { PredefinedRatingsAndCompetency } from "../RatingComponent";
+import styled from "styled-components";
+
+interface QuestionSummarizedAnswers {
+  question: string;
+  answer: string;
+  competency: string;
+  score: number;
+}
+
+interface QuestionItemProps extends QuestionSummarizedAnswers {
+  index: number;
+  duration: string;
+  handleClick: (index: number) => void;
+  activeIndex: number;
+}
+
+interface QuestionsTabQNAProps {
+  activeIndex: number;
+  data: QuestionItemProps[];
+  handleClick: QuestionItemProps["handleClick"];
+}
+
+interface QuestionTextDisplayProps {
+  activeIndex: number;
+  question: string;
+  handleClick: QuestionItemProps["handleClick"];
+  index?: number;
+}
+
+interface QuestionMetaProps {
+  duration: string;
+}
+
+interface TextProps {
+  marginLeft?: string;
+}
+
+const FlexContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const IndexContainer = styled.div`
+  display: flex;
+`;
+
+const IconContainer = styled.div`
+  opacity: 0.5;
+  margin: 0px;
+  padding: 0px;
+`;
+
+const Text = styled.div<TextProps>`
+  font-size: 10px;
+  font-weight: 400;
+  padding: 0px;
+  margin: 0px;
+  margin-left: 4px;
+`;
+
+const QuestionContainer = styled(Grid)`
+  font-size: 14px;
+  margin: 0px;
+  padding: 0px;
+`;
+
+const RightAlignContainer = styled.div`
+  padding: 0px 0px;
+  float: right;
+`;
+
+const TextContainer = styled(Grid)`
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0px 0px;
+  font-size: 12px;
+  margin: 0px;
+  margin-bottom: 15px;
+  margin-top: 3px;
+`;
+
+const AnswerContainer = styled.div`
+  margin-top: 12px;
+  margin-bottom: 12px;
+  font-weight: 500;
+  border-radius: 10px;
+  background-color: white;
+  font-size: 14px;
+  padding: 20px;
+  width: 100%;
+  line-height: 1.5;
+`;
+
+export const QuestionMeta: React.FC<QuestionMetaProps> = ({ duration }) => {
   return (
     <p>
-      <div
-        className="container"
-        style={{ display: "flex", alignItems: "center" }}
-      >
-        <div style={{ opacity: "0.5", margin: "0px", padding: "0px" }}>
-          <ClockIcon width={15} height={15} active={0} />
-        </div>
-        <div
-          className="text"
-          style={{
-            fontSize: "10px",
-            fontWeight: "400",
-            padding: "0px",
-            margin: "0px",
-          }}
-        >
-          {question?.duration}
-        </div>
-        <div style={{ opacity: "0.5", marginLeft: "5px" }}>
-          <SoundLevelIcon width={15} height={15} active={0} />
-        </div>
-        <div
-          style={{
-            fontSize: "10px",
-            fontWeight: "400",
-            padding: "0px 5px",
-            margin: "0px",
-          }}
-        >
-          {"Low"}
-        </div>
-      </div>
+      <FlexContainer>
+        <IconContainer>
+          <ClockIcon width={12} height={12} active={0} />
+        </IconContainer>
+        <Text>{duration}</Text>
+      </FlexContainer>
     </p>
   );
 };
 
-export const QuestionsTabQNA: React.FC<any> = ({
+export const QuestionTextDisplay: React.FC<QuestionTextDisplayProps> = ({
+  handleClick,
+  index,
+  activeIndex,
+  question,
+}) => {
+  return (
+    <QuestionContainer
+      container
+      spacing={1}
+      className="interview-qna-item"
+      onClick={() => handleClick(index)}
+    >
+      <Grid item xs={11} md={11}>
+        <IndexContainer>
+          <IndexStyle>
+            <span>{index + 1}</span>
+          </IndexStyle>
+          <QuestionCollapsible
+            index={index}
+            activeIndex={activeIndex}
+            question={question}
+          />
+        </IndexContainer>
+      </Grid>
+    </QuestionContainer>
+  );
+};
+
+export const QuestionItem: React.FC<QuestionItemProps> = ({
+  question,
+  answer,
+  competency,
+  duration,
+  score,
+  index,
+  handleClick,
+  activeIndex,
+}) => {
+  console.log("question", duration);
+
+  return (
+    <>
+      <InterviewContainerStyle>
+        <QuestionTextDisplay
+          handleClick={handleClick}
+          index={index}
+          activeIndex={activeIndex}
+          question={question}
+        />
+      </InterviewContainerStyle>
+
+      <TextContainer container spacing={1} className="" alignItems="center">
+        <PredefinedRatingsAndCompetency
+          competency={competency}
+          rating={score}
+        />
+      </TextContainer>
+
+      <AnswerContainer
+        className={`question-answer ${activeIndex === index ? "show" : ""}`}
+      >
+        {answer}
+      </AnswerContainer>
+
+      <hr style={{ opacity: "0.25" }} />
+    </>
+  );
+};
+
+export const QuestionsTabQNA: React.FC<QuestionsTabQNAProps> = ({
   activeIndex,
   data,
   handleClick,
-  getCompetencyStyle,
 }) => {
-  const [rating, setRating] = useState<number>(0);
-  const handleRating = (question: any, rate: number) => {
-    //setRating(rate);
-  };
+  console.log("data", data);
   return (
     <div>
-      {data?.map((question: any, index: number) => (
-        <>
-          <InterviewContainerStyle>
-            <Grid
-              container
-              spacing={1}
-              className="interview-qna-item"
-              key={index}
-              style={{
-                fontSize: "12px",
-                margin: "0px",
-                padding: "0px",
-              }}
-              onClick={() => handleClick(index)}
-            >
-              <Grid xs={11} md={11}>
-                {" "}
-                <div style={{ display: "flex" }}>
-                  <IndexStyle>
-                    <div>
-                      {" "}
-                      <span>{index + 1}</span>{" "}
-                    </div>
-                  </IndexStyle>
-                  <QuestionCollapsible
-                    index={index}
-                    activeIndex={activeIndex}
-                    question={question}
-                  />
-                </div>
-              </Grid>
-              <Grid xs={1} md={1}>
-                <div
-                  style={{
-                    padding: "0px 0px",
-                    float: "right",
-                  }}
-                >
-                  <ChatStyled>
-                    <ChatIcon />
-                  </ChatStyled>
-                </div>
-              </Grid>
-            </Grid>
-          </InterviewContainerStyle>
-
-          <Grid
-            container
-            spacing={1}
-            className=""
-            key={index}
-            style={{
-              fontWeight: "bold",
-              cursor: "pointer",
-              padding: "0px 0px",
-              fontSize: "12px",
-              margin: "0px",
-              marginBottom: "15px",
-              marginTop: "3px",
-            }}
-          >
-            <Grid xs={12} md={3} style={{ marginTop: "0px" }}>
-              <div>
-                <span style={getCompetencyStyle(question?.competency)}>
-                  {question?.competency}
-                </span>{" "}
-              </div>
-            </Grid>
-            <Grid xs={12} md={4} style={{ marginTop: "0px" }}>
-              <QuestionMeta question={question} />
-            </Grid>
-            <Grid xs={12} md={3} style={{ marginTop: "0px" }}>
-              <div className="container" style={{ marginTop: "-5px" }}>
-                {" "}
-                <div className="icon">
-                  <RatingComponent
-                    question={question}
-                    setRating={handleRating}
-                    rating={question?.rating}
-                  />{" "}
-                </div>
-              </div>
-            </Grid>
-          </Grid>
-          <div
-            style={{
-              marginTop: "10px",
-              marginBottom: "10px",
-              fontWeight: "400",
-              borderRadius: "5px",
-              backgroundColor: "white",
-              fontSize: "10px",
-              padding: "20px",
-            }}
-            className={`question-answer ${activeIndex === index ? "show" : ""}`}
-          >
-            eee
-          </div>
-
-          <hr style={{ opacity: "0.25" }}></hr>
-        </>
+      {data?.map((question, index) => (
+        <QuestionItem
+          key={index}
+          index={index}
+          duration={question.duration}
+          question={question.question}
+          answer={question.answer}
+          competency={question.competency}
+          score={question.score}
+          handleClick={handleClick}
+          activeIndex={activeIndex}
+        />
       ))}
     </div>
   );

@@ -9,10 +9,10 @@ export const TranscriptionCollapsible: React.FC<any> = (data: any) => {
   return (
     <div
       style={{
-        fontWeight: "400",
-        borderRadius: "5px",
+        fontWeight: "500",
+        borderRadius: "10px",
         backgroundColor: "white",
-        fontSize: "10px",
+        fontSize: "14px",
         marginTop: "10px",
       }}
       className={`question-answer ${activeIndex === index ? "show" : ""}`}
@@ -59,11 +59,11 @@ export const TranscriptionCollapsible: React.FC<any> = (data: any) => {
               </p>
             </div>
           </Grid>
-          <Grid xs={1} md={1} style={{ padding: "15px 0px" }}>
+          {/* <Grid xs={1} md={1} style={{ padding: "15px 0px" }}>
             <ChatStyled>
               <ChatIcon />
             </ChatStyled>
-          </Grid>
+          </Grid> */}
         </Grid>
       ))}
     </div>

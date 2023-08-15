@@ -7,65 +7,152 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('user', '0001_initial'),
-        ('question', '0001_initial'),
+        ("user", "0001_initial"),
+        ("question", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='InterviewRound',
+            name="InterviewRound",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField()),
-                ('video_uri', models.TextField()),
-                ('transcription_file_uri', models.TextField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('candidate', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='candidate', to=settings.AUTH_USER_MODEL)),
-                ('interviewer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='interviewer', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField()),
+                ("video_uri", models.TextField()),
+                ("transcription_file_uri", models.TextField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "candidate",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="candidate",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "interviewer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="interviewer",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Topic',
+            name="Topic",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('topics_text', models.CharField(max_length=200)),
-                ('company_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='user.company')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("topics_text", models.CharField(max_length=200)),
+                (
+                    "company_id",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="user.company"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='InterviewRoundTopic',
+            name="InterviewRoundTopic",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('interview_round', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='interview.interviewround')),
-                ('topic', models.ManyToManyField(to='interview.topic')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(default=django.utils.timezone.now)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "interview_round",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="interview.interviewround",
+                    ),
+                ),
+                ("topic", models.ManyToManyField(to="interview.topic")),
             ],
         ),
         migrations.CreateModel(
-            name='InterviewRoundQuestion',
+            name="InterviewRoundQuestion",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('interview_round', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='interview_round_questions', to='interview.interviewround')),
-                ('interview_round_topics', models.ManyToManyField(to='interview.interviewroundtopic')),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='interview_round_questions', to='question.question')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "interview_round",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="interview_round_questions",
+                        to="interview.interviewround",
+                    ),
+                ),
+                (
+                    "interview_round_topics",
+                    models.ManyToManyField(to="interview.interviewroundtopic"),
+                ),
+                (
+                    "question",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="interview_round_questions",
+                        to="question.question",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='InterviewRoundInterviewer',
+            name="InterviewRoundInterviewer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('interview_round', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='interview.interviewround')),
-                ('interviewer', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "interview_round",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="interview.interviewround",
+                    ),
+                ),
+                ("interviewer", models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

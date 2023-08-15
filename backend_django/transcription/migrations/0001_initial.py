@@ -7,25 +7,45 @@ import pgvector.django
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('interview', '0001_initial'),
+        ("interview", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TranscriptChunk',
+            name="TranscriptChunk",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('chunk_text', models.TextField()),
-                ('embedding', pgvector.django.VectorField(dimensions=1536, null=True)),
-                ('start_time', models.IntegerField()),
-                ('end_time', models.IntegerField()),
-                ('interview_round', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='transcript_chunks', to='interview.interviewround')),
-                ('speaker', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("chunk_text", models.TextField()),
+                ("embedding", pgvector.django.VectorField(dimensions=1536, null=True)),
+                ("start_time", models.IntegerField()),
+                ("end_time", models.IntegerField()),
+                (
+                    "interview_round",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="transcript_chunks",
+                        to="interview.interviewround",
+                    ),
+                ),
+                (
+                    "speaker",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]
