@@ -27,14 +27,14 @@ const titleInputArg = {
 const descriptionInputArg = {
   error: false,
   disable: false,
-  placeholder: "Discription",
-  name: "discription",
+  placeholder: "Description",
+  name: "description",
 };
 
 const CreateInterviews = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { members } = useSelector(selectRole);
-  const onMemberSelectd = (memberIdx: number) => {
+  const onMemberSelected = (memberIdx: number) => {
     dispatch(selectedMember({ memberIdx: memberIdx }));
   };
 
@@ -65,7 +65,7 @@ const CreateInterviews = () => {
                 <Photo
                   photoType={PhotoType.L}
                   {...member}
-                  onSelect={onMemberSelectd}
+                  onSelect={onMemberSelected}
                 />
               </ElWrap>
             ))}

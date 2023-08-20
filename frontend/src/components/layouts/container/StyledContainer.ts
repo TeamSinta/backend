@@ -7,9 +7,13 @@ export const StyledContainer = styled.div`
     "side main";
   grid-template-columns: 180px 1fr;
   grid-template-rows: 100px 1fr;
+  max-width: 100%;
+
+  /* Add more media queries for other screen sizes as needed */
 `;
 
 export const StyledMain = styled.div`
   grid-area: main;
-  padding: 0 30px;
+  padding: 30px !important;
+  overflow-x: hidden;
 `;

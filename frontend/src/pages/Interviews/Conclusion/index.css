@@ -89,7 +89,6 @@
 .video-player-wrapper {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%;
   border-radius: 10px;
   overflow: hidden;
   margin-left: -20px;

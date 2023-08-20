@@ -108,3 +108,34 @@ export const CardButtons = styled.div`
   z-index: 999;
   right: 0px;
 `;
+
+export const CardWrap = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+export const InterviewCardCover = styled.div<ICardCover>`
+  //Use when we have cover url. Right now I used jpg file.
+  /* background-image: url(${(props) => props.imgUrl}); */
+  background-image: url(${Cover});
+  background-size: cover, contain;
+  background-position: center, right bottom;
+  background-repeat: no-repeat, no-repeat;
+  position: relative;
+  width: 100%;
+  height: 178px;
+  border-radius: 12px 12px 0 0;
+`;
+
+export const CardTitleContent = styled.div`
+  display: flex;
+  margin: 0 0 2px 0px;
+  gap: 4px;
+  align-items: center;
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: ${(props) => props.theme.colors.black};
+  }
+`;

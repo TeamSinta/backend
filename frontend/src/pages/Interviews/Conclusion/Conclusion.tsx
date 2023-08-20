@@ -1,6 +1,6 @@
 import { H1 } from "@/components/common/typeScale/StyledTypeScale";
 import React, { useMemo, useState } from "react";
-import TopBar from "./TopBar.jsx";
+import TopBar from "./TopBar.js";
 import MainScreen from "./MainScreen/MainScreen.js";
 import { RightArrowIcon } from "@/components/common/svgIcons/Icons.js";
 import { StyledIconBtnM } from "@/components/common/buttons/button/StyledBtn.js";

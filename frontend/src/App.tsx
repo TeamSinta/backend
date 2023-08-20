@@ -3,11 +3,9 @@ import SideNavBar from "./components/layouts/sidenavbar/SideNavBar";
 import { StyledMain } from "./components/layouts/container/StyledContainer";
 import Container from "./components/layouts/container/Container";
 import Routers from "./router/Routers";
-import { Counter } from "./features/counter/Counter";
 import styled from "styled-components";
-import GoogleLoginButton from "./components/pages/login/googleLoginBtn/GoogleLoginButton";
 
-// Node: server, Brower : worker.
+// Node: server, Browser : worker.
 if (import.meta.env.VITE_ENV !== "develop") {
   if (typeof window === "undefined") {
     (async () => {
@@ -31,7 +29,7 @@ const DivSample = styled.div`
 `;
 
 function App() {
-  const interview = window?.location?.pathname.includes("interview");
+  const interview = window?.location?.pathname.includes("video-call");
   return (
     <>
       {interview ? (
@@ -41,9 +39,8 @@ function App() {
           <Container>
             <SideNavBar />
             <TopNavBar />
-            <StyledMain className="p-all-8">
+            <StyledMain>
               <Routers></Routers>
-              <GoogleLoginButton />
             </StyledMain>
           </Container>
         </>

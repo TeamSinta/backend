@@ -28,14 +28,14 @@ import {
   RightArrowIcon,
 } from "@/components/common/svgIcons/Icons";
 import InterviewStageSlider from "./InterviewStageSlider";
-import { QuestionMeta } from "../Conclusion/MainScreen/InterviewQNA/Tabs/QuestionTabQNA";
+import { QuestionMeta } from "../Interviews/Conclusion/MainScreen/InterviewQNA/Tabs/QuestionTabQNA";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import { StyledIconBtnM } from "@/components/common/buttons/button/StyledBtn";
 import { Notes } from "./Notes";
 import "./index.css";
 import { BottomNavBar } from "./BottomNavBar";
 import VideoSDK from "./VideoSDK";
-import { RatingComponentL } from "../Conclusion/MainScreen/InterviewQNA/RatingComponent/RatingComponent";
+import { RatingComponentL } from "../Interviews/Conclusion/MainScreen/InterviewQNA/RatingComponent";
 
 const Interview = () => {
   const title = "FrontEnd Developer";

@@ -4,13 +4,16 @@ import styled from "styled-components";
 export const StyledStack = styled(Stack)`
   background-color: ${(props) => props.theme.colors.whisperGrey};
   min-height: 100vh;
-  height: auto !important;
+  height: 100% !important;
   width: 180px;
   left: 0px;
   top: 0px;
   padding-left: 16px;
   padding-right: 16px;
   grid-area: side;
+  position: -webkit-fixed; /* For Safari */
+  position: fixed;
+  overflow-y: auto;
 `;
 
 export const LogoImage = styled.img`
@@ -23,7 +26,7 @@ export const NavButton = styled(Stack)`
   width: 148px;
   color: ${(props) => props.theme.colors.black};
   gap: 8px;
-  border-radius: 12px;
+  border-radius: 22px;
   align-items: center;
 
   svg {
@@ -40,12 +43,13 @@ export const NavButton = styled(Stack)`
     flex: none;
     order: 0;
     flex-grow: 0;
-    border: 1px solid ${(props) => props.theme.colors.black};
+    /* border: 1px solid ${(props) => props.theme.colors.black}; */
   }
 
   &.active {
     background: ${(props) => props.theme.colors.palePurple};
-    border: 1.2px solid ${(props) => props.theme.colors.black};
+    /* border: 1.2px solid ${(props) => props.theme.colors.black}; */
+    color: #625df4;
   }
 
   .link {

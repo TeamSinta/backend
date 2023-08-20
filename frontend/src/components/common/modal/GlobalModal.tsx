@@ -63,7 +63,7 @@ const GlobalModal = (): JSX.Element => {
         );
       case MODAL_TYPE.CREATE_INT:
         return (
-          <Modal title="Create New Interviews">
+          <Modal title="Create New Interview">
             <CreateInterviews />
           </Modal>
         );

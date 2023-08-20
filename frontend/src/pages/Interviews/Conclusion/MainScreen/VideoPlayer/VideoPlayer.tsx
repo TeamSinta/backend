@@ -597,7 +597,7 @@ const VideoPlayer = () => {
               <video
                 className={`${isPlaying ? "" : "blurred"}`}
                 ref={videoRef}
-                src="src\pages\Conclusion\MainScreen\VideoPlayer\videosample.mp4"
+                src="src\pages\Interviews\Conclusion\MainScreen\VideoPlayer\videosample.mp4"
                 onTimeUpdate={handleTimeUpdate}
               ></video>
             </div>

@@ -228,7 +228,7 @@ export const StyledRatingBtnM = styled.button`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  background-color:white;
+  background-color: white;
   border: 0;
   position: relative;
   outline: 1px solid ${(props) => props.theme.colors.black};
@@ -237,7 +237,6 @@ export const StyledRatingBtnM = styled.button`
   box-shadow: 0px 2px 0px #121212;
   height: 24px;
   width: 100%;
-
 
   svg {
     width: 14px;
@@ -260,8 +259,6 @@ export const StyledRatingBtnM = styled.button`
 
 
     `}
-
-  }
 `;
 
 export const StyledRatingBtnL = styled.button`
@@ -269,17 +266,16 @@ export const StyledRatingBtnL = styled.button`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  background-color:white;
+  background-color: white;
   border: 0;
   position: relative;
   outline: 1px solid ${(props) => props.theme.colors.black};
   outline-offset: -1px;
   border-radius: 10px;
   box-shadow: 0px 2px 0px #121212;
-  height:40px;
+  height: 40px;
   width: 100%;
-  text-align:center;
-
+  text-align: center;
 
   svg {
     width: 24px;
@@ -289,22 +285,21 @@ export const StyledRatingBtnL = styled.button`
   ${(props) =>
     !props.disabled &&
     `
-    :hover {
-      cursor: pointer;
-      box-shadow: 0px 4px 0px #121212;
-      transition: 0.5s;
-    }
-
-    :active {
-      box-shadow: 0px 0px 0px #121212;
-      transform: translateY(4px);
-    }
-
-
-    `}
-
+  :hover {
+    cursor: pointer;
+    box-shadow: 0px 4px 0px #121212;
+    transition: 0.5s;
   }
+
+  :active {
+    box-shadow: 0px 0px 0px #121212;
+    transform: translateY(4px);
+  }
+
+
+  `}
 `;
+
 export const VideoControlBtnM = styled.button`
   display: flex;
   justify-content: center;
@@ -320,7 +315,6 @@ export const VideoControlBtnM = styled.button`
   height: 24px;
   width: 100%;
 
-
   svg {
     width: 14px;
     height: 14px;
@@ -342,8 +336,6 @@ export const VideoControlBtnM = styled.button`
 
 
     `}
-
-  }
 `;
 
 export const StyledRatingBtnS = styled(StyledButtonM)`

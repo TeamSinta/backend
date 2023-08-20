@@ -1,44 +1,62 @@
 import Stack from "@mui/material/Stack";
 import { Box } from "@mui/material";
-
+import React from "react";
 import { LogoImage } from "./StyledTopBarNav";
 import image from "@/assets/images/Homie.png";
-import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBtn";
 import SearchInput from "@/components/common/form/serchInput/SearchInput";
-import { PlusIcon } from "@/components/common/svgIcons/Icons";
-import styled from "styled-components";
+import {
+  CalendarIcon,
+  PlusIcon,
+  RightBracketIcon,
+} from "@/components/common/svgIcons/Icons";
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import ElWrap from "../elWrap/ElWrap";
+import { DropDownButton } from "@/components/common/buttons/dropDownBtn/DropDownBtn";
+import { StyledTopNavBar } from "./StyledTopBarNav";
 
-const StyledTobNavBar = styled(Box)`
-  grid-area: header;
-  padding: 30px 30px 24px 30px;
-`;
+export interface IButton {
+  to: string;
+  icon: JSX.Element;
+  text: string;
+}
 
 const TopNavBar = (): JSX.Element => {
   return (
-    <StyledTobNavBar sx={{ width: "100%" }}>
-      <Stack direction="row" spacing={2} alignItems="center">
+    <StyledTopNavBar sx={{ width: "100%" }}>
+      <Stack direction="row" spacing={2}>
         <Box sx={{ width: "100%" }}>
-          <SearchInput
-            disable={false}
-            placeholder={"Search for Role or Candidate"}
-            error={false}
-          />
+          <SearchInput disable={false} placeholder={"Search"} error={false} />
         </Box>
 
-        <ElWrap w={218}>
-          <TextIconBtnL
-            label="Create"
+        <ElWrap w={280}>
+          <DropDownButton
+            label="Create a Meeting"
             onClick={() => {}}
-            icon={<PlusIcon />}
+            icon={<RightBracketIcon />}
             disable={false}
             className={BackgroundColor.ACCENT_PURPLE}
-          ></TextIconBtnL>
+            buttons={[
+              {
+                label: "Start a Meeting",
+                icon: <PlusIcon />,
+                onClick: () => {
+                  /* Your onClick logic here */
+                },
+              },
+              {
+                label: "Plan a Meeting",
+                icon: <CalendarIcon />,
+                onClick: () => {
+                  /* Your onClick logic here */
+                },
+              },
+              // You can add more buttons dynamically by adding more objects to this array
+            ]}
+          />
         </ElWrap>
         <LogoImage src={image} alt="Homie Logo" />
       </Stack>
-    </StyledTobNavBar>
+    </StyledTopNavBar>
   );
 };
 

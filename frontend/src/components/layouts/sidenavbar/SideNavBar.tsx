@@ -1,11 +1,11 @@
 import image from "@/assets/images/SintaLogo.png";
 import {
-  CalendarIcon,
   CandidateIcon,
   DashboardIcon,
   DoorIcon,
   RoleIcon,
   SettingIcon,
+  InfoIcon,
 } from "@/components/common/svgIcons/Icons";
 import { BodyMMedium } from "@/components/common/typeScale/StyledTypeScale";
 import { type ReactElement } from "react";
@@ -43,19 +43,19 @@ const navButtonLinks: INavButtonLink[] = [
     icon: <DashboardIcon />,
   },
   {
-    text: "Roles",
-    to: "/roles",
+    text: "Templates",
+    to: "/templates",
     icon: <RoleIcon />,
   },
   {
-    text: "Candidates",
-    to: "/candidates",
+    text: "Interviews",
+    to: "/interviews",
     icon: <CandidateIcon />,
   },
   {
-    text: "Calendar",
-    to: "/calendar",
-    icon: <CalendarIcon />,
+    text: "Notifications",
+    to: "/Notifications",
+    icon: <InfoIcon />,
   },
 ];
 
