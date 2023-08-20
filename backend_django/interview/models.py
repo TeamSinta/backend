@@ -11,6 +11,8 @@ class InterviewRound(models.Model):
         CustomUser,
         related_name=CustomUser.RoleChoices.CANDIDATE,
         on_delete=models.CASCADE,
+        null=True,
+        default=None,
     )
     interviewer = models.ForeignKey(
         CustomUser,

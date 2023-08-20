@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     "user",
+    "videosdk",
     "corsheaders",
     "summary.apps.SummaryConfig",
 ]

@@ -24,10 +24,16 @@ def create_interview_round(request):
             title = data.get("title")
             candidate_id = data.get("candidate_id")
             description = data.get("description")
+            interviewer_id = data.get(
+                "interviewer_id"
+            )  # This is required according to the model, API not working unless this exists.
 
             if title:
                 interview_round = InterviewRound.objects.create(
-                    title=title, candidate_id=candidate_id, description=description
+                    title=title,
+                    candidate_id=candidate_id,
+                    description=description,
+                    interviewer_id=interviewer_id,  # This is required according to the model, API not working unless this exists.
                 )
 
                 response = {
@@ -35,6 +41,7 @@ def create_interview_round(request):
                     "title": interview_round.title,
                     "candidate_id": interview_round.candidate_id,
                     "description": interview_round.description,
+                    "interviewer_id": interview_round.interviewer_id,  # This is required according to the model, API not working unless this exists.
                 }
                 return JsonResponse(response)
         except json.JSONDecodeError:
@@ -55,6 +62,7 @@ def get_interview_round(request, interview_round_id):
             "title": interview_round.title,
             "candidate_id": interview_round.candidate_id,
             "description": interview_round.description,
+            ## "video_uri": interview_round.video_uri, ## placehodler, this needs to be updated later.
         }
         return JsonResponse(response)
     except InterviewRound.DoesNotExist:
