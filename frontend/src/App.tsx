@@ -30,9 +30,10 @@ const DivSample = styled.div`
 
 function App() {
   const interview = window?.location?.pathname.includes("video-call");
+  const login = window?.location?.pathname.includes("login"); // temp solution. Should be dependend on authenticated/not state.
   return (
     <>
-      {interview ? (
+      {interview || login ? (
         <Routers></Routers>
       ) : (
         <>

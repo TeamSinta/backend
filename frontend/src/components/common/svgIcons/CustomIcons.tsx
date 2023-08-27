@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// ignored linting here until we actually use the  components.
+
 import { IconButtonProps } from "@mui/material";
 import { IconBtnM } from "../buttons/iconBtn/IconBtn";
 import { BackgroundColor } from "@/features/utils/utilEnum";
@@ -8,6 +11,7 @@ import { ReactComponent as Dislike } from "@/assets/svg/dislike.svg";
 import { ReactComponent as Like } from "@/assets/svg/like.svg";
 import { ReactComponent as Neutral } from "@/assets/svg/neutral.svg";
 import { ReactComponent as Star } from "@/assets/svg/starIcon.svg";
+
 export interface ICustomIconProps {
   width: number;
   height: number;

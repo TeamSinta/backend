@@ -14,9 +14,9 @@ import {
   Container,
   PendingReviewsBox,
   TextBox,
-} from "./StyledDashboard."; // Import your styled components from the new file
+} from "./StyledDashboard"; // Import your styled components from the new file
 import dashboardImage from "src/assets/svg/homepage.svg";
-import { StyledImage } from "./StyledDashboard.";
+import { StyledImage } from "./StyledDashboard";
 
 const DashBoard = () => {
   const members = [

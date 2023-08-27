@@ -40,12 +40,20 @@ export const BodyLBold = styled.div`
   font-weight: 600;
 `;
 
+export const BodyLSemiBold = styled(BodyLBold)`
+  font-family: "Chillax";
+`;
+
 export const BodyLMedium = styled(BodyLBold)`
   font-family: "Chillax";
   font-weight: 500;
 `;
 
 export const BodyMBold = styled(BodyLBold)`
+  font-size: 14px;
+`;
+
+export const BodyMSemiBold = styled(BodyLBold)`
   font-size: 14px;
 `;
 

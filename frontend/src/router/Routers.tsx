@@ -9,13 +9,14 @@ import Templates from "@/pages/Templates";
 import NotFound from "@/pages/NotFound";
 import InterviewDetails from "@/pages/InterviewDetails";
 import { Route, Routes } from "react-router-dom";
-import LoginScreen from "@/pages/Login";
+import LoginScreen from "@/pages/Login/Login";
 import LogOutScreen from "@/pages/LogOut";
 import Conclusions from "@/pages/Interviews/InterviewsHome";
 
 const Routers = () => {
   return (
     <Routes>
+      <Route path="/login" element={<LoginScreen />} />;
       <Route path="/" element={<DashBoard />} />
       <Route path="/dashboard" element={<DashBoard />} />
       <Route path="/templates" element={<Templates />}>
