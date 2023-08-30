@@ -11,6 +11,8 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
+import json
+
 
 def get_qa_pairs(interview_round_id):
     questions = InterviewRoundQuestion.objects.filter(
@@ -36,24 +38,8 @@ class GenerateSummaryView(APIView):
     def _generate_response(self, interview_round_id, summary):
         response_data = {
             "title": "Summary",
-            "description": summary.text,
-            "faq": [
-                {
-                    "question": "Kristin shared three different designs for action items",
-                    "answer": "Answer 1",
-                    "competency": "Leadership",
-                },
-                {
-                    "question": "Leslie went over the project brief for product integrations",
-                    "answer": "Answer 2",
-                    "competency": "Empathy",
-                },
-                {
-                    "question": "Kristin and Leslie walked through their ideas for improved dashboard UX",
-                    "answer": "Kristin and Leslie met to discuss the latest designs for action items",
-                    "competency": "Empathy",
-                },
-            ],
+            "description": summary.description,
+            "faq": summary.qa_pairs,
             "interview_round_id": interview_round_id,
         }
 
@@ -63,13 +49,15 @@ class GenerateSummaryView(APIView):
         # Get question-answer pairs for the interview
         qa_pairs = get_qa_pairs(interview_round_id)
         # Generate summary text from the QA pairs
-        summary_text = summarize_qa_pairs(qa_pairs)
+        description, qa_pairs = summarize_qa_pairs(qa_pairs)
 
         # Retrieve the interview
         interview = get_object_or_404(InterviewRound, id=interview_round_id)
 
         # Create the summary in the database
-        summary = Summary.objects.create(interview_round=interview, text=summary_text)
+        summary = Summary.objects.create(
+            interview_round=interview, qa_pairs=qa_pairs, description=description
+        )
 
         return self._generate_response(interview_round_id, summary)
 
@@ -79,7 +67,5 @@ class GenerateSummaryView(APIView):
         # Find the summary associated with this interview
         # summary = Summary.objects.get(interview_round=interview)
         summary = Summary.objects.filter(interview_round=interview).latest("id")
-
-        print("Getting a call")
 
         return self._generate_response(interview_round_id, summary)

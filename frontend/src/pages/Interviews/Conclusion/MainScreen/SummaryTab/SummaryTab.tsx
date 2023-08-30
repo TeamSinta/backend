@@ -108,7 +108,7 @@ export const SubmitDecision = ({ active, setActive }) => (
         <img
           alt="Summary"
           style={{ width: "100%", margin: "0px" }}
-          src="src\assets\images\ImageConclusion.JPG"
+          src="/src/assets/images/ImageConclusion.JPG"
         />
       </StyledRoundBox>
     </Grid>

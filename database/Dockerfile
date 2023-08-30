@@ -1,8 +1,9 @@
-# Start from the PostgreSQL base image
 FROM postgres
 
-# Install dependencies for building the extension
-RUN apt-get update && apt-get install -y git build-essential postgresql-server-dev-all
+RUN apt-get -o Acquire::Check-Valid-Until=false update
+
+# Install other dependencies
+RUN apt-get install -y git build-essential postgresql-server-dev-all
 
 # Clone and build pgvector
 RUN cd /tmp && \

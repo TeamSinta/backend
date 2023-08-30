@@ -50,6 +50,9 @@ def generate_transcriptions_from_assembly(interview_round_id, video_path):
 
     transcription_json = f"{audio_path_root}/{audio_filename}_transcription_result.json"
 
+    if os.path.exists(transcription_json):
+        os.remove(transcription_json)
+
     with open(audio_path, "rb") as f:
         response = requests.post(BASE_URL + "/upload", headers=headers, data=f)
 

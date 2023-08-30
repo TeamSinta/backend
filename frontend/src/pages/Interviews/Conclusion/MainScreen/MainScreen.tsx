@@ -139,7 +139,7 @@ const MainScreen: React.FC<MainScreenProps> = () => {
         <Grid item xs={12} sm={12} md={5}>
           <H3Bold>Behavioral Interview</H3Bold>
           <div className="video-player-wrapper">
-            <VideoPlayer />
+            <VideoPlayer  questionsTranscript = {questionsTranscript?.data} />
           </div>
         </Grid>
         <Grid item xs={12} sm={12} md={7}>

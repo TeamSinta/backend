@@ -7,6 +7,8 @@ ENV PYTHONUNBUFFERED 1
 # Set work directory
 WORKDIR /backend_django
 
+RUN apt-get -o Acquire::Check-Valid-Until=false -y update
+
 # Install FFMPEG
 RUN apt-get -y update
 RUN apt-get -y upgrade

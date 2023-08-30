@@ -17,3 +17,4 @@ tenacity
 pandas
 factory_boy
 faker
+black

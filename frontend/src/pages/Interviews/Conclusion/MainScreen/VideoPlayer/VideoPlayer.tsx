@@ -101,7 +101,7 @@ export const FullscreenButton = (props: ICustomIconProps): JSX.Element => {
   );
 };
 
-const VideoPlayer = () => {
+const VideoPlayer = ( {questionsTranscript} ) => {
   const videoRef = useRef<any>(null);
   const questionBarRef = useRef<any>(null);
   const [isPlaying, setIsPlaying] = useState<any>(false);
@@ -123,6 +123,11 @@ const VideoPlayer = () => {
 
   const [interviewerData, setInterviewerData] = useState<any>([]);
   const [questionData, setQuestionData] = useState<any>([]);
+
+  console.log(questionsTranscript)
+
+  // TODO: Convert questionsTranscript to resemble the questionData format.
+  
   const response = {
     videoDuration: "0:55",
     questionData: [
@@ -597,7 +602,7 @@ const VideoPlayer = () => {
               <video
                 className={`${isPlaying ? "" : "blurred"}`}
                 ref={videoRef}
-                src="src\pages\Interviews\Conclusion\MainScreen\VideoPlayer\videosample.mp4"
+                src="/src/pages/Interviews/Conclusion/MainScreen/VideoPlayer/mock_microsoft_interview.mp4"
                 onTimeUpdate={handleTimeUpdate}
               ></video>
             </div>
