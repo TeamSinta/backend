@@ -110,15 +110,23 @@ export const DropdownLabel = styled(BodySMedium)`
   align-items: center;
 `;
 
-export const DropdownEl = styled.div`
+export const DropdownEl = styled.div<IDropdownOpen>`
   width: 100%;
   background: ${(props) => props.theme.colors.whisperGrey};
   border-radius: 12px;
   padding: 8px 16px;
   height: 40px;
   border: 0;
-  outline: none;
   font-size: 12px;
+
+  ${(props) =>
+    props.open
+      ? css`
+          outline: 1px solid ${(props) => props.theme.colors.black};
+        `
+      : css`
+          outline: none;
+        `}
 
   div {
     display: flex;
@@ -182,6 +190,7 @@ export const OptionUl = styled.ul<IDropdownOpen>`
           transform-origin: 0 0;
 
           ${DropdownEl} {
+            outline: 1px solid ${(props) => props.theme.colors.black};
             :hover {
               box-shadow: none;
               transition: 0.5s;

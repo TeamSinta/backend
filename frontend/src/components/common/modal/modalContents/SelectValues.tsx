@@ -42,7 +42,7 @@ const SelectValue = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const onClickModalOpen = (modalType: MODAL_TYPE) => {
-    navigate("/interviews/template");
+    // navigate("/interviews/template");
     dispatch(
       openModal({
         modalType: modalType,

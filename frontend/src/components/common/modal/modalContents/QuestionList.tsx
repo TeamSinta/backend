@@ -1,6 +1,6 @@
 import { AppDispatch } from "@/app/store";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
-import { IQuestion } from "@/features/interviews/interviesInterface";
+import { IQuestion } from "@/features/interviews/interviewsInterface";
 import {
   selectInterview,
   setSelectedQuestion,
@@ -40,7 +40,6 @@ const QuestionList = () => {
     useSelector(selectInterview);
   const [openItems, setOpenItems] = useState(new Set());
   const [html, setHtml] = useState<string>("");
-  const navigate = useNavigate();
 
   const openDetailHandler = (id: number, isOpen: boolean) => {
     const temp = new Set();
@@ -61,9 +60,7 @@ const QuestionList = () => {
           <ElWrap w={32}>
             <IconBtnM
               disable={false}
-              onClick={() => {
-                navigate(`/interviews/template`);
-              }}
+              onClick={() => {}}
               className={BackgroundColor.WHITE}
               icon={<RightBracketIcon />}
             />

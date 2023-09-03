@@ -16,16 +16,13 @@ import {
   selectInterview,
   selectTemplate,
 } from "@/features/interviews/interviewsSlice";
-import { ITemplates } from "@/features/interviews/interviesInterface";
-import { useNavigate } from "react-router-dom";
+import { ITemplates } from "@/features/interviews/interviewsInterface";
 
 const TemplateList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { templates } = useSelector(selectInterview);
-  const navigate = useNavigate();
 
   const onSelecteTemaplate = (template: ITemplates) => {
-    navigate(`/interviews/template/${template.template.id}`);
     dispatch(selectTemplate(template));
   };
 

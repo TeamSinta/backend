@@ -16,6 +16,7 @@ import { selectRole, selectedMember } from "@/features/roles/rolesSlice";
 import { BackgroundColor, PhotoType } from "@/features/utils/utilEnum";
 import { useDispatch, useSelector } from "react-redux";
 import { ModalContentWrap } from "./StyledModalContents";
+import { useState } from "react";
 
 const titleInputArg = {
   error: false,
@@ -31,11 +32,33 @@ const descriptionInputArg = {
   name: "description",
 };
 
+interface IState {
+  [key: string]: any;
+  title: string;
+  description: string;
+}
+
 const CreateInterviews = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { members } = useSelector(selectRole);
   const onMemberSelected = (memberIdx: number) => {
     dispatch(selectedMember({ memberIdx: memberIdx }));
+  };
+
+  const [inputValue, setInputValue] = useState<IState>({
+    title: "",
+    description: "",
+  });
+
+  const inputOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue({
+      ...inputValue,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const textAreaOnChange = (value: string) => {
+    inputValue["description"] = value;
   };
 
   const onClickModalOpen = (modalType: MODAL_TYPE) => {
@@ -50,11 +73,19 @@ const CreateInterviews = () => {
     <ModalContentWrap>
       <InputLayout>
         <BodySMedium>Title</BodySMedium>
-        <TextInput {...titleInputArg} onChange={(e) => {}} value={""} />
+        <TextInput
+          {...titleInputArg}
+          onChange={inputOnChange}
+          value={inputValue["title"]}
+        />
       </InputLayout>
       <InputLayout>
         <BodySMedium>Description</BodySMedium>
-        <TextArea {...descriptionInputArg} onChange={(e) => {}} value={""} />
+        <TextArea
+          {...descriptionInputArg}
+          onChange={textAreaOnChange}
+          value={inputValue["description"]}
+        />
       </InputLayout>
       <InputLayout>
         <BodySMedium>Members</BodySMedium>

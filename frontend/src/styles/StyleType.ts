@@ -14,8 +14,27 @@ const colors = {
   whisperGrey: "#F6F6FB",
 };
 
+const breakpoints = {
+  xs: "320px",
+  sm: "640px",
+  md: "768px",
+  lg: "1024px",
+  xl: "1280px",
+  "2xl": "1536px",
+};
+
+export const devices = {
+  xs: `@media only screen and (max-width: ${breakpoints.xs})`,
+  sm: `@media only screen and (max-width: ${breakpoints.sm})`,
+  md: `@media only screen and (max-width: ${breakpoints.md})`,
+  lg: `@media only screen and (max-width: ${breakpoints.lg})`,
+  xl: `@media only screen and (max-width: ${breakpoints.xl})`,
+};
+
 export type ColorTypes = typeof colors;
+export type DeviceTypes = typeof devices;
 
 export const DefaultTheme = {
   colors,
+  devices,
 };

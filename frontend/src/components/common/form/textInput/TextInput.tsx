@@ -13,11 +13,11 @@ export interface ITextInput {
 const TextInput = (props: ITextInput): JSX.Element => {
   const { disable, placeholder, error, onChange, name, value } = props;
   const [inputValue, setInputValue] = useState<{ [key: string]: string }>({
-    name: value,
+    [name]: value,
   });
 
   useEffect(() => {
-    setInputValue({ name: value });
+    setInputValue({ [name]: value });
   }, [value]);
 
   return (

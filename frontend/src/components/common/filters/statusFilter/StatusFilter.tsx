@@ -55,7 +55,7 @@ const StatusFilter = (props: IStatusFilterProps): JSX.Element => {
   return (
     <>
       <StatusDropdownLayout>
-        <DropdownLabel>Status</DropdownLabel>
+        {/* <DropdownLabel></DropdownLabel> */}
         <StatusDropdownWrap
           onMouseEnter={() => {
             setShadow(true);
@@ -68,7 +68,11 @@ const StatusFilter = (props: IStatusFilterProps): JSX.Element => {
             setShadow(false);
           }}
         >
-          <StatusDropdownEl onClick={onSelectOpen} bg={selectedItem}>
+          <StatusDropdownEl
+            onClick={onSelectOpen}
+            bg={selectedItem}
+            open={open}
+          >
             <SelectedItemDiv>
               <BodyMMedium>
                 {selectedItem === null ? `------------` : selectedItemName}

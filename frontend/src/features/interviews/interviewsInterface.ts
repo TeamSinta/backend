@@ -1,4 +1,5 @@
 export interface IQuestion {
+  [key: string]: number | string | string[];
   title: string;
   competencies: string[];
   time: number;

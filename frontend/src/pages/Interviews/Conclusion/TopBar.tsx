@@ -9,7 +9,7 @@ const TopBar = () => {
   return (
     <React.Fragment>
       <Grid container spacing={1} className="bar ">
-        <Grid xs={12} md={5} className="column">
+        <Grid item={true} xs={12} md={5} className="column">
           <div>
             <p className="bio-data-name">{BIO_DATA.NAME}</p>
             <p className="bio-data-designation">{BIO_DATA.DESIGNATION}</p>
@@ -29,7 +29,7 @@ const TopBar = () => {
             </p>
           </div>
         </Grid>
-        <Grid xs={12} md={3} className="column">
+        <Grid item={true} xs={12} md={3} className="column">
           <div>
             <p>{OVERALL_SCORE.LABEL}</p>
             <div id="progressContainer">
@@ -45,7 +45,7 @@ const TopBar = () => {
             <p>{OVERALL_SCORE.PERCENTAGE}%</p>
           </div>
         </Grid>
-        <Grid xs={12} md={3} className="column">
+        <Grid item={true} xs={12} md={3} className="column">
           <div>
             {" "}
             <p>{SENTIMENT.LABEL}</p>

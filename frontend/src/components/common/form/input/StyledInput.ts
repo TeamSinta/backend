@@ -72,11 +72,78 @@ export const StyledTextarea = styled.textarea`
   resize: none;
   border-radius: 12px;
   padding: 16px 10px;
-  height: 82px;
+  min-height: 82px;
   display: flex;
   justify-content: center;
   align-items: center;
   background: ${(props) => props.theme.colors.lightGrey};
   font: inherit;
   font-size: 14px;
+  position: relative;
+
+  :focus {
+    outline: 1px solid ${(props) => props.theme.colors.black};
+  }
+`;
+
+export const StyledTextareaDiv = styled.div`
+  .prose {
+    width: max-content;
+    height: max-content;
+    top: 20px;
+    position: absolute;
+
+    ::after {
+      content: "         ";
+    }
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .mdx-textarea {
+    border: none;
+    line-height: 150%;
+    overflow: auto;
+    outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    resize: none;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 82px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    background: ${(props) => props.theme.colors.lightGrey};
+    font: inherit;
+    font-size: 14px;
+    position: relative;
+  }
+  ul {
+    list-style: disc;
+    font-size: 12px;
+    line-height: 170%;
+    padding: 0 20px;
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 125%;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 125%;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 125%;
+  }
 `;

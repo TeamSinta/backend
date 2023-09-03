@@ -4,6 +4,7 @@ import modalReducer from "@/features/modal/modalSlice";
 import roleReducer from "@/features/roles/rolesSlice";
 import inviteMemberReducer from "@/features/inviteMember/inviteMemberSlice";
 import interviewsReducer from "@/features/interviews/interviewsSlice";
+import interviewDetailReducer from "@/features/interviewDetail/interviewDetailSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     role: roleReducer,
     inviteMember: inviteMemberReducer,
     interviews: interviewsReducer,
+    interviewDetail: interviewDetailReducer,
   },
 });
 

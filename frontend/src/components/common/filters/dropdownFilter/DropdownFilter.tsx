@@ -1,5 +1,5 @@
 import { SelectArrowOpenIcon } from "@/components/common/svgIcons/Icons";
-import { useState } from "react";
+import { memo, useCallback, useLayoutEffect, useMemo, useState } from "react";
 import {
   DropdownArrowIconDiv,
   DropdownEl,
@@ -12,6 +12,7 @@ import {
   SelectedItemDiv,
 } from "./StyledDropdownFilter";
 import { BodyMMedium } from "../../typeScale/StyledTypeScale";
+import React from "react";
 
 interface IDropdown {
   label?: string;
@@ -24,8 +25,9 @@ interface IOption {
   value: string;
 }
 
-const DropdownFilter = (props: IDropdown): JSX.Element => {
+const DropdownFilter = memo((props: IDropdown): JSX.Element => {
   const { label, optionArr, dropdownName } = props;
+  const optionsMemo = useMemo(() => optionArr, [optionArr]);
   const [open, setOpen] = useState(false);
   const [shadow, setShadow] = useState(false);
   const [selectedItemName, setSelectedItemName] = useState("");
@@ -33,21 +35,19 @@ const DropdownFilter = (props: IDropdown): JSX.Element => {
     [dropdownName]: "",
   });
 
-  const onSelectOpen = (): void => {
-    if (open) {
-      setOpen(false);
-      setShadow(false);
-    } else {
-      setOpen(true);
-      setShadow(true);
-    }
-  };
+  const onSelectOpen = useCallback(() => {
+    setOpen((prevOpen) => !prevOpen);
+    setShadow(!open);
+  }, [open]);
 
-  const onSelectedItem = (value: string, name: string): void => {
-    setSelectedItem({ [dropdownName]: value });
-    setSelectedItemName(name);
-    setOpen(false);
-  };
+  const onSelectedItem = useCallback(
+    (value: string, name: string) => {
+      setSelectedItem({ [dropdownName]: value });
+      setSelectedItemName(name);
+      setOpen(false);
+    },
+    [dropdownName]
+  );
 
   return (
     <>
@@ -65,7 +65,7 @@ const DropdownFilter = (props: IDropdown): JSX.Element => {
             setShadow(false);
           }}
         >
-          <DropdownEl onClick={onSelectOpen}>
+          <DropdownEl onClick={onSelectOpen} open={open}>
             <SelectedItemDiv>
               <BodyMMedium>
                 {selectedItem[dropdownName] === ""
@@ -87,22 +87,26 @@ const DropdownFilter = (props: IDropdown): JSX.Element => {
                 ------------
               </OptionA>
             </OptionLi>
-            {optionArr.map((item, index) => (
-              <OptionLi key={index}>
-                <OptionA
-                  onClick={() => {
-                    onSelectedItem(item.value, item.name);
-                  }}
-                >
-                  <BodyMMedium>{item.name}</BodyMMedium>
-                </OptionA>
-              </OptionLi>
-            ))}
+            {optionsMemo.length > 0 ? (
+              optionsMemo.map((item, index) => (
+                <OptionLi key={index}>
+                  <OptionA
+                    onClick={() => {
+                      onSelectedItem(item.value, item.name);
+                    }}
+                  >
+                    <BodyMMedium>{item.name}</BodyMMedium>
+                  </OptionA>
+                </OptionLi>
+              ))
+            ) : (
+              <></>
+            )}
           </OptionUl>
         </DropdownWrap>
       </DropdownLayout>
     </>
   );
-};
+});
 
 export default DropdownFilter;

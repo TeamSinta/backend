@@ -127,6 +127,7 @@ export const StyledButtonS = styled.button`
 
 export const StyledIconBtn = styled(StyledButton)`
   height: inherit;
+  width: inherit;
   &.accentPurple {
     svg {
       width: 24px;
@@ -285,19 +286,19 @@ export const StyledRatingBtnL = styled.button`
   ${(props) =>
     !props.disabled &&
     `
-  :hover {
-    cursor: pointer;
-    box-shadow: 0px 4px 0px #121212;
-    transition: 0.5s;
-  }
+    :hover {
+      cursor: pointer;
+      box-shadow: 0px 4px 0px #121212;
+      transition: 0.5s;
+    }
 
-  :active {
-    box-shadow: 0px 0px 0px #121212;
-    transform: translateY(4px);
-  }
+    :active {
+      box-shadow: 0px 0px 0px #121212;
+      transform: translateY(4px);
+    }
 
 
-  `}
+    `}
 `;
 
 export const VideoControlBtnM = styled.button`

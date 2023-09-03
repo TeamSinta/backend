@@ -1,10 +1,9 @@
-import QuestionList from "@/components/common/modal/modalContents/QuestionList";
-import TemplateList from "@/components/common/modal/modalContents/TemplateList";
 import Calendar from "@/pages/Calendar";
 import Candidates from "@/pages/Candidates";
 import { Conclusion } from "@/pages/Interviews/Conclusion";
 import DashBoard from "@/pages/Dashboard/Dashboard";
 import Interview from "@/pages/Interview/Interview";
+import InterviewStage from "@/pages/InterviewStage";
 import Templates from "@/pages/Templates";
 import NotFound from "@/pages/NotFound";
 import InterviewDetails from "@/pages/InterviewDetails";
@@ -20,10 +19,16 @@ const Routers = () => {
       <Route path="/" element={<DashBoard />} />
       <Route path="/dashboard" element={<DashBoard />} />
       <Route path="/templates" element={<Templates />}>
-        <Route path="/templates/template" element={<TemplateList />} />
-        <Route path="/templates/template/:id" element={<QuestionList />} />
         <Route path="/templates/:id" element={<InterviewDetails />} />
       </Route>
+      <Route
+        path="/templates/stage/:department/:round"
+        element={<InterviewStage />}
+      />
+      {/* <Route
+        path="/interviews/:department/:round"
+        element={<InterviewStage />}
+      /> */}
       <Route path="/candidates" element={<Candidates />} />
       <Route path="/calendar" element={<Calendar />} />
       <Route path="/login" element={<LoginScreen />} />

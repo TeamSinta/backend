@@ -11,6 +11,7 @@ import CreateDepartment from "./modalContents/CreateDepartment";
 import SelectValue from "./modalContents/SelectValues";
 import ModalL from "./ModalL";
 import SelectTemplate from "./modalContents/SelectTemplate";
+import { useNavigate } from "react-router-dom";
 
 export enum MODAL_TYPE {
   CREATE_DEP = "CREATE_DEP",

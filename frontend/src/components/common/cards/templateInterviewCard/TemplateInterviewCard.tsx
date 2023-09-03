@@ -4,6 +4,8 @@ import { useState } from "react";
 import { IconBtnM } from "../../buttons/iconBtn/IconBtn";
 import { PlusIcon, RightBracketIcon } from "../../svgIcons/Icons";
 import { BodyMBold, BodySMedium } from "../../typeScale/StyledTypeScale";
+
+import { IQuestion } from "@/features/interviews/interviewsInterface";
 import {
   Card,
   CardButtons,
@@ -11,7 +13,6 @@ import {
   CardCover,
   CardSubTitle,
 } from "../card/StyledCard";
-import { IQuestion } from "@/features/interviews/interviesInterface";
 
 interface ITemplateInterviewCardProps {
   title: string;

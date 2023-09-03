@@ -1,6 +1,6 @@
 import { IInviteMember } from "@/features/inviteMember/inviteMemberInterface";
 import { rest } from "msw";
-import { invitedMember, templatesList } from "./mockDatas";
+import { interviewDetail, invitedMember, templatesList } from "./mockDatas";
 
 export const handlers = [
   rest.post<IInviteMember>("/inviteMember", async (req, res, ctx) => {
@@ -15,6 +15,11 @@ export const handlers = [
 
   rest.get("/templates", async (req, res, ctx) => {
     let result = templatesList;
+    return res(ctx.body(JSON.stringify(result)));
+  }),
+
+  rest.get("/interviewDetail", async (req, res, ctx) => {
+    let result = interviewDetail;
     return res(ctx.body(JSON.stringify(result)));
   }),
 ];

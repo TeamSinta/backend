@@ -1,11 +1,19 @@
-import { useState } from "react";
-import { StyledTextarea } from "../input/StyledInput";
+import {
+  MDXEditor,
+  MDXEditorMethods,
+  headingsPlugin,
+  listsPlugin,
+  markdownShortcutPlugin,
+  thematicBreakPlugin,
+} from "@mdxeditor/editor";
+import React, { useState } from "react";
+import { StyledTextareaDiv } from "../input/StyledInput";
 
 interface ITextAreaProps {
   disable: boolean;
   placeholder: string;
   error: boolean;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (e: any) => void;
   name: string;
   value: string;
 }
@@ -13,17 +21,29 @@ interface ITextAreaProps {
 const TextArea = (props: ITextAreaProps): JSX.Element => {
   const { name, value, onChange, placeholder, disable, error } = props;
   const [inputValue, setInputValue] = useState<{ [key: string]: string }>({
-    name: value,
+    [name]: value,
   });
+  const ref = React.useRef<MDXEditorMethods>(null);
 
   return (
-    <StyledTextarea
-      name={name}
-      onChange={onChange}
-      disabled={disable}
-      placeholder={placeholder}
-      value={inputValue[name]}
-    />
+    <>
+      <StyledTextareaDiv>
+        <MDXEditor
+          className="mdx-textarea"
+          contentEditableClassName="prose"
+          ref={ref}
+          markdown={inputValue[name]}
+          onChange={onChange}
+          plugins={[
+            headingsPlugin(),
+            listsPlugin(),
+            thematicBreakPlugin(),
+            markdownShortcutPlugin(),
+          ]}
+        />
+      </StyledTextareaDiv>
+      {/* <ReactMarkdown>{mdx}</ReactMarkdown> */}
+    </>
   );
 };
 

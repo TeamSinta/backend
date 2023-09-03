@@ -1,6 +1,6 @@
 import { AppDispatch } from "@/app/store";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
-import { IQuestion } from "@/features/interviews/interviesInterface";
+import { IQuestion } from "@/features/interviews/interviewsInterface";
 import {
   resetInterview,
   selectInterview,
@@ -32,22 +32,28 @@ import {
   TemplateBody,
   TemplateLayout,
 } from "./StyledModalContents";
+import TemplateList from "./TemplateList";
+import QuestionList from "./QuestionList";
 
 const SelectTemplate = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { selectedQuestion } = useSelector(selectInterview);
+  const { selectedQuestion, selectedTemplate } = useSelector(selectInterview);
   const navigate = useNavigate();
 
-  useEffect(() => {}, [selectedQuestion]);
+  useEffect(() => {}, [selectedQuestion, selectedTemplate]);
 
   return (
     <>
+      {/* ===== Templates Start ===== */}
       <TemplateLayout>
         <H2Bold>Templates</H2Bold>
         <TemplateBody>
+          {selectedTemplate.id === 0 ? <TemplateList /> : <QuestionList />}
           <Outlet />
         </TemplateBody>
       </TemplateLayout>
+      {/* ===== Templates End ===== */}
+      {/* ===== Questions Start ===== */}
       <QuestionLayout>
         <H2Bold>Added Questions</H2Bold>
         <QuestionBody>
@@ -157,6 +163,7 @@ const SelectTemplate = () => {
           </>
         </QuestionBody>
       </QuestionLayout>
+      {/* ===== Questions End ===== */}
     </>
   );
 };

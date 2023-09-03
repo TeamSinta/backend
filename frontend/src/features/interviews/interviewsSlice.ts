@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Loading } from "../utils/utilEnum";
 import { RootState } from "@/app/store";
 import { getTemplates } from "./interviewsAPI";
-import { IQuestion } from "./interviesInterface";
+import { IQuestion } from "./interviewsInterface";
 
 export const initialState = {
   round: {
@@ -55,7 +55,6 @@ export const interviewsSlice = createSlice({
       const { questions, template } = actions.payload;
       state.selectedTemplate = template;
       state.questions = questions;
-      console.log(questions);
     },
     setSelectedQuestion: (state, actions) => {
       const { selectedQuestion } = actions.payload;

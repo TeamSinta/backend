@@ -32,6 +32,7 @@ export const ModalLayout = styled.div`
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 9999;
   background-color: ${(props) => props.theme.colors.purpleGrey};
   animation: ${fadeIn} 0.25s ease-out forwards;
 `;

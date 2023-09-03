@@ -30,6 +30,9 @@ import { ReactComponent as Logo } from "@/assets/svg/sinta-logo.svg";
 import { ReactComponent as Search } from "@/assets/svg/search.svg";
 import { ReactComponent as SelectArrowOpen } from "@/assets/svg/selectArrowOpen.svg";
 import { ReactComponent as TwoArrow } from "@/assets/svg/twoArrow.svg";
+import { ReactComponent as Star1 } from "@/assets/svg/star-1.svg";
+import { ReactComponent as Question } from "@/assets/svg/question.svg";
+import { ReactComponent as Move } from "@/assets/svg/move.svg";
 import { ReactComponent as RightArrow } from "@/assets/svg/rightArrow.svg";
 import { ReactComponent as LeftArrow } from "@/assets/svg/leftArrow.svg";
 
@@ -186,6 +189,17 @@ export const TwoArrowIcon = (): JSX.Element => {
   return <TwoArrow />;
 };
 
+export const Star1Icon = (): JSX.Element => {
+  return <Star1 />;
+};
+
+export const QuestionIcon = (): JSX.Element => {
+  return <Question />;
+};
+
+export const MoveIcon = (): JSX.Element => {
+  return <Move />;
+};
 export const RightArrowIcon = (): JSX.Element => {
   return <RightArrow />;
 };
