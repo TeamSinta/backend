@@ -210,6 +210,9 @@ export const RatingComponent: React.FC<any> = ({
             activeIcon={activeTab === rate}
             Icon={Icon}
             activeColor={color}
+            width={0}
+            height={0}
+            active={0}
           />
         </span>
       ))}

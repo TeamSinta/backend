@@ -11,32 +11,40 @@ import { Route, Routes } from "react-router-dom";
 import LoginScreen from "@/pages/Login/Login";
 import LogOutScreen from "@/pages/LogOut";
 import Conclusions from "@/pages/Interviews/InterviewsHome";
+import { ProtectedRoutes } from "./authenticated/privateRoutes";
 
 const Routers = () => {
   return (
     <Routes>
-      <Route path="/login" element={<LoginScreen />} />;
-      <Route path="/" element={<DashBoard />} />
-      <Route path="/dashboard" element={<DashBoard />} />
-      <Route path="/templates" element={<Templates />}>
-        <Route path="/templates/:id" element={<InterviewDetails />} />
-      </Route>
-      <Route
-        path="/templates/stage/:department/:round"
-        element={<InterviewStage />}
-      />
-      {/* <Route
+      <Route path="/login" element={<LoginScreen />} />
+      <Route path="/logout" element={<LogOutScreen />} />
+
+      <Route path="" element={<ProtectedRoutes />}>
+        <Route path="/" element={<DashBoard />} />
+        <Route path="/dashboard" element={<DashBoard />} />
+
+        <Route path="/templates" element={<Templates />}>
+          <Route path="/templates/:id" element={<InterviewDetails />} />
+        </Route>
+
+        <Route
+          path="/templates/stage/:department/:round"
+          element={<InterviewStage />}
+        />
+        {/* <Route
         path="/interviews/:department/:round"
         element={<InterviewStage />}
       /> */}
-      <Route path="/candidates" element={<Candidates />} />
-      <Route path="/calendar" element={<Calendar />} />
-      <Route path="/login" element={<LoginScreen />} />
-      <Route path="/logout" element={<LogOutScreen />} />
-      <Route path="/interviews" element={<Conclusions />} />
-      <Route path="/interviews/Conclusion" element={<Conclusion />} />
-      <Route path="*" element={<NotFound />} />
-      <Route path="/video-call" element={<Interview />} />
+
+        <Route path="/candidates" element={<Candidates />} />
+        <Route path="/calendar" element={<Calendar />} />
+
+        <Route path="/interviews" element={<Conclusions />} />
+        <Route path="/interviews/Conclusion" element={<Conclusion />} />
+
+        <Route path="/video-call" element={<Interview />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
     </Routes>
   );
 };

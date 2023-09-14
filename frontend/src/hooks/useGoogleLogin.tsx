@@ -1,39 +1,36 @@
 import { useGoogleLogin } from "@react-oauth/google";
 import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
-import HttpService from "@/utils/axiosService/httpService";
+import { useGoogleLoginMutation } from "@/features/authentication/authenticationAPI";
 
 interface GoogleLoginReturnType {
   signIn: () => void;
 }
 
 const GoogleLogin = (): GoogleLoginReturnType => {
-  console.log("test!");
-  const [, setCookies] = useCookies(["access_token", "refresh_token"]);
-  const instance = HttpService();
+  const [googleLogin] = useGoogleLoginMutation();
+  const [, setCookies] = useCookies(["refresh_token", "access_token"]);
+  const navigate = useNavigate();
 
   const signIn = useGoogleLogin({
     flow: "auth-code",
-    /* eslint-disable */
     onSuccess: async (codeResponse) => {
-      const response = await instance.post(
-        import.meta.env.VITE_GOOGLE_OAUTH_CALLBACK_URL,
-        {
-          code: codeResponse.code,
-        }
-      );
-      // Extract the access token and refresh token from the response
-      const { access, refresh } = response.data;
-      // Store the access token and refresh token in cookies or local storage
-      setCookies("access_token", access);
-      setCookies("refresh_token", refresh);
+      const code = codeResponse.code;
 
-      // Remove this when we dont need it anymore
-      console.log("access_token:", response.data.access);
-      console.log("refresh_token:", response.data.refresh);
+      try {
+        const result = await googleLogin({ code }).unwrap();
+        if (result) {
+          setCookies("access_token", result["access"], { path: "/" });
+          setCookies("refresh_token", result["refresh"], { path: "/" });
+          navigate("/dashboard");
+        }
+      } catch (error) {
+        console.log("Failed to login: ", error);
+      }
     },
     onError: (errorResponse) => {
-      console.log(errorResponse);
+      console.log("Error", errorResponse);
     },
   });
 

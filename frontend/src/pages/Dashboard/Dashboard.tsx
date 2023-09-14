@@ -17,8 +17,11 @@ import {
 } from "./StyledDashboard"; // Import your styled components from the new file
 import dashboardImage from "src/assets/svg/homepage.svg";
 import { StyledImage } from "./StyledDashboard";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store";
 
 const DashBoard = () => {
+  const { user } = useSelector((state: RootState) => state.user);
   const members = [
     {
       member_idx: 1,
@@ -141,7 +144,9 @@ const DashBoard = () => {
           <MainContainer>
             <Container>
               <TextBox>
-                <WelcomeHeading>Welcome back, Mo 👋</WelcomeHeading>
+                <WelcomeHeading>
+                  Welcome back, {user.first_name} 👋
+                </WelcomeHeading>
                 <DescriptionText>
                   Helping teams hire better and faster.
                 </DescriptionText>

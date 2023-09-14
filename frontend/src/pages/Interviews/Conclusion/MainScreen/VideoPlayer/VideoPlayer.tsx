@@ -101,7 +101,7 @@ export const FullscreenButton = (props: ICustomIconProps): JSX.Element => {
   );
 };
 
-const VideoPlayer = ( {questionsTranscript} ) => {
+const VideoPlayer = ({ questionsTranscript }) => {
   const videoRef = useRef<any>(null);
   const questionBarRef = useRef<any>(null);
   const [isPlaying, setIsPlaying] = useState<any>(false);
@@ -124,10 +124,10 @@ const VideoPlayer = ( {questionsTranscript} ) => {
   const [interviewerData, setInterviewerData] = useState<any>([]);
   const [questionData, setQuestionData] = useState<any>([]);
 
-  console.log(questionsTranscript)
+  console.log(questionsTranscript);
 
   // TODO: Convert questionsTranscript to resemble the questionData format.
-  
+
   const response = {
     videoDuration: "0:55",
     questionData: [

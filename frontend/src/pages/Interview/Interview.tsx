@@ -36,6 +36,9 @@ import "./index.css";
 import { BottomNavBar } from "./BottomNavBar";
 import VideoSDK from "./VideoSDK";
 import { RatingComponentL } from "../Interviews/Conclusion/MainScreen/InterviewQNA/RatingComponent";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/store";
+import { startCall } from "@/features/videoCall/videoCallSlice";
 
 const Interview = () => {
   const title = "FrontEnd Developer";
@@ -45,6 +48,12 @@ const Interview = () => {
   const [initTime, setInitTime] = useState("");
   const [reactClicked, setReactClicked] = useState({ clicked: 0, message: "" });
 
+  // Placeholder for functionality. Moe will have to update this once the videoscreen is done and we have correct reducers/states.
+
+  const { active_call } = useSelector((state: RootState) => state.videoCall);
+  const dispatch: AppDispatch = useDispatch();
+
+  //
   const getCurrentTime = (): string => {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, "0");
@@ -54,13 +63,15 @@ const Interview = () => {
   };
   useEffect(() => {
     setInitTime(getCurrentTime());
-  }, []);
+    // placeholder dispatch for functionality, sets call as active to allow correct fullscreen rendering in App
+    dispatch(startCall(true));
+    // placeholder dispatch end //
+  }, [active_call]);
 
   const sidebarTabs = useMemo(() => {
     return (
       <div style={{ display: "flex" }}>
         <span>
-          {" "}
           <NavButton
             onClick={() => setActiveTab(1)}
             direction="row"
@@ -307,7 +318,6 @@ const Interview = () => {
                   >
                     <IndexStyle>
                       <div>
-                        {" "}
                         <span>{a.number}</span>{" "}
                       </div>
                     </IndexStyle>
@@ -343,21 +353,21 @@ const Interview = () => {
                       >
                         <WhiteIndexStyle>
                           <div>
-                            {" "}
                             <span>{activeQuestionInfo?.number}</span>{" "}
                           </div>
                         </WhiteIndexStyle>
 
                         <CompetencyStyle>
-                          {" "}
                           <span>{activeQuestionInfo?.competency}</span>{" "}
                         </CompetencyStyle>
                       </div>
                     </Grid>{" "}
                     <p>{activeQuestionInfo?.question}</p>
                     <div style={{ marginTop: "10px" }}>
-                      {" "}
-                      <QuestionMeta question={activeQuestionInfo} />{" "}
+                      <QuestionMeta
+                        question={activeQuestionInfo}
+                        duration={""}
+                      />
                     </div>
                     <div style={{ marginTop: "10px" }}>
                       <Grid>
@@ -374,7 +384,6 @@ const Interview = () => {
                   <div
                     style={{ flex: "1", marginTop: "20px", overflowY: "auto" }}
                   >
-                    {" "}
                     <StyledAnswerPoints>
                       <StyledAnswerHeading>
                         {"Answer/Prompt"}
@@ -412,7 +421,6 @@ const Interview = () => {
                 backgroundColor: "transparent",
               }}
             >
-              {" "}
               <span
                 style={{
                   backgroundColor: "transparent",
@@ -477,7 +485,6 @@ const Interview = () => {
                   }
                 }}
               >
-                {" "}
                 <ElWrap w={33}>
                   <StyledIconBtnM>
                     <LeftArrowIcon />
@@ -508,9 +515,7 @@ const Interview = () => {
                   </span>
                 </Grid>
                 <Grid lg={2} md={2} sm={2} xs={2}>
-                  {" "}
                   <span style={{ float: "right" }}>
-                    {" "}
                     <BottomArrowIcon />
                   </span>
                 </Grid>
@@ -552,7 +557,6 @@ const Interview = () => {
             <StyledTabInfo>
               {activeTab === 1 ? (
                 <>
-                  {" "}
                   <p
                     style={{
                       fontWeight: "600",
@@ -598,7 +602,6 @@ const Interview = () => {
       >
         <Grid item xs={4} sm={4} md={8} lg={8}>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            {" "}
             <div>
               <img
                 alt="sinta-logo"

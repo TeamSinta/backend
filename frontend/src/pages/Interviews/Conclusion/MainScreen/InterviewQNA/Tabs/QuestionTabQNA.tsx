@@ -35,6 +35,7 @@ interface QuestionTextDisplayProps {
 
 interface QuestionMetaProps {
   duration: string;
+  question: string;
 }
 
 interface TextProps {

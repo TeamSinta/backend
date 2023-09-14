@@ -69,7 +69,7 @@ export const StyledTabInfo = styled.div`
     padding: 0px;
     margin: 0px;
     width: 5px;
-    background-color: transparent;s
+    background-color: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
@@ -78,7 +78,6 @@ export const StyledTabInfo = styled.div`
     padding: 0px;
     margin: 0px;
     width: 5px;
-  
   }
 
   ::-webkit-scrollbar-track {

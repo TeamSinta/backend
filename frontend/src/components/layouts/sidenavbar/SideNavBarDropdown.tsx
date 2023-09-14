@@ -62,7 +62,7 @@ const SideNavBarDropdown = (props: ISideNavBarDropdown): JSX.Element => {
             setShadow(false);
           }}
         >
-          <DropdownEl onClick={onSelectOpen}>
+          <DropdownEl open={open} onClick={onSelectOpen}>
             <SelectedItemDiv>
               {selectedItem[dropdownName] !== "" ? (
                 <SelectedItemIcon>

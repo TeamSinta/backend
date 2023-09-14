@@ -1,8 +1,6 @@
 import Stack from "@mui/material/Stack";
 import { Box } from "@mui/material";
-import React from "react";
 import { LogoImage } from "./StyledTopBarNav";
-import image from "@/assets/images/Homie.png";
 import SearchInput from "@/components/common/form/serchInput/SearchInput";
 import {
   CalendarIcon,
@@ -13,6 +11,8 @@ import { BackgroundColor } from "@/features/utils/utilEnum";
 import ElWrap from "../elWrap/ElWrap";
 import { DropDownButton } from "@/components/common/buttons/dropDownBtn/DropDownBtn";
 import { StyledTopNavBar } from "./StyledTopBarNav";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store";
 
 export interface IButton {
   to: string;
@@ -21,6 +21,8 @@ export interface IButton {
 }
 
 const TopNavBar = (): JSX.Element => {
+  const { user } = useSelector((state: RootState) => state.user);
+
   return (
     <StyledTopNavBar sx={{ width: "100%" }}>
       <Stack direction="row" spacing={2}>
@@ -54,7 +56,7 @@ const TopNavBar = (): JSX.Element => {
             ]}
           />
         </ElWrap>
-        <LogoImage src={image} alt="Homie Logo" />
+        <LogoImage src={user.profile_picture as string} alt="user photo" />
       </Stack>
     </StyledTopNavBar>
   );

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import os
 from dotenv import dotenv_values, load_dotenv
@@ -45,16 +46,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Extra Apps Installed
+    # Third Party Apps
     "rest_framework",
-    "rest_framework.authtoken",
     "dj_rest_auth",
-    "dj_rest_auth.registration",
     "django.contrib.sites",
+    "dj_rest_auth.registration",
+    "rest_framework.authtoken",
+    "rest_framework_simplejwt.token_blacklist",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    # Apps
     "user",
     "videosdk",
     "corsheaders",
@@ -165,6 +168,16 @@ AUTH_USER_MODEL = "user.CustomUser"
 # Default Admin Account
 ADMINS = [(KEYS["SUPERUSER"], KEYS["SUPERUSER_EMAIL"])]
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    # It will work instead of the default serializer(TokenObtainPairSerializer).
+    "TOKEN_OBTAIN_SERIALIZER": "app.serializers.MyTokenObtainPairSerializer",
+    # ...
+}
+
 # Rest Settings
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -175,28 +188,13 @@ REST_FRAMEWORK = {
 REST_AUTH = {
     "USE_JWT": True,
     "JWT_AUTH_HTTPONLY": False,
-    "JWT_AUTH_COOKIE": "my-app-auth",
-    "JWT_AUTH_REFRESH_COOKIE": "my-refresh-token",
+    "JWT_AUTH_COOKIE": "access_token",
+    "JWT_AUTH_REFRESH_COOKIE": "refresh_token",
+    "USER_DETAILS_SERIALIZER": "user.serializers.CustomUserDetailsSerializer",
 }
 
 APPEND_SLASH = False
 
 # CORS
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3001",
-]
-
-# # DEbugging
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "handlers": {
-#         "console": {
-#             "class": "logging.StreamHandler",
-#         },
-#     },
-#     "root": {
-#         "handlers": ["console"],
-#         "level": "DEBUG",  # Set the desired logging level
-#     },
-# }
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = ["http://localhost:3001", "http://127.0.0.1:3001"]

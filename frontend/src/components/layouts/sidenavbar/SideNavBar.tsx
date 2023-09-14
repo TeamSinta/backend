@@ -10,6 +10,7 @@ import {
 import { BodyMMedium } from "@/components/common/typeScale/StyledTypeScale";
 import { type ReactElement } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import SideNavBarDropdown from "./SideNavBarDropdown";
 import {
   DropWrapper,
@@ -19,11 +20,15 @@ import {
   StyledSideNavLinksWrap,
   StyledStack,
 } from "./StyledSideNavBar";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/store";
+import { resetUserState } from "@/features/authentication/authenticationSlice";
 
 export interface INavButtonLink {
   to: string;
   icon: JSX.Element;
   text: string;
+  onClick?: () => void;
 }
 
 const args = {
@@ -62,9 +67,10 @@ const navButtonLinks: INavButtonLink[] = [
 const navConfigLinks: INavButtonLink[] = [
   {
     text: "Logout",
-    to: "/logout",
+    to: "#",
     icon: <DoorIcon />,
   },
+
   {
     text: "Settings",
     to: "/settings",
@@ -74,6 +80,17 @@ const navConfigLinks: INavButtonLink[] = [
 
 const SideNavBar = (): ReactElement => {
   let location = useLocation();
+  const dispatch: AppDispatch = useDispatch();
+  const [, , removeCookie] = useCookies(["refresh_token", "access_token"]);
+
+  const handleNavConfigClick = (text: string) => {
+    if (text === "Logout") {
+      localStorage.removeItem("AuthStatus");
+      removeCookie("access_token");
+      removeCookie("refresh_token");
+      dispatch(resetUserState());
+    }
+  };
 
   return (
     <StyledStack
@@ -119,7 +136,11 @@ const SideNavBar = (): ReactElement => {
         </StyledSideNavBarTitle>
         {navConfigLinks.map((navConfigLink: INavButtonLink, index: number) => (
           <NavButton direction="row" key={index}>
-            <Link to={navConfigLink.to} className="link">
+            <Link
+              to={navConfigLink.to}
+              onClick={() => handleNavConfigClick(navConfigLink.text)}
+              className="link"
+            >
               {navConfigLink.icon}
               <BodyMMedium>{navConfigLink.text}</BodyMMedium>
             </Link>

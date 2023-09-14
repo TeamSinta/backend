@@ -1,7 +1,9 @@
 from django.contrib import admin
+from rest_framework.authtoken.models import TokenProxy
 
 from .models import CustomUser, Company
 
+admin.site.unregister(TokenProxy)
 admin.site.register(Company)
 
 

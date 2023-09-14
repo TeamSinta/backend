@@ -4,6 +4,9 @@ import { StyledMain } from "./components/layouts/container/StyledContainer";
 import Container from "./components/layouts/container/Container";
 import Routers from "./router/Routers";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { RootState } from "./app/store";
+import Loading from "./components/common/elements/loading/Loading";
 
 // Node: server, Browser : worker.
 if (import.meta.env.VITE_ENV !== "develop") {
@@ -29,21 +32,30 @@ const DivSample = styled.div`
 `;
 
 function App() {
-  const interview = window?.location?.pathname.includes("video-call");
-  const login = window?.location?.pathname.includes("login"); // temp solution. Should be dependend on authenticated/not state.
+  const { isAuthenticated, status } = useSelector(
+    (state: RootState) => state.user
+  );
+  const { active_call } = useSelector((state: RootState) => state.videoCall);
+
+  const isLoggedIn = isAuthenticated;
+  const videoCallScreen = active_call;
+
+  if (status === "LOADING") {
+    return <Loading />;
+  }
   return (
     <>
-      {interview || login ? (
-        <Routers></Routers>
+      {isLoggedIn && !videoCallScreen ? (
+        <Container>
+          <SideNavBar />
+          <TopNavBar />
+          <StyledMain>
+            <Routers />
+          </StyledMain>
+        </Container>
       ) : (
         <>
-          <Container>
-            <SideNavBar />
-            <TopNavBar />
-            <StyledMain>
-              <Routers></Routers>
-            </StyledMain>
-          </Container>
+          <Routers />
         </>
       )}
     </>
