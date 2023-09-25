@@ -1,44 +1,39 @@
 import styled from "styled-components";
 export const StyledBottomBar = styled.div`
-   {
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-    background-color: #2a2535;
-    height: 60px;
-    bottom: 0;
-    width: 100%;
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  background-color: #2a2535;
+  height: 60px;
+  bottom: 0;
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const StyledColumns = styled.div`
-   {
-    text-align: center;
-    display: flex;
-    align-items: center;
-  }
+  text-align: center;
+  display: flex;
+  align-items: center;
 `;
 
 export const StyledBottomNavButtons = styled.button`
-   {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    background: #433c53;
-    padding: 10px;
-    color: white;
-    width: fit-content;
-    font-family: "Chillax";
-    margin: 5px;
-    border: none;
-    height: 35px;
-    font-size: 14px;
-    cursor: pointer;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background: #433c53;
+  padding: 10px;
+  color: white;
+  width: fit-content;
+  font-family: "Chillax";
+  margin: 5px;
+  border: none;
+  height: 35px;
+  font-size: 14px;
+  cursor: pointer;
+
   :hover {
     cursor: pointer;
     box-shadow: 0px 2px 0px black;

@@ -1,6 +1,4 @@
 import * as React from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { Stack } from "@mui/material";
 import { BodySMedium } from "@/components/common/typeScale/StyledTypeScale";
@@ -8,11 +6,13 @@ import { H1 } from "@/components/common/typeScale/StyledTypeScale";
 import ConclusionInterviewCard from "@/components/common/cards/conclusionInterivewCard/ConclusionInterviewCard";
 import { GridContainer } from "./StyledConclusions";
 import { Link } from "react-router-dom";
+import TextIconFilter from "@/components/common/filters/textIconFilter/TextIconFilter";
+import { BinIcon, ResumeIcon } from "@/components/common/svgIcons/Icons";
 
 interface TabPanelProps {
   children?: React.ReactNode;
-  index: number;
-  value: number;
+  index: string; // Change the type to string
+  value: string; // Change the type to string
 }
 
 function CustomTabPanel(props: TabPanelProps) {
@@ -98,11 +98,16 @@ const fakeInterviewRounds = [
   },
 ];
 
-export default function BasicTabs() {
-  const [value, setValue] = React.useState(0);
+const TABS = {
+  INTERVIEWS: "interviews",
+  ARCHIVED: "archived",
+};
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+export default function BasicTabs() {
+  const [activeTab, setActiveTab] = React.useState(TABS.INTERVIEWS);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
   };
 
   return (
@@ -120,38 +125,50 @@ export default function BasicTabs() {
         </Box>
 
         <Box sx={{ width: "100%" }}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="basic tabs example"
-              sx={{ padding: "0" }}
-            >
-              <Tab
-                label="Interviews"
-                sx={{ textDecorationColor: "red", borderColor: "divider" }}
-              />
-              <Tab label="Archived" />
-            </Tabs>
+          <Box
+            sx={{
+              borderBottom: 1,
+              borderColor: "divider",
+              padding: "18px",
+              gap: "12px",
+              display: "flex",
+            }}
+          >
+            <TextIconFilter
+              label="Interviews"
+              icon={<ResumeIcon />}
+              select={activeTab === TABS.INTERVIEWS}
+              onClick={() => handleTabChange(TABS.INTERVIEWS)}
+            />
+            <TextIconFilter
+              label="Archived"
+              icon={<BinIcon />}
+              select={activeTab === TABS.ARCHIVED}
+              onClick={() => handleTabChange(TABS.ARCHIVED)}
+            />
           </Box>
-          <CustomTabPanel value={value} index={0}>
-            <GridContainer>
-              {fakeInterviewRounds.map((interviewRound, index) => (
-                <Link to={`/interviews/conclusion`} key={index}>
-                  <ConclusionInterviewCard
-                    key={index}
-                    title={interviewRound.title}
-                    disable={interviewRound.disable}
-                    name={interviewRound.name}
-                    date={interviewRound.date}
-                  />
-                </Link>
-              ))}
-            </GridContainer>
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
-            Item Two
-          </CustomTabPanel>
+          {activeTab === TABS.INTERVIEWS && (
+            <CustomTabPanel value={activeTab} index={TABS.INTERVIEWS}>
+              <GridContainer>
+                {fakeInterviewRounds.map((interviewRound, index) => (
+                  <Link to={`/interviews/conclusion`} key={index}>
+                    <ConclusionInterviewCard
+                      key={index}
+                      title={interviewRound.title}
+                      disable={interviewRound.disable}
+                      name={interviewRound.name}
+                      date={interviewRound.date}
+                    />
+                  </Link>
+                ))}
+              </GridContainer>
+            </CustomTabPanel>
+          )}
+          {activeTab === TABS.ARCHIVED && (
+            <CustomTabPanel value={activeTab} index={TABS.ARCHIVED}>
+              Item Two
+            </CustomTabPanel>
+          )}
         </Box>
       </Stack>
     </>

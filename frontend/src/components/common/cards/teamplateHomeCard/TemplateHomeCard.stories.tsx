@@ -49,7 +49,6 @@ export const Primary: Story = {
     disable: false,
     questions: new Array(8), // Since it's 'undefined[]', an empty array is fine for now.
     sections: new Array(15), // Same here
-    members,
   },
 };
 

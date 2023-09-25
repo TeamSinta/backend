@@ -20,9 +20,16 @@ def get_qa_pairs(interview_round_id):
     )
     qa_pairs = []
     for question in questions:
-        answers = Answer.objects.filter(question=question)
+        # Access the related TemplateQuestion and Question objects
+        template_question = (
+            question.question
+        )  # Assuming 'question' is the ForeignKey to TemplateQuestion
+        question_text = template_question.question.question_text
+        answers = (
+            question.answer.all()
+        )  # Access related answers using 'answer' reverse relationship
         for answer in answers:
-            qa_pairs.append((question.question.question_text, answer.answer_text))
+            qa_pairs.append((question_text, answer.answer_text))
     return qa_pairs
 
 

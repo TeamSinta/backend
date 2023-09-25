@@ -1,8 +1,7 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { Box, Grid } from "@mui/material";
+import React from "react";
+import { Grid } from "@mui/material";
 import "./index.css";
 import { TOP_BAR_INFO } from "./Constants";
-import { BodyLBold } from "@/components/common/typeScale/StyledTypeScale";
 const TopBar = () => {
   const { BIO_DATA, OVERALL_SCORE, SENTIMENT } = TOP_BAR_INFO;
 

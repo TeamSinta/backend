@@ -2,12 +2,12 @@ import styled from "styled-components";
 
 export const TextIconFilterLayout = styled.div`
   display: inline-flex;
-  gap: 6px;
-  border-radius: 10px;
+  gap: 10px;
+  border-radius: 12px;
   align-items: center;
-  padding: 10px 20px;
+  padding: 9px 21px;
   transition: 0.3s;
-  height: 40px;
+  height: 48px;
   font-size: 14px;
 
   :hover {

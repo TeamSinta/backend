@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import "./VideoPlayer.css"; // Import the CSS file
 import { transcriptionInfo } from "../TranscriptionTab/TranscriptionTabConstants";
 import { VideoControlBtnM } from "@/components/common/buttons/button/StyledBtn";
@@ -17,7 +17,7 @@ import {
 } from "./StyledVideoPlayer";
 
 export const MuteButton = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
+  // const { width, fill, active, height } = props;
 
   return (
     <div style={{ marginRight: "5px" }}>
@@ -34,7 +34,7 @@ export const MuteButton = (props: ICustomIconProps): JSX.Element => {
   );
 };
 export const SoundButton = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
+  // const { width, fill, active, height } = props;
 
   return (
     <div style={{ marginRight: "5px" }}>
@@ -51,7 +51,7 @@ export const SoundButton = (props: ICustomIconProps): JSX.Element => {
   );
 };
 export const PauseButton = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
+  // const { width, fill, active, height } = props;
 
   return (
     <div style={{ marginRight: "5px" }}>
@@ -68,7 +68,7 @@ export const PauseButton = (props: ICustomIconProps): JSX.Element => {
   );
 };
 export const PlayButton = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
+  // const { width, fill, active, height } = props;
 
   return (
     <div style={{ marginRight: "5px" }}>
@@ -85,7 +85,7 @@ export const PlayButton = (props: ICustomIconProps): JSX.Element => {
   );
 };
 export const FullscreenButton = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
+  // const { width, fill, active, height } = props;
   return (
     <div style={{ marginRight: "5px" }}>
       <ElWrap w={24}>
@@ -105,15 +105,15 @@ const VideoPlayer = ({ questionsTranscript }) => {
   const videoRef = useRef<any>(null);
   const questionBarRef = useRef<any>(null);
   const [isPlaying, setIsPlaying] = useState<any>(false);
-  const [videoLoading, setVideoLoading] = useState<any>(true);
+  // const [videoLoading, setVideoLoading] = useState<any>(true);
   const [isMuted, setIsMuted] = useState<any>(false);
-  const [isFullScreen, setIsFullScreen] = useState<any>(false);
+  // const [isFullScreen, setIsFullScreen] = useState<any>(false);
   const [currentTime, setCurrentTime] = useState<any>(0);
   const [totalDuration, setTotalDuration] = useState<any>(0);
   const currentQuestion = useRef("");
   const [emoticonData, setEmoticonData] = useState<any>([]);
   const timelineRef = useRef<any>(null);
-  const [timelineWidth, setTimelineWidth] = useState<any>(0);
+  // const [timelineWidth, setTimelineWidth] = useState<any>(0);
   const [progress, setProgress] = useState<any>(0);
   const [tooltipData, setTooltipData] = useState<any>({
     question: "",
@@ -279,7 +279,12 @@ const VideoPlayer = ({ questionsTranscript }) => {
     setQuestionData(response?.questionData);
     setEmoticonData(response?.emoticonData);
     setTotalDuration(response?.videoDuration);
-  }, []);
+  }, [
+    response?.emoticonData,
+    response?.interviewerData,
+    response?.questionData,
+    response?.videoDuration,
+  ]);
 
   const handleTimeUpdate = () => {
     const video = videoRef.current;
@@ -316,7 +321,7 @@ const VideoPlayer = ({ questionsTranscript }) => {
 
   const handleProgressBarHover = (event: any) => {
     const video = videoRef.current;
-    const progressBar = event.target;
+    // const progressBar = event.target;
     const progressBarWidth = questionBarRef?.current?.offsetWidth;
     const hoverPosition =
       event.clientX - questionBarRef?.current.getBoundingClientRect().left;
@@ -355,20 +360,23 @@ const VideoPlayer = ({ questionsTranscript }) => {
     );
   };
 
-  function getQuestionWidth(question: any) {
-    if (question?.endTime) {
-      const durationInSeconds =
-        question?.endTime && question?.startTime
-          ? convertTimeToSeconds(question?.endTime) +
-            1 -
-            convertTimeToSeconds(question?.startTime)
-          : 0;
-      const videoDuration = convertTimeToSeconds(totalDuration);
-      const widthPercentage = (durationInSeconds / videoDuration) * 100;
-      return `${widthPercentage}%`;
-    }
-    return "0px";
-  }
+  const getQuestionWidth = useCallback(
+    (question: any) => {
+      if (question?.endTime) {
+        const durationInSeconds =
+          question?.endTime && question?.startTime
+            ? convertTimeToSeconds(question?.endTime) +
+              1 -
+              convertTimeToSeconds(question?.startTime)
+            : 0;
+        const videoDuration = convertTimeToSeconds(totalDuration);
+        const widthPercentage = (durationInSeconds / videoDuration) * 100;
+        return `${widthPercentage}%`;
+      }
+      return "0px";
+    },
+    [totalDuration]
+  );
 
   const questionBar = useMemo(() => {
     return (
@@ -386,16 +394,14 @@ const VideoPlayer = ({ questionsTranscript }) => {
               backgroundColor: "white",
               border: "1px solid white",
               opacity:
-                currentQuestion.current != question.question ? "0.5" : "1",
+                currentQuestion.current !== question.question ? "0.5" : "1",
             }}
           ></div>
         ))}
       </div>
     );
-  }, [questionData, currentQuestion]);
-
+  }, [questionData, getQuestionWidth]);
   const interviewerCandidateBar = useMemo(() => {
-    let i = [1, 2];
     return (
       <>
         <StyledInterviewerImage>
@@ -411,6 +417,7 @@ const VideoPlayer = ({ questionsTranscript }) => {
             src={
               transcriptionInfo.questionData[0].transcription[0].userImageUrl
             }
+            alt="styled interviewer img"
           />
           <span style={{ color: "white", fontSize: "10px", padding: "2px" }}>
             {"Bill - Interviewer"}
@@ -429,6 +436,7 @@ const VideoPlayer = ({ questionsTranscript }) => {
             src={
               transcriptionInfo.questionData[1].transcription[1].userImageUrl
             }
+            alt="styled candidate img"
           />
           <span style={{ color: "white", fontSize: "10px", padding: "2px" }}>
             {"Harry - Candidate"}
@@ -477,7 +485,7 @@ const VideoPlayer = ({ questionsTranscript }) => {
         </div>
       </>
     );
-  }, [transcriptionInfo, currentQuestion, interviewerData]);
+  }, [interviewerData, getQuestionWidth]);
 
   const handleProgressBarLeave = () => {
     setTooltipData({ question: "", time: null });
@@ -530,7 +538,7 @@ const VideoPlayer = ({ questionsTranscript }) => {
     const timeline = timelineRef.current;
     if (timeline?.offsetWidth && emoticonData && totalDuration) {
       const videoDuration = convertTimeToSeconds(totalDuration);
-      const timelineWidth = timeline.offsetWidth;
+      // const timelineWidth = timeline.offsetWidth;
       const barWidth = questionBarRef?.current?.offsetWidth;
       return emoticonData.map((emoticon: any) => {
         const timeInSeconds = convertTimeToSeconds(emoticon.time);
@@ -554,14 +562,7 @@ const VideoPlayer = ({ questionsTranscript }) => {
         );
       });
     } else return null;
-  }, [
-    questionBarRef,
-    videoRef,
-    timelineRef,
-    emoticonData,
-    isPlaying,
-    totalDuration,
-  ]);
+  }, [questionBarRef, timelineRef, emoticonData, totalDuration]);
 
   const Timer = () => {
     return (

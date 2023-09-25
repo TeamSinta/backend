@@ -1,6 +1,6 @@
 import React from "react";
-import { IndexStyle, InterviewContainerStyle } from "../InterviewQNA";
-import { Grid } from "@mui/material";
+import { InterviewContainerStyle } from "../InterviewQNA";
+
 import { TranscriptionCollapsible } from "../TranscriptionCollapsible";
 import { QuestionMeta, QuestionTextDisplay } from "./QuestionTabQNA";
 import styled from "styled-components";

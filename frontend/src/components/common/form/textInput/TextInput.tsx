@@ -18,6 +18,7 @@ const TextInput = (props: ITextInput): JSX.Element => {
 
   useEffect(() => {
     setInputValue({ [name]: value });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return (

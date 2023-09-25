@@ -1,4 +1,4 @@
-import { AppDispatch } from "@/app/store";
+// import { AppDispatch } from "@/app/store";
 import {
   IconBtnL,
   IconBtnM,
@@ -26,24 +26,33 @@ import {
   Subtitle,
   Title,
 } from "@/components/pages/interview/StyledInterview";
-import { getInterviewDetailAsync } from "@/features/interviewDetail/interviewDetailSlice";
+import {
+  getInterviewDetailAsync,
+  selectInterviewDetail,
+} from "@/features/interviewDetail/interviewDetailSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const InterviewStage = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
+  const templateId = "1";
 
-  // MOCK
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { topics, selectedSection, status } = useSelector(
+    selectInterviewDetail
+  );
+
   useEffect(() => {
-    dispatch(getInterviewDetailAsync());
-  }, [dispatch]);
+    // Dispatch the action to fetch interview detail.
+    dispatch(getInterviewDetailAsync(templateId));
+  }, [dispatch, templateId]);
 
   return (
     <InterviewStageContainer>
       <InterviewStageTopContainer>
         <Subtitle>
-          <BodyLMedium className="inactive">Interview</BodyLMedium>
+          <BodyLMedium className="inactive">Templates</BodyLMedium>
           <Star1Icon />
           <BodyLMedium className="inactive">FrontEnd Developer</BodyLMedium>
           <Star1Icon />

@@ -1,7 +1,5 @@
 import React from "react";
 import { Grid } from "@mui/material";
-import { ChatIcon } from "@/components/common/svgIcons/Icons";
-import { ChatStyled } from "../InterviewQNA";
 
 export const TranscriptionCollapsible: React.FC<any> = (data: any) => {
   const { question, index, activeIndex } = data;
@@ -40,6 +38,7 @@ export const TranscriptionCollapsible: React.FC<any> = (data: any) => {
                 src={dialogue.userImageUrl}
                 width="30"
                 height="30"
+                alt="user-profile"
               />
             </div>
           </Grid>

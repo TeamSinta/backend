@@ -18,3 +18,4 @@ pandas
 factory_boy
 faker
 black
+django-storages[boto3]

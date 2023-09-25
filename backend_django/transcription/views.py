@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from transcription.models import TranscriptChunk
-from interview.models import InterviewRound, InterviewRoundQuestion
+from interview.models import InterviewRound
 from pgvector.django import CosineDistance
 from app.utils import seconds_to_minutes
 from typing import List, Dict
@@ -33,12 +33,12 @@ class QuestionTranscriptView(APIView):
         tc_by_interviewer = tc.filter(speaker=interview_round.interviewer)
 
         for q in interview_questions:
-            q = q.question
-
+            template_question = q.question  # Access the related TemplateQuestion
+            question = template_question.question  # Access the related Question
             asked_question = tc_by_interviewer.order_by(
-                CosineDistance("embedding", q.embedding)
+                CosineDistance("embedding", question.embedding)
             ).first()
-            question_start_times.append((q, asked_question.start_time - 1))
+            question_start_times.append((question, asked_question.start_time - 1))
 
         question_start_times.sort(key=lambda x: x[1])
 

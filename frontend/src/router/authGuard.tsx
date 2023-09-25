@@ -109,6 +109,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     };
 
     initAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>{children}</>;

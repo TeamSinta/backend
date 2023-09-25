@@ -13,6 +13,3 @@ class TranscriptChunk(models.Model):
     start_time = models.IntegerField()
     end_time = models.IntegerField()
     speaker = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-
-
-# Create your models here.

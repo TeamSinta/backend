@@ -8,7 +8,6 @@ import {
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { IconBtnL, IconBtnM } from "../../buttons/iconBtn/IconBtn";
 import { TextIconBtnL } from "../../buttons/textIconBtn/TextIconBtn";
 import {

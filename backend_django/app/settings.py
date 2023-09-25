@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver", "[::1]", "0.0.0.0"]
 # Application definition
 
 INSTALLED_APPS = [
+    "templates",
     "transcription.apps.TranscriptionConfig",
     "interview.apps.InterviewConfig",
     "question.apps.QuestionConfig",
@@ -53,15 +54,16 @@ INSTALLED_APPS = [
     "dj_rest_auth.registration",
     "rest_framework.authtoken",
     "rest_framework_simplejwt.token_blacklist",
+    "user",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     # Apps
-    "user",
     "videosdk",
     "corsheaders",
     "summary.apps.SummaryConfig",
+    "storages",
 ]
 
 
@@ -118,6 +120,14 @@ DATABASES = {
     }
 }
 
+# Configure your S3 settings
+AWS_ACCESS_KEY_ID = KEYS["AWS_ACCESS_KEY_ID"]
+AWS_SECRET_ACCESS_KEY = KEYS["AWS_SECRET_ACCESS_KEY"]
+AWS_STORAGE_BUCKET_NAME = "team-sinta"
+AWS_S3_REGION_NAME = "eu-west-1"  # e.g., 'us-east-1'
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -173,9 +183,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
-    # It will work instead of the default serializer(TokenObtainPairSerializer).
     "TOKEN_OBTAIN_SERIALIZER": "app.serializers.MyTokenObtainPairSerializer",
-    # ...
 }
 
 # Rest Settings
@@ -184,6 +192,8 @@ REST_FRAMEWORK = {
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ),
 }
+
+
 # Authentication
 REST_AUTH = {
     "USE_JWT": True,

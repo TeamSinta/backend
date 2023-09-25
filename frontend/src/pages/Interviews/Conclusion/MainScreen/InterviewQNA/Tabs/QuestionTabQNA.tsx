@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { IndexStyle, InterviewContainerStyle } from "../InterviewQNA";
 import { Grid } from "@mui/material";
 import { QuestionCollapsible } from "../QuestionCollapsible";
@@ -69,11 +69,6 @@ const QuestionContainer = styled(Grid)`
   font-size: 14px;
   margin: 0px;
   padding: 0px;
-`;
-
-const RightAlignContainer = styled.div`
-  padding: 0px 0px;
-  float: right;
 `;
 
 const TextContainer = styled(Grid)`

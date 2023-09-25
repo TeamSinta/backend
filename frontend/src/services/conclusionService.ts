@@ -34,7 +34,7 @@ const ConclusionData = () => {
     };
 
     fetchData();
-  }, []);
+  }, [questionsTranscriptAPI, summarizedAnswersAPI, summaryInfoAPI]);
 
   return [summarizedAnswers, questionsTranscript, summaryInfo, loading, error];
 };

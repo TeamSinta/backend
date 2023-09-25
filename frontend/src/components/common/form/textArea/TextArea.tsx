@@ -19,8 +19,8 @@ interface ITextAreaProps {
 }
 
 const TextArea = (props: ITextAreaProps): JSX.Element => {
-  const { name, value, onChange, placeholder, disable, error } = props;
-  const [inputValue, setInputValue] = useState<{ [key: string]: string }>({
+  const { name, value, onChange } = props;
+  const [inputValue] = useState<{ [key: string]: string }>({
     [name]: value,
   });
   const ref = React.useRef<MDXEditorMethods>(null);

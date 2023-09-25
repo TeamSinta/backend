@@ -1,36 +1,47 @@
-import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBtn";
-import {
-  TimeIcon,
-  QuestionIcon,
-  PlusIcon,
-} from "@/components/common/svgIcons/Icons";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import {
   H3Bold,
   BodyLBold,
   BodySMedium,
 } from "@/components/common/typeScale/StyledTypeScale";
-import { BackgroundColor, Loading } from "@/features/utils/utilEnum";
-import { Title } from "../StyledInterview";
-import { TimeQuestionDiv } from "../overview_detail/StyledOverviewDetail";
 import {
   OverviewSections,
   SectionLists,
   SectionList,
 } from "./StyledOverviewSection";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { ISection } from "@/features/interviewDetail/inverviewDetailInterface";
-import { AppDispatch } from "@/app/store";
-import {
-  getInterviewDetailAsync,
-  selectInterviewDetail,
-} from "@/features/interviewDetail/interviewDetailSlice";
+import { Loading } from "@/features/utils/utilEnum";
+import { Title } from "../StyledInterview";
+import { useDispatch } from "react-redux";
+import { setSelectedSection } from "@/features/interviewDetail/interviewDetailSlice";
 
-const InterviewOverviewSections = () => {
-  const dispatch = useDispatch<AppDispatch>();
+import {
+  TimeIcon,
+  QuestionIcon,
+  PlusIcon,
+} from "@/components/common/svgIcons/Icons";
+import { TimeQuestionDiv } from "../overview_detail/StyledOverviewDetail";
+import { selectInterviewDetail } from "@/features/interviewDetail/interviewDetailSlice";
+import { ISection } from "@/features/interviewDetail/inverviewDetailInterface";
+import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBtn";
+import { BackgroundColor } from "@/features/utils/utilEnum";
+
+const InterviewOverviewSections: React.FC = () => {
   const { section, status, selectedSection } = useSelector(
     selectInterviewDetail
   );
+  const dispatch = useDispatch();
+
+  // State to track the active section ID
+  const [activeSectionId, setActiveSectionId] = useState<number | null>(
+    selectedSection.id || null
+  );
+
+  // Function to handle button click
+  const handleButtonClick = (sectionId: number) => {
+    setActiveSectionId(sectionId);
+    dispatch(setSelectedSection(sectionId));
+  };
 
   return (
     <OverviewSections>
@@ -39,21 +50,22 @@ const InterviewOverviewSections = () => {
       </Title>
       <SectionLists>
         {status === Loading.FULFILLED ? (
-          section.map((section: ISection, index: number) => (
+          section.map((sectionItem: ISection, index: number) => (
             <SectionList
               key={index}
-              className={selectedSection.id === section.id ? "active" : ""}
+              className={activeSectionId === sectionItem.id ? "active" : ""}
+              onClick={() => handleButtonClick(sectionItem.id)}
             >
-              <BodyLBold>{section.title}</BodyLBold>
+              <BodyLBold>{sectionItem.title}</BodyLBold>
               <TimeQuestionDiv>
                 <div className="icon-div">
                   <TimeIcon />
-                  <BodySMedium>{section.time} min</BodySMedium>
+                  <BodySMedium>{sectionItem.time} min</BodySMedium>
                 </div>
                 <div className="icon-div">
                   <QuestionIcon />
                   <BodySMedium>
-                    {section.questions?.length} Questions
+                    {sectionItem.questions?.length} Questions
                   </BodySMedium>
                 </div>
               </TimeQuestionDiv>

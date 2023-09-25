@@ -24,11 +24,26 @@ export const SectionLists = styled.div`
   overflow: scroll;
 `;
 
-export const SectionList = styled.div`
+export const SectionList = styled.button`
   padding: 12px 16px;
   display: flex;
   gap: 6px;
   flex-direction: column;
+  border: 0 black solid;
+  background-color: ${(props) => props.theme.colors.white};
+
+  &:hover {
+    background: ${(props) => props.theme.colors.lightPurple};
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    transform: none;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    border-radius: 12px;
+
+    /* border: 1px solid ${(props) => props.theme.colors.black}; */
+  }
 
   &.active {
     border-radius: 12px;

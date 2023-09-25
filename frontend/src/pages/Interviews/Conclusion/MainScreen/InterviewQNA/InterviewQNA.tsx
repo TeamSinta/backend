@@ -34,7 +34,7 @@ export const IndexStyle = styled.div`
 
 const InterviewQNA: React.FC<any> = ({ propData, screen }) => {
   const [activeIndex, setActiveIndex] = useState<any>(null);
-  const [data, setData] = useState<any>("");
+  const [, setData] = useState<any>("");
   const [view, setView] = useState<any>("");
 
   useEffect(() => {

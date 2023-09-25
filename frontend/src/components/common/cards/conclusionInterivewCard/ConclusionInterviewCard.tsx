@@ -46,7 +46,7 @@ const ConclusionInterviewCard = (props: IConclusionInterviewCardProps) => {
   const formattedDate = formatDateDifference(date);
 
   return (
-    <ElWrap w={279} h={256}>
+    <ElWrap h={256}>
       <Card
         className={(hover ? "hover" : "").concat(disable ? " disable" : " ")}
         id="cardId"

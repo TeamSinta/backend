@@ -54,7 +54,7 @@ export const RatingButton: React.FC<RatingButtonProps> = ({
 };
 
 export const WrongButtonL = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
+  const { active } = props;
   if (active === 1) {
     return (
       <div style={{ marginRight: "5px" }}>
@@ -85,7 +85,7 @@ export const WrongButtonL = (props: ICustomIconProps): JSX.Element => {
 };
 
 export const DislikeButtonL = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
+  const { active } = props;
   if (active === 2) {
     return (
       <div style={{ marginRight: "5px" }}>
@@ -113,7 +113,7 @@ export const DislikeButtonL = (props: ICustomIconProps): JSX.Element => {
 };
 
 export const NeutralButtonL = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
+  const { active } = props;
   if (active === 3) {
     return (
       <div style={{ marginRight: "5px" }}>
@@ -142,7 +142,7 @@ export const NeutralButtonL = (props: ICustomIconProps): JSX.Element => {
 };
 
 export const LikeButtonL = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
+  const { active } = props;
   if (active === 4) {
     return (
       <div style={{ marginRight: "5px" }}>
@@ -170,7 +170,7 @@ export const LikeButtonL = (props: ICustomIconProps): JSX.Element => {
 };
 
 export const TopStarButtonL = (props: ICustomIconProps): JSX.Element => {
-  const { width, fill, active, height } = props;
+  const { active } = props;
   if (active === 5) {
     return (
       <ElWrap w={40}>

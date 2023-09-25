@@ -4,7 +4,6 @@ import {
   BodyMMedium,
 } from "@/components/common/typeScale/StyledTypeScale";
 import { useState } from "react";
-import { summaryInfo } from "./SummaryConstants";
 import InterviewQNA from "../InterviewQNA/InterviewQNA";
 import { Grid } from "@mui/material";
 
@@ -20,7 +19,6 @@ import {
   StyledSubmitDecision,
   StyledSummaryTab,
   AIGeneratedImageContainer,
-  StyledDecisionGrid,
   StyledButtonContent,
   ButtonContainer,
   ButtonStyling,

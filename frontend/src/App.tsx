@@ -3,7 +3,9 @@ import SideNavBar from "./components/layouts/sidenavbar/SideNavBar";
 import { StyledMain } from "./components/layouts/container/StyledContainer";
 import Container from "./components/layouts/container/Container";
 import Routers from "./router/Routers";
-import styled from "styled-components";
+
+import { useVideoCall } from "./utils/dailyVideoService/videoCallComponent";
+// import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "./app/store";
 import Loading from "./components/common/elements/loading/Loading";
@@ -23,32 +25,31 @@ if (import.meta.env.VITE_ENV !== "develop") {
   }
 }
 
-const DivSample = styled.div`
-  svg {
-    width: xx;
-    height: xx;
-    stroke: black;
-  }
-`;
+interface VideoCallContextType {
+  createCall: () => Promise<string>;
+  startHairCheck: (url: string) => void;
+}
 
 function App() {
+  const interview = window?.location?.pathname.includes("video-call");
+  const { createCall, startHairCheck } = useVideoCall() as VideoCallContextType; // Type assertion
   const { isAuthenticated, status } = useSelector(
     (state: RootState) => state.user
   );
-  const { active_call } = useSelector((state: RootState) => state.videoCall);
+  // const { active_call } = useSelector((state: RootState) => state.videoCall);
 
   const isLoggedIn = isAuthenticated;
-  const videoCallScreen = active_call;
+  // const videoCallScreen = active_call;
 
   if (status === "LOADING") {
     return <Loading />;
   }
   return (
     <>
-      {isLoggedIn && !videoCallScreen ? (
+      {isLoggedIn && !interview ? (
         <Container>
           <SideNavBar />
-          <TopNavBar />
+          <TopNavBar createCall={createCall} startHairCheck={startHairCheck} />
           <StyledMain>
             <Routers />
           </StyledMain>

@@ -66,15 +66,14 @@ const navButtonLinks: INavButtonLink[] = [
 
 const navConfigLinks: INavButtonLink[] = [
   {
-    text: "Logout",
-    to: "#",
-    icon: <DoorIcon />,
-  },
-
-  {
     text: "Settings",
     to: "/settings",
     icon: <SettingIcon />,
+  },
+  {
+    text: "Logout",
+    to: "#",
+    icon: <DoorIcon />,
   },
 ];
 

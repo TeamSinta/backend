@@ -1,5 +1,12 @@
 import factory
-from .models import Question, Competency, Comment, QuestionBank, ReviewChoices
+from .models import (
+    Question,
+    Competency,
+    Comment,
+    QuestionBank,
+    ReviewChoices,
+    DifficultyChoices,
+)
 
 
 class QuestionFactory(factory.django.DjangoModelFactory):
@@ -13,6 +20,9 @@ class QuestionFactory(factory.django.DjangoModelFactory):
     guidelines = factory.Faker("paragraph")
     reply_time = factory.Faker("random_int", min=1, max=60)
     review = factory.Faker("random_element", elements=[e.value for e in ReviewChoices])
+    difficulty = factory.Faker(
+        "random_element", elements=[e.value for e in DifficultyChoices]
+    )
     created_at = factory.Faker("date_time_this_year", before_now=True, after_now=False)
     updated_at = factory.Faker("date_time_this_year", before_now=True, after_now=False)
 

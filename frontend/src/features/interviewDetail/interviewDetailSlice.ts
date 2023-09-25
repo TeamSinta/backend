@@ -1,22 +1,32 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IMember, IMockMembers } from "../roles/rolesInterface";
-import { ISection } from "./inverviewDetailInterface";
+// import { IMockMembers } from "../roles/rolesInterface";
+// import { InterviewDetailResponse } from "./inverviewDetailInterface";
 import { RootState } from "@/app/store";
-import { getInterviewDetail } from "./interviewDetailAPI";
 import { Loading } from "../utils/utilEnum";
+import {
+  getInterviewTemplate,
+  getInterviewSections,
+  getInterviewDetail,
+} from "./interviewDetailAPI";
 
 export const initialState = {
-  interviewer: [] as IMockMembers[],
-  section: [] as ISection[],
-  selectedSection: {} as ISection,
+  template: {
+    interviewers: [], // Placeholder for interviewers data
+  },
+  sections: [],
+  questions: [],
+  selectedSection: {},
   status: Loading.UNSEND,
 };
 
 export const getInterviewDetailAsync = createAsyncThunk(
   "interviews/interviewDetail",
-  async () => {
-    const response = await getInterviewDetail();
-    return response;
+  async (templateId: string) => {
+    const template = await getInterviewTemplate(templateId);
+    const sections = await getInterviewSections(templateId);
+    const questions = await getInterviewDetail(templateId);
+
+    return { template, sections, questions };
   }
 );
 
@@ -25,16 +35,17 @@ export const interviewDetailSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder.addCase(getInterviewDetailAsync.fulfilled, (state, action) => {
-      const { interviewer, section } = action.payload.data;
-      state.interviewer = interviewer;
-      state.section = section;
+      const { template, sections, questions } = action.payload;
+      state.template = template;
+      state.sections = sections;
+      state.questions = questions;
       state.status = Loading.FULFILLED;
-      state.selectedSection = state.section[0];
+      state.selectedSection = sections[0]; // Initialize as needed
     });
   },
   reducers: {
-    setSelectedSection: (state) => {
-      state.selectedSection = state.section[0];
+    setSelectedSection: (state, action) => {
+      state.selectedSection = action.payload;
     },
   },
 });

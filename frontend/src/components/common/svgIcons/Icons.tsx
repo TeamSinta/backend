@@ -65,8 +65,14 @@ import { ReactComponent as Circle } from "@/assets/svg/circle.svg";
 
 import { ReactComponent as CamHide } from "@/assets/svg/camHide.svg";
 import { ReactComponent as MicMute } from "@/assets/svg/micMute.svg";
+import { ReactComponent as MoreVert } from "@/assets/svg/more_vert_icon.svg";
+
 export const SintaIcon = (): JSX.Element => {
   return <Logo />;
+};
+
+export const MoreVertIcon = (): JSX.Element => {
+  return <MoreVert />;
 };
 
 export const HambergerIcon = (): JSX.Element => {

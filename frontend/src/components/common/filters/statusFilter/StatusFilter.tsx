@@ -3,7 +3,6 @@ import { SelectArrowOpenIcon } from "@/components/common/svgIcons/Icons";
 
 import {
   DropdownArrowIconDiv,
-  DropdownLabel,
   OptionA,
   OptionLi,
   OptionUl,

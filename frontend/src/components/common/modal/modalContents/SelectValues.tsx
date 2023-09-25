@@ -4,7 +4,6 @@ import { openModal } from "@/features/modal/modalSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { IconBtnM } from "../../buttons/iconBtn/IconBtn";
 import { TextBtnL } from "../../buttons/textBtn/TextBtn";
 import Competencies from "../../elements/competencies/Competencies";
@@ -35,7 +34,6 @@ for (var i = 1; i <= 30; i++) {
 }
 
 const SelectValue = () => {
-  const navigate = useNavigate();
   const [selectedComp, setSelectedComp] = useState<Array<string>>([]);
   const [newComp, setNewComp] = useState<string>("");
   const [showNewCompInput, setShowNewCompInput] = useState<boolean>(false);

@@ -1,5 +1,6 @@
 import Stack from "@mui/material/Stack";
 import { Box } from "@mui/material";
+import React from "react";
 import { LogoImage } from "./StyledTopBarNav";
 import SearchInput from "@/components/common/form/serchInput/SearchInput";
 import {
@@ -20,7 +21,20 @@ export interface IButton {
   text: string;
 }
 
-const TopNavBar = (): JSX.Element => {
+interface TopNavBarProps {
+  createCall: () => Promise<string>;
+  startHairCheck: (url: string) => void;
+}
+
+const TopNavBar = ({
+  createCall,
+  startHairCheck,
+}: TopNavBarProps): JSX.Element => {
+  const startDemo = () => {
+    createCall().then((url: string) => {
+      startHairCheck(url);
+    });
+  };
   const { user } = useSelector((state: RootState) => state.user);
 
   return (
@@ -41,16 +55,12 @@ const TopNavBar = (): JSX.Element => {
               {
                 label: "Start a Meeting",
                 icon: <PlusIcon />,
-                onClick: () => {
-                  /* Your onClick logic here */
-                },
+                onClick: startDemo, // Use the function reference here
               },
               {
                 label: "Plan a Meeting",
                 icon: <CalendarIcon />,
-                onClick: () => {
-                  /* Your onClick logic here */
-                },
+                onClick: () => {},
               },
               // You can add more buttons dynamically by adding more objects to this array
             ]}

@@ -1,5 +1,5 @@
-import React, { useMemo, useState, ReactNode, useEffect } from "react";
-import { Grid, sliderClasses } from "@mui/material";
+import React, { useMemo, useState, ReactNode } from "react";
+import { Grid } from "@mui/material";
 import { NavButton } from "@/components/layouts/sidenavbar/StyledSideNavBar";
 import "../index.css";
 import VideoPlayer from "./VideoPlayer/VideoPlayer";
@@ -80,10 +80,6 @@ const TabButton: React.FC<TabButtonProps> = ({
     <span>{children}</span>
   </StyledNavButton>
 );
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 const MainScreen: React.FC<MainScreenProps> = () => {
   const [activeTab, setActiveTab] = useState<number>(1);

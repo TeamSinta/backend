@@ -22,17 +22,17 @@ import {
 import Photos from "../../buttons/photo/Photos";
 import { InitialsGenerator } from "@/utils/Utils";
 
-interface IMembers {
-  member_idx: number;
-  member_url: string;
-  member_name: string;
+export interface IMember {
+  id: number; // Change to match your backend model
+  profile_picture: string;
+  username: string; // Change to match your backend model
 }
 
 interface ITemplateHomeCard {
   title: string;
   disable: boolean;
   questions: undefined[];
-  members: IMembers[];
+  members: IMember[];
   sections: undefined[];
 }
 
@@ -77,12 +77,12 @@ const TemplateHomeCard = (props: ITemplateHomeCard) => {
           </CardContent>
           <Photos>
             <>
-              {members.slice(0, 4).map((member: IMembers, index) => (
+              {members.slice(0, 4).map((member: IMember, index) => (
                 <ElWrap w={32} h={32} key={index}>
-                  <PhotoIcon imgUrl={member.member_url}>
+                  <PhotoIcon imgUrl={member.profile_picture}>
                     <BodySBold>
-                      {!member.member_url
-                        ? InitialsGenerator(member.member_name)
+                      {!member.profile_picture
+                        ? InitialsGenerator(member.username)
                         : ""}
                     </BodySBold>
                   </PhotoIcon>

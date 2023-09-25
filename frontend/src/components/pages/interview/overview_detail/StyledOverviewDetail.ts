@@ -3,13 +3,9 @@ import {
   DropdownEl,
   DropdownWrap,
 } from "@/components/common/filters/dropdownFilter/StyledDropdownFilter";
-import {
-  Input,
-  StyledTextareaDiv,
-} from "@/components/common/form/input/StyledInput";
+import { Input } from "@/components/common/form/input/StyledInput";
 import styled from "styled-components";
 import { BoderBox } from "../StyledInterview";
-import { SelectArrowOpenIcon } from "@/components/common/svgIcons/Icons";
 
 export const OverviewDetailTitle = styled.div`
   display: flex;

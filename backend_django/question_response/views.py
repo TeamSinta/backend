@@ -53,23 +53,27 @@ class QuestionSummarizedAnswerView(APIView):
         )
 
         for interview_round_question in interview_round_questions:
-            question_embedding = interview_round_question.question.embedding
-            relevant_chunks = transcript_chunks.order_by(
-                CosineDistance("embedding", question_embedding)
-            )[:5]
+            template_question = interview_round_question.question
+            question = template_question.question  # Access the related Question
 
-            answer = None
+            if question:
+                question_embedding = question.embedding
+                relevant_chunks = transcript_chunks.order_by(
+                    CosineDistance("embedding", question_embedding)
+                )[:5]
 
-            with transaction.atomic():
-                answer = Answer.objects.create(question=interview_round_question)
-                answer.transcript_chunks.set(relevant_chunks)
+                answer = None
 
-            print(f"Saved state for answer #{answer.id}")
+                with transaction.atomic():
+                    answer = Answer.objects.create(question=interview_round_question)
+                    answer.transcript_chunks.set(relevant_chunks)
 
-            # TODO: Move to a different thread
-            self._save_answer_notes(
-                answer, interview_round_question.question.question_text
-            )
+                print(f"Saved state for answer #{answer.id}")
+
+                # TODO: Move to a different thread
+                self._save_answer_notes(
+                    answer, template_question.question.question_text
+                )
 
     def _process_transcription(self, interview_round: InterviewRound):
         # TODO: Create up bulk create
@@ -112,7 +116,9 @@ class QuestionSummarizedAnswerView(APIView):
             # TODO: Support showing competency and score
             # TODO: Show speaker first name and last name
             # TODO: UPdate competency and score
-            question = interview_round_question.question
+            template_question = interview_round_question.question
+            question = template_question.question
+
             answer = interview_round_question.answer.all()[0]
             tc = []
             for chunk in answer.transcript_chunks.all():

@@ -33,14 +33,14 @@ import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import { StyledIconBtnM } from "@/components/common/buttons/button/StyledBtn";
 import { Notes } from "./Notes";
 import "./index.css";
-import { BottomNavBar } from "./BottomNavBar";
-import VideoSDK from "./VideoSDK";
+import { BottomNavBar } from "./Daily/BottomNavBar";
 import { RatingComponentL } from "../Interviews/Conclusion/MainScreen/InterviewQNA/RatingComponent";
+import Call from "./Daily/Call/Call";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
 import { startCall } from "@/features/videoCall/videoCallSlice";
 
-const Interview = () => {
+const Interview = ({ leaveCall }) => {
   const title = "FrontEnd Developer";
   const stage = "Round 3";
   const stageName = "Pair-Programming";
@@ -66,7 +66,7 @@ const Interview = () => {
     // placeholder dispatch for functionality, sets call as active to allow correct fullscreen rendering in App
     dispatch(startCall(true));
     // placeholder dispatch end //
-  }, [active_call]);
+  }, [active_call, dispatch]);
 
   const sidebarTabs = useMemo(() => {
     return (
@@ -497,7 +497,6 @@ const Interview = () => {
       </div>
     );
   };
-
   function InterviewSideBar(props: any) {
     const { reactClicked, setReactClicked } = props;
     return (
@@ -620,7 +619,7 @@ const Interview = () => {
               }}
             >
               <div>
-                <VideoSDK />
+                <Call />
               </div>
             </div>
           </div>
@@ -632,10 +631,10 @@ const Interview = () => {
           />
         </Grid>
       </Grid>
-
       <BottomNavBar
         setReactClicked={setReactClicked}
         reactClicked={reactClicked}
+        leaveCall={leaveCall}
       />
     </div>
   );

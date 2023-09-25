@@ -122,7 +122,7 @@ export const DropdownEl = styled.div<IDropdownOpen>`
   ${(props) =>
     props.open
       ? css`
-          outline: 1px solid ${(props) => props.theme.colors.black};
+          outline: 1px solid ${(props) => props.theme.colors.palePurple};
         `
       : css`
           outline: none;

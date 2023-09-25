@@ -2,7 +2,6 @@ import Calendar from "@/pages/Calendar";
 import Candidates from "@/pages/Candidates";
 import { Conclusion } from "@/pages/Interviews/Conclusion";
 import DashBoard from "@/pages/Dashboard/Dashboard";
-import Interview from "@/pages/Interview/Interview";
 import InterviewStage from "@/pages/InterviewStage";
 import Templates from "@/pages/Templates";
 import NotFound from "@/pages/NotFound";
@@ -11,6 +10,8 @@ import { Route, Routes } from "react-router-dom";
 import LoginScreen from "@/pages/Login/Login";
 import LogOutScreen from "@/pages/LogOut";
 import Conclusions from "@/pages/Interviews/InterviewsHome";
+import VideoCallComponent from "@/utils/dailyVideoService/videoCallComponent";
+import Settings from "@/pages/Settings/Settings";
 import { ProtectedRoutes } from "./authenticated/privateRoutes";
 
 const Routers = () => {
@@ -27,10 +28,7 @@ const Routers = () => {
           <Route path="/templates/:id" element={<InterviewDetails />} />
         </Route>
 
-        <Route
-          path="/templates/stage/:department/:round"
-          element={<InterviewStage />}
-        />
+        <Route path="/templates/:department/:id" element={<InterviewStage />} />
         {/* <Route
         path="/interviews/:department/:round"
         element={<InterviewStage />}
@@ -38,11 +36,10 @@ const Routers = () => {
 
         <Route path="/candidates" element={<Candidates />} />
         <Route path="/calendar" element={<Calendar />} />
-
+        <Route path="/settings" element={<Settings />} />
         <Route path="/interviews" element={<Conclusions />} />
         <Route path="/interviews/Conclusion" element={<Conclusion />} />
-
-        <Route path="/video-call" element={<Interview />} />
+        <Route path="/video-call" element={<VideoCallComponent />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

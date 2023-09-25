@@ -204,7 +204,7 @@ export const interviewDetail: IInterviewDetailStaging = {
       questions: [
         {
           id: 1,
-          title: "What are meta tags in HTML?",
+          title: "What are Swag Swag?",
           competencies: ["Teamleading"],
           time: 5,
           level: "High",

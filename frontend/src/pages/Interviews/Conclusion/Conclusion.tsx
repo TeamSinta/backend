@@ -1,5 +1,5 @@
-import { H1 } from "@/components/common/typeScale/StyledTypeScale";
-import React, { useMemo, useState } from "react";
+import { H1 } from "@/components/common/typeScale/StyledTypeScale.js";
+import React, { useMemo } from "react";
 import TopBar from "./TopBar.js";
 import MainScreen from "./MainScreen/MainScreen.js";
 import { RightArrowIcon } from "@/components/common/svgIcons/Icons.js";

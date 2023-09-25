@@ -11,11 +11,18 @@ class ReviewChoices(models.IntegerChoices):
     FIVE = 5
 
 
+class DifficultyChoices(models.IntegerChoices):
+    LOW = 1, "Low"
+    MEDIUM = 2, "Medium"
+    HIGH = 3, "High"
+
+
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     embedding = VectorField(dimensions=1536, null=True)
     guidelines = models.TextField()
     reply_time = models.IntegerField()
+    difficulty = models.IntegerField(choices=DifficultyChoices.choices, default=None)
     review = models.IntegerField(choices=ReviewChoices.choices, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

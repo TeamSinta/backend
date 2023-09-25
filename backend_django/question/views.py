@@ -13,19 +13,24 @@ from openai_helper.utils import get_embedding
 def create_question(request: HttpRequest) -> JsonResponse:
     if request.method == "POST":
         payload = json.loads(request.body)
-        competency_id = payload.get("competency_id")
         question_text = payload.get("question_text")
         guidelines = payload.get("guidelines")
         reply_time = payload.get("reply_time")
+        review = payload.get("review")
 
         question = Question()
-        question.competency_id = competency_id
         question.question_text = question_text
         question.guidelines = guidelines
         question.reply_time = reply_time
-        question.embedding = get_embedding(question_text)
+        question.embedding = get_embedding(
+            question_text
+        )  # Assuming you have a function called get_embedding
         question.created_at = datetime.now()
         question.updated_at = datetime.now()
+
+        # Set the review field if provided
+        if review is not None:
+            question.review = review
 
         question.save()
 
@@ -39,24 +44,26 @@ def create_question(request: HttpRequest) -> JsonResponse:
 @csrf_exempt
 def update_question(request: HttpRequest, question_id: int) -> JsonResponse:
     if request.method == "PUT":
-        payload = request.body.decode("utf-8")
-        data = json.loads(payload)
+        payload = json.loads(request.body.decode("utf-8"))
 
-        competency_id = data.get("competency_id")
-        question_text = data.get("question_text")
-        guidelines = data.get("guidelines")
-        reply_time = data.get("reply_time")
+        question_text = payload.get("question_text")
+        guidelines = payload.get("guidelines")
+        reply_time = payload.get("reply_time")
+        review = payload.get("review")
 
         question = get_object_or_404(Question, pk=question_id)
 
-        if competency_id:
-            question.competency_id = competency_id
         if question_text:
             question.question_text = question_text
         if guidelines:
             question.guidelines = guidelines
         if reply_time:
             question.reply_time = reply_time
+
+        # Update the review field if provided
+        if review is not None:
+            question.review = review
+
         question.updated_at = datetime.now()
 
         question.save()
@@ -69,21 +76,23 @@ def update_question(request: HttpRequest, question_id: int) -> JsonResponse:
 
 
 def get_all_questions(request: HttpRequest) -> JsonResponse:
-    questions = Question.objects.all()
-    data = []
-    for question in questions:
-        data.append(
-            {
-                "id": question.id,
-                "competency": question.competency.competency_text,
-                "question_text": question.question_text,
-                "guidelines": question.guidelines,
-                "reply_time": question.reply_time,
-                "created_at": question.created_at,
-                "updated_at": question.updated_at,
-            }
-        )
-    return JsonResponse(data, safe=False)
+    if request.method == "GET":
+        questions = Question.objects.all()
+        data = []
+        for question in questions:
+            data.append(
+                {
+                    "id": question.id,
+                    "question_text": question.question_text,
+                    "guidelines": question.guidelines,
+                    "reply_time": question.reply_time,
+                    "created_at": question.created_at,
+                    "updated_at": question.updated_at,
+                }
+            )
+        return JsonResponse(data, safe=False)
+    else:
+        return JsonResponse({"status": "error", "message": "Invalid request method"})
 
 
 @csrf_exempt

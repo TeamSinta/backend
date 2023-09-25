@@ -1,0 +1,147 @@
+/*
+  CSS grid is great for making video layouts.
+  For the purposes of this demo, we're keeping things relatively simple.
+  If you're interested in dynamic video grids, make sure to check out this blog post:
+   https://www.daily.co/blog/add-pagination-to-a-custom-daily-video-chat-app-to-support-larger-meetings/
+ */
+.call {
+  display: grid;
+  padding: 5rem;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  grid-auto-rows: 1fr;
+  grid-column-gap: 30px;
+  grid-row-gap: 30px;
+  width: 100%;
+  position: relative;
+}
+
+@media only screen and (max-width: 600px) {
+  .call {
+    padding: 0;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    grid-auto-rows: unset;
+  } /* Updated CSS for the Daily Prebuilt video chat layout */
+
+  /* Set the aspect ratio for the video containers */
+  .call {
+    display: grid;
+    padding: 5rem;
+    align-items: center;
+    justify-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    grid-auto-rows: minmax(0, 1fr); /* Use minmax(0, 1fr) for aspect ratio */
+    grid-column-gap: 30px;
+    grid-row-gap: 30px;
+    width: 100%;
+    position: relative;
+  }
+
+  /* Media query for smaller screens */
+  @media only screen and (max-width: 600px) {
+    .call {
+      padding: 0;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    }
+  }
+
+  /* Styling for screenshare layout */
+  .is-screenshare {
+    display: grid;
+    padding: 5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-row-gap: 15px;
+  }
+
+  /* When someone is sharing their screen, resize the participants' videos */
+  .is-screenshare .self-view,
+  .is-screenshare .tile-video {
+    width: 100%; /* Adjust as needed */
+    aspect-ratio: 16 / 9; /* Maintain a 16:9 aspect ratio for video */
+  }
+
+  /* Styling for the info box */
+  .info-box {
+    background: var(--dark-blue-border);
+    color: var(--white);
+    width: 480px;
+    aspect-ratio: 16 / 9; /* Maintain a 16:9 aspect ratio for the info box */
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 3rem;
+    box-sizing: border-box;
+    border-radius: 4px;
+  }
+
+  /* Media query for smaller screens */
+  @media only screen and (max-width: 600px) {
+    .info-box {
+      width: 100%; /* Make the info box full width on smaller screens */
+      aspect-ratio: unset; /* Remove aspect ratio on smaller screens */
+      height: auto; /* Allow the height to adjust based on content */
+      padding: 2rem 1rem;
+    }
+  }
+
+  /* Styling for the room URL */
+  .room-url {
+    padding: 0 1rem;
+    word-break: break-word;
+    font-weight: normal;
+    font-size: 12px;
+  }
+}
+
+.is-screenshare {
+  display: grid;
+  padding: 5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-row-gap: 15px;
+}
+
+/*
+  When someone is sharing their screen, we want to resize the participants' videos,
+  so the biggest screen in our grid is the screen share.
+ */
+.is-screenshare .self-view {
+  width: 240px;
+  height: 135px;
+}
+
+/* Resize remote participants when a screen is being shared */
+.is-screenshare .tile-video {
+  width: 240px;
+  height: 135px;
+}
+
+.info-box {
+  background: var(--dark-blue-border);
+  color: var(--white);
+  width: 480px;
+  height: 270px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 3rem;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+@media only screen and (max-width: 600px) {
+  .info-box {
+    width: 240px;
+    height: auto;
+    padding: 2rem 1rem;
+  }
+}
+
+.room-url {
+  padding: 0 1rem;
+  word-break: break-word;
+  font-weight: normal;
+  font-size: 12px;
+}

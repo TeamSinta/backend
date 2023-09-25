@@ -1,5 +1,5 @@
 import { SelectArrowOpenIcon } from "@/components/common/svgIcons/Icons";
-import { memo, useCallback, useLayoutEffect, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import {
   DropdownArrowIconDiv,
   DropdownEl,

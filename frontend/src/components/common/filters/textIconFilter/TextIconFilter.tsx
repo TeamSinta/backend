@@ -8,10 +8,11 @@ interface ITextIconFilterProps {
   label: string;
   icon: JSX.Element;
   select: boolean;
+  onClick: () => void; // Add onClick prop
 }
 
 const TextIconFilter = (props: ITextIconFilterProps) => {
-  const { select, label, icon } = props;
+  const { select, label, icon, onClick } = props;
   const [selected, setSelected] = useState<boolean>(select);
 
   useEffect(() => {
@@ -22,6 +23,7 @@ const TextIconFilter = (props: ITextIconFilterProps) => {
     <TextIconFilterLayout
       onClick={() => {
         setSelected(selected ? false : true);
+        onClick(); // Call the onClick prop when the element is clicked
       }}
       className={selected ? "selected" : ""}
     >
