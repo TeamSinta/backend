@@ -101,24 +101,22 @@ def read_template(request, template_id):
             "location": template.location,
             "company_id": template.company.id,
             "interviewers": [
-                interviewer.id for interviewer in template.interviewers.all()
+                {
+                    "id": interviewer.id,
+                    "first_name": interviewer.first_name,
+                    "last_name": interviewer.last_name,
+                    "profile_picture": request.build_absolute_uri(
+                        interviewer.profile_picture
+                    )
+                    if interviewer.profile_picture
+                    else None
+                    # Convert the image URL to an absolute URL
+                }
+                for interviewer in template.interviewers.all()
             ],
         }
 
         return JsonResponse(response, status=200)
-    else:
-        error_response = {"error": "Invalid request method"}
-        return JsonResponse(error_response, status=405)
-
-
-# Delete a Template
-@csrf_exempt
-def delete_template(request, template_id):
-    if request.method == "DELETE":
-        template = get_object_or_404(Template, pk=template_id)
-        template.delete()
-
-        return JsonResponse({"message": "Template deleted successfully"}, status=204)
     else:
         error_response = {"error": "Invalid request method"}
         return JsonResponse(error_response, status=405)
@@ -155,6 +153,19 @@ def get_all_templates(request):
             template_list.append(template_data)
 
         return JsonResponse(template_list, safe=False, status=200)
+    else:
+        error_response = {"error": "Invalid request method"}
+        return JsonResponse(error_response, status=405)
+
+
+# Delete a Template
+@csrf_exempt
+def delete_template(request, template_id):
+    if request.method == "DELETE":
+        template = get_object_or_404(Template, pk=template_id)
+        template.delete()
+
+        return JsonResponse({"message": "Template deleted successfully"}, status=204)
     else:
         error_response = {"error": "Invalid request method"}
         return JsonResponse(error_response, status=405)
@@ -546,6 +557,8 @@ def delete_template_questions(request, template_id):
 
 
 # Get all TemplateQuestions for a Template
+
+
 @csrf_exempt
 def get_all_template_questions(request, template_id):
     if request.method == "GET":
@@ -555,11 +568,20 @@ def get_all_template_questions(request, template_id):
         # Create a list of dictionaries containing information about each TemplateQuestion
         template_question_list = []
         for template_question in template_questions:
+            question = template_question.question  # Fetch the question details
             template_question_list.append(
                 {
                     "template_id": template_id,
                     "template_topic_id": template_question.topic.id,
-                    "question_id": template_question.question.id,
+                    "question_id": question.id,
+                    "question_text": question.question_text,
+                    "guidelines": question.guidelines,
+                    "reply_time": question.reply_time,
+                    "competency": question.competency,
+                    "difficulty": question.difficulty,
+                    "review": question.review,
+                    "created_at": question.created_at,
+                    "updated_at": question.updated_at,
                 }
             )
 

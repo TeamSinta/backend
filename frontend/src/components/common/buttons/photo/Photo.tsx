@@ -11,7 +11,8 @@ import { PhotoType } from "@/features/utils/utilEnum";
 
 export interface IPhotoProps {
   member_idx: number;
-  member_name: string;
+  member_firstName: string;
+  member_lastName: string;
   member_url: string;
   selected: boolean;
   onSelect: (memberIdx: number) => void;
@@ -19,8 +20,15 @@ export interface IPhotoProps {
 }
 
 const Photo = (props: IPhotoProps) => {
-  const { member_idx, member_name, member_url, selected, onSelect, photoType } =
-    props;
+  const {
+    member_idx,
+    member_firstName,
+    member_lastName,
+    member_url,
+    selected,
+    onSelect,
+    photoType,
+  } = props;
 
   const [selectPhoto, setSelectPhoto] = useState(selected);
 
@@ -37,11 +45,16 @@ const Photo = (props: IPhotoProps) => {
       }}
       className={selectPhoto ? "checked" : ""}
     >
-      {member_url ? (
-        <PhotoCheckBox url={member_url}></PhotoCheckBox>
-      ) : (
-        <NameCheckBox>{InitialsGenerator(member_name)}</NameCheckBox>
-      )}
+      {
+        // Check if member_url is null, empty, or contains only spaces
+        member_url === null || member_url.trim() === "" ? (
+          <NameCheckBox>
+            {InitialsGenerator(member_firstName, member_lastName)}
+          </NameCheckBox>
+        ) : (
+          <PhotoCheckBox url={member_url}></PhotoCheckBox>
+        )
+      }
 
       <PhotoCheckBoxCover></PhotoCheckBoxCover>
       <Checked className={selectPhoto ? "checked" : ""}></Checked>

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Loading } from "../utils/utilEnum";
 import { RootState } from "@/app/store";
-import { getTemplates } from "./interviewsAPI";
+import { getQuestionsBank } from "./interviewsAPI";
 import { IQuestion } from "./interviewsInterface";
 
 export const initialState = {
@@ -20,9 +20,10 @@ export const initialState = {
   },
   values: [],
   selectedValue: [],
-  templates: [],
+  question_banks: [],
+  questionBanks: [],
   questions: [] as IQuestion[],
-  selectedTemplate: {
+  selectedQuestionBank: {
     id: 0,
     title: "",
   },
@@ -30,30 +31,31 @@ export const initialState = {
   status: Loading.UNSEND,
 };
 
-export const getTemplatesAsync = createAsyncThunk(
+export const getQuestionsBanksAsync = createAsyncThunk(
   "interviews/templates",
   async () => {
-    const response = await getTemplates();
+    const response = await getQuestionsBank();
     return response;
   }
 );
 
 export const interviewsSlice = createSlice({
-  name: "interviews",
+  name: "questionBanks",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(getTemplatesAsync.fulfilled, (state, action) => {
-      state.templates = action.payload;
+    builder.addCase(getQuestionsBanksAsync.fulfilled, (state, action) => {
+      state.questionBanks = action.payload;
+      state.status = Loading.FULFILLED;
     });
   },
   reducers: {
-    setSelectedTemplates: (state, actions) => {
+    setSelectedQuestionBanks: (state, actions) => {
       const data = actions.payload;
-      state.selectedTemplate = data;
+      state.selectedQuestionBank = data;
     },
-    selectTemplate: (state, actions) => {
-      const { questions, template } = actions.payload;
-      state.selectedTemplate = template;
+    selectQuestionBank: (state, actions) => {
+      const { questions, questionBank } = actions.payload;
+      state.selectedQuestionBank = questionBank;
       state.questions = questions;
     },
     setSelectedQuestion: (state, actions) => {
@@ -71,18 +73,18 @@ export const interviewsSlice = createSlice({
         state.selectedQuestion = temp;
       }
     },
-    resetInterview: (state) => {
+    resetQuestionBank: (state) => {
       Object.assign(state, initialState);
     },
   },
 });
 
 export const {
-  setSelectedTemplates,
-  selectTemplate,
+  setSelectedQuestionBanks,
+  selectQuestionBank,
   setSelectedQuestion,
-  resetInterview,
+  resetQuestionBank,
 } = interviewsSlice.actions;
 
-export const selectInterview = (state: RootState) => state.interviews;
+export const selectInterview = (state: RootState) => state.questionBanks;
 export default interviewsSlice.reducer;

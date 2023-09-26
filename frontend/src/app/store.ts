@@ -3,7 +3,7 @@ import counterReducer from "../features/counter/counterSlice";
 import modalReducer from "@/features/modal/modalSlice";
 import roleReducer from "@/features/roles/rolesSlice";
 import inviteMemberReducer from "@/features/inviteMember/inviteMemberSlice";
-import interviewsReducer from "@/features/interviews/interviewsSlice";
+import questionBanksReducer from "@/features/interviews/interviewsSlice";
 import interviewDetailReducer from "@/features/interviewDetail/interviewDetailSlice";
 import userReducer from "@/features/authentication/authenticationSlice";
 import { authAPI } from "@/features/authentication/authenticationAPI";
@@ -18,7 +18,7 @@ export const store = configureStore({
     modal: modalReducer,
     role: roleReducer,
     inviteMember: inviteMemberReducer,
-    interviews: interviewsReducer,
+    questionBanks: questionBanksReducer,
     interviewDetail: interviewDetailReducer,
   },
   middleware: (getDefaultMiddleware) =>

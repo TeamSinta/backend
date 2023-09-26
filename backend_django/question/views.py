@@ -86,6 +86,7 @@ def get_all_questions(request: HttpRequest) -> JsonResponse:
                     "question_text": question.question_text,
                     "guidelines": question.guidelines,
                     "reply_time": question.reply_time,
+                    "competency": question.competency,
                     "created_at": question.created_at,
                     "updated_at": question.updated_at,
                 }
@@ -120,16 +121,25 @@ def create_question_bank(request: HttpRequest) -> JsonResponse:
 def get_all_question_banks(request: HttpRequest) -> JsonResponse:
     if request.method == "GET":
         question_banks = QuestionBank.objects.all()
-
         serialized_question_banks = []
 
         for question_bank in question_banks:
+            serialized_questions = []
+            for question in question_bank.questions.all():
+                serialized_question = {
+                    "id": question.id,
+                    "title": question.question_text,
+                    "competencies": question.competency,
+                    "time": question.reply_time,
+                    "level": question.difficulty,
+                    "detail": question.guidelines,
+                }
+                serialized_questions.append(serialized_question)
+
             serialized_question_bank = {
                 "id": question_bank.id,
-                "name": question_bank.name,
-                "questions": [
-                    question.id for question in question_bank.questions.all()
-                ],
+                "title": question_bank.title,
+                "questions": serialized_questions,
             }
             serialized_question_banks.append(serialized_question_bank)
 

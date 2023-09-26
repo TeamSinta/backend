@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   H3Bold,
@@ -27,7 +27,7 @@ import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBt
 import { BackgroundColor } from "@/features/utils/utilEnum";
 
 const InterviewOverviewSections: React.FC = () => {
-  const { section, status, selectedSection } = useSelector(
+  const { sections, status, selectedSection, questions } = useSelector(
     selectInterviewDetail
   );
   const dispatch = useDispatch();
@@ -43,6 +43,12 @@ const InterviewOverviewSections: React.FC = () => {
     dispatch(setSelectedSection(sectionId));
   };
 
+  // State to track the active section ID
+
+  useEffect(() => {
+    setActiveSectionId(selectedSection.id);
+  }, [selectedSection]);
+
   return (
     <OverviewSections>
       <Title>
@@ -50,13 +56,13 @@ const InterviewOverviewSections: React.FC = () => {
       </Title>
       <SectionLists>
         {status === Loading.FULFILLED ? (
-          section.map((sectionItem: ISection, index: number) => (
+          sections.map((sectionItem: ISection, index: number) => (
             <SectionList
               key={index}
               className={activeSectionId === sectionItem.id ? "active" : ""}
-              onClick={() => handleButtonClick(sectionItem.id)}
+              onClick={() => handleButtonClick(sectionItem)}
             >
-              <BodyLBold>{sectionItem.title}</BodyLBold>
+              <BodyLBold>{sectionItem.topics_text}</BodyLBold>
               <TimeQuestionDiv>
                 <div className="icon-div">
                   <TimeIcon />
@@ -64,9 +70,7 @@ const InterviewOverviewSections: React.FC = () => {
                 </div>
                 <div className="icon-div">
                   <QuestionIcon />
-                  <BodySMedium>
-                    {sectionItem.questions?.length} Questions
-                  </BodySMedium>
+                  <BodySMedium>{questions?.length} Questions</BodySMedium>
                 </div>
               </TimeQuestionDiv>
             </SectionList>

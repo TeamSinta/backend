@@ -7,7 +7,7 @@ const TopBar = () => {
 
   return (
     <React.Fragment>
-      <Grid container spacing={1} className="bar ">
+      <Grid container spacing={2} className="bar ">
         <Grid item={true} xs={12} md={5} className="column">
           <div>
             <p className="bio-data-name">{BIO_DATA.NAME}</p>

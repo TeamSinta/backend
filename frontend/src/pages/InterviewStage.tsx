@@ -1,4 +1,3 @@
-// import { AppDispatch } from "@/app/store";
 import {
   IconBtnL,
   IconBtnM,
@@ -26,23 +25,15 @@ import {
   Subtitle,
   Title,
 } from "@/components/pages/interview/StyledInterview";
-import {
-  getInterviewDetailAsync,
-  selectInterviewDetail,
-} from "@/features/interviewDetail/interviewDetailSlice";
+import { getInterviewDetailAsync } from "@/features/interviewDetail/interviewDetailSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const InterviewStage = () => {
   const dispatch = useDispatch();
-  const templateId = "1";
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { topics, selectedSection, status } = useSelector(
-    selectInterviewDetail
-  );
-
+  const { templateId } = useParams();
   useEffect(() => {
     // Dispatch the action to fetch interview detail.
     dispatch(getInterviewDetailAsync(templateId));

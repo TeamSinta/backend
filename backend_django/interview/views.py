@@ -15,7 +15,6 @@ def create_interview_round(request):
             data = json.loads(request.body)
             title = data.get("title")
             candidate_id = data.get("candidate_id")
-            description = data.get("description")
             interviewer_id = data.get(
                 "interviewer_id"
             )  # This is required according to the model, API not working unless this exists.
@@ -24,7 +23,6 @@ def create_interview_round(request):
                 interview_round = InterviewRound.objects.create(
                     title=title,
                     candidate_id=candidate_id,
-                    description=description,
                     interviewer_id=interviewer_id,  # This is required according to the model, API not working unless this exists.
                 )
 
@@ -32,7 +30,6 @@ def create_interview_round(request):
                     "id": interview_round.id,
                     "title": interview_round.title,
                     "candidate_id": interview_round.candidate_id,
-                    "description": interview_round.description,
                     "interviewer_id": interview_round.interviewer_id,  # This is required according to the model, API not working unless this exists.
                 }
                 return JsonResponse(response)

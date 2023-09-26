@@ -1,9 +1,10 @@
 import { Loading } from "../utils/utilEnum";
 
 export interface IMockMembers {
-  member_idx: number;
-  member_name: string;
-  member_url: string;
+  id: number;
+  first_name: string;
+  last_name: string;
+  profile_picture: string;
   member_type: string;
 }
 

@@ -25,14 +25,17 @@ import { StyledImage } from "./StyledDashboard";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store";
 import { IMember } from "@/components/common/cards/teamplateHomeCard/TemplateHomeCard";
+import { useNavigate } from "react-router-dom";
 
 interface interviewRound {
   role_title: string;
   disable: boolean;
   interviewers?: IMember[];
+  id: string;
 }
 
 const DashBoard = () => {
+  const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.user);
   const [interviewRounds, setInterviewRounds] = useState<interviewRound[]>([]);
 
@@ -47,10 +50,7 @@ const DashBoard = () => {
   }, []);
 
   const handleButtonClick = () => {
-    const TemplatesUrl = "/templates";
-    // Define the function to be called when the button is clicked
-    // You can replace '/interview-url' with the actual URL you want to route to
-    window.location.href = TemplatesUrl;
+    navigate("/templates");
   };
 
   const arg = {
@@ -84,7 +84,7 @@ const DashBoard = () => {
 
     const x = scrollContainerRef.current
       ? e.pageX - scrollContainerRef.current.offsetLeft
-      : e.pageX; // again, use pageX as fallback
+      : e.pageX;
 
     const scrollDistance = x - startX;
 
@@ -93,6 +93,10 @@ const DashBoard = () => {
     }
 
     setStartX(x);
+  };
+
+  const handleCardClick = (templateId: string) => {
+    navigate(`/templates/${templateId}`);
   };
 
   return (
@@ -152,15 +156,16 @@ const DashBoard = () => {
               onMouseLeave={handleMouseUp}
               ref={scrollContainerRef}
             >
-              {interviewRounds.map((interviewRound, index) => (
+              {interviewRounds.map((interviewRound) => (
                 <TemplateHomeCard
-                  key={index}
+                  key={interviewRound.id}
                   title={interviewRound.role_title}
                   // Determine the disable state based on a condition, e.g., if interviewRound.disable exists and is true
                   disable={interviewRound.disable || false}
                   questions={new Array(8)} // or you can provide actual data if available
                   sections={new Array(15)} // or you can provide actual data if available
                   members={interviewRound.interviewers || []}
+                  onClick={() => handleCardClick(interviewRound.id)} // Use interviewRound.id as the template ID
                 />
               ))}
             </TemplateCardsBox>

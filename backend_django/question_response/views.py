@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import generics
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from interview.models import InterviewRound
-from question_response.models import Answer
+from question_response.models import Answer, InterviewerFeedback
 from openai_helper.utils import get_embedding, get_answer_notes_for_question
 from transcription.models import TranscriptChunk
 from django.http import HttpRequest, JsonResponse
@@ -12,6 +13,7 @@ from django.db import transaction
 import json
 from user.models import CustomUser
 from typing import List, Dict
+from .serializers import InterviewerFeedbackSerializer
 
 
 class QuestionSummarizedAnswerView(APIView):
@@ -142,3 +144,13 @@ class QuestionSummarizedAnswerView(APIView):
             )
 
         return question_answers
+
+
+class InterviewerFeedbackListCreateView(generics.ListCreateAPIView):
+    queryset = InterviewerFeedback.objects.all()
+    serializer_class = InterviewerFeedbackSerializer
+
+
+class InterviewerFeedbackDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = InterviewerFeedback.objects.all()
+    serializer_class = InterviewerFeedbackSerializer

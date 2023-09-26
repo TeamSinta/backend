@@ -1,14 +1,13 @@
-export const InitialsGenerator = (name: string | undefined | null) => {
-  if (!name) return "";
+export const InitialsGenerator = (
+  firstName: string | undefined | null,
+  lastName: string | undefined | null
+) => {
+  if (!firstName && !lastName) return "";
 
-  // Ensure that 'name' contains at least one space
-  const spaceIndex = name.indexOf(" ");
-  if (spaceIndex === -1) return "";
+  // Ensure that 'firstName' and 'lastName' contain at least one character
+  const firstInitial = firstName ? firstName.substring(0, 1).toUpperCase() : "";
+  const secondInitial = lastName ? lastName.substring(0, 1).toUpperCase() : "";
 
-  const firstInitial = name.substring(0, 1).toUpperCase();
-  const secondInitial = name
-    .substring(spaceIndex + 1, spaceIndex + 2)
-    .toUpperCase();
-
-  return firstInitial + " " + secondInitial;
+  // Combine the first initials with a space in between
+  return firstInitial + "" + secondInitial;
 };

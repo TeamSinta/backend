@@ -47,5 +47,5 @@ class QuestionBankFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = QuestionBank
 
-    name = factory.Faker("catch_phrase")
+    title = factory.Faker("catch_phrase")
     questions = factory.RelatedFactory(QuestionFactory, "questionbank")

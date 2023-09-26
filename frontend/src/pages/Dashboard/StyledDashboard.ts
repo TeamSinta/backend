@@ -115,15 +115,16 @@ export const StyledImage = styled.img`
   margin-top: -20px;
   width: 620px;
   min-width: 100px;
+  min-height: 440px;
 
   @media (max-width: 1000px) {
     /* Adjust styles for screens with a max width of 768px */
-
     width: 90%;
   }
 
   @media (min-width: 1600px) {
     /* Adjust styles for screens with a max width of 768px */
     width: 1000px;
+    min-height: 440px;
   }
 `;

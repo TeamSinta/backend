@@ -1,6 +1,6 @@
 from django.db import models
 from user.models import CustomUser
-from interview.models import InterviewRoundQuestion
+from interview.models import InterviewRoundQuestion, InterviewRound
 from transcription.models import TranscriptChunk
 from pgvector.django import VectorField
 
@@ -30,7 +30,7 @@ class InterviewerFeedback(models.Model):
         FIVE = 5
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    interview_round = models.ForeignKey(InterviewRound, on_delete=models.CASCADE)
     note = models.TextField()
     reaction = models.IntegerField(choices=EmojiChoice.choices)
     score = models.IntegerField(choices=ScoreChoice.choices)

@@ -8,7 +8,7 @@ from .models import (
     CustomUser,
 )
 from user.factories import UserFactory
-from templates.factories import TemplateQuestion
+from interview_templates.factories import TemplateQuestion
 
 
 class InterviewRoundFactory(factory.django.DjangoModelFactory):
@@ -20,7 +20,6 @@ class InterviewRoundFactory(factory.django.DjangoModelFactory):
     interviewer = factory.SubFactory(
         UserFactory, role=CustomUser.RoleChoices.INTERVIEWER
     )
-    description = factory.Faker("text")
 
 
 class InterviewRoundQuestionFactory(factory.django.DjangoModelFactory):

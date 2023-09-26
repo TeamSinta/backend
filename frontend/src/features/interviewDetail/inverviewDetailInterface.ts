@@ -8,17 +8,19 @@ export interface IInterviewDetailStaging {
 
 export interface ISection {
   id: number;
-  title: string;
+  topics_text: string;
   time: number;
   questions: IQuestion[];
 }
 
 export interface InterviewDetailResponse {
-  title: string;
   id: number;
-  topics_text: string;
+  question_text: string;
+  difficulty: string;
+  guidelines: string;
   template_id: number;
+  template_topic_id: number;
   company_id: number;
-  time: number;
-  questions: number[]; // Assuming 'questions' is a list of foreign keys to Question and of type number[]
+  reply_time: number;
+  competency: string;
 }

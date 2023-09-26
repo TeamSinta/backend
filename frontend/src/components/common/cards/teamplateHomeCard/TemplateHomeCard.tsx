@@ -25,7 +25,8 @@ import { InitialsGenerator } from "@/utils/Utils";
 export interface IMember {
   id: number; // Change to match your backend model
   profile_picture: string;
-  username: string; // Change to match your backend model
+  first_name: string;
+  last_name: string; // Change to match your backend model
 }
 
 interface ITemplateHomeCard {
@@ -34,16 +35,18 @@ interface ITemplateHomeCard {
   questions: undefined[];
   members: IMember[];
   sections: undefined[];
+  onClick: () => void;
 }
 
 const TemplateHomeCard = (props: ITemplateHomeCard) => {
   const [hover, setHover] = useState(false);
-  const { title, disable, members, questions, sections } = props;
+  const { title, disable, members, questions, sections, onClick } = props;
 
   return (
     <ElWrap w={370} h={216}>
       <Card
         className={(hover ? "hover" : "").concat(disable ? " disable" : "")}
+        onClick={onClick}
       >
         <CardButtons>
           <ElWrap w={32}>
@@ -82,7 +85,7 @@ const TemplateHomeCard = (props: ITemplateHomeCard) => {
                   <PhotoIcon imgUrl={member.profile_picture}>
                     <BodySBold>
                       {!member.profile_picture
-                        ? InitialsGenerator(member.username)
+                        ? InitialsGenerator(member.first_name, member.last_name)
                         : ""}
                     </BodySBold>
                   </PhotoIcon>

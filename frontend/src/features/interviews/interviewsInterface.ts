@@ -1,7 +1,7 @@
 export interface IQuestion {
   [key: string]: number | string | string[];
   title: string;
-  competencies: string[];
+  competency: string;
   time: number;
   level: string;
   detail: string;
@@ -9,7 +9,7 @@ export interface IQuestion {
 }
 
 export interface ITemplates {
-  template: {
+  question_bank: {
     title: string;
     id: number;
   };

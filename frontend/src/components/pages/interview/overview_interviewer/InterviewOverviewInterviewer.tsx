@@ -41,9 +41,10 @@ const InterviewOverviewInterviewer = () => {
               <Photo
                 photoType={PhotoType.L}
                 onSelect={() => {}}
-                member_idx={interview.member_idx}
-                member_name={interview.member_name}
-                member_url={interview.member_url}
+                member_idx={interview.id}
+                member_firstName={interview.first_name}
+                member_lastName={interview.last_name}
+                member_url={interview.profile_picture}
                 selected={false}
               />
             </ElWrap>

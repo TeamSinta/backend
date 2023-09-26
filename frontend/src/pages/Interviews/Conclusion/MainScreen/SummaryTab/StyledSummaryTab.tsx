@@ -26,6 +26,8 @@ export const ButtonContainer = styled.div`
   justify-content: center;
   padding: 10px;
   align: center;
+  margin-bottom: 80px;
+  gap: 8px;
 `;
 
 export const StyledRoundBox = styled.div`
@@ -69,7 +71,7 @@ export const StyledDecisionButton = styled.div`
         : props.activeValue === 2
         ? "#FABBCF"
         : "#FFFFFF"};
-    
+
     :hover {
       cursor: pointer;
       box-shadow: 0px 4px 0px #121212;
@@ -81,7 +83,7 @@ export const StyledDecisionButton = styled.div`
           ? "#F49FB4"
           : "#D3D3D3"};  // Lighter colors on hover
     }
-  
+
     :active {
       box-shadow: 0px 0px 0px #121212;
       transform: translateY(4px);
@@ -92,7 +94,7 @@ export const StyledDecisionButton = styled.div`
       cursor: not-allowed;
     }
 
-   
+
     }
 
     &.white {

@@ -2,7 +2,7 @@ import factory
 from django.utils import timezone
 from user.models import CustomUser, Company
 from question.models import Question
-from templates.models import Template, TemplateTopic, TemplateQuestion
+from interview_templates.models import Template, TemplateTopic, TemplateQuestion
 from question.factories import QuestionFactory
 
 

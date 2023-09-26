@@ -12,22 +12,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@/app/store";
 import { useEffect } from "react";
 import {
-  getTemplatesAsync,
+  getQuestionsBanksAsync,
   selectInterview,
-  selectTemplate,
+  selectQuestionBank,
 } from "@/features/interviews/interviewsSlice";
-import { ITemplates } from "@/features/interviews/interviewsInterface";
+import { IQuestionsBank } from "@/features/interviews/interviewsInterface";
+import { Loading } from "@/features/utils/utilEnum";
 
 const TemplateList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { templates } = useSelector(selectInterview);
+  const { questionBanks, status } = useSelector(selectInterview);
 
-  const onSelecteTemaplate = (template: ITemplates) => {
-    dispatch(selectTemplate(template));
+  const onSelectQuestionBank = (template: IQuestionsBank) => {
+    dispatch(selectQuestionBank(template));
   };
 
   useEffect(() => {
-    dispatch(getTemplatesAsync());
+    dispatch(getQuestionsBanksAsync());
+    console.log(questionBanks);
   }, [dispatch]);
 
   return (
@@ -36,7 +38,7 @@ const TemplateList = () => {
         <ElWrap w={462} h={40}>
           <SearchInput
             disable={false}
-            placeholder={"Seach for a questions"}
+            placeholder={"Search for a questions"}
             error={false}
           />
         </ElWrap>
@@ -49,17 +51,21 @@ const TemplateList = () => {
         </div>
       </TemplateListInputWrap>
       <TemplateListContentWrap>
-        {templates.map((template: ITemplates) => (
-          <TemplateInterviewCard
-            title={template.template.title}
-            questions={template.questions}
-            disable={false}
-            key={template.template.id}
-            onClick={() => {
-              onSelecteTemaplate(template);
-            }}
-          />
-        ))}
+        {status === Loading.FULFILLED ? (
+          questionBanks.question_banks.map((template: IQuestionsBank) => (
+            <TemplateInterviewCard
+              title={template.title}
+              questions={template.questions}
+              disable={false}
+              key={template.id}
+              onClick={() => {
+                onSelectQuestionBank(template);
+              }}
+            />
+          ))
+        ) : (
+          <></>
+        )}
       </TemplateListContentWrap>
     </TemplateListWrap>
   );

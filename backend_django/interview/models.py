@@ -1,7 +1,7 @@
 from django.db import models
 from user.models import CustomUser, Company
 from question.models import Question
-from templates.models import TemplateQuestion
+from interview_templates.models import TemplateQuestion
 from django.utils import timezone
 
 
@@ -20,7 +20,6 @@ class InterviewRound(models.Model):
         related_name=CustomUser.RoleChoices.INTERVIEWER,
         on_delete=models.CASCADE,
     )
-    description = models.TextField()
     video_uri = models.TextField()
     transcription_file_uri = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

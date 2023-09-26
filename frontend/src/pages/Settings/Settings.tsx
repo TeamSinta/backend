@@ -22,6 +22,7 @@ import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import ProfilePicture from "src/assets/images/Homie.png";
 import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBtn";
 import {
+  SettingsContainer,
   StyledImage,
   PageContainer,
   DeleteBox,
@@ -95,7 +96,7 @@ const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const handleCardClick = (user) => {
+  const handleCardClick = (user: any) => {
     setSelectedUser(user);
   };
 
@@ -117,7 +118,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <div>
+    <SettingsContainer>
       <H1>Settings</H1>
       <Box
         sx={{
@@ -166,30 +167,28 @@ const SettingsPage = () => {
                   />
                 </ProfilePictureContainer>
               </Stack>
-              <Stack direction="column" spacing={2.5}>
+              <Stack direction="column" spacing={2.5} style={{ width: "100%" }}>
                 <BodySMedium style={{ opacity: 0.7 }}> Username</BodySMedium>
-                <ElWrap w={630} h={40}>
-                  <TextInput
-                    disable={true}
-                    placeholder="Username"
-                    error={false}
-                    onChange={() => {}}
-                    name="username"
-                    value="YourUsername"
-                  />
-                </ElWrap>
+
+                <TextInput
+                  disable={true}
+                  placeholder="Username"
+                  error={false}
+                  onChange={() => {}}
+                  name="username"
+                  value="YourUsername"
+                />
+
                 <BodySMedium style={{ opacity: 0.7 }}> Full Name</BodySMedium>
 
-                <ElWrap w={630} h={40}>
-                  <TextInput
-                    disable={false}
-                    placeholder="Full Name"
-                    error={false}
-                    onChange={(e) => {}}
-                    name="fullName"
-                    value="Your Full Name"
-                  />
-                </ElWrap>
+                <TextInput
+                  disable={false}
+                  placeholder="Full Name"
+                  error={false}
+                  onChange={(e) => {}}
+                  name="fullName"
+                  value="Your Full Name"
+                />
               </Stack>
             </Stack>
             <BodySMedium
@@ -299,7 +298,7 @@ const SettingsPage = () => {
           </Stack>
         )}
       </PageContainer>
-    </div>
+    </SettingsContainer>
   );
 };
 

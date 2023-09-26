@@ -24,8 +24,9 @@ urlpatterns = [
     path("api/interview-rounds/", include("interview.urls")),
     path("api/question/", include("question.urls")),
     path("api/transcription/", include("transcription.urls")),
+    path("api/files/", include("files.urls")),
     path("api/question_response/", include("question_response.urls")),
-    path("api/templates/", include("templates.urls")),
+    path("api/templates/", include("interview_templates.urls")),
     path("api/videosdk/", include("videosdk.urls")),
     path(
         "api/summary/", include("summary.urls")

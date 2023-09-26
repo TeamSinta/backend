@@ -23,13 +23,13 @@ class Question(models.Model):
     guidelines = models.TextField()
     reply_time = models.IntegerField()
     difficulty = models.IntegerField(choices=DifficultyChoices.choices, default=None)
+    competency = models.CharField(max_length=200)
     review = models.IntegerField(choices=ReviewChoices.choices, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 
 class Competency(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, default=None)
     competency_text = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -43,5 +43,5 @@ class Comment(models.Model):
 
 
 class QuestionBank(models.Model):
-    name = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
     questions = models.ManyToManyField(Question)

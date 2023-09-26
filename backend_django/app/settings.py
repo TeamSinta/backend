@@ -35,7 +35,8 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver", "[::1]", "0.0.0.0"]
 # Application definition
 
 INSTALLED_APPS = [
-    "templates",
+    "interview_templates",
+    "files",
     "transcription.apps.TranscriptionConfig",
     "interview.apps.InterviewConfig",
     "question.apps.QuestionConfig",
@@ -191,6 +192,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": [],
 }
 
 

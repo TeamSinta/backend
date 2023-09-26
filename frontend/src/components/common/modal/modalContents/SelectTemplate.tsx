@@ -2,7 +2,7 @@ import { AppDispatch } from "@/app/store";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import { IQuestion } from "@/features/interviews/interviewsInterface";
 import {
-  resetInterview,
+  resetQuestionBank,
   selectInterview,
   setSelectedQuestion,
 } from "@/features/interviews/interviewsSlice";
@@ -37,10 +37,11 @@ import QuestionList from "./QuestionList";
 
 const SelectTemplate = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { selectedQuestion, selectedTemplate } = useSelector(selectInterview);
+  const { selectedQuestion, selectedQuestionBank } =
+    useSelector(selectInterview);
   const navigate = useNavigate();
 
-  useEffect(() => {}, [selectedQuestion, selectedTemplate]);
+  useEffect(() => {}, [selectedQuestion, selectedQuestionBank]);
 
   return (
     <>
@@ -48,7 +49,7 @@ const SelectTemplate = () => {
       <TemplateLayout>
         <H2Bold>Templates</H2Bold>
         <TemplateBody>
-          {selectedTemplate.id === 0 ? <TemplateList /> : <QuestionList />}
+          {selectedQuestionBank.id === 0 ? <TemplateList /> : <QuestionList />}
           <Outlet />
         </TemplateBody>
       </TemplateLayout>
@@ -153,7 +154,7 @@ const SelectTemplate = () => {
                 disable={false}
                 className={BackgroundColor.ACCENT_PURPLE}
                 onClick={() => {
-                  dispatch(resetInterview());
+                  dispatch(resetQuestionBank());
                   dispatch(closeModal());
                   navigate("/interviews");
                 }}

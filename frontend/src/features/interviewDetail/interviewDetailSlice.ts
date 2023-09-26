@@ -15,7 +15,11 @@ export const initialState = {
   },
   sections: [],
   questions: [],
-  selectedSection: {},
+  selectedSection: {
+    id: null,
+    topics_text: "",
+    time: "",
+  },
   status: Loading.UNSEND,
 };
 

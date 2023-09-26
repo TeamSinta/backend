@@ -35,7 +35,7 @@ import {
 
 const QuestionList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { selectedQuestion, questions, selectedTemplate } =
+  const { selectedQuestion, questions, selectedQuestionBank } =
     useSelector(selectInterview);
   const [openItems, setOpenItems] = useState(new Set());
   const [html, setHtml] = useState<string>("");
@@ -64,7 +64,7 @@ const QuestionList = () => {
               icon={<RightBracketIcon />}
             />
           </ElWrap>
-          <H3Bold>{selectedTemplate.title}</H3Bold>
+          <H3Bold>{selectedQuestionBank.title}</H3Bold>
         </div>
         <ElWrap w={240}>
           <TextIconBtnL
