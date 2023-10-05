@@ -12,12 +12,13 @@ import {
   SelectedItemDiv,
 } from "./StyledDropdownFilter";
 import { BodyMMedium } from "../../typeScale/StyledTypeScale";
-import React from "react";
 
 interface IDropdown {
   label?: string;
   optionArr: IOption[];
   dropdownName: string;
+  onChange?: (value: string) => void;
+  value: string;
 }
 
 interface IOption {
@@ -32,7 +33,7 @@ const DropdownFilter = memo((props: IDropdown): JSX.Element => {
   const [shadow, setShadow] = useState(false);
   const [selectedItemName, setSelectedItemName] = useState("");
   const [selectedItem, setSelectedItem] = useState({
-    [dropdownName]: "",
+    [dropdownName]: props.value || "",
   });
 
   const onSelectOpen = useCallback(() => {
@@ -45,8 +46,9 @@ const DropdownFilter = memo((props: IDropdown): JSX.Element => {
       setSelectedItem({ [dropdownName]: value });
       setSelectedItemName(name);
       setOpen(false);
+      props.onChange?.(value);
     },
-    [dropdownName]
+    [dropdownName, props]
   );
 
   return (

@@ -21,7 +21,7 @@ jobs:
         run: sudo apt install python3-pip
 
       - name: Install requirements
-        run: pip install -r backend_django/requirements.txt
+        run: pip install -r backend/requirements.txt
 
       - name: Formatting Check
         run: |

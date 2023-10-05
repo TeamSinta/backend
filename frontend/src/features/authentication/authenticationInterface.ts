@@ -7,6 +7,7 @@ export interface AuthState {
     last_name: string | null;
     email: string | null;
     profile_picture: string | null;
+    company: string | null;
   };
 }
 export interface UserReadSerializer {
@@ -15,6 +16,7 @@ export interface UserReadSerializer {
   first_name: string | null;
   last_name: string | null;
   profile_picture: string | null;
+  company: string | null;
 }
 
 export interface Credentials {

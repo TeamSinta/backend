@@ -13,10 +13,16 @@ export enum BackgroundColor {
 export enum PhotoType {
   S = 32,
   L = 40,
+  XL = 80,
 }
 
 export enum StatusDropdownFilter {
   ACTIVE = "Active",
   CLOSED = "Closed",
   WAITING = "Waiting",
+}
+
+export enum TABS {
+  PROFILE = "profile",
+  MEMBERS = "members",
 }

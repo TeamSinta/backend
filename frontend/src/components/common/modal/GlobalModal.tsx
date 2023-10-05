@@ -11,12 +11,14 @@ import CreateDepartment from "./modalContents/CreateDepartment";
 import SelectValue from "./modalContents/SelectValues";
 import ModalL from "./ModalL";
 import SelectTemplate from "./modalContents/SelectTemplate";
+import MemberSettings from "./userSettingsModal/MemberSettings";
 
 export enum MODAL_TYPE {
   CREATE_DEP = "CREATE_DEP",
   CREATE_INT = "CREATE_INT",
   SELECT_VAL = "SELECT_VAL",
   SELECT_TEM = "SELECT_TEM",
+  MEMBER_SET = "MEMBER_SET",
   // ModalL = "ModalL",
 }
 
@@ -78,6 +80,12 @@ const GlobalModal = (): JSX.Element => {
           <ModalL title="Select your values">
             <SelectTemplate />
           </ModalL>
+        );
+      case MODAL_TYPE.MEMBER_SET:
+        return (
+          <Modal title="Member Setting">
+            <MemberSettings />
+          </Modal>
         );
     }
   };

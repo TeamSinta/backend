@@ -134,7 +134,11 @@ const SideNavBar = (): ReactElement => {
           Config
         </StyledSideNavBarTitle>
         {navConfigLinks.map((navConfigLink: INavButtonLink, index: number) => (
-          <NavButton direction="row" key={index}>
+          <NavButton
+            direction="row"
+            key={index}
+            className={location.pathname === navConfigLink.to ? "active" : ""}
+          >
             <Link
               to={navConfigLink.to}
               onClick={() => handleNavConfigClick(navConfigLink.text)}

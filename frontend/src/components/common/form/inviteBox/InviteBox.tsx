@@ -6,10 +6,7 @@ import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import { Stack } from "@mui/material";
 
 const InvitationBoxContainer = styled.div`
-  width: 840px;
   height: 128px;
-  position: sticky;
-  top: 0;
   background: #cecdee;
   border-radius: 16px;
   overflow: hidden;

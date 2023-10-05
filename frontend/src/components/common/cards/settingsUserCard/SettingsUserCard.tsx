@@ -1,6 +1,6 @@
 import React from "react";
 import { MoreVertIcon } from "../../svgIcons/Icons";
-import { Tooltip } from "@mui/material";
+import { Stack, Tooltip } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 
 import {
@@ -19,10 +19,12 @@ import {
 interface UserCardProps {
   user: {
     id: number;
+    first_name: string;
+    last_name: string;
     username: string;
     email: string;
     role: string;
-    profile_picture: string;
+    profile_picture: string | null;
   };
   onClick: (user: any) => void;
 }
@@ -30,15 +32,19 @@ interface UserCardProps {
 const SettingsUserCard: React.FC<UserCardProps> = ({ user, onClick }) => {
   return (
     <UserCardContainer onClick={() => onClick(user)}>
-      <ProfilePicture
-        alt={`${user.username}'s Profile`}
-        src={user.profile_picture}
-      />
+      <Stack direction="row" gap="16px" sx={{ width: "316px" }}>
+        <ProfilePicture
+          alt={`${user.username}'s Profile`}
+          src={user.profile_picture || ""}
+        />
 
-      <UserDetails>
-        <BodyLMedium>{user.username}</BodyLMedium>
-        <BodyMMedium style={{ opacity: 0.5 }}>{user.email}</BodyMMedium>
-      </UserDetails>
+        <UserDetails>
+          <BodyLMedium>
+            {user.first_name} {user.last_name}
+          </BodyLMedium>
+          <BodyMMedium style={{ opacity: 0.5 }}>{user.email}</BodyMMedium>
+        </UserDetails>
+      </Stack>
       <PermissionLevel>
         <div
           style={{

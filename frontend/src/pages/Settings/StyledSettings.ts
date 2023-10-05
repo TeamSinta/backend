@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const SettingsContainer = styled.div`
   display: flex;
   height: 100%;
-  gap: 31px;
+  gap: 32px;
   flex-direction: column;
 `;
 
@@ -24,13 +24,14 @@ export const ProfilePictureContainer = styled.div`
   cursor: pointer;
   display: inline-block;
   position: relative;
+  width: 150px;
 
   &:hover::before {
     content: "Change Picture";
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 150px;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -57,31 +58,23 @@ export const ProfilePictureContainer = styled.div`
 export const PageContainer = styled.div`
   background: white;
   display: flex;
+  gap: 32px;
+  flex-direction: column;
   justify-content: space-around;
   margin-top: 20px;
-  overflow-x: scroll;
-  overflow-y: hidden;
 
   @media (min-width: 1900px) {
-    justify-content: center;
-  }
-
-  @media (max-width: 1350px) {
-    justify-content: center;
+    width: 75%;
+    margin: 0 auto;
   }
 `;
 
 export const UserListContainer = styled.div`
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh - 650px);
   overflow-x: hidden;
-  height: 388px;
-  width: 840px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   &::-webkit-scrollbar {
-    width: 0.5rem;
+    width: 0.01rem;
   }
 
   &::-webkit-scrollbar-thumb {

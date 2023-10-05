@@ -17,7 +17,7 @@ COPY . .
 EXPOSE 3001
 
 # Set environment variables if required (e.g., REACT_APP_API_URL)
-# ENV REACT_APP_API_URL=http://backend_django:8000/api
+# ENV REACT_APP_API_URL=http://backend:8000/api
 
 # Start the React development server
 CMD ["npm", "start"]

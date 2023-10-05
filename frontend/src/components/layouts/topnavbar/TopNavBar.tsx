@@ -14,6 +14,7 @@ import { DropDownButton } from "@/components/common/buttons/dropDownBtn/DropDown
 import { StyledTopNavBar } from "./StyledTopBarNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store";
+import { Link, redirect } from "react-router-dom";
 
 export interface IButton {
   to: string;
@@ -66,7 +67,9 @@ const TopNavBar = ({
             ]}
           />
         </ElWrap>
-        <LogoImage src={user.profile_picture as string} alt="user photo" />
+        <Link to="/settings">
+          <LogoImage src={user.profile_picture as string} alt="user photo" />
+        </Link>
       </Stack>
     </StyledTopNavBar>
   );
