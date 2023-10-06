@@ -9,7 +9,5 @@ export const getQuestionsBank = async () => {
     .then((result) => {
       return result.data;
     })
-    .catch((e) => {
-      console.log(e);
-    });
+    .catch((e) => {});
 };

@@ -156,7 +156,7 @@ const SelectTemplate = () => {
                 onClick={() => {
                   dispatch(resetQuestionBank());
                   dispatch(closeModal());
-                  navigate("/interviews");
+                  navigate("/templates");
                 }}
                 icon={<PlusIcon />}
               />

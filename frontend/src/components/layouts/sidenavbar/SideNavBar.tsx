@@ -119,7 +119,9 @@ const SideNavBar = (): ReactElement => {
           <NavButton
             direction="row"
             key={index}
-            className={location.pathname === navButtonLink.to ? "active" : ""}
+            className={
+              location.pathname.startsWith(navButtonLink.to) ? "active" : ""
+            }
           >
             <Link to={navButtonLink.to} className="link">
               {navButtonLink.icon}

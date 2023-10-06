@@ -45,7 +45,6 @@ import {
   OverviewDetails,
   TimeQuestionDiv,
 } from "./StyledOverviewDetail";
-import DropdownFilter from "@/components/common/filters/dropdownFilter/DropdownFilter";
 
 interface IState {
   [key: string]: any;
@@ -72,8 +71,6 @@ const InterviewOverviewDetails = () => {
   });
 
   const filteredQuestions = questions.filter((question: IQuestion) => {
-    console.log(question.template_topic_id);
-    // console.log(selectedSection.id);
     return question.template_topic_id === selectedSection.id;
   });
 
@@ -102,7 +99,6 @@ const InterviewOverviewDetails = () => {
       if (Object.keys(inputValue).includes(key)) {
         inputValue[key] = question[key];
       }
-      console.log(inputValue);
     }
   };
 
@@ -131,6 +127,9 @@ const InterviewOverviewDetails = () => {
 
   useEffect(() => {}, [dispatch, openItems]);
 
+  if (!selectedSection || !questions) {
+    return <div>Loading or Data Not Available</div>;
+  }
   return (
     <OverviewDetails>
       {status === Loading.FULFILLED ? (

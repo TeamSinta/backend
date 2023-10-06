@@ -2,6 +2,7 @@ import {
   IconBtnL,
   IconBtnM,
 } from "@/components/common/buttons/iconBtn/IconBtn";
+import GlobalModal, { MODAL_TYPE } from "@/components/common/modal/GlobalModal";
 import {
   EditIcon,
   PlusIcon,
@@ -26,6 +27,7 @@ import {
   Title,
 } from "@/components/pages/interview/StyledInterview";
 import { getInterviewDetailAsync } from "@/features/interviewDetail/interviewDetailSlice";
+import { openModal } from "@/features/modal/modalSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -38,6 +40,14 @@ const InterviewStage = () => {
     // Dispatch the action to fetch interview detail.
     dispatch(getInterviewDetailAsync(templateId));
   }, [dispatch, templateId]);
+
+  const onClickModalOpen = (modalType: MODAL_TYPE) => {
+    dispatch(
+      openModal({
+        modalType: modalType,
+      })
+    );
+  };
 
   return (
     <InterviewStageContainer>
@@ -53,7 +63,10 @@ const InterviewStage = () => {
           <ElWrap w={56} h={134}>
             <IconBtnL
               disable={false}
-              onClick={() => {}}
+              onClick={() => {
+                console.log("hello");
+                onClickModalOpen(MODAL_TYPE.CREATE_INT);
+              }}
               className={BackgroundColor.ACCENT_PURPLE}
               icon={<PlusIcon />}
             />
@@ -72,6 +85,7 @@ const InterviewStage = () => {
             />
           </ElWrap>
         </Title>
+        <GlobalModal></GlobalModal>
         <InterviewOverviewLayout>
           <div className="side">
             <InterviewOverviewInterviewer />

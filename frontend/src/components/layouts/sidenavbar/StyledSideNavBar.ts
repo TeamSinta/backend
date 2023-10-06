@@ -26,7 +26,7 @@ export const NavButton = styled(Stack)`
   width: 148px;
   color: ${(props) => props.theme.colors.black};
   gap: 8px;
-  border-radius: 20px;
+  border-radius: 12px;
   align-items: center;
 
   svg {

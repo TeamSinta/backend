@@ -3,7 +3,7 @@ import Candidates from "@/pages/Candidates";
 import { Conclusion } from "@/pages/Interviews/Conclusion";
 import DashBoard from "@/pages/Dashboard/Dashboard";
 import InterviewStage from "@/pages/InterviewStage";
-import Templates from "@/pages/Templates";
+import Templates from "@/pages/Templates_/Templates";
 import NotFound from "@/pages/NotFound";
 import { Route, Routes } from "react-router-dom";
 import LoginScreen from "@/pages/Login/Login";

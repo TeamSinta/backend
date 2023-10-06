@@ -9,6 +9,7 @@ import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IconBtnL, IconBtnM } from "../../buttons/iconBtn/IconBtn";
+import { useNavigate } from "react-router-dom";
 import { TextIconBtnL } from "../../buttons/textIconBtn/TextIconBtn";
 import {
   BinIcon,
@@ -32,6 +33,8 @@ import {
   QuestionNumber,
   QuestionValue,
 } from "./StyledModalContents";
+import { MODAL_TYPE } from "../GlobalModal";
+import { openModal } from "@/features/modal/modalSlice";
 
 const QuestionList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -39,7 +42,16 @@ const QuestionList = () => {
     useSelector(selectInterview);
   const [openItems, setOpenItems] = useState(new Set());
   const [html, setHtml] = useState<string>("");
+  const navigate = useNavigate();
 
+  const onClickModalOpen = (modalType: MODAL_TYPE) => {
+    console.log("ello");
+    dispatch(
+      openModal({
+        modalType: modalType,
+      })
+    );
+  };
   const openDetailHandler = (id: number, isOpen: boolean) => {
     const temp = new Set();
     if (!isOpen) {
@@ -59,7 +71,9 @@ const QuestionList = () => {
           <ElWrap w={32}>
             <IconBtnM
               disable={false}
-              onClick={() => {}}
+              onClick={() => {
+                onClickModalOpen(MODAL_TYPE.SELECT_TEM);
+              }}
               className={BackgroundColor.WHITE}
               icon={<RightBracketIcon />}
             />
@@ -131,13 +145,13 @@ const QuestionList = () => {
                   </DetailOpenIcon>
                 </div>
                 <div className="body">
-                  {question.competencies.map(
+                  {/* {question.competencies.map(
                     (competence: string, index: number) => (
                       <QuestionValue key={index}>
                         <BodySMedium>{competence}</BodySMedium>
                       </QuestionValue>
                     )
-                  )}
+                  )} */}
                   <div className="iconDiv">
                     <TimeIcon />
                     <BodySMedium>{question.time}min</BodySMedium>

@@ -29,8 +29,7 @@ const TemplateList = () => {
 
   useEffect(() => {
     dispatch(getQuestionsBanksAsync());
-    console.log(questionBanks);
-  }, [dispatch]);
+  }, [dispatch, questionBanks]);
 
   return (
     <TemplateListWrap>
@@ -59,7 +58,7 @@ const TemplateList = () => {
               disable={false}
               key={template.id}
               onClick={() => {
-                onSelectQuestionBank(template);
+                onSelectQuestionBank({ questionBank: template });
               }}
             />
           ))

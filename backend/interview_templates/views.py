@@ -15,27 +15,30 @@ def create_template(request):
     if request.method == "POST":
         data = json.loads(request.body)
         role_title = data.get("role_title")
-        location = data.get("location")  # Keep the location field
-        user_ids = data.get("interviewer_ids")  # Rename the field
+        location = data.get("location")
+        user_ids = data.get("interviewer_ids")
         company_id = data.get("company_id")
+        department_id = data.get("department_id")  # Include department field
 
         company = Company.objects.get(id=company_id)
-        interviewers = CustomUser.objects.filter(id__in=user_ids)  # Rename the field
+        interviewers = CustomUser.objects.filter(id__in=user_ids)
 
         template = Template.objects.create(
             role_title=role_title,
-            location=location,  # Keep the location field
+            location=location,
             company=company,
+            department_id=department_id,  # Set department if provided
         )
 
-        template.interviewers.set(interviewers)  # Use set to add interviewers
+        template.interviewers.set(interviewers)
 
         response = {
             "id": template.id,
             "role_title": template.role_title,
-            "location": template.location,  # Keep the location field
-            "interviewer_ids": user_ids,  # Rename the field
+            "location": template.location,
+            "interviewer_ids": user_ids,
             "company_id": company_id,
+            "department_id": department_id,  # Include department ID in the response
         }
 
         return JsonResponse(response, status=201)
@@ -55,6 +58,7 @@ def update_template(request, template_id):
         location = data.get("location")
         company_id = data.get("company_id")
         interviewers_ids = data.get("interviewers")
+        department_id = data.get("department_id")  # Include department field
 
         if role_title:
             template.role_title = role_title
@@ -65,6 +69,9 @@ def update_template(request, template_id):
         if company_id:
             company = get_object_or_404(Company, id=company_id)
             template.company = company
+
+        if department_id is not None:  # Set department if provided
+            template.department_id = department_id
 
         if interviewers_ids:
             interviewers = CustomUser.objects.filter(id__in=interviewers_ids)
@@ -81,6 +88,7 @@ def update_template(request, template_id):
             "interviewers": [
                 interviewer.id for interviewer in template.interviewers.all()
             ],
+            "department_title": template.department_title,  # Include department ID in the response
         }
 
         return JsonResponse(response, status=200)
@@ -105,15 +113,17 @@ def read_template(request, template_id):
                     "id": interviewer.id,
                     "first_name": interviewer.first_name,
                     "last_name": interviewer.last_name,
-                    "profile_picture": request.build_absolute_uri(
-                        interviewer.profile_picture
-                    )
-                    if interviewer.profile_picture
-                    else None
-                    # Convert the image URL to an absolute URL
+                    "profile_picture": (
+                        request.build_absolute_uri(interviewer.profile_picture)
+                        if interviewer.profile_picture
+                        else None
+                    ),
                 }
                 for interviewer in template.interviewers.all()
             ],
+            "department_name": template.department.title
+            if template.department
+            else None,
         }
 
         return JsonResponse(response, status=200)
@@ -140,15 +150,17 @@ def get_all_templates(request):
                         "id": interviewer.id,
                         "first_name": interviewer.first_name,
                         "last_name": interviewer.last_name,
-                        "profile_picture": request.build_absolute_uri(
-                            interviewer.profile_picture
-                        )
-                        if interviewer.profile_picture
-                        else None
-                        # Convert the image URL to an absolute URL
+                        "profile_picture": (
+                            request.build_absolute_uri(interviewer.profile_picture)
+                            if interviewer.profile_picture
+                            else None
+                        ),
                     }
                     for interviewer in template.interviewers.all()
                 ],
+                "department_name": template.department.title
+                if template.department
+                else None,
             }
             template_list.append(template_data)
 
@@ -179,9 +191,6 @@ def create_template_topic(request, template_id):
         topics_text = data.get("topics_text")
         company_id = data.get("company_id")
         time = data.get("time", 1)  # Default to 1 if 'time' is not provided
-        question_ids = data.get(
-            "questions", []
-        )  # Assuming 'questions' is a list of question IDs.
 
         try:
             template = Template.objects.get(id=template_id)
@@ -195,7 +204,6 @@ def create_template_topic(request, template_id):
             )
 
             # Add associated questions
-            template_topic.questions.set(question_ids)
 
             response = {
                 "id": template_topic.id,
@@ -203,7 +211,6 @@ def create_template_topic(request, template_id):
                 "template_id": template.id,
                 "company_id": company.id,
                 "time": template_topic.time,
-                "questions": question_ids,
             }
 
             return JsonResponse(response, status=201)

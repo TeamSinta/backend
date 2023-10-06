@@ -21,7 +21,6 @@ export const TextIconFilterLayout = styled.div`
 
   &.selected {
     background: ${(props) => props.theme.colors.palePurple};
-    outline: 1px solid ${(props) => props.theme.colors.black};
     outline-offset: -1px;
   }
 `;

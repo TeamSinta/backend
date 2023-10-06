@@ -20,7 +20,6 @@ export const initialState = {
   },
   values: [],
   selectedValue: [],
-  question_banks: [],
   questionBanks: [],
   questions: [] as IQuestion[],
   selectedQuestionBank: {
@@ -35,7 +34,7 @@ export const getQuestionsBanksAsync = createAsyncThunk(
   "interviews/templates",
   async () => {
     const response = await getQuestionsBank();
-    return response;
+    return response; // Adjust the response data
   }
 );
 
@@ -54,9 +53,9 @@ export const interviewsSlice = createSlice({
       state.selectedQuestionBank = data;
     },
     selectQuestionBank: (state, actions) => {
-      const { questions, questionBank } = actions.payload;
+      const { questionBank } = actions.payload;
       state.selectedQuestionBank = questionBank;
-      state.questions = questions;
+      state.questions = questionBank.questions;
     },
     setSelectedQuestion: (state, actions) => {
       const { selectedQuestion } = actions.payload;

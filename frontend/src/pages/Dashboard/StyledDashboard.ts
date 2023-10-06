@@ -125,6 +125,7 @@ export const StyledImage = styled.img`
   @media (min-width: 1600px) {
     /* Adjust styles for screens with a max width of 768px */
     width: 1000px;
-    min-height: 440px;
+    min-height: 540px;
+    flex: 1;
   }
 `;
