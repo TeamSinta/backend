@@ -1,5 +1,6 @@
 from django.db import models
-from user.models import CustomUser, Company, Department
+from user.models import CustomUser
+from company.models import Company, Department
 from question.models import Question
 from django.utils import timezone
 

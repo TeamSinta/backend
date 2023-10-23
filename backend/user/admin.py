@@ -1,15 +1,41 @@
 from django.contrib import admin
 from rest_framework.authtoken.models import TokenProxy
 
-from .models import CustomUser, Company, Department
+from user.models import CustomUser, Role, UserCompanies, UserDepartments
+from company.models import Company, Department
 
 admin.site.unregister(TokenProxy)
-admin.site.register(Company)
-admin.site.register(Department)
+admin.site.register(Role)
 
 
-@admin.register(CustomUser)
+class UserCompaniesInline(admin.StackedInline):
+    model = UserCompanies
+    extra = 0
+
+
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("id", "first_name", "last_name", "email", "company_id", "role")
-    ordering = ("company_id",)
+    inlines = [UserCompaniesInline]
+
+    def display_companies(self, obj):
+        return ", ".join([company.name for company in obj.companies.all()])
+
+    display_companies.short_description = "Companies"
+
+    list_display = ("id", "first_name", "last_name", "email", "display_companies")
+    ordering = ("first_name",)
     search_fields = ("first_name", "last_name", "email")
+
+
+admin.site.register(CustomUser, UserAdmin)
+
+
+@admin.register(UserDepartments)
+class UserDepartments(admin.ModelAdmin):
+    list_display = ("id", "user", "department_id", "role")
+    ordering = ("id",)
+
+
+@admin.register(UserCompanies)
+class UserCompanies(admin.ModelAdmin):
+    list_display = ("id", "user", "company_id", "role")
+    ordering = ("company_id",)

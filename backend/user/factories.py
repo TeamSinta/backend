@@ -1,13 +1,8 @@
 import factory
 from faker import Faker
-from .models import CustomUser, Company
-
-
-class CompanyFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Company
-
-    name = factory.Faker("company")
+import random
+from .models import CustomUser, Role, UserCompanies, UserDepartments
+from company.factories import CompanyFactory
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -19,10 +14,31 @@ class UserFactory(factory.django.DjangoModelFactory):
     last_name = factory.Faker("last_name")
     email = factory.Faker("email")
     password = factory.Faker("password")
-    company = factory.SubFactory(CompanyFactory)
-    role = CustomUser.RoleChoices.INTERVIEWER
+
+    @factory.post_generation
+    def companies(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        role = random.choice(Role.objects.all())
+
+        if extracted:
+            for company in extracted:
+                UserCompanies.objects.create(user=self, company=company, role=role)
+        else:
+            UserCompanies.objects.create(user=self, company=CompanyFactory(), role=role)
 
     @classmethod
-    def create_candidate(cls, n=1, **kwargs):
+    def create_member(cls, n=1, **kwargs):
+        role_member = Role.objects.get_or_create(name="member")[0]
         for _ in range(n):
-            cls.create(role=CustomUser.RoleChoices.CANDIDATE, **kwargs)
+            user = cls.create()
+            company = CompanyFactory()
+            UserCompanies.objects.create(user=user, company=company, role=role_member)
+
+
+class RoleFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Role
+
+    name = factory.Iterator(["admin", "manager", "interviewer", "member", "candidate"])

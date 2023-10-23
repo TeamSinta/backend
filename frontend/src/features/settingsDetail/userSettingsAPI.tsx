@@ -1,21 +1,11 @@
-import axios from "axios";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { MembersList, UserData } from "./userSettingsInterface";
-import { AccessToken, CompanyID } from "./userSettingTypes";
-
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-
-// Function to fetch company users
-export const fetchCompanyUsers = async (companyId: number) => {
-  try {
-    const response = await axios.get(
-      `${BASE_URL}/api/user/company-users/?company_id=${companyId}`
-    );
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
+import {
+  AccessToken,
+  CompanyID,
+  DepartmentID,
+  UserID,
+} from "./userSettingTypes";
 
 export const userAPI = createApi({
   reducerPath: "userApi",
@@ -47,17 +37,51 @@ export const userAPI = createApi({
         };
       },
     }),
-    getCompanyMembers: builder.mutation<
+    getCompanyMembers: builder.query<
       MembersList[],
-      { access: AccessToken; company_id: CompanyID }
+      {
+        access: AccessToken;
+        company_id: CompanyID;
+        department_id: DepartmentID;
+        sort_by: string;
+      }
+    >({
+      query: ({ access, company_id, department_id, sort_by }) => ({
+        url: `/company/members?company=${company_id}&department=${department_id}&sort_by=${sort_by}`,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      }),
+    }),
+    getCompanyDepartments: builder.mutation<
+      void,
+      {
+        access: AccessToken;
+        company_id: CompanyID;
+      }
     >({
       query: ({ access, company_id }) => {
         return {
-          url: `/user/company/${company_id}/members`,
+          url: `/company/departments?company=${company_id}`,
           method: "GET",
           headers: {
             Authorization: `Bearer ${access}`,
           },
+        };
+      },
+    }),
+    getUserDepartments: builder.mutation<
+      void,
+      {
+        user_id: UserID;
+        company_id: CompanyID;
+      }
+    >({
+      query: ({ user_id, company_id }) => {
+        return {
+          url: `/user/${user_id}/company/${company_id}/departments/`,
+          method: "GET",
         };
       },
     }),
@@ -67,5 +91,7 @@ export const userAPI = createApi({
 export const {
   useUpdateUserMutation,
   useDeactivateUserMutation,
-  useGetCompanyMembersMutation,
+  useGetCompanyMembersQuery,
+  useGetCompanyDepartmentsMutation,
+  useGetUserDepartmentsMutation,
 } = userAPI;

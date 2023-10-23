@@ -8,7 +8,7 @@ import {
   InfoIcon,
 } from "@/components/common/svgIcons/Icons";
 import { BodyMMedium } from "@/components/common/typeScale/StyledTypeScale";
-import { type ReactElement } from "react";
+import { useEffect, type ReactElement } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import SideNavBarDropdown from "./SideNavBarDropdown";
@@ -20,9 +20,13 @@ import {
   StyledSideNavLinksWrap,
   StyledStack,
 } from "./StyledSideNavBar";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/app/store";
 import { resetUserState } from "@/features/authentication/authenticationSlice";
+import {
+  setCurrentWorkspace,
+  resetCurrentWorkspace,
+} from "@/features/workspace/userWorkspaceSlice";
 
 export interface INavButtonLink {
   to: string;
@@ -30,16 +34,6 @@ export interface INavButtonLink {
   text: string;
   onClick?: () => void;
 }
-
-const args = {
-  optionArr: [
-    { name: "Sinta ", value: "Sinta" },
-    { name: "Google", value: "Google" },
-    { name: "Facebook", value: "Facebook" },
-  ],
-  dropdownName: "Workspace",
-  dropdownIconVisible: true,
-};
 
 const navButtonLinks: INavButtonLink[] = [
   {
@@ -78,9 +72,20 @@ const navConfigLinks: INavButtonLink[] = [
 ];
 
 const SideNavBar = (): ReactElement => {
+  const { user } = useSelector((state: RootState) => state.user);
   let location = useLocation();
   const dispatch: AppDispatch = useDispatch();
   const [, , removeCookie] = useCookies(["refresh_token", "access_token"]);
+
+  const args = {
+    optionArr: user.companies.map((company) => ({
+      id: company.id,
+      name: company.name,
+      value: company.name,
+    })),
+    dropdownName: "Workspace",
+    dropdownIconVisible: true,
+  };
 
   const handleNavConfigClick = (text: string) => {
     if (text === "Logout") {
@@ -88,6 +93,7 @@ const SideNavBar = (): ReactElement => {
       removeCookie("access_token");
       removeCookie("refresh_token");
       dispatch(resetUserState());
+      dispatch(resetCurrentWorkspace());
     }
   };
 

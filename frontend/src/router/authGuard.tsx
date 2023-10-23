@@ -13,6 +13,7 @@ import {
   useGetUserMutation,
   useValidateTokenMutation,
 } from "@/features/authentication/authenticationAPI";
+import { setCurrentWorkspace } from "@/features/workspace/userWorkspaceSlice";
 
 interface AuthGuardProps {
   children: ReactNode;
@@ -23,6 +24,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const { user, status, isAuthenticated } = useSelector(
     (state: RootState) => state.user
   );
+  const workspace = useSelector((state: RootState) => state.workspace);
   const dispatch: AppDispatch = useDispatch();
 
   const [cookies, setCookies, removeCookies] = useCookies([
@@ -71,6 +73,13 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     }
   };
 
+  const setDefaultWorkspace = () => {
+    if (user.companies && user.companies.length > 0 && !workspace.id) {
+      const defaultCompany = user.companies[0];
+      dispatch(setCurrentWorkspace(defaultCompany));
+    }
+  };
+
   const failedAuthentication = () => {
     dispatch(resetUserState());
     removeCookies("access_token");
@@ -95,6 +104,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
           if (!user.email) {
             await getUser({ access: accessToken });
           }
+          setDefaultWorkspace();
           break;
 
         case "LOADING":

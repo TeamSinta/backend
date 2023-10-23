@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from pathlib import Path
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from datetime import datetime, timedelta, timezone
@@ -9,7 +10,8 @@ from dotenv import load_dotenv, dotenv_values
 import requests
 
 load_dotenv()
-KEYS = dotenv_values("/backend/.env")
+BASE_DIR = Path(__file__).resolve().parent.parent
+KEYS = dotenv_values(BASE_DIR / ".env")
 API_KEY = KEYS["DAILY_API_KEY"]
 
 headers = {

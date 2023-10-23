@@ -2,7 +2,8 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from .models import Template, TemplateTopic, TemplateQuestion
-from user.models import Company, CustomUser
+from user.models import CustomUser
+from company.models import Company
 from question.models import Question
 import json
 from django.urls import reverse

@@ -1,9 +1,9 @@
-export interface UserData {
+export type UserData = {
   first_name: string | null;
   last_name: string | null;
-}
+};
 
-export interface MembersList {
+export type MembersList = {
   id: number;
   username: string;
   first_name: string;
@@ -11,4 +11,4 @@ export interface MembersList {
   email: string;
   role: string;
   profile_picture: string | null;
-}
+};

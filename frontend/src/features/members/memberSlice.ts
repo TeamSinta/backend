@@ -2,6 +2,7 @@ import { RootState } from "@/app/store";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface MemberState {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -10,6 +11,7 @@ export interface MemberState {
 }
 
 const initialState: MemberState = {
+  id: "",
   firstName: "",
   lastName: "",
   email: "",
@@ -22,6 +24,7 @@ export const memberSlice = createSlice({
   initialState,
   reducers: {
     setMemberInfo: (state, actions) => {
+      state.id = actions.payload.id;
       state.firstName = actions.payload.firstName;
       state.lastName = actions.payload.lastName;
       state.email = actions.payload.email;

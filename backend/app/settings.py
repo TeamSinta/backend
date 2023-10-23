@@ -12,14 +12,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
-import os
-from dotenv import dotenv_values, load_dotenv
+from dotenv import dotenv_values
 
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-KEYS = dotenv_values("/backend/.env")
+KEYS = dotenv_values(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -61,6 +59,7 @@ INSTALLED_APPS = [
     "question_response.apps.QuestionResponseConfig",
     "authentication",
     "user",
+    "company",
     "videosdk",
     "corsheaders",
     "summary.apps.SummaryConfig",
@@ -99,16 +98,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "app.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 DATABASES = {
     "default": {
@@ -180,7 +169,7 @@ AUTH_USER_MODEL = "user.CustomUser"
 ADMINS = [(KEYS["SUPERUSER"], KEYS["SUPERUSER_EMAIL"])]
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=180),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,

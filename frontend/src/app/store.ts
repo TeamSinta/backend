@@ -6,6 +6,7 @@ import inviteMemberReducer from "@/features/inviteMember/inviteMemberSlice";
 import questionBanksReducer from "@/features/interviews/interviewsSlice";
 import interviewDetailReducer from "@/features/interviewDetail/interviewDetailSlice";
 import userReducer from "@/features/authentication/authenticationSlice";
+import workSpaceReducer from "@/features/workspace/userWorkspaceSlice";
 import memberReducer from "@/features/members/memberSlice";
 import { authAPI } from "@/features/authentication/authenticationAPI";
 import videoCallReducer from "@/features/videoCall/videoCallSlice";
@@ -16,6 +17,7 @@ export const store = configureStore({
     [authAPI.reducerPath]: authAPI.reducer,
     [userAPI.reducerPath]: userAPI.reducer,
     user: userReducer,
+    workspace: workSpaceReducer,
     member: memberReducer,
     videoCall: videoCallReducer,
     counter: counterReducer,

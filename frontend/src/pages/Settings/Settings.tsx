@@ -4,9 +4,9 @@ import { H1 } from "@/components/common/typeScale/StyledTypeScale";
 import TextIconFilter from "@/components/common/filters/textIconFilter/TextIconFilter";
 import { CandidateIcon, PencilIcon } from "@/components/common/svgIcons/Icons";
 import { SettingsContainer, PageContainer } from "./StyledSettings";
-import { UserTab } from "@/components/pages/settings/profileTab/UserTab";
 import MemberTab from "@/components/pages/settings/memberTab/MemberTab";
 import { TABS } from "@/features/utils/utilEnum";
+import UserTab from "@/components/pages/settings/Profiletab/UserTab";
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState(TABS.PROFILE);

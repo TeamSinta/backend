@@ -1,3 +1,7 @@
+export interface Company {
+  id: number | null;
+  name: string | null;
+}
 export interface AuthState {
   status: "IDLE" | "LOADING" | "AUTHENTICATED" | "FAILED";
   isAuthenticated: boolean;
@@ -7,7 +11,7 @@ export interface AuthState {
     last_name: string | null;
     email: string | null;
     profile_picture: string | null;
-    company: string | null;
+    companies: Company[];
   };
 }
 export interface UserReadSerializer {
@@ -16,7 +20,7 @@ export interface UserReadSerializer {
   first_name: string | null;
   last_name: string | null;
   profile_picture: string | null;
-  company: string | null;
+  companies: Company[];
 }
 
 export interface Credentials {

@@ -2,14 +2,8 @@ import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import GlobalModal, { MODAL_TYPE } from "@/components/common/modal/GlobalModal";
 import { AppDispatch } from "@/app/store";
 import { openModal } from "@/features/modal/modalSlice";
-import { setMemberInfo } from "@/features/members/memberSlice";
 import Stack from "@mui/material/Stack";
-import DropdownFilter from "@/components/common/filters/dropdownFilter/DropdownFilter";
 import StyledInvitationBox from "@/components/common/form/inviteBox/InviteBox";
-import SettingsUserCard from "@/components/common/cards/settingsUserCard/SettingsUserCard";
-import { UserListContainer } from "@/pages/Settings/StyledSettings";
-import { useEffect, useState } from "react";
-import { useGetCompanyMembersMutation } from "@/features/settingsDetail/userSettingsAPI";
 import { useDispatch, useSelector } from "react-redux";
 import { useCookies } from "react-cookie";
 import { RootState } from "@/app/store";
@@ -17,16 +11,34 @@ import {
   AccessToken,
   CompanyID,
 } from "@/features/settingsDetail/userSettingTypes";
-import { MembersList } from "@/features/settingsDetail/userSettingsInterface";
+import MemberList from "./MemberList";
+import SortingDropdown from "./SortingDropdown";
+import DepartmentDropDown from "./DepartmentDropdown";
+import {
+  useFetchCompanyDepartments,
+  useFetchCompanyMembers,
+} from "./useFetchAndSortMembers";
+import { useState } from "react";
 
 const MemberTab = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector((state: RootState) => state.user);
-  const [users, setUsers] = useState<MembersList[]>([]);
+  const user = useSelector((state: RootState) => state.user.user);
+  const workspace = useSelector((state: RootState) => state.workspace);
+  const [sortCriteria, setSortCritiera] = useState("");
+  const [departmentId, setDepartmentId] = useState("");
+
   const [cookies, ,] = useCookies(["access_token"]);
   const accessToken = cookies.access_token as AccessToken;
-  const [getCompanyMembers] = useGetCompanyMembersMutation();
-  const [sortCriteria, setSortCriteria] = useState<string>("");
+  // definitely should look over this, idk what TS is doing here om on the companyId type.
+  const companyId: CompanyID = (!workspace.id
+    ? user.companies[0].id
+    : workspace.id)! as unknown as CompanyID;
+  const { members } = useFetchCompanyMembers({
+    access: accessToken,
+    company_id: companyId,
+    department_id: departmentId,
+    sortCriteria: sortCriteria,
+  });
 
   const onClickModalOpen = (modalType: MODAL_TYPE) => {
     dispatch(
@@ -36,38 +48,18 @@ const MemberTab = () => {
     );
   };
 
-  const companyId = user.company as CompanyID;
-
-  useEffect(() => {
-    getCompanyMembers({ access: accessToken, company_id: companyId })
-      .then((response) => {
-        if ("data" in response) {
-          setUsers(response.data);
-        } else if ("error" in response) {
-          console.error("Error fetching company users:", response.error);
-        }
-      })
-      .catch((error) => console.error("Error fetching company users:", error));
-  }, [accessToken, companyId, getCompanyMembers]);
-
-  useEffect(() => {}, [users]);
-
   const handleSortMembers = (value: string) => {
-    setSortCriteria(value);
+    setSortCritiera(value);
   };
 
-  const sortedUsers = [...users].sort((a, b) => {
-    switch (sortCriteria) {
-      case "name-asc":
-        return a.first_name.localeCompare(b.first_name);
-      case "name-desc":
-        return b.first_name.localeCompare(a.first_name);
-      case "permission":
-        return a.role.localeCompare(b.role);
-      default:
-        return 0;
-    }
-  });
+  const departments = useFetchCompanyDepartments(
+    accessToken,
+    companyId as CompanyID
+  );
+
+  const handleSetDepartment = (value: string) => {
+    setDepartmentId(value);
+  };
 
   return (
     <>
@@ -79,53 +71,20 @@ const MemberTab = () => {
           style={{}}
         >
           <ElWrap w={270}>
-            <DropdownFilter
-              label="Department"
-              value=""
-              optionArr={[
-                { name: "All", value: "all" },
-                { name: "Department 1", value: "dept1" },
-                { name: "Department 2", value: "dept2" },
-              ]}
-              dropdownName=""
+            <DepartmentDropDown
+              departments={departments}
+              handleSetDepartment={handleSetDepartment}
+              workspaceId={workspace.id}
             />
           </ElWrap>
           <ElWrap w={120}>
-            <DropdownFilter
-              label="Sort By"
-              value={sortCriteria}
-              onChange={(value) => handleSortMembers(value)}
-              optionArr={[
-                { name: "Name (A-Z)", value: "name-asc" },
-                { name: "Name (Z-A)", value: "name-desc" },
-                { name: "Permission Level", value: "permission" },
-              ]}
-              dropdownName=""
+            <SortingDropdown
+              sortCriteria={sortCriteria}
+              handleSortMembers={handleSortMembers}
             />
           </ElWrap>
         </Stack>
-
-        <UserListContainer>
-          <Stack direction="column" spacing={3}>
-            {sortedUsers.map((user) => (
-              <SettingsUserCard
-                key={user.id}
-                user={user}
-                onClick={() => {
-                  dispatch(
-                    setMemberInfo({
-                      firstName: user.first_name,
-                      lastName: user.last_name,
-                      email: user.email,
-                      pictureUrl: user.profile_picture,
-                    })
-                  );
-                  onClickModalOpen(MODAL_TYPE.MEMBER_SET);
-                }}
-              />
-            ))}
-          </Stack>
-        </UserListContainer>
+        <MemberList members={members} onClickModalOpen={onClickModalOpen} />
       </Stack>
       <StyledInvitationBox />
       <GlobalModal></GlobalModal>

@@ -1,7 +1,7 @@
 import factory
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
-from user.models import CustomUser
+from user.models import CustomUser, Role
 
 from .models import (
     InterviewRound,
@@ -17,18 +17,17 @@ class InterviewRoundFactory(factory.django.DjangoModelFactory):
         model = InterviewRound
 
     title = factory.Faker("job")
-    candidate = factory.SubFactory(UserFactory, role=CustomUser.RoleChoices.CANDIDATE)
+    candidate = factory.SubFactory(UserFactory)
 
     @factory.lazy_attribute
     def interviewer(cls):
-        try:
-            return (
-                CustomUser.objects.filter(role=CustomUser.RoleChoices.INTERVIEWER)
-                .order_by("?")
-                .first()
-            )
-        except ObjectDoesNotExist:
-            return UserFactory()
+        interviewer_role, _ = Role.objects.get_or_create(name="interviewer")
+        interviewer = (
+            CustomUser.objects.filter(usercompanies__role=interviewer_role)
+            .order_by("?")
+            .first()
+        )
+        return interviewer or UserFactory()
 
 
 class InterviewRoundQuestionFactory(factory.django.DjangoModelFactory):

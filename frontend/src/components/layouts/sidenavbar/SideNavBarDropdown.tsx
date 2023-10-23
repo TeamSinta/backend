@@ -13,22 +13,28 @@ import {
   SelectedItemIcon,
 } from "@/components/common/filters/dropdownFilter/StyledDropdownFilter";
 import { BodyMMedium } from "@/components/common/typeScale/StyledTypeScale";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentWorkspace } from "@/features/workspace/userWorkspaceSlice";
+import { RootState } from "@/app/store";
 
 interface ISideNavBarDropdown {
   optionArr: IOption[];
   dropdownName: string;
+  companies?: { id: number; name: string }[];
 }
 
 interface IOption {
+  id: number;
   name: string;
   value: string;
 }
 
 const SideNavBarDropdown = (props: ISideNavBarDropdown): JSX.Element => {
   const { optionArr, dropdownName } = props;
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [shadow, setShadow] = useState(false);
-  const [selectedItemName, setSelectedItemName] = useState("");
+  const [selectedItemName, setSelectedItemName] = useState();
   const [selectedItem, setSelectedItem] = useState({
     [dropdownName]: "",
   });
@@ -41,7 +47,7 @@ const SideNavBarDropdown = (props: ISideNavBarDropdown): JSX.Element => {
     }
   };
 
-  const onSelectedItem = (value: string, name: string): void => {
+  const onSelectedItem = (value: string, name: string, id: number): void => {
     setSelectedItem({ [dropdownName]: value });
     setSelectedItemName(name);
     setOpen(false);
@@ -85,7 +91,7 @@ const SideNavBarDropdown = (props: ISideNavBarDropdown): JSX.Element => {
             <OptionLi>
               <OptionA
                 onClick={() => {
-                  onSelectedItem("", "");
+                  onSelectedItem("", "", 0);
                 }}
               >
                 ------------
@@ -95,7 +101,8 @@ const SideNavBarDropdown = (props: ISideNavBarDropdown): JSX.Element => {
               <OptionLi key={index}>
                 <OptionA
                   onClick={() => {
-                    onSelectedItem(item.value, item.name);
+                    onSelectedItem(item.value, item.name, item.id);
+                    dispatch(setCurrentWorkspace(item));
                   }}
                 >
                   <BodyMMedium>{item.name}</BodyMMedium>

@@ -5,9 +5,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from dj_rest_auth.views import UserDetailsView
-from rest_framework.generics import RetrieveAPIView, ListAPIView
-from .models import Company, CustomUser
-from .serializers import CompanySerializer, CustomUserSerializer
+from rest_framework.generics import ListAPIView
+from company.serializers import DepartmentSerializer
+from user.models import UserCompanies, UserDepartments
+from company.models import Department
 
 
 # API for deactivating user account, hence "deleting it".
@@ -25,6 +26,8 @@ class DeleteUser(APIView):
 
 
 class CustomUserDetailsView(UserDetailsView):
+    permission_classes = [IsAuthenticated]
+
     def put(self, request, *args, **kwargs):
         self.object = self.get_object()
         serializer = self.get_serializer(self.object, data=request.data, partial=True)
@@ -36,19 +39,18 @@ class CustomUserDetailsView(UserDetailsView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GetCompany(RetrieveAPIView):
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
-
-
-class CompanyMembers(ListAPIView):
-    # permission_classes = [IsAuthenticated]
+class UserDepartmentsView(ListAPIView):
+    serializer_class = DepartmentSerializer
 
     def get_queryset(self):
+        user_id = self.kwargs["user_id"]
         company_id = self.kwargs["pk"]
 
-        get_object_or_404(Company, id=company_id)
+        get_object_or_404(UserCompanies, user__id=user_id, company__id=company_id)
 
-        return CustomUser.objects.filter(company__id=company_id)
+        user_departments = UserDepartments.objects.filter(
+            user__id=user_id, department__company__id=company_id
+        )
 
-    serializer_class = CustomUserSerializer
+        department_ids = user_departments.values_list("department_id", flat=True)
+        return Department.objects.filter(id__in=department_ids)

@@ -1,5 +1,6 @@
 from django.db import models
-from user.models import CustomUser, Company
+from user.models import CustomUser
+from company.models import Company
 from question.models import Question
 from interview_templates.models import TemplateQuestion
 from django.utils import timezone
@@ -10,14 +11,14 @@ class InterviewRound(models.Model):
     title = models.CharField(max_length=200)
     candidate = models.ForeignKey(
         CustomUser,
-        related_name=CustomUser.RoleChoices.CANDIDATE,
+        related_name="candidate_interviews",
         on_delete=models.CASCADE,
         null=True,
         default=None,
     )
     interviewer = models.ForeignKey(
         CustomUser,
-        related_name=CustomUser.RoleChoices.INTERVIEWER,
+        related_name="interviewer_rounds",
         on_delete=models.CASCADE,
     )
     video_uri = models.TextField()

@@ -2,7 +2,8 @@ from django.dispatch import receiver
 import random, string
 from allauth.account.signals import user_signed_up
 from allauth.socialaccount.models import SocialAccount
-from user.models import Company
+from company.models import Company
+from user.models import Role, UserCompanies
 
 
 @receiver(user_signed_up)
@@ -25,10 +26,16 @@ def assign_company_to_login(request, user, **kwargs):
 
     if social_account:
         # Set a randomly generated company name.
-        company, created = Company.objects.get_or_create(name=generate_company_name(10))
+        company, created = Company.objects.get_or_create(name=generate_company_name(15))
 
     if company:
-        user.company = company
+        user.companies.add(company)
+
+        role, created = Role.objects.get_or_create(name="admin")
+
+        UserCompanies.objects.update_or_create(
+            user=user, company=company, defaults={"role": role}
+        )
 
     user.save()
 

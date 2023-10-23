@@ -3,10 +3,14 @@ from tenacity import retry, wait_random_exponential, stop_after_attempt
 from dotenv import dotenv_values
 from typing import List
 import json
+from pathlib import Path
 
-keys = dotenv_values("/backend/.env")
-EMBEDDING_MODEL = keys["EMBEDDINGS_MODEL"]
-openai.api_key = keys["OPENAI_API_KEY"]
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+KEYS = dotenv_values(BASE_DIR / ".env")
+
+EMBEDDING_MODEL = KEYS["EMBEDDINGS_MODEL"]
+openai.api_key = KEYS["OPENAI_API_KEY"]
 
 
 @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(6))

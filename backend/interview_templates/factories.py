@@ -2,27 +2,10 @@ import factory
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from user.factories import CompanyFactory
-from user.models import CustomUser, Company
+from company.models import Company
 from question.models import Question
 from interview_templates.models import Template, TemplateTopic, TemplateQuestion
 from question.factories import QuestionFactory
-
-
-# class CompanyFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = Company
-
-#     name = factory.Faker("company")
-
-
-# class UserFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = CustomUser
-
-#     username = factory.Faker("user_name")
-#     company = factory.SubFactory(CompanyFactory)
-#     role = CustomUser.RoleChoices.CANDIDATE
-#     profile_picture = factory.django.ImageField()
 
 
 class TemplateFactory(factory.django.DjangoModelFactory):

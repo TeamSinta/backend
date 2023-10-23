@@ -23,11 +23,10 @@ import {
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useCookies } from "react-cookie";
 
-export const UserTab = () => {
+const UserTab = () => {
   const { user } = useSelector((state: RootState) => state.user);
   const [cookies, ,] = useCookies(["access_token"]);
   const accessToken: string | undefined = cookies.access_token;
-
   const [deactivateUser] = useDeactivateUserMutation();
   const [updateUser] = useUpdateUserMutation();
 
@@ -62,9 +61,7 @@ export const UserTab = () => {
 
   return (
     <>
-      {" "}
       <Stack direction={{ md: "row", xs: "column" }} spacing={4}>
-        {/* Profile Picture */}
         <Stack
           direction="column"
           alignItems={{ xs: "center" }}
@@ -73,7 +70,6 @@ export const UserTab = () => {
         >
           <ProfilePictureContainer
             onClick={() => {
-              // Trigger input click when the profile picture is clicked
               document.getElementById("profile-picture-input")?.click();
             }}
           >
@@ -165,7 +161,7 @@ export const UserTab = () => {
         <DeleteBox>
           <ChildElement>
             <BodyLMedium>
-              Delete Account?{" "}
+              Delete Account?
               <BodySMedium>
                 You can't undo these changes, think carefully.
               </BodySMedium>
@@ -185,3 +181,5 @@ export const UserTab = () => {
     </>
   );
 };
+
+export default UserTab;

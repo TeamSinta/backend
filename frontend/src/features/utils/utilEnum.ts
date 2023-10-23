@@ -26,3 +26,9 @@ export enum TABS {
   PROFILE = "profile",
   MEMBERS = "members",
 }
+
+export enum SORT_CRITERIA {
+  NAME_ASC = "1",
+  NAME_DESC = "2",
+  ROLE = "3",
+}

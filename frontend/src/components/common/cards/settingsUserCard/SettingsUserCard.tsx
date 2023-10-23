@@ -34,7 +34,7 @@ const SettingsUserCard: React.FC<UserCardProps> = ({ user, onClick }) => {
     <UserCardContainer onClick={() => onClick(user)}>
       <Stack direction="row" gap="16px" sx={{ width: "316px" }}>
         <ProfilePicture
-          alt={`${user.username}'s Profile`}
+          alt={`${user.username}'s Photo`}
           src={user.profile_picture || ""}
         />
 

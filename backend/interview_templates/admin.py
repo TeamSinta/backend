@@ -16,7 +16,7 @@ class TemplateAdmin(admin.ModelAdmin):
     list_display = ("id", "role_title", "company_link")
 
     def company_link(self, obj):
-        url = reverse("admin:user_company_change", args=[obj.company.id])
+        url = reverse("admin:user_usercompanies_change", args=[obj.company.id])
         return format_html('<a href="{}">{}</a>', url, obj.company)
 
 
