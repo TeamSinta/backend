@@ -181,7 +181,7 @@ function BottomNavBar(props: any) {
               )}
               {isSharingScreen ? " Stop sharing screen" : " Share screen"}
             </StyledBottomNavButtons>
-            <StyledBottomNavButtons
+            {/* <StyledBottomNavButtons
               onClick={toggleMeetingInformation}
               type="button"
             >
@@ -190,7 +190,7 @@ function BottomNavBar(props: any) {
             <StyledBottomNavButtons onClick={toggleChat} type="button">
               {newChatMessage ? <NavCircle /> : <NavFlagIcon />}
               {newChatMessage ? "Hide chat" : "Show chat"}
-            </StyledBottomNavButtons>
+            </StyledBottomNavButtons> */}
 
             {/* ... (other tray buttons) */}
           </StyledColumns>

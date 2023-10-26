@@ -119,7 +119,7 @@ export const QuestionTextDisplay: React.FC<QuestionTextDisplayProps> = ({
       className="interview-qna-item"
       onClick={() => handleClick(index)}
     >
-      <Grid item xs={11} md={11}>
+      <Grid item xs={12} md={12}>
         <IndexContainer>
           <IndexStyle>
             <span>{index + 1}</span>

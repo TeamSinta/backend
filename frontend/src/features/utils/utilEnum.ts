@@ -8,6 +8,7 @@ export enum Loading {
 export enum BackgroundColor {
   ACCENT_PURPLE = "accentPurple",
   WHITE = "white",
+  LIGHT_PURPLE = "lightPurple",
 }
 
 export enum PhotoType {

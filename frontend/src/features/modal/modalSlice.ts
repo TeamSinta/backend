@@ -4,6 +4,7 @@ import { redirect } from "react-router-dom";
 
 export interface ModalState {
   modalType: string;
+  templateID: string;
   isOpen: boolean;
   history: string;
 }
@@ -12,6 +13,7 @@ const initialState: ModalState = {
   modalType: "",
   isOpen: false,
   history: "",
+  templateID: "",
 };
 
 export const modalSlice = createSlice({
@@ -19,8 +21,9 @@ export const modalSlice = createSlice({
   initialState,
   reducers: {
     openModal: (state, actions) => {
-      const { modalType } = actions.payload;
+      const { modalType, templateID } = actions.payload;
       state.modalType = modalType;
+      state.templateID = templateID;
       state.isOpen = true;
     },
     closeModal: (state) => {

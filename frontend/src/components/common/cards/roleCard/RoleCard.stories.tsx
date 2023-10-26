@@ -4,25 +4,29 @@ import RoleCard from "./RoleCard";
 const members = [
   {
     member_idx: 1,
-    member_name: "Mohamed Shegow",
+    member_first_name: "Mohamed ",
+    member_last_name: "Shegow",
     member_url:
       "https://ca.slack-edge.com/T04C82XCPRU-U04D4BRG8CQ-c4ccf8605ed3-192",
   },
   {
     member_idx: 2,
-    member_name: "Suwon Baek",
+    member_first_name: "Suwon ",
+    member_last_name: "Baek",
     member_url:
       "https://ca.slack-edge.com/T04C82XCPRU-U04KS4AQG0N-5dc6b4356f80-512",
   },
   {
     member_idx: 3,
-    member_name: "Mattias Welamsson",
+    member_first_name: "Mattias ",
+    member_last_name: "Welamsson",
     member_url:
       "https://ca.slack-edge.com/T04C82XCPRU-U04L1685M5J-81974d1311f3-512",
   },
   {
     member_idx: 4,
-    member_name: "Sammy Kavanagh",
+    member_first_name: "Sammy",
+    member_last_name: "Kavanagh",
     member_url: "",
   },
 ];

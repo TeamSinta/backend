@@ -16,7 +16,6 @@ def create_template(request):
     if request.method == "POST":
         data = json.loads(request.body)
         role_title = data.get("role_title")
-        location = data.get("location")
         user_ids = data.get("interviewer_ids")
         company_id = data.get("company_id")
         department_id = data.get("department_id")  # Include department field
@@ -26,7 +25,6 @@ def create_template(request):
 
         template = Template.objects.create(
             role_title=role_title,
-            location=location,
             company=company,
             department_id=department_id,  # Set department if provided
         )
@@ -346,147 +344,51 @@ def get_all_template_topics(request, template_id):
         error_response = {"error": "Invalid request method"}
         return JsonResponse(error_response, status=405)
 
-
-# # Create a TemplateInterviewers
-# @csrf_exempt
-# def create_template_interviewers(request, template_id):
-#     if request.method == "POST":
-#         data = json.loads(request.body)
-#         interviewer_ids = data.get("interviewer_ids")
-
-#         template = get_object_or_404(Template, pk=template_id)
-#         interviewers = CustomUser.objects.filter(id__in=interviewer_ids)
-
-#         # Create a TemplateInterviewers instance associated with the template
-#         template_interviewers = TemplateInterviewers.objects.create(template_id=template)
-
-#         # Add interviewers to the ManyToMany field
-#         template_interviewers.interviewer.add(*interviewers)
-
-#         response = {
-#             "id": template_interviewers.id,
-#             "template_id": template_id,
-#             "interviewer_ids": interviewer_ids,
-#         }
-
-#         return JsonResponse(response, status=201)
-#     else:
-#         error_response = {"error": "Invalid request method"}
-#         return JsonResponse(error_response, status=405)
-
-# # Read TemplateInterviewers for a Template
-# @csrf_exempt
-# def read_template_interviewers(request, template_id):
-#     if request.method == "GET":
-#         template = get_object_or_404(Template, pk=template_id)
-#         template_interviewers = TemplateInterviewers.objects.filter(template=template)
-
-#         interviewer_ids = list(template_interviewers.values_list("interviewer__id", flat=True))
-
-#         response = {
-#             "template_id": template_id,
-#             "interviewer_ids": interviewer_ids,
-#         }
-
-#         return JsonResponse(response, status=200)
-#     else:
-#         error_response = {"error": "Invalid request method"}
-#         return JsonResponse(error_response, status=405)
-
-# # Update TemplateInterviewers for a Template
-# @csrf_exempt
-# def update_template_interviewers(request, template_id):
-#     if request.method == "PUT":
-#         template = get_object_or_404(Template, pk=template_id)
-#         data = json.loads(request.body)
-
-#         interviewer_ids = data.get("interviewer_ids")
-
-#         # Filter TemplateInterviewers based on the template
-#         template_interviewers = TemplateInterviewers.objects.filter(template_id=template)
-
-#         if template_interviewers.exists():
-#             interviewers = CustomUser.objects.filter(id__in=interviewer_ids)
-
-#             # Update the template and set interviewers
-#             template_interviewers.update(template_id=template)
-#             template_interviewers.first().interviewer.set(interviewers)
-
-#             response = {
-#                 "template_id": template_id,
-#                 "interviewer_ids": interviewer_ids,
-#             }
-
-#             return JsonResponse(response, status=200)
-#         else:
-#             error_response = {"error": "TemplateInterviewers not found"}
-#             return JsonResponse(error_response, status=404)
-#     else:
-#         error_response = {"error": "Invalid request method"}
-#         return JsonResponse(error_response, status=405)
-
-# # Delete TemplateInterviewers for a Template
-# @csrf_exempt
-# def delete_template_interviewers(request, template_id):
-#     if request.method == "DELETE":
-#         template = get_object_or_404(Template, pk=template_id)
-#         template_interviewers = TemplateInterviewers.objects.filter(template=template)
-#         template_interviewers.delete()
-
-#         return JsonResponse({"message": "TemplateInterviewers deleted successfully"}, status=204)
-#     else:
-#         error_response = {"error": "Invalid request method"}
-#         return JsonResponse(error_response, status=405)
-
-
-# Get all TemplateInterviewers for a Template
-# @csrf_exempt
-# def get_all_template_interviewers(request, template_id):
-#     if request.method == "GET":
-#         template = get_object_or_404(Template, pk=template_id)
-#         template_interviewers = TemplateInterviewers.objects.filter(
-#             template_id=template
-#         )
-#         interviewer_ids = list(
-#             template_interviewers.values_list("interviewer__id", flat=True)
-#         )
-#         response = {
-#             "template_id": template_id,
-#             "interviewer_ids": interviewer_ids,
-#         }
-#         return JsonResponse(response, status=200)
-#     else:
-#         error_response = {"error": "Invalid request method"}
-#         return JsonResponse(error_response, status=405)
-
-
 # Create a TemplateQuestion
 @csrf_exempt
 def create_template_question(request, template_id):
     if request.method == "POST":
         data = json.loads(request.body)
-        template_topic_id = data.get("template_topic_id")
-        question_id = data.get("question_id")
+
+        # Check if the request is for a single question or multiple
+        if isinstance(data, dict):  # Case for a single question
+            questions = [data]
+        elif isinstance(data, list):  # Case for multiple questions
+            questions = data
+        else:
+            return JsonResponse({"error": "Invalid payload format"}, status=400)
 
         template = get_object_or_404(Template, pk=template_id)
-        topic = get_object_or_404(TemplateTopic, pk=template_topic_id)
-        question = Question.objects.get(id=question_id)
+        responses = []
 
-        template_question = TemplateQuestion.objects.create(
-            template_id=template, topic=topic, question=question
-        )
+        for question_data in questions:
+            template_topic_id = question_data.get("template_topic_id")
+            question_id = question_data.get("question_id")
 
-        response = {
-            "id": template_question.id,
-            "template_id": template_id,
-            "template_topic_id": template_topic_id,
-            "question_id": question_id,
-        }
+            topic = get_object_or_404(TemplateTopic, pk=template_topic_id)
+            question = Question.objects.get(id=question_id)
 
-        return JsonResponse(response, status=201)
+            template_question = TemplateQuestion.objects.create(
+                template_id=template, topic=topic, question=question
+            )
+
+            response = {
+                "id": template_question.id,
+                "template_id": template_id,
+                "template_topic_id": template_topic_id,
+                "question_id": question_id,
+            }
+            responses.append(response)
+
+        if len(responses) == 1:  # If only one question was processed
+            return JsonResponse(responses[0], status=201)
+        else:  # If multiple questions were processed
+            return JsonResponse(responses, safe=False, status=201)
+
     else:
         error_response = {"error": "Invalid request method"}
         return JsonResponse(error_response, status=405)
+
 
 
 # Read TemplateQuestions for a Template

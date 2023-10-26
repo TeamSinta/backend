@@ -30,7 +30,7 @@ const TabContainer = styled.div`
   padding-bottom: 20px;
   flex-direction: column;
 
-  @media (min-width: 768px) {
+  @media (min-width: 1200px) {
     flex-direction: row;
   }
 `;
@@ -43,7 +43,7 @@ const StyledNavButton = styled(NavButton)`
   margin-right: 5px;
   margin-bottom: 5px;
 
-  @media (min-width: 768px) {
+  @media (min-width: 1200px) {
     width: 100px;
     margin-bottom: 0;
   }
@@ -61,7 +61,7 @@ const ContentContainer = styled.div`
   overflow-y: auto;
   max-height: calc(100vh - 40vh);
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1200px) {
     padding: 20px 40px;
   }
 `;
@@ -131,14 +131,21 @@ const MainScreen: React.FC<MainScreenProps> = () => {
 
   return (
     <>
-      <Grid container spacing={1}>
-        <Grid item xs={12} sm={12} md={5}>
+      <Grid container spacing={0}>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          lg={6}
+          style={{ display: "flex", flexDirection: "column", gap: "22px" }}
+        >
           <H3Bold>Behavioral Interview</H3Bold>
           <div className="video-player-wrapper">
             <VideoPlayer questionsTranscript={questionsTranscript?.data} />
           </div>
         </Grid>
-        <Grid item xs={12} sm={12} md={7}>
+        <Grid item xs={12} sm={12} md={12} lg={6}>
           {infoTabs}
           <ContentContainer>
             {activeTab === 1 && (

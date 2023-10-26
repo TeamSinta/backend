@@ -12,14 +12,22 @@ import {
 import { IMockMembers } from "@/features/roles/rolesInterface";
 import { BackgroundColor, PhotoType } from "@/features/utils/utilEnum";
 // import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Title } from "../StyledInterview";
 import { OverviewInterviewers } from "./StyledOverviewInterviewer";
+import GlobalModal, { MODAL_TYPE } from "@/components/common/modal/GlobalModal";
+import { openModal } from "@/features/modal/modalSlice";
 
 const InterviewOverviewInterviewer = () => {
   const { template } = useSelector(selectInterviewDetail); // Use the correct selector to access interviewers
 
+  const dispatch = useDispatch();
+
   const interviewer = template.interviewers; // Access interviewers from the template
+
+  const onClickModalOpen = (modalType: MODAL_TYPE) => {
+    dispatch(openModal({ modalType }));
+  };
 
   return (
     <OverviewInterviewers>
@@ -30,7 +38,9 @@ const InterviewOverviewInterviewer = () => {
             icon={<EditIcon />}
             disable={false}
             className={BackgroundColor.WHITE}
-            onClick={() => {}}
+            onClick={() => {
+              onClickModalOpen(MODAL_TYPE.EDIT_MEM);
+            }}
           />
         </ElWrap>
       </Title>
@@ -40,12 +50,10 @@ const InterviewOverviewInterviewer = () => {
             <ElWrap w={40} h={40} key={index}>
               <Photo
                 photoType={PhotoType.L}
-                onSelect={() => {}}
                 member_idx={interview.id}
                 member_firstName={interview.first_name}
                 member_lastName={interview.last_name}
                 member_url={interview.profile_picture}
-                selected={false}
               />
             </ElWrap>
           ))
@@ -75,6 +83,7 @@ const InterviewOverviewInterviewer = () => {
           />
         </ElWrap> */}
       </Photos>
+      <GlobalModal></GlobalModal>
     </OverviewInterviewers>
   );
 };

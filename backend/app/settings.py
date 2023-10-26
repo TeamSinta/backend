@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     # Apps
+    "company",
+    "user",
     "interview_templates",
     "files",
     "transcription.apps.TranscriptionConfig",
@@ -58,8 +60,6 @@ INSTALLED_APPS = [
     "question.apps.QuestionConfig",
     "question_response.apps.QuestionResponseConfig",
     "authentication",
-    "user",
-    "company",
     "videosdk",
     "corsheaders",
     "summary.apps.SummaryConfig",

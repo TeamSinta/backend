@@ -15,3 +15,14 @@ export interface ITemplates {
   };
   questions: IQuestion[];
 }
+
+export interface IQuestionsBank {
+  [key: string]: number | string | string[];
+  title: string;
+  competency: string;
+  time: number;
+  level: string;
+  detail: string;
+  id: number;
+  questionBank: [];
+}

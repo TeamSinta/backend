@@ -29,7 +29,7 @@ const TemplateList = () => {
 
   useEffect(() => {
     dispatch(getQuestionsBanksAsync());
-  }, [dispatch, questionBanks]);
+  }, [dispatch]);
 
   return (
     <TemplateListWrap>

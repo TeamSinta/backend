@@ -5,6 +5,7 @@ import MainScreen from "./MainScreen/MainScreen.js";
 import { RightArrowIcon } from "@/components/common/svgIcons/Icons.js";
 import { StyledIconBtnM } from "@/components/common/buttons/button/StyledBtn.js";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom"; // <-- Import useNavigate
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -27,11 +28,15 @@ const MainWrapper = styled.div`
 `;
 
 const Conclusion: React.FC = () => {
+  const navigate = useNavigate(); // <-- Get the navigate function
+
   const header = useMemo(() => {
     return (
       <HeaderWrapper>
         <IconWrapper>
-          <StyledIconBtnM>
+          <StyledIconBtnM onClick={() => navigate(-1)}>
+            {" "}
+            {/* <-- Use the navigate function here */}
             <RightArrowIcon />
           </StyledIconBtnM>
         </IconWrapper>
@@ -40,7 +45,7 @@ const Conclusion: React.FC = () => {
         </Title>
       </HeaderWrapper>
     );
-  }, []);
+  }, [navigate]);
 
   return (
     <>

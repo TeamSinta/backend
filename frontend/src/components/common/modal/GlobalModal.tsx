@@ -12,6 +12,8 @@ import SelectValue from "./modalContents/SelectValues";
 import ModalL from "./ModalL";
 import SelectTemplate from "./modalContents/SelectTemplate";
 import MemberSettings from "./userSettingsModal/MemberSettings";
+import EditInterviews from "./modalContents/EditInterview";
+import EditInterviewers from "./modalContents/EditInterviewrs";
 
 export enum MODAL_TYPE {
   CREATE_DEP = "CREATE_DEP",
@@ -19,6 +21,8 @@ export enum MODAL_TYPE {
   SELECT_VAL = "SELECT_VAL",
   SELECT_TEM = "SELECT_TEM",
   MEMBER_SET = "MEMBER_SET",
+  EDIT_INT = "EDIT_INT",
+  EDIT_MEM = "EDIT_MEM",
   // ModalL = "ModalL",
 }
 
@@ -69,9 +73,21 @@ const GlobalModal = (): JSX.Element => {
             <CreateInterviews />
           </Modal>
         );
+      case MODAL_TYPE.EDIT_INT:
+        return (
+          <Modal title="Edit Interview">
+            <EditInterviews />
+          </Modal>
+        );
+      case MODAL_TYPE.EDIT_MEM:
+        return (
+          <Modal title="Interviewers">
+            <EditInterviewers />
+          </Modal>
+        );
       case MODAL_TYPE.SELECT_VAL:
         return (
-          <Modal title="Select your values">
+          <Modal title="Create your Sections">
             <SelectValue />
           </Modal>
         );
@@ -84,7 +100,17 @@ const GlobalModal = (): JSX.Element => {
       case MODAL_TYPE.MEMBER_SET:
         return (
           <Modal title="Member Setting">
-            <MemberSettings />
+            <MemberSettings
+              user={{
+                first_name: "",
+                last_name: "",
+                email: "",
+                role: "",
+              }}
+              onClose={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+            />
           </Modal>
         );
     }

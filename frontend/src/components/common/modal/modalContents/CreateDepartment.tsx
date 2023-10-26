@@ -73,6 +73,10 @@ const CreateDepartment = () => {
           {members.map((member: IMember, index: number) => (
             <ElWrap w={40} h={40} key={index}>
               <Photo
+                member_idx={0}
+                member_firstName={""}
+                member_lastName={""}
+                member_url={""}
                 photoType={PhotoType.L}
                 {...member}
                 onSelect={onMemberSelectd}

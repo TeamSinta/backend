@@ -12,6 +12,7 @@ const colors = {
   purpleGrey: "rgba(15, 13, 98, .2)",
   pastelPurple: "#CECDEE",
   whisperGrey: "#F6F6FB",
+  strikePurple: "8D88F7",
 };
 
 const breakpoints = {

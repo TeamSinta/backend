@@ -65,7 +65,6 @@ const Invite = () => {
 
   const onIviteMemberClick = () => {
     setApiStatus(Loading.PENDING);
-    console.log(invite_member);
     dispatch(postInviteMemberAsync(invite_member))
       .then((action) => {
         dispatch(addInvitedMember({ invitedMember: action.payload }));

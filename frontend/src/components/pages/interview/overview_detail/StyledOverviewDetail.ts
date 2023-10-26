@@ -17,6 +17,8 @@ export const OverviewDetailBody = styled.div`
   gap: 24px;
   padding: 24px 0;
   flex-direction: column;
+  height: 500px;
+  overflow-y: scroll;
 `;
 
 export const OverviewDetailList = styled.div`

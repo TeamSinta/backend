@@ -20,7 +20,8 @@ import {
 interface IMembers {
   member_idx: number;
   member_url: string;
-  member_name: string;
+  member_first_name: string;
+  member_last_name: string;
 }
 
 interface IRoleCardProps {
@@ -61,7 +62,10 @@ const RoleCard = (props: IRoleCardProps) => {
                   <PhotoIcon imgUrl={member.member_url}>
                     <BodySBold>
                       {!member.member_url
-                        ? InitialsGenerator(member.member_name)
+                        ? InitialsGenerator(
+                            member.member_first_name,
+                            member.member_last_name
+                          )
                         : ""}
                     </BodySBold>
                   </PhotoIcon>

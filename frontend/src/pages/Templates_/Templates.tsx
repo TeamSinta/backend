@@ -7,12 +7,13 @@ import {
   BodyLMedium,
   H2Medium,
   H2Bold,
+  BodyMMedium,
 } from "@/components/common/typeScale/StyledTypeScale";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import { openModal } from "@/features/modal/modalSlice";
 import { getMemberAsync } from "@/features/roles/rolesSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
-import { useEffect, useRef } from "react";
+import { Key, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { Stack, Box } from "@mui/material";
 import TemplateHomeCard, {
@@ -29,7 +30,8 @@ import {
 } from "@/components/common/buttons/iconBtn/IconBtn";
 import DropdownFilter from "@/components/common/filters/dropdownFilter/DropdownFilter";
 
-interface Template {
+export interface Template {
+  roundId: Key | null | undefined;
   role_title: string;
   disable: boolean;
   interviewers?: IMember[];
@@ -61,6 +63,14 @@ const Templates = () => {
       onClickModalOpen(MODAL_TYPE.CREATE_INT);
     },
   };
+  // const template_arg = {
+  //   icon: <ResumeIcon />,
+  //   disable: false,
+  //   className: BackgroundColor.LIGHT_PURPLE,
+  //   onClick: () => {
+  //     onClickModalOpen(MODAL_TYPE.CREATE_INT);
+  //   },
+  // };
 
   useEffect(() => {
     dispatch(getMemberAsync());
@@ -174,9 +184,88 @@ const Templates = () => {
             onMouseLeave={handleMouseUp}
             ref={scrollContainerRef}
           >
+            <Box>
+              <ElWrap w={168} h={114}>
+                <IconBtnL {...arg} />
+              </ElWrap>
+              <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
+                + New Template
+              </BodyMMedium>
+            </Box>
+
+            {/* <Box>
             <ElWrap w={168} h={114}>
-              <IconBtnL {...arg} />
+              <IconBtnL {...template_arg} />
             </ElWrap>
+            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
+                     + Culture Fit Template
+            </BodyMMedium>
+            </Box>
+
+            <Box>
+            <ElWrap w={168} h={114}>
+              <IconBtnL {...template_arg} />
+            </ElWrap>
+            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
+                     + Leadership Template
+            </BodyMMedium>
+            </Box>
+            <Box>
+            <ElWrap w={168} h={114}>
+              <IconBtnL {...template_arg} />
+            </ElWrap>
+            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
+                     + Culture Fit Template
+            </BodyMMedium>
+            </Box>
+            <Box>
+            <ElWrap w={168} h={114}>
+              <IconBtnL {...template_arg} />
+            </ElWrap>
+            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
+                     + Culture Fit Template
+            </BodyMMedium>
+            </Box>
+            <Box>
+            <ElWrap w={168} h={114}>
+              <IconBtnL {...template_arg} />
+            </ElWrap>
+            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
+                     + Culture Fit Template
+            </BodyMMedium>
+            </Box>
+            <Box>
+            <ElWrap w={168} h={114}>
+              <IconBtnL {...template_arg} />
+            </ElWrap>
+            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
+                     + Culture Fit Template
+            </BodyMMedium>
+            </Box>
+            <Box>
+            <ElWrap w={168} h={114}>
+              <IconBtnL {...template_arg} />
+            </ElWrap>
+            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
+                     + Culture Fit Template
+            </BodyMMedium>
+            </Box>
+            <Box>
+            <ElWrap w={168} h={114}>
+              <IconBtnL {...template_arg} />
+            </ElWrap>
+            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
+                     + Culture Fit Template
+            </BodyMMedium>
+            </Box>
+            <Box>
+            <ElWrap w={168} h={114}>
+              <IconBtnL {...template_arg} />
+            </ElWrap>
+            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
+                     + Culture Fit Template
+            </BodyMMedium>
+            </Box> */}
           </CreateInterviewBox>
         </Stack>
         <Stack direction="column" spacing={4}>
@@ -185,7 +274,7 @@ const Templates = () => {
             justifyContent="space-between"
             style={{ marginTop: "32px" }}
           >
-            <H2Medium style={{ marginTop: "22px" }}>Your Templates</H2Medium>
+            <H2Medium style={{ marginTop: "18px" }}>Your Templates</H2Medium>
 
             <ElWrap w={180}>
               <DropdownFilter
@@ -196,6 +285,7 @@ const Templates = () => {
                   { name: "Permission Level", value: "permission" },
                 ]}
                 dropdownName="sort"
+                value={""}
               />
             </ElWrap>
           </Stack>

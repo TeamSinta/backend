@@ -320,3 +320,38 @@ export const StyledVideoActionContainer = styled.div`
 export const StyledVideoActions = styled.span`
   margin: 2px;
 `;
+
+export const CoverPictureContainer = styled.div`
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  width: 150px;
+
+  &:hover::before {
+    content: "Change Picture";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(15, 13, 98, 0.5);
+    color: #fff;
+    border-radius: 16px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover input[type="file"] {
+    opacity: 0.01;
+    cursor: pointer;
+  }
+
+  &:hover::before,
+  &:hover input[type="file"]:hover + .profile-picture {
+    opacity: 1;
+  }
+`;

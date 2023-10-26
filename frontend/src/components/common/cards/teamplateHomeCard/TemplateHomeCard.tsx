@@ -69,7 +69,16 @@ const TemplateHomeCard = (props: ITemplateHomeCard) => {
               setHover(false);
             }}
           >
-            <BodyMMedium>{title}</BodyMMedium>
+            <BodyMMedium
+              style={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                maxWidth: "140px",
+                whiteSpace: "nowrap", // or some specific value that fits well in your design
+              }}
+            >
+              {title}
+            </BodyMMedium>
             <CardSubTitle>
               <CardSubTitleContent>
                 <BodySMedium>{sections.length} Sections</BodySMedium>
@@ -80,22 +89,23 @@ const TemplateHomeCard = (props: ITemplateHomeCard) => {
           </CardContent>
           <Photos>
             <>
-              {members.slice(0, 4).map((member: IMember, index) => (
-                <ElWrap w={32} h={32} key={index}>
-                  <PhotoIcon imgUrl={member.profile_picture}>
-                    <BodySBold>
-                      {!member.profile_picture
-                        ? InitialsGenerator(member.first_name, member.last_name)
-                        : ""}
-                    </BodySBold>
-                  </PhotoIcon>
-                </ElWrap>
+
+            {members.slice(0, members.length > 4 ? 3 : 4).map((member: IMember, index) => (
+  <ElWrap w={32} h={32} key={index}>
+    <PhotoIcon imgUrl={member.profile_picture}>
+      <BodySBold>
+        {!member.profile_picture
+          ? InitialsGenerator(member.first_name, member.last_name)
+          : ""}
+      </BodySBold>
+    </PhotoIcon>
+  </ElWrap>
               ))}
             </>
             <>
               {members.length > 4 ? (
                 <NumberIcon imgUrl="">
-                  <BodySBold>+{members.length - 4}</BodySBold>
+                  <BodySBold>+{members.length - 3}</BodySBold>
                 </NumberIcon>
               ) : (
                 <></>

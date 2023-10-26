@@ -13,8 +13,10 @@ import {
   DocumentIcon,
   EditIcon,
   MoveIcon,
+  PlusIcon,
   QuestionIcon,
   SelectArrowOpenIcon,
+  Star1Icon,
   TimeIcon,
 } from "@/components/common/svgIcons/Icons";
 import {
@@ -45,6 +47,11 @@ import {
   OverviewDetails,
   TimeQuestionDiv,
 } from "./StyledOverviewDetail";
+import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBtn";
+import { Stack } from "@mui/material";
+import GlobalModal, { MODAL_TYPE } from "@/components/common/modal/GlobalModal";
+import { openModal } from "@/features/modal/modalSlice";
+import { useParams } from "react-router-dom";
 
 interface IState {
   [key: string]: any;
@@ -59,7 +66,7 @@ const components = {
 
 const InterviewOverviewDetails = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { selectedSection, status, questions, sections } = useSelector(
+  const { selectedSection, status, questions } = useSelector(
     selectInterviewDetail
   );
   const [openItems, setOpenItems] = useState(new Set());
@@ -70,9 +77,24 @@ const InterviewOverviewDetails = () => {
     detail: "",
   });
 
+  const { templateId } = useParams();
+
+  const templateID = templateId;
+
   const filteredQuestions = questions.filter((question: IQuestion) => {
-    return question.template_topic_id === selectedSection.id;
+    return (
+      selectedSection && question?.template_topic_id === selectedSection.id
+    );
   });
+
+  const onClickModalOpen = (modalType: MODAL_TYPE, templateID: any) => {
+    dispatch(
+      openModal({
+        modalType: modalType,
+        templateID: templateID,
+      })
+    );
+  };
 
   const openDetailHandler = (id: number, isOpen: boolean) => {
     const temp = new Set();
@@ -117,34 +139,25 @@ const InterviewOverviewDetails = () => {
     inputValue["detail"] = value;
   };
 
-  const optionArrGenerator = (array: any[]) => {
-    const optionArr = array.map((comp: string) => ({
-      name: comp,
-      value: comp,
-    }));
-    return optionArr;
-  };
 
   useEffect(() => {}, [dispatch, openItems]);
-
-  if (!selectedSection || !questions) {
-    return <div>Loading or Data Not Available</div>;
-  }
   return (
     <OverviewDetails>
       {status === Loading.FULFILLED ? (
         <>
           {/*  ====== OVERVIEW TITLE START ====== */}
           <OverviewDetailTitle>
-            <H3Bold>{selectedSection.topics_text}</H3Bold>
+            <H3Bold> {selectedSection?.topics_text ?? "Questions"}</H3Bold>
             <TimeQuestionDiv>
               <div className="icon-div">
                 <TimeIcon />
-                <BodySMedium>{selectedSection.time} min</BodySMedium>
+                <BodySMedium>{selectedSection?.time ?? 0} min</BodySMedium>
               </div>
               <div className="icon-div">
                 <QuestionIcon />
-                <BodySMedium>{filteredQuestions?.length} Questions</BodySMedium>
+                <BodySMedium>
+                  {filteredQuestions?.length ?? 0} Questions
+                </BodySMedium>
               </div>
             </TimeQuestionDiv>
           </OverviewDetailTitle>
@@ -163,14 +176,9 @@ const InterviewOverviewDetails = () => {
                         </div>
                         <OnverviewDetailTitle
                           onClick={() => {
-                            openDetailHandler(
-                              question.id,
-                              openItems.has(question.id)
-                            );
+                            openDetailHandler(index, openItems.has(index));
                           }}
-                          className={
-                            openItems.has(question.id) ? "open" : "close"
-                          }
+                          className={openItems.has(index) ? "open" : "close"}
                         >
                           <BodyMBold>{question.question_text}</BodyMBold>
                           <SelectArrowOpenIcon />
@@ -219,9 +227,7 @@ const InterviewOverviewDetails = () => {
                       </div>
                     </div>
                     <div
-                      className={`detail ${
-                        openItems.has(question.id) ? "" : "none"
-                      }`}
+                      className={`detail ${openItems.has(index) ? "" : "none"}`}
                     >
                       <ReactMarkdown components={components}>
                         {question.guidelines}
@@ -266,10 +272,7 @@ const InterviewOverviewDetails = () => {
                           <IconBtnL
                             disable={false}
                             onClick={() => {
-                              editDetailHandler(
-                                question.id,
-                                edit.has(question.id)
-                              );
+                              editDetailHandler(index, edit.has(question.id));
                             }}
                             className={BackgroundColor.WHITE}
                             icon={<CloseIcon />}
@@ -328,8 +331,31 @@ const InterviewOverviewDetails = () => {
                 );
               }
             })}
-            {/*  ====== OVERVIEW LIST END ====== */}
           </OverviewDetailBody>
+          {/*  ====== OVERVIEW LIST END ====== */}
+          <Stack
+            direction="row"
+            spacing={1.5}
+            style={{ borderTop: "16px solid white" }}
+          >
+            <TextIconBtnL
+              disable={false}
+              onClick={() => {
+                onClickModalOpen(MODAL_TYPE.SELECT_TEM, { templateID }); // Pass the template ID as a parameter
+              }}
+              className={BackgroundColor.WHITE}
+              icon={<PlusIcon />}
+              label="Add from Library"
+            />
+            <TextIconBtnL
+              disable={false}
+              onClick={() => {}}
+              className={BackgroundColor.ACCENT_PURPLE}
+              icon={<Star1Icon />}
+              label="Add Custom Question"
+            />
+          </Stack>
+          <GlobalModal></GlobalModal>
         </>
       ) : (
         <></>

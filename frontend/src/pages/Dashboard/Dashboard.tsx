@@ -2,10 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { Stack, Box } from "@mui/material";
 import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBtn";
 import { BackgroundColor } from "@/features/utils/utilEnum";
-import {
-  CalendarIcon,
-  RightBracketIcon,
-} from "@/components/common/svgIcons/Icons";
+import { PlusIcon, RightBracketIcon } from "@/components/common/svgIcons/Icons";
 import TemplateHomeCard from "@/components/common/cards/teamplateHomeCard/TemplateHomeCard";
 import { fetchInterviewRounds } from "@/features/dashboardDetail/dashboardAPI";
 import {
@@ -14,18 +11,19 @@ import {
   DescriptionText,
   PendingReviewsHeading,
   Container,
-  PendingReviewsBox,
   TextBox,
   TemplateCardsBox,
-  IconStyle,
+  YourNewContainer,
+  YourMainContentContainer,
+  ButtonContainer,
 } from "./StyledDashboard";
-import { BodyLMedium } from "@/components/common/typeScale/StyledTypeScale";
 import dashboardImage from "src/assets/svg/homepage.svg";
 import { StyledImage } from "./StyledDashboard";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store";
 import { IMember } from "@/components/common/cards/teamplateHomeCard/TemplateHomeCard";
 import { useNavigate } from "react-router-dom";
+import ElWrap from "@/components/layouts/elWrap/ElWrap";
 
 interface interviewRound {
   role_title: string;
@@ -101,77 +99,99 @@ const DashBoard = () => {
 
   return (
     <>
-      <Stack justifyContent="space-between" alignItems="center" style={{}}>
-        <Stack
-          direction="column"
-          justifyContent="center"
-          spacing={5}
-          style={{
-            width: "100%",
-          }}
-        >
-          <MainContainer>
-            <Container>
-              <TextBox>
-                <WelcomeHeading>
-                  Welcome back, {user.first_name} 👋
-                </WelcomeHeading>
-                <DescriptionText>
-                  Helping teams hire better and faster.
-                </DescriptionText>
-              </TextBox>
-              <PendingReviewsBox>
+      <YourNewContainer>
+        <YourMainContentContainer>
+          <Stack
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            spacing={1}
+            style={{
+              width: "100%",
+            }}
+          >
+            <MainContainer>
+              <Container>
+                <TextBox>
+                  <WelcomeHeading>
+                    Welcome back, {user.first_name} 👋
+                  </WelcomeHeading>
+                  <DescriptionText>
+                    Helping teams hire faster and smarter.
+                  </DescriptionText>
+                </TextBox>
+                {/* <PendingReviewsBox>
                 <IconStyle>
                   <CalendarIcon />
                 </IconStyle>
 
                 <BodyLMedium>Pending Reviews</BodyLMedium>
-              </PendingReviewsBox>
-            </Container>
-            <StyledImage src={dashboardImage} alt="dashboard_picture" />
-          </MainContainer>
-          <Stack direction="column" spacing={1.5}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
+              </PendingReviewsBox> */}
+
+                <ButtonContainer>
+                  <ElWrap w={260}>
+                    <TextIconBtnL
+                      label="Create a Interview"
+                      onClick={() => {}}
+                      icon={<PlusIcon />}
+                      disable={false}
+                      className={BackgroundColor.WHITE}
+                    />
+                  </ElWrap>
+                  <ElWrap w={260}>
+                    <TextIconBtnL
+                      label="Start a Meeting"
+                      onClick={() => {}}
+                      icon={<RightBracketIcon />}
+                      disable={false}
+                      className={BackgroundColor.ACCENT_PURPLE}
+                    />
+                  </ElWrap>
+                </ButtonContainer>
+              </Container>
+              <StyledImage src={dashboardImage} alt="dashboard_picture" />
+            </MainContainer>
+          </Stack>
+        </YourMainContentContainer>
+        <Stack direction="column" spacing={1.5}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            style={{}}
+          >
+            <PendingReviewsHeading>Recent Templates</PendingReviewsHeading>
+            <Box
               style={{
-                width: "100%",
+                width: "148px",
               }}
             >
-              <PendingReviewsHeading>Recent Templates</PendingReviewsHeading>
-              <Box
-                style={{
-                  width: "148px",
-                }}
-              >
-                <TextIconBtnL {...arg} />
-              </Box>
-            </Stack>
-
-            <TemplateCardsBox
-              onMouseDown={handleMouseDown}
-              onMouseUp={handleMouseUp}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseUp}
-              ref={scrollContainerRef}
-            >
-              {interviewRounds.map((interviewRound) => (
-                <TemplateHomeCard
-                  key={interviewRound.id}
-                  title={interviewRound.role_title}
-                  // Determine the disable state based on a condition, e.g., if interviewRound.disable exists and is true
-                  disable={interviewRound.disable || false}
-                  questions={new Array(8)} // or you can provide actual data if available
-                  sections={new Array(15)} // or you can provide actual data if available
-                  members={interviewRound.interviewers || []}
-                  onClick={() => handleCardClick(interviewRound.id)} // Use interviewRound.id as the template ID
-                />
-              ))}
-            </TemplateCardsBox>
+              <TextIconBtnL {...arg} />
+            </Box>
           </Stack>
+
+          <TemplateCardsBox
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseUp}
+            ref={scrollContainerRef}
+          >
+            {interviewRounds.map((interviewRound) => (
+              <TemplateHomeCard
+                key={interviewRound.id}
+                title={interviewRound.role_title}
+                // Determine the disable state based on a condition, e.g., if interviewRound.disable exists and is true
+                disable={interviewRound.disable || false}
+                questions={new Array(8)} // or you can provide actual data if available
+                sections={new Array(15)} // or you can provide actual data if available
+                members={interviewRound.interviewers || []}
+                onClick={() => handleCardClick(interviewRound.id)} // Use interviewRound.id as the template ID
+              />
+            ))}
+          </TemplateCardsBox>
         </Stack>
-      </Stack>
+      </YourNewContainer>
     </>
   );
 };

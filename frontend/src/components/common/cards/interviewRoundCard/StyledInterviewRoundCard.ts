@@ -16,6 +16,7 @@ export const StyledCard = styled(Card)`
     background: #eaeaf4;
     transition: background-color 0.3s ease-in-out;
   }
+  min-width: 286px;
 `;
 
 export const StyledCardContent = styled(CardContent)`
@@ -29,16 +30,15 @@ export const StyledCardContent = styled(CardContent)`
 `;
 
 export const StyledCardMedia = styled(CardMedia)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: absolute;
+  right: 16px;
+
   width: 82px;
   height: 94px;
   background-image: url("https://i.postimg.cc/qR0phQNJ/ed446e8d10de855690a5e6c000177fe2.png"),
     linear-gradient(0deg, black 0%, white 100%);
   border-radius: 8px;
-  margin-top: 20px;
-  margin-left: 14px;
+  min-width: 60px;
 `;
 
 export const StyledBox = styled(Box)`
@@ -49,12 +49,6 @@ export const StyledBox = styled(Box)`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-export const TeammateImage = styled("img")`
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
 `;
 
 export const CenteredTypography = styled(Typography)`

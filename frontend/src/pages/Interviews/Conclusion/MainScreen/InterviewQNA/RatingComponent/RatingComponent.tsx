@@ -237,36 +237,47 @@ export function RatingComponentL({
     <div
       style={{
         display: "flex",
-        marginLeft: "0.5%",
+        marginLeft: "8px",
+        gap: "17px",
         marginRight: "0.5%",
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
       }}
     >
-      <StyledIconBtnM>
-        <span onClick={() => handleRating(1)}>
-          <WrongButtonL width={width} height={height} active={activeTab} />
-        </span>{" "}
-      </StyledIconBtnM>
-      <StyledIconBtnM>
-        <span onClick={() => handleRating(2)}>
-          <DislikeButtonL width={width} height={height} active={activeTab} />
-        </span>{" "}
-      </StyledIconBtnM>{" "}
-      <StyledIconBtnM>
-        <span onClick={() => handleRating(3)}>
-          <NeutralButtonL width={width} height={height} active={activeTab} />
-        </span>{" "}
-      </StyledIconBtnM>{" "}
-      <StyledIconBtnM>
-        <span onClick={() => handleRating(4)}>
-          <LikeButtonL width={width} height={height} active={activeTab} />
-        </span>{" "}
-      </StyledIconBtnM>{" "}
-      <StyledIconBtnM>
-        <span onClick={() => handleRating(5)}>
-          <TopStarButtonL width={width} height={height} active={activeTab} />
-        </span>
-      </StyledIconBtnM>
+      <ElWrap w={35}>
+        <StyledIconBtnM>
+          <span onClick={() => handleRating(1)}>
+            <WrongButtonL width={width} height={height} active={activeTab} />
+          </span>{" "}
+        </StyledIconBtnM>
+      </ElWrap>
+      <ElWrap w={35}>
+        <StyledIconBtnM>
+          <span onClick={() => handleRating(2)}>
+            <DislikeButtonL width={width} height={height} active={activeTab} />
+          </span>{" "}
+        </StyledIconBtnM>{" "}
+      </ElWrap>
+      <ElWrap w={35}>
+        <StyledIconBtnM>
+          <span onClick={() => handleRating(3)}>
+            <NeutralButtonL width={width} height={height} active={activeTab} />
+          </span>{" "}
+        </StyledIconBtnM>{" "}
+      </ElWrap>
+      <ElWrap w={35}>
+        <StyledIconBtnM>
+          <span onClick={() => handleRating(4)}>
+            <LikeButtonL width={width} height={height} active={activeTab} />
+          </span>{" "}
+        </StyledIconBtnM>{" "}
+      </ElWrap>
+      <ElWrap w={40}>
+        <StyledIconBtnM>
+          <span onClick={() => handleRating(5)}>
+            <TopStarButtonL width={width} height={height} active={activeTab} />
+          </span>
+        </StyledIconBtnM>
+      </ElWrap>
     </div>
   );
 }
@@ -297,7 +308,11 @@ export const PredefinedRatingsAndCompetency: React.FC<any> = ({
           <span style={getCompetencyStyle(rating)}>{competency}</span>{" "}
         </div>
       </Grid>
-      <Grid xs={12} md={3}>
+      <Grid
+        xs={12}
+        md={6}
+        style={{ display: "flex", justifyContent: "flex-end" }}
+      >
         <div className="container">
           {" "}
           <div className="icon">

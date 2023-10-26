@@ -2,11 +2,18 @@ import { RootState } from "@/app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Loading } from "../utils/utilEnum";
 import { fetchMembers } from "./rolesAPI";
-import { IMember, RolesCreateSlice } from "./rolesInterface";
+import { IMember, IMockMembers, RolesCreateSlice } from "./rolesInterface";
+import { useGetCompanyMembersQuery } from "../settingsDetail/userSettingsAPI";
+import {
+  AccessToken,
+  CompanyID,
+  DepartmentID,
+} from "../settingsDetail/userSettingTypes";
+import { useEffect, useState } from "react";
 
 export const initialState: RolesCreateSlice = {
   title: "",
-  members: [
+  all_members: [
     {
       member_idx: 0,
       member_name: "",
@@ -18,15 +25,48 @@ export const initialState: RolesCreateSlice = {
   status: Loading.UNSEND,
 };
 
+export const useFetchSelectMembers = ({
+  access,
+  company_id,
+  department_id,
+  sortCriteria,
+}: {
+  access: AccessToken;
+  company_id: CompanyID;
+  department_id: DepartmentID;
+  sortCriteria: string;
+}) => {
+  const [members, setMembers] = useState<IMockMembers[]>([]);
+
+  const { data, isSuccess } = useGetCompanyMembersQuery({
+    access,
+    company_id,
+    department_id,
+    sort_by: sortCriteria,
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      const all_members = data.map((memberItem) => ({
+        ...memberItem,
+        selected: false,
+      }));
+      setMembers(all_members);
+    }
+  }, [isSuccess, data]);
+
+  return { members };
+};
+
 export const getMemberAsync = createAsyncThunk(
   "roles/fetchMember",
   async () => {
     const response = await fetchMembers();
-    const members = response.data.map((memberItem) => ({
+    const all_members = response.data.map((memberItem) => ({
       ...memberItem,
       selected: false,
     }));
-    return members;
+    return all_members;
   }
 );
 
@@ -36,19 +76,19 @@ export const rolesSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder.addCase(getMemberAsync.fulfilled, (state, action) => {
-      state.members = action.payload;
+      state.all_members = action.payload;
     });
   },
   reducers: {
     //[CreateDepartment] : GetMembers from backend and showing when you open modal.
     setMembers: (state, actions) => {
-      const { members } = actions.payload;
-      state.members = members;
+      const { all_members } = actions.payload;
+      state.all_members = all_members;
     },
     //[CreateDepartment] : When you select member the member selected.
     selectedMember: (state, actions) => {
       const { memberIdx } = actions.payload;
-      const selectedMember = state.members.find(
+      const selectedMember = state.all_members.find(
         (member: IMember) => member.member_idx === memberIdx
       );
       if (selectedMember) {
@@ -65,14 +105,14 @@ export const rolesSlice = createSlice({
     //[Invite] : Push invited new member after invite member (Depending on the situation there is chance we don't need this logic)
     addInvitedMember: (state, action) => {
       const { invitedMember } = action.payload;
-      state.members.push(invitedMember);
+      state.all_members.push(invitedMember);
     },
     //Will change Thunk
     postData: (state) => {
-      const selectedMemberArr = state.members.filter(
+      const selectedMemberArr = state.all_members.filter(
         (member: IMember) => member.selected
       );
-      state.members = selectedMemberArr;
+      state.all_members = selectedMemberArr;
     },
     roleSliceReset(state) {
       Object.assign(state, initialState);

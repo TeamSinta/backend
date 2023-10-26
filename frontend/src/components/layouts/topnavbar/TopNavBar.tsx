@@ -45,7 +45,7 @@ const TopNavBar = ({
           <SearchInput disable={false} placeholder={"Search"} error={false} />
         </Box>
 
-        <ElWrap w={280}>
+        <ElWrap w={380}>
           <DropDownButton
             label="Create a Meeting"
             onClick={() => {}}
@@ -67,6 +67,7 @@ const TopNavBar = ({
             ]}
           />
         </ElWrap>
+
         <Link to="/settings">
           <LogoImage src={user.profile_picture as string} alt="user photo" />
         </Link>

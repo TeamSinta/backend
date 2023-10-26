@@ -9,12 +9,13 @@ export interface IMockMembers {
 }
 
 export interface IMember extends IMockMembers {
+  member_idx: any;
   selected: boolean;
 }
 
 export interface RolesCreateSlice {
   title: string;
-  members: IMember[];
+  all_members: IMember[];
   status:
     | Loading.UNSEND
     | Loading.FULFILLED

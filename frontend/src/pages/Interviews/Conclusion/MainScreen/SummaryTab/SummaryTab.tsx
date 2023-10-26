@@ -22,6 +22,7 @@ import {
   StyledButtonContent,
   ButtonContainer,
   ButtonStyling,
+  StyledImage,
 } from "./StyledSummaryTab";
 
 const AIGeneratedImage = () => (
@@ -103,10 +104,9 @@ export const SubmitDecision = ({ active, setActive }) => (
             </DecisionButton>
           </Grid>
         </ButtonContainer>
-        <img
-          alt="Summary"
-          style={{ width: "100%", margin: "0px" }}
+        <StyledImage
           src="/src/assets/images/ImageConclusion.JPG"
+          alt="dashboard_picture"
         />
       </StyledRoundBox>
     </Grid>

@@ -1,9 +1,9 @@
-import { AppDispatch } from "@/app/store";
+import { AppDispatch, RootState } from "@/app/store";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import { openModal } from "@/features/modal/modalSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IconBtnM } from "../../buttons/iconBtn/IconBtn";
 import { TextBtnL } from "../../buttons/textBtn/TextBtn";
 import Competencies from "../../elements/competencies/Competencies";
@@ -21,6 +21,8 @@ import {
   SelectedButtonWrap,
   SelectedValueWrap,
 } from "./StyledModalContents";
+import axios from "axios";
+import { CompanyID } from "@/features/settingsDetail/userSettingTypes";
 
 const iconBtnMProps = {
   icon: <PlusIcon />,
@@ -34,18 +36,51 @@ for (var i = 1; i <= 30; i++) {
 }
 
 const SelectValue = () => {
+  const user = useSelector((state: RootState) => state.user.user);
+  const workspace = useSelector((state: RootState) => state.workspace);
   const [selectedComp, setSelectedComp] = useState<Array<string>>([]);
   const [newComp, setNewComp] = useState<string>("");
   const [showNewCompInput, setShowNewCompInput] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
+  const templateID = useSelector((state: RootState) => state.modal.templateID);
 
-  const onClickModalOpen = (modalType: MODAL_TYPE) => {
-    // navigate("/interviews/template");
+  const companyId: CompanyID = (!workspace.id
+    ? user.companies[0].id
+    : workspace.id)! as unknown as CompanyID;
+  const onClickModalOpen = (modalType: MODAL_TYPE, templateID: any) => {
     dispatch(
       openModal({
         modalType: modalType,
+        templateID: templateID,
       })
     );
+  };
+
+  const handleNext = () => {
+    // Define the data to send to the server
+    selectedComp.forEach((value, index) => {
+      const requestData = {
+        topics_text: value,
+        company_id: companyId,
+      };
+
+      axios
+        .post(
+          `http://localhost:8000/api/templates/${templateID.templateID}/topics/add/`,
+          requestData
+        )
+        .then((response) => {
+          // Handle success, e.g., show a success message or navigate to the next step
+          if (index === selectedComp.length - 1) {
+            const templateID = response.data.template_id;
+            onClickModalOpen(MODAL_TYPE.SELECT_TEM, { templateID }); // Pass the template ID as a parameter
+          }
+        })
+        .catch((error) => {
+          // Handle the error, e.g., show an error message
+          console.error("Error:", error);
+        });
+    });
   };
 
   const onSelectComp = (value: string) => {
@@ -71,7 +106,7 @@ const SelectValue = () => {
     const exit = selectedComp.find((comp) => newComp === comp);
     if (!exit) {
       competencies.push(newComp);
-      onSelectComp(`test_` + newComp);
+      onSelectComp(newComp);
     }
     setNewComp("");
   };
@@ -88,7 +123,7 @@ const SelectValue = () => {
           </SelectContent>
           <ModalContentWrap>
             <InputLayout>
-              <BodySMedium>Selected Values:</BodySMedium>
+              <BodySMedium>Selected Sections:</BodySMedium>
               <SelectedValueWrap>
                 {/* <Competencies label="test" selected={true} /> */}
                 {selectedComp.map((value: string, index: number) => (
@@ -114,12 +149,12 @@ const SelectValue = () => {
             <NewComInputWrap className={showNewCompInput ? "show" : ""}>
               <TextInput
                 disable={false}
-                placeholder={"New Competence"}
+                placeholder={"New Section"}
                 error={false}
                 onChange={(e) => {
                   setNewComp(e.target.value);
                 }}
-                name={"competence"}
+                name={"Section"}
                 value={newComp}
               />
               <ElWrap w={119} h={40}>
@@ -132,15 +167,15 @@ const SelectValue = () => {
               </ElWrap>
             </NewComInputWrap>
             <InputLayout>
-              <BodySMedium>Interests Library:</BodySMedium>
+              <BodySMedium>Topics:</BodySMedium>
               <CompetencesWrap>
                 {competencies.map((index: number) => (
                   <Competencies
-                    label={`test_` + index}
+                    label={index}
                     key={index}
-                    selected={checkActive(`test_` + index)}
+                    selected={checkActive(index)}
                     onClick={() => {
-                      onSelectComp(`test_` + index);
+                      onSelectComp(index);
                     }}
                   ></Competencies>
                 ))}
@@ -158,9 +193,7 @@ const SelectValue = () => {
           <TextBtnL
             label="Next"
             disable={false}
-            onClick={() => {
-              onClickModalOpen(MODAL_TYPE.SELECT_TEM);
-            }}
+            onClick={handleNext}
             className={BackgroundColor.ACCENT_PURPLE}
           />
         </SelectedButtonWrap>

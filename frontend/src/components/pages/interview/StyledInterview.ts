@@ -1,4 +1,5 @@
 import { BodyLMedium } from "@/components/common/typeScale/StyledTypeScale";
+import { Box } from "@mui/material";
 import styled from "styled-components";
 
 export const InterviewStageContainer = styled.div`
@@ -68,4 +69,15 @@ export const InterviewOverviewLayout = styled.div`
   ${(props) => props.theme.devices.lg} {
     flex-wrap: wrap;
   }
+`;
+
+export const InterviewStageBox = styled(Box)`
+  display: flex; // Set to flex to enable horizontal scrolling
+  gap: 20px;
+  align-items: center;
+
+  width: 100%;
+  overflow-x: auto; // Enable horizontal scrolling
+  cursor: grab; // Set cursor style for dragging
+  padding: 24px 0px 24px 20px;
 `;

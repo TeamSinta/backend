@@ -1,7 +1,5 @@
+python manage.py makemigrations company
 python manage.py makemigrations user
-python manage.py migrate user
-python manage.py makemigrations interview_templates
-python manage.py migrate interview_templates
 python manage.py makemigrations
 python manage.py migrate
 echo "Migrations completed"

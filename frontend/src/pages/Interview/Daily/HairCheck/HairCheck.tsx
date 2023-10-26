@@ -262,7 +262,6 @@ export default function HairCheck({ joinCall, cancelCall }: HairCheckProps) {
                   key={template.id}
                   title={template.title}
                   numberOfQuestions={template.numberOfQuestions}
-                  roundId={template.id}
                   // Handle click event if needed
                 />
               )}

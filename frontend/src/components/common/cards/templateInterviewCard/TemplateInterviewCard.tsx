@@ -37,9 +37,7 @@ const TemplateInterviewCard = (props: ITemplateInterviewCardProps) => {
             <IconBtnM
               icon={<RightBracketIcon />}
               disable={false}
-              onClick={() => {
-                console.log("here");
-              }}
+              onClick={() => {}}
               className={BackgroundColor.WHITE}
             />
           </ElWrap>

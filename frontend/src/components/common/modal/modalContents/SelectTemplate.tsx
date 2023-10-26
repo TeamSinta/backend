@@ -1,4 +1,4 @@
-import { AppDispatch } from "@/app/store";
+import { AppDispatch, RootState } from "@/app/store";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import { IQuestion } from "@/features/interviews/interviewsInterface";
 import {
@@ -8,7 +8,7 @@ import {
 } from "@/features/interviews/interviewsSlice";
 import { closeModal } from "@/features/modal/modalSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import { IconBtnM } from "../../buttons/iconBtn/IconBtn";
@@ -34,13 +34,65 @@ import {
 } from "./StyledModalContents";
 import TemplateList from "./TemplateList";
 import QuestionList from "./QuestionList";
+import axios from "axios";
 
 const SelectTemplate = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { selectedQuestion, selectedQuestionBank } =
     useSelector(selectInterview);
   const navigate = useNavigate();
+  const templateID = useSelector((state: RootState) => state.modal.templateID);
+  const [templateTopics, setTemplateTopics] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState(null);
 
+  const addQuestionsToTemplate = async () => {
+    try {
+      // Mapping selected questions to the required payload format
+      const payload = selectedQuestion.map((question: IQuestion) => ({
+        template_topic_id: selectedTopic.id,
+        question_id: question.id, // Assuming the question object has an 'id' property
+      }));
+
+      const response = await axios.post(
+        `http://localhost:8000/api/templates/${templateID.templateID}/questions/add/`,
+        payload
+      );
+
+      if (response.status === 201 || response.status === 200) {
+        dispatch(resetQuestionBank());
+        dispatch(closeModal());
+        navigate(`/templates/${templateID.templateID}`);
+        navigate(0);
+      } else {
+        // Handle unsuccessful response here
+        console.error("Failed to add questions to the template.");
+      }
+    } catch (error) {
+      // Handle the error here
+      console.error("Error making API request:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch the template topics from the API when the component mounts.
+    const fetchTemplateTopics = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/templates/${templateID.templateID}/topics/`
+        );
+        setTemplateTopics(response.data);
+
+        // By default, set the first topic as the selected one.
+        if (response.data.length > 0) {
+          setSelectedTopic(response.data[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching template topics:", error);
+      }
+    };
+
+    fetchTemplateTopics();
+  }, [templateID]);
   useEffect(() => {}, [selectedQuestion, selectedQuestionBank]);
 
   return (
@@ -68,51 +120,19 @@ const SelectTemplate = () => {
             <QuestionListWrap>
               <QuestionsFilterWrap>
                 <div className="lists">
-                  <Competencies
-                    label={"All"}
-                    selected={false}
-                    onClick={() => {}}
-                  ></Competencies>
-                  <Competencies
-                    label={"All"}
-                    selected={false}
-                    onClick={() => {}}
-                  ></Competencies>
-                  <Competencies
-                    label={"All"}
-                    selected={false}
-                    onClick={() => {}}
-                  ></Competencies>
-                  <Competencies
-                    label={"All"}
-                    selected={false}
-                    onClick={() => {}}
-                  ></Competencies>
-                  <Competencies
-                    label={"All"}
-                    selected={false}
-                    onClick={() => {}}
-                  ></Competencies>
-                  <Competencies
-                    label={"All"}
-                    selected={false}
-                    onClick={() => {}}
-                  ></Competencies>
-                  <Competencies
-                    label={"All"}
-                    selected={false}
-                    onClick={() => {}}
-                  ></Competencies>
-                  <Competencies
-                    label={"All"}
-                    selected={false}
-                    onClick={() => {}}
-                  ></Competencies>
+                  {templateTopics.map((topic) => (
+                    <Competencies
+                      label={topic.topics_text} // assuming each topic has a name property
+                      selected={selectedTopic?.id === topic.id}
+                      onClick={() => setSelectedTopic(topic)}
+                      key={topic.id}
+                    />
+                  ))}
                 </div>
               </QuestionsFilterWrap>
               <SelectedQuestionListWrap>
                 {selectedQuestion.map((question: IQuestion, index: number) => (
-                  <div className="view">
+                  <div className="view" key={question.id}>
                     <SelectedQuestionList>
                       <QuestionNumber>{index + 1}</QuestionNumber>
                       <div className="title">
@@ -153,11 +173,7 @@ const SelectTemplate = () => {
                 label="Add to Round"
                 disable={false}
                 className={BackgroundColor.ACCENT_PURPLE}
-                onClick={() => {
-                  dispatch(resetQuestionBank());
-                  dispatch(closeModal());
-                  navigate("/templates");
-                }}
+                onClick={addQuestionsToTemplate}
                 icon={<PlusIcon />}
               />
             </div>

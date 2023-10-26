@@ -6,8 +6,19 @@ import {
 } from "@/components/common/typeScale/StyledTypeScale";
 import { Box } from "@mui/material";
 
+export const YourNewContainer = styled.div`
+  display: flex;
+  height: 100vh;
+  gap: 32px;
+  flex-direction: column;
+`;
+
+export const YourMainContentContainer = styled.div`
+  flex: 0.8; // Makes it grow to take all available space, pushing TemplateCardsBox to the bottom.
+  display: flex;
+`;
 export const WelcomeHeading = styled(H1)`
-  font-size: 48px;
+  font-size: 44px;
 
   @media (max-width: 1600px) {
     /* Adjust styles for screens with a max width of 768px */
@@ -34,13 +45,16 @@ export const PendingReviewsHeading = styled(H2Bold)`
 
 export const Container = styled(Box)`
   display: flex;
+  align-items: center;
+  text-align: center;
   flex-direction: column;
-  gap: 38px;
-
+  justify-content: center;
+  gap: 28px;
   @media (max-width: 1600px) {
     /* Adjust styles for screens with a max width of 768px */
     gap: 18px;
     align-items: center;
+    text-align: center;
   }
 `;
 
@@ -72,14 +86,13 @@ export const TemplateCardsBox = styled(Box)`
   margin-top: 22px;
   width: 100%;
   overflow-x: auto; // Enable horizontal scrolling
-  flex-wrap: nowrap;
   cursor: grab; // Set cursor style for dragging
   padding: 24px 0px 24px 24px;
 `;
 
 export const TextBox = styled(Box)`
   display: flex;
-  gap: 2px;
+  gap: 8px;
   flex-direction: column;
 `;
 
@@ -94,12 +107,12 @@ export const IconStyle = styled.div`
 export const MainContainer = styled(Box)`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  gap: 18px;
+  justify-content: space-around;
+  gap: 1px;
 
   @media (min-width: 1900px) {
     /* Adjust styles for screens with a max width of 768px */
-    justify-content: space-between;
+    justify-content: space-around;
   }
 
   @media (max-width: 1600px) {
@@ -112,20 +125,31 @@ export const MainContainer = styled(Box)`
 `;
 
 export const StyledImage = styled.img`
-  margin-top: -20px;
-  width: 620px;
   min-width: 100px;
   min-height: 440px;
+  flex: 1;
 
   @media (max-width: 1000px) {
     /* Adjust styles for screens with a max width of 768px */
     width: 90%;
+    flex: 1;
   }
 
   @media (min-width: 1600px) {
     /* Adjust styles for screens with a max width of 768px */
-    width: 1000px;
-    min-height: 540px;
     flex: 1;
+  }
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 1000px) {
+    /* Adjust styles for screens with a max width of 768px */
+    flex-direction: column;
+    gap: 8px;
   }
 `;
