@@ -2,10 +2,7 @@ import { useState } from "react";
 import { Box } from "@mui/material";
 import { H1 } from "@/components/common/typeScale/StyledTypeScale";
 import TextIconFilter from "@/components/common/filters/textIconFilter/TextIconFilter";
-import {
-  CandidateIcon,
-  RoleIcon,
-} from "@/components/common/svgIcons/Icons";
+import { CandidateIcon, RoleIcon } from "@/components/common/svgIcons/Icons";
 import { SettingsContainer, PageContainer } from "./StyledSettings";
 import MemberTab from "@/components/pages/settings/memberTab/MemberTab";
 import { TABS } from "@/features/utils/utilEnum";

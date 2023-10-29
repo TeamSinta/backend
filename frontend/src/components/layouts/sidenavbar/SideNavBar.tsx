@@ -8,7 +8,7 @@ import {
   InfoIcon,
 } from "@/components/common/svgIcons/Icons";
 import { BodyMMedium } from "@/components/common/typeScale/StyledTypeScale";
-import { useEffect, type ReactElement } from "react";
+import { type ReactElement } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import SideNavBarDropdown from "./SideNavBarDropdown";
@@ -23,10 +23,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
 import { resetUserState } from "@/features/authentication/authenticationSlice";
-import {
-  setCurrentWorkspace,
-  resetCurrentWorkspace,
-} from "@/features/workspace/userWorkspaceSlice";
+import { resetCurrentWorkspace } from "@/features/workspace/userWorkspaceSlice";
 
 export interface INavButtonLink {
   to: string;
@@ -126,7 +123,11 @@ const SideNavBar = (): ReactElement => {
             direction="row"
             key={index}
             className={
-              location.pathname.startsWith(navButtonLink.to) ? "active" : ""
+              (location.pathname === "/" &&
+                navButtonLink.to === "/dashboard") ||
+              location.pathname.startsWith(navButtonLink.to)
+                ? "active"
+                : ""
             }
           >
             <Link to={navButtonLink.to} className="link">

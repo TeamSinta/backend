@@ -78,17 +78,22 @@ const InterviewRoundCard = (props: InterviewRoundCardProps) => {
         <Box sx={{ display: "flex", gap: "4px" }}>
           <Photos>
             <>
-              {members?.slice(0, members.length > 4 ? 3 : 4).map((member, index) => (
-                <ElWrap w={32} h={32} key={index}>
-                  <PhotoIcon imgUrl={member.profile_picture}>
-                    <BodySBold>
-                      {!member.profile_picture
-                        ? InitialsGenerator(member.first_name, member.last_name)
-                        : ""}
-                    </BodySBold>
-                  </PhotoIcon>
-                </ElWrap>
-              ))}
+              {members
+                ?.slice(0, members.length > 4 ? 3 : 4)
+                .map((member, index) => (
+                  <ElWrap w={32} h={32} key={index}>
+                    <PhotoIcon imgUrl={member.profile_picture}>
+                      <BodySBold>
+                        {!member.profile_picture
+                          ? InitialsGenerator(
+                              member.first_name,
+                              member.last_name
+                            )
+                          : ""}
+                      </BodySBold>
+                    </PhotoIcon>
+                  </ElWrap>
+                ))}
             </>
             <>
               {members?.length && members.length > 4 ? (

@@ -1,5 +1,3 @@
-import Calendar from "@/pages/Calendar";
-import Candidates from "@/pages/Candidates";
 import { Conclusion } from "@/pages/Interviews/Conclusion";
 import DashBoard from "@/pages/Dashboard/Dashboard";
 import InterviewStage from "@/pages/InterviewStage";
@@ -28,8 +26,6 @@ const Routers = () => {
         element={<InterviewStage />}
       /> */}
 
-        <Route path="/candidates" element={<Candidates />} />
-        <Route path="/calendar" element={<Calendar />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/interviews" element={<Conclusions />} />
         <Route path="/interviews/Conclusion" element={<Conclusion />} />

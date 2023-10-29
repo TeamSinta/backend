@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BodyMMedium } from "../../typeScale/StyledTypeScale";
 import { StyledButton } from "../button/StyledBtn";
 import { IBtnProps } from "../button/StyledBtn";
@@ -36,8 +36,25 @@ export const DropDownButton = (props: IDropDownButtonProps): JSX.Element => {
     }
   };
 
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownVisible(false);
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div>
+    <div ref={dropdownRef}>
       <DropdownArrowIconDiv onClick={onSelectOpen} open={open}>
         <StyledButton
           onClick={handleButtonClick}

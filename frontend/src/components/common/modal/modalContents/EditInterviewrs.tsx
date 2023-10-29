@@ -6,7 +6,7 @@ import { TextBtnL } from "@/components/common/buttons/textBtn/TextBtn";
 import Invite from "@/components/common/form/invite/Invite";
 import { BodySMedium } from "@/components/common/typeScale/StyledTypeScale";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
-import { closeModal} from "@/features/modal/modalSlice";
+import { closeModal } from "@/features/modal/modalSlice";
 // import { selectedMember } from "@/features/roles/rolesSlice";
 import { BackgroundColor, PhotoType } from "@/features/utils/utilEnum";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,14 +21,12 @@ import {
 import { useCookies } from "react-cookie";
 import { useFetchCompanyMembers } from "@/components/pages/settings/memberTab/useFetchAndSortMembers";
 
-
-
 const EditInterviewers = () => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
   const workspace = useSelector((state: RootState) => state.workspace);
-  const [sortCriteria,] = useState("");
-  const [departmentId,] = useState("");
+  const [sortCriteria] = useState("");
+  const [departmentId] = useState("");
 
   const [cookies, ,] = useCookies(["access_token"]);
   const accessToken = cookies.access_token as AccessToken;
@@ -46,7 +44,6 @@ const EditInterviewers = () => {
   // const onMemberSelected = (memberIdx: number) => {
   //   dispatch(selectedMember({ memberIdx: memberIdx }));
   // };
-
 
   const handleNext = () => {
     // Define the data to send to the server
@@ -75,9 +72,6 @@ const EditInterviewers = () => {
     //     console.error("Error:", error);
     //   });
   };
-
-
-
 
   return (
     <ModalContentWrap>

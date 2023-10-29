@@ -89,18 +89,22 @@ const TemplateHomeCard = (props: ITemplateHomeCard) => {
           </CardContent>
           <Photos>
             <>
-
-            {members.slice(0, members.length > 4 ? 3 : 4).map((member: IMember, index) => (
-  <ElWrap w={32} h={32} key={index}>
-    <PhotoIcon imgUrl={member.profile_picture}>
-      <BodySBold>
-        {!member.profile_picture
-          ? InitialsGenerator(member.first_name, member.last_name)
-          : ""}
-      </BodySBold>
-    </PhotoIcon>
-  </ElWrap>
-              ))}
+              {members
+                .slice(0, members.length > 4 ? 3 : 4)
+                .map((member: IMember, index) => (
+                  <ElWrap w={32} h={32} key={index}>
+                    <PhotoIcon imgUrl={member.profile_picture}>
+                      <BodySBold>
+                        {!member.profile_picture
+                          ? InitialsGenerator(
+                              member.first_name,
+                              member.last_name
+                            )
+                          : ""}
+                      </BodySBold>
+                    </PhotoIcon>
+                  </ElWrap>
+                ))}
             </>
             <>
               {members.length > 4 ? (

@@ -34,14 +34,12 @@ import {
   QuestionValue,
 } from "./StyledModalContents";
 
-
 const QuestionList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { selectedQuestion, questions, selectedQuestionBank } =
     useSelector(selectInterview);
   const [openItems, setOpenItems] = useState(new Set());
   const [html, setHtml] = useState<string>("");
-
 
   const openDetailHandler = (id: number, isOpen: boolean) => {
     const temp = new Set();

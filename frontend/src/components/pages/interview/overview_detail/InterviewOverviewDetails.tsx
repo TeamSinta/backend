@@ -139,7 +139,6 @@ const InterviewOverviewDetails = () => {
     inputValue["detail"] = value;
   };
 
-
   useEffect(() => {}, [dispatch, openItems]);
   return (
     <OverviewDetails>

@@ -66,9 +66,24 @@ import { ReactComponent as Circle } from "@/assets/svg/circle.svg";
 import { ReactComponent as CamHide } from "@/assets/svg/camHide.svg";
 import { ReactComponent as MicMute } from "@/assets/svg/micMute.svg";
 import { ReactComponent as MoreVert } from "@/assets/svg/more_vert_icon.svg";
+import { ReactComponent as VideoMicIcon } from "@/assets/svg/VideoMicIcon.svg";
+import { ReactComponent as VideoCamIcon } from "@/assets/svg/VideoCamIcon.svg";
+import { ReactComponent as VideoSoundIcon } from "@/assets/svg/VideoSoundIcon.svg";
 
 export const SintaIcon = (): JSX.Element => {
   return <Logo />;
+};
+
+export const VideoMic = (): JSX.Element => {
+  return <VideoMicIcon />;
+};
+
+export const VideoSound = (): JSX.Element => {
+  return <VideoSoundIcon />;
+};
+
+export const VideoCam = (): JSX.Element => {
+  return <VideoCamIcon />;
 };
 
 export const MoreVertIcon = (): JSX.Element => {

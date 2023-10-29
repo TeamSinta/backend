@@ -129,7 +129,7 @@ const DashBoard = () => {
               </PendingReviewsBox> */}
 
                 <ButtonContainer>
-                  <ElWrap w={260}>
+                  <ElWrap w={240}>
                     <TextIconBtnL
                       label="Create a Interview"
                       onClick={() => {}}
@@ -138,7 +138,7 @@ const DashBoard = () => {
                       className={BackgroundColor.WHITE}
                     />
                   </ElWrap>
-                  <ElWrap w={260}>
+                  <ElWrap w={240}>
                     <TextIconBtnL
                       label="Start a Meeting"
                       onClick={() => {}}
@@ -153,12 +153,11 @@ const DashBoard = () => {
             </MainContainer>
           </Stack>
         </YourMainContentContainer>
-        <Stack direction="column" spacing={1.5}>
+        <Stack direction="column" spacing={2}>
           <Stack
             direction="row"
             justifyContent="space-between"
             alignItems="center"
-            style={{}}
           >
             <PendingReviewsHeading>Recent Templates</PendingReviewsHeading>
             <Box
