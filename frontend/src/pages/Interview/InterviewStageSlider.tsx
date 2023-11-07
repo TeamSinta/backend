@@ -32,6 +32,7 @@ export default function InterviewStageSlider({
 
   useEffect(() => {
     itemRefs.current = itemRefs.current.slice(0, data.length);
+    console.log(data);
   }, [data]);
 
   const scrollToItem = (index: number, alignToStart = false) => {
@@ -78,30 +79,31 @@ export default function InterviewStageSlider({
         whiteSpace: "nowrap",
       }}
     >
-      {data.map((stage, index) => (
-        <div
-          key={index}
-          ref={(ref) => (itemRefs.current[index] = ref as HTMLDivElement)}
-          onClick={() => handleClick(index)}
-          style={{
-            opacity: activeIndex === index ? "1" : "0.5",
-            cursor: "pointer",
-            padding: "0px",
-            marginRight: "10px",
-            paddingLeft: "0px",
-          }}
-        >
-          <span style={{ width: "90%", padding: "15px" }}>{stage.stage}</span>
-          <hr
+      {data &&
+        data.map((stage, index) => (
+          <div
+            key={index}
+            ref={(ref) => (itemRefs.current[index] = ref as HTMLDivElement)}
+            onClick={() => handleClick(index)}
             style={{
-              borderRadius: "20px",
-              border: "2px solid #6462F1",
-              marginBottom: "15px",
+              opacity: activeIndex === index ? "1" : "0.5",
+              cursor: "pointer",
               padding: "0px",
+              marginRight: "10px",
+              paddingLeft: "0px",
             }}
-          />
-        </div>
-      ))}
+          >
+            <span style={{ width: "90%", padding: "15px" }}>{stage.stage}</span>
+            <hr
+              style={{
+                borderRadius: "20px",
+                border: "2px solid #6462F1",
+                marginBottom: "15px",
+                padding: "0px",
+              }}
+            />
+          </div>
+        ))}
     </div>
   );
 }

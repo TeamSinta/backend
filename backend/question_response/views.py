@@ -150,6 +150,18 @@ class InterviewerFeedbackListCreateView(generics.ListCreateAPIView):
     queryset = InterviewerFeedback.objects.all()
     serializer_class = InterviewerFeedbackSerializer
 
+    def post(self, request, *args, **kwargs):
+        # Initialize a serializer with the request data.
+        serializer = self.get_serializer(data=request.data)
+        
+        # Check if the serializer is valid.
+        if serializer.is_valid():
+            # Save the serializer will create a new instance with the provided data.
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        # If the data is not valid, return a bad request response.
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class InterviewerFeedbackDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = InterviewerFeedback.objects.all()

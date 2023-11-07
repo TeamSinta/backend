@@ -14,17 +14,9 @@ type Comment = {
 };
 
 function Notes(props: any) {
-  const { elapsedTime, reactClicked } = props;
+  const { elapsedTime, reactClicked, notesEntered } = props;
   const [comments, setComments] = useState<Comment[]>([]);
   const commentInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    console.log("CLICKED ", reactClicked?.clicked);
-    if (reactClicked?.clicked >= 1) {
-      handleReacts(reactClicked);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reactClicked]);
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +30,7 @@ function Notes(props: any) {
         setComments((prevComments) => [...prevComments, newComment]);
         commentInput.value = "";
         //Put this in API. timestamp ,timeDelta, newComment.
+        notesEntered(comment);
       }
     }
   };

@@ -3,19 +3,45 @@ export const StyledBottomBar = styled.div`
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
   background-color: #2a2535;
-  height: 60px;
+  height: fit-content;
   bottom: 0;
   width: 100%;
-  position: absolute;
+  position: fixed;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+`;
+
+export const BottomBarColumnsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+
+  @media (max-width: 1120px) {
+    flex-direction: column;
+    row-gap: 5px;
+  }
+`;
+
+export const FinishButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 10px;
 `;
 
 export const StyledColumns = styled.div`
   text-align: center;
   display: flex;
   align-items: center;
+
+  @media (max-width: 786px) {
+    width: 100%;
+  }
 `;
 
 export const StyledBottomNavButtons = styled.button`
@@ -33,6 +59,7 @@ export const StyledBottomNavButtons = styled.button`
   height: 35px;
   font-size: 14px;
   cursor: pointer;
+  position: relative;
 
   :hover {
     cursor: pointer;
@@ -43,6 +70,18 @@ export const StyledBottomNavButtons = styled.button`
     width: 14px;
     height: 14px;
   }
+`;
+
+export const EmojiTray = styled.div`
+  position: absolute;
+  bottom: 40px;
+  background-color: #383246;
+  z-index: 1000;
+  padding: 10px;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0px;
 `;
 
 export const StyledFinishBtn = styled.button`

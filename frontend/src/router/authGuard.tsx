@@ -43,7 +43,6 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
       const result = await validateToken({ access: accessToken });
       if ("data" in result) {
         dispatch(setIsAuthenticated(true));
-        await getUser({ access: accessToken });
       } else {
         handleTokenRefresh();
       }

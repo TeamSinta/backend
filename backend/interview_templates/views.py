@@ -473,29 +473,36 @@ def delete_template_questions(request, template_id):
 def get_all_template_questions(request, template_id):
     if request.method == "GET":
         template = get_object_or_404(Template, pk=template_id)
-        template_questions = TemplateQuestion.objects.filter(template_id=template_id)
+        template_questions = TemplateQuestion.objects.filter(template_id=template_id).select_related('question', 'topic')
 
-        # Create a list of dictionaries containing information about each TemplateQuestion
-        template_question_list = []
+        # Using a dictionary to group by topics
+        stages = {}
         for template_question in template_questions:
-            question = template_question.question  # Fetch the question details
-            template_question_list.append(
+            topic_name = template_question.topic.topics_text
+            if topic_name not in stages:
+                stages[topic_name] = {
+                    "stage": topic_name,
+                    "stageId": template_question.topic.id,
+                    "questions": []
+                }
+
+            question = template_question.question
+            stages[topic_name]['questions'].append(
                 {
-                    "template_id": template_id,
-                    "template_topic_id": template_question.topic.id,
-                    "question_id": question.id,
-                    "question_text": question.question_text,
-                    "guidelines": question.guidelines,
-                    "reply_time": question.reply_time,
+                    "number": "1",
+                    "question": question.question_text,
+                    "duration": f"{question.reply_time} min",
                     "competency": question.competency,
-                    "difficulty": question.difficulty,
-                    "review": question.review,
-                    "created_at": question.created_at,
-                    "updated_at": question.updated_at,
+                    "rating": question.review,
+                    "answer": question.guidelines,
+                    "id": str(question.id),
                 }
             )
 
-        return JsonResponse(template_question_list, status=200, safe=False)
+        # Convert stages dictionary to a list
+        stages_list = list(stages.values())
+
+        return JsonResponse({"data": stages_list}, status=200, safe=False)
     else:
         error_response = {"error": "Invalid request method"}
         return JsonResponse(error_response, status=405)

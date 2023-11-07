@@ -1,4 +1,12 @@
-import React, { useCallback, useState, ChangeEvent, FormEvent } from "react";
+import React, {
+  useCallback,
+  useState,
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import {
   useLocalParticipant,
   useDevices,
@@ -13,6 +21,8 @@ import {
   VideoContainer,
   ButtonWrapper,
   SelectBox,
+  Wrapper,
+  HeadingBox,
 } from "./StyledHairCheck";
 import { Stack } from "@mui/material";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
@@ -29,10 +39,21 @@ import TextIconFilter from "@/components/common/filters/textIconFilter/TextIconF
 import Slider from "@/components/common/slider/CustomSlider";
 import InterviewRoundCard from "@/components/common/cards/interviewRoundCard/InterviewRoundCard";
 import { BodySMedium } from "@/components/common/typeScale/StyledTypeScale";
+import { fetchInterviewRounds } from "@/features/dashboardDetail/dashboardAPI";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../app/store";
+import {
+  createInterviewRound,
+  getCandidate,
+} from "../../../../features/interviews/interviewsAPI";
+import { useCookies } from "react-cookie";
 
 interface HairCheckProps {
   joinCall: () => void;
   cancelCall: () => void;
+  setInterviewRoundDetails: (
+    details: { title: any; template_id: any; email: any } | null
+  ) => Promise<boolean>;
 }
 
 interface InterviewTemplate {
@@ -43,8 +64,20 @@ interface InterviewTemplate {
   // other properties...
 }
 
-export default function HairCheck({ joinCall, cancelCall }: HairCheckProps) {
+interface interviewRound {
+  role_title: string;
+  disable: boolean;
+  interviewers?: IMember[];
+  id: string;
+}
+
+export default function HairCheck({
+  joinCall,
+  cancelCall,
+  setInterviewRoundDetails,
+}: HairCheckProps) {
   const localParticipant = useLocalParticipant();
+  const { user } = useSelector((state: RootState) => state.user);
   const {
     microphones,
     speakers,
@@ -56,10 +89,58 @@ export default function HairCheck({ joinCall, cancelCall }: HairCheckProps) {
   const callObject = useDaily();
 
   const [getUserMediaError, setGetUserMediaError] = useState(false);
-  const [activeTab, setActiveTab] = useState("devices");
+  const [activeTab, setActiveTab] = useState("templates");
+  const [templates, setTemplates] = useState<interviewRound[]>([]);
+  const [candidateUsername, setCandidateUsername] = useState("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
+    null
+  );
+  const [cookies, ,] = useCookies(["access_token"]);
 
-  const handleTabChange = (tab: stri) => {
+  const handleTabChange = (tab: string) => {
     setActiveTab(tab);
+  };
+
+  // const setTemplate
+
+  const startMeeting = async () => {
+    if (candidateUsername === "") throw new Error("Empty candidate username");
+    if (selectedTemplateId === "" || !selectedTemplateId)
+      throw new Error("Empty selected template");
+
+    // find candidate
+    try {
+      const candidate = await getCandidate(
+        candidateUsername,
+        cookies.access_token
+      );
+      // create interview round for the candidate using the selected template
+      const title = candidate.first_name + "'s Interview";
+      const candidateId = candidate.id;
+      console.log(candidate);
+
+      const response = await createInterviewRound(
+        title,
+        candidateId,
+        selectedTemplateId,
+        cookies.access_token
+      );
+
+      const interviewDetails = {
+        id: response.id,
+        title: response.title,
+        template_id: response.template_id,
+        email: candidate.email,
+        name: candidate.first_name + " " + candidate.last_name,
+        candidate_id: candidateId,
+      };
+
+      setInterviewRoundDetails(interviewDetails).then(() => {
+        joinCall();
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useDailyEvent(
@@ -69,9 +150,24 @@ export default function HairCheck({ joinCall, cancelCall }: HairCheckProps) {
     }, [])
   );
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    callObject.setUserName(e.target.value);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchInterviewRounds();
+        setTemplates(data);
+      } catch (error) {}
+    };
+    fetchData();
+  }, []);
+
+  // const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   callObject.setUserName(e.target.value);
+  // };
+  useEffect(() => {
+    if (localParticipant && localParticipant.user_name === "") {
+      callObject?.setUserName(user.username || "");
+    }
+  }, [localParticipant]);
 
   const join = (e: FormEvent) => {
     e.preventDefault();
@@ -90,43 +186,10 @@ export default function HairCheck({ joinCall, cancelCall }: HairCheckProps) {
     setCamera(e.target.value);
   };
 
-  const interviewTemplates = [
-    {
-      id: "template1",
-      image:
-        "https://ca.slack-edge.com/T04C82XCPRU-U04KS4AQG0N-5dc6b4356f80-512",
-      title: "Coding Round",
-      numberOfQuestions: "26 questions",
-      roundId: "round1",
-    },
-    {
-      id: "template2",
-      image: "https://example.com/template2-image.jpg", // Replace with the actual image URL
-      title: "Design Round",
-      numberOfQuestions: "20 questions",
-      roundId: "round2",
-    },
-    {
-      id: "template3",
-      image: "https://example.com/template3-image.jpg", // Replace with the actual image URL
-      title: "Behavioral Round",
-      numberOfQuestions: "15 questions",
-      roundId: "round3",
-    },
-    // Add more templates as needed
-  ];
-
   return getUserMediaError ? (
     <UserMediaError />
   ) : (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="center"
-      spacing={4}
-      onSubmit={join}
-      style={{ height: "100vh" }}
-    >
+    <Wrapper onSubmit={join}>
       {/* Video preview */}
       {localParticipant && (
         <VideoContainer>
@@ -138,12 +201,7 @@ export default function HairCheck({ joinCall, cancelCall }: HairCheckProps) {
         </VideoContainer>
       )}
       <SelectBox>
-        <Stack
-          direction="row"
-          spacing={3}
-          alignItems="center"
-          justifyContent="space-between"
-        >
+        <HeadingBox>
           <Title style={{ paddingBottom: "0px" }}>Meeting Creation</Title>
           <Box sx={{ gap: "4px", display: "flex" }}>
             <TextIconFilter
@@ -159,17 +217,34 @@ export default function HairCheck({ joinCall, cancelCall }: HairCheckProps) {
               onClick={() => handleTabChange("devices")}
             />
           </Box>
-        </Stack>
-        <Stack direction="column" alignItems="flex-start" spacing={1}>
-          <BodySMedium style={{ marginTop: "18px" }}>Username</BodySMedium>
-          <TextInput
-            name="username"
-            disable={false}
-            placeholder="Name"
-            error={false}
-            onChange={onChange}
-            value={localParticipant?.user_name || " "}
-          />
+        </HeadingBox>
+        <Stack direction="row" alignItems="flex-start" spacing={1}>
+          <Stack direction="column" alignItems="flex-start" spacing={1}>
+            <BodySMedium style={{ marginTop: "18px" }}>Username</BodySMedium>
+
+            <TextInput
+              name="username"
+              placeholder="Name"
+              error={false}
+              disable={true}
+              value={localParticipant?.user_name || " "}
+            />
+          </Stack>
+          <Stack direction="column" alignItems="flex-start" spacing={1}>
+            <BodySMedium style={{ marginTop: "18px" }}>
+              Candidate Username
+            </BodySMedium>
+            <TextInput
+              name="candidateUsername"
+              disable={false}
+              placeholder="Name"
+              error={false}
+              value={candidateUsername}
+              onChange={(e) => {
+                setCandidateUsername(e.target.value);
+              }}
+            />
+          </Stack>
 
           {/* Tab selection */}
         </Stack>
@@ -256,12 +331,17 @@ export default function HairCheck({ joinCall, cancelCall }: HairCheckProps) {
           {activeTab === "templates" && (
             // Render the interview template slider here
             <Slider
-              items={interviewTemplates}
-              renderItem={(template: InterviewTemplate) => (
+              items={templates}
+              renderItem={(template: interviewRound) => (
                 <InterviewRoundCard
                   key={template.id}
-                  title={template.title}
-                  numberOfQuestions={template.numberOfQuestions}
+                  templateId={template.id}
+                  title={template.role_title}
+                  onClick={(templateId) => {
+                    setSelectedTemplateId(templateId);
+                  }}
+                  selected={selectedTemplateId === template.id}
+                  // numberOfQuestions={template.numberOfQuestions}
                   // Handle click event if needed
                 />
               )}
@@ -269,16 +349,16 @@ export default function HairCheck({ joinCall, cancelCall }: HairCheckProps) {
           )}
 
           <ButtonWrapper>
-            <ElWrap w={250} h={40}>
+            <ElWrap h={40}>
               <TextIconBtnL
                 disable={false}
                 label="Start Meeting"
                 icon={<PlusIcon />}
-                onClick={joinCall}
+                onClick={startMeeting}
                 className={BackgroundColor.ACCENT_PURPLE}
               />
             </ElWrap>
-            <ElWrap w={250} h={40}>
+            <ElWrap h={40}>
               <TextIconBtnL
                 disable={false}
                 label="Back to Start"
@@ -290,6 +370,6 @@ export default function HairCheck({ joinCall, cancelCall }: HairCheckProps) {
           </ButtonWrapper>
         </Stack>
       </SelectBox>
-    </Stack>
+    </Wrapper>
   );
 }

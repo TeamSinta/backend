@@ -17,23 +17,25 @@ import { NumberIcon, PhotoIcon } from "../card/StyledCard";
 import { InitialsGenerator } from "@/utils/Utils";
 
 export interface InterviewRoundCardProps {
+  templateId: string;
   image?: string;
   title?: string;
   numberOfQuestions?: string;
-  members?: Array<{
+  interviewers?: Array<{
     first_name: string;
     last_name: string;
     profile_picture: string;
   }>;
   selected?: boolean;
-  onClick?: () => void;
+  onClick?: (templateId: string) => void;
 }
 
 const InterviewRoundCard = (props: InterviewRoundCardProps) => {
+  const { templateId, title, interviewers, selected, onClick } = props;
+
   const handleClick = () => {
-    if (onClick) onClick();
+    if (onClick) onClick(templateId);
   };
-  const { title, numberOfQuestions, members, selected, onClick } = props;
 
   return (
     <StyledCard
@@ -60,9 +62,7 @@ const InterviewRoundCard = (props: InterviewRoundCardProps) => {
               marginTop: "-16px",
             }}
           >
-            <BodySMedium style={{ opacity: "0.5" }}>
-              {numberOfQuestions}
-            </BodySMedium>
+            <BodySMedium style={{ opacity: "0.5" }}>{5}</BodySMedium>
             <BodyMBold
               style={{
                 overflow: "hidden",
@@ -78,8 +78,8 @@ const InterviewRoundCard = (props: InterviewRoundCardProps) => {
         <Box sx={{ display: "flex", gap: "4px" }}>
           <Photos>
             <>
-              {members
-                ?.slice(0, members.length > 4 ? 3 : 4)
+              {interviewers
+                ?.slice(0, interviewers.length > 4 ? 3 : 4)
                 .map((member, index) => (
                   <ElWrap w={32} h={32} key={index}>
                     <PhotoIcon imgUrl={member.profile_picture}>
@@ -96,9 +96,9 @@ const InterviewRoundCard = (props: InterviewRoundCardProps) => {
                 ))}
             </>
             <>
-              {members?.length && members.length > 4 ? (
+              {interviewers?.length && interviewers.length > 4 ? (
                 <NumberIcon imgUrl="">
-                  <BodySBold>+{members.length - 3}</BodySBold>
+                  <BodySBold>+{interviewers.length - 3}</BodySBold>
                 </NumberIcon>
               ) : (
                 <></>

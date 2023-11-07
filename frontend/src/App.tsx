@@ -4,12 +4,13 @@ import { StyledMain } from "./components/layouts/container/StyledContainer";
 import Container from "./components/layouts/container/Container";
 import Routers from "./router/Routers";
 
-import { useVideoCall } from "./utils/dailyVideoService/videoCallComponent";
 // import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "./app/store";
 import Loading from "./components/common/elements/loading/Loading";
-
+import VideoCallComponent from "@/utils/dailyVideoService/videoCallComponent";
+import { useLocation } from "react-router-dom";
+import { AppDispatch } from "@/app/store";
 // Node: server, Browser : worker.
 if (import.meta.env.VITE_ENV !== "develop") {
   if (typeof window === "undefined") {
@@ -31,33 +32,38 @@ interface VideoCallContextType {
 }
 
 function App() {
-  const interview = window?.location?.pathname.includes("video-call");
-  const { createCall, startHairCheck } = useVideoCall() as VideoCallContextType; // Type assertion
+  const location = useLocation();
   const { isAuthenticated, status } = useSelector(
     (state: RootState) => state.user
   );
-  // const { active_call } = useSelector((state: RootState) => state.videoCall);
 
   const isLoggedIn = isAuthenticated;
-  // const videoCallScreen = active_call;
+
+  // Check if the current path is "/video-call"
+  const isVideoCallRoute = location.pathname.startsWith("/video-call/");
 
   if (status === "LOADING") {
     return <Loading />;
   }
+
+  // Render only the Routers component if we're on the "/video-call" route
+  if (isVideoCallRoute) {
+    return <Routers />;
+  }
+
+  // Render the full app layout if we're NOT on the "/video-call" route
   return (
     <>
-      {isLoggedIn && !interview ? (
+      {isLoggedIn ? (
         <Container>
           <SideNavBar />
-          <TopNavBar createCall={createCall} startHairCheck={startHairCheck} />
+          <TopNavBar />
           <StyledMain>
             <Routers />
           </StyledMain>
         </Container>
       ) : (
-        <>
-          <Routers />
-        </>
+        <Routers />
       )}
     </>
   );

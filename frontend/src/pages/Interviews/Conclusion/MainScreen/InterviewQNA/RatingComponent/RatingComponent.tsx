@@ -14,6 +14,7 @@ import {
   TopStarIcon,
 } from "@/components/common/svgIcons/Icons";
 import { Grid } from "@mui/material";
+import { getInterviewRoundQuestion } from "../../../../../../features/interviews/interviewsAPI";
 
 interface RatingButtonProps extends ICustomIconProps {
   Icon: React.FunctionComponent;
@@ -194,6 +195,7 @@ export const RatingComponent: React.FC<any> = ({
   question,
   setRating,
   rating,
+  interviewRoundId,
 }) => {
   const [activeTab, setActiveTab] = useState<any>(null);
 
@@ -201,6 +203,11 @@ export const RatingComponent: React.FC<any> = ({
     setActiveTab(rate);
     setRating(rate, question);
   };
+
+  React.useEffect(() => {
+    console.log(interviewRoundId);
+    // getInterviewRoundQuestion();
+  }, [interviewRoundId]);
 
   return (
     <div style={{ display: "flex", margin: "0px" }}>
@@ -224,13 +231,14 @@ export function RatingComponentL({
   question,
   setRating,
   rating,
+  id,
   width = 0,
   height = 0,
 }: Props) {
   const [activeTab, setActiveTab] = useState<any>(null);
   const handleRating = (rate: any) => {
     setActiveTab(rate);
-    setRating(rate, question);
+    setRating(rate, id);
   };
 
   return (

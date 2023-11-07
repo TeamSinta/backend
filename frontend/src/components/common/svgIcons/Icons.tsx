@@ -70,6 +70,8 @@ import { ReactComponent as VideoMicIcon } from "@/assets/svg/VideoMicIcon.svg";
 import { ReactComponent as VideoCamIcon } from "@/assets/svg/VideoCamIcon.svg";
 import { ReactComponent as VideoSoundIcon } from "@/assets/svg/VideoSoundIcon.svg";
 
+import { ReactComponent as Emoji } from "@/assets/svg/emoji.svg";
+
 export const SintaIcon = (): JSX.Element => {
   return <Logo />;
 };
@@ -84,6 +86,10 @@ export const VideoSound = (): JSX.Element => {
 
 export const VideoCam = (): JSX.Element => {
   return <VideoCamIcon />;
+};
+
+export const EmojiIcon = (): JSX.Element => {
+  return <Emoji />;
 };
 
 export const MoreVertIcon = (): JSX.Element => {

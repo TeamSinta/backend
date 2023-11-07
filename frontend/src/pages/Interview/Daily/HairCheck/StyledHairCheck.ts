@@ -14,6 +14,42 @@ export const SelectBox = styled(Stack)`
   border-radius: 12px;
   width: 540px;
   height: 410px;
+
+  @media (max-width: 950px) {
+    width: 100%;
+    height: fit-content;
+  }
+`;
+
+export const HeadingBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  column-gap: 20px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  @media (max-width: 950px) {
+    flex-direction: column;
+    row-gap: 20px;
+  }
+`;
+
+export const Wrapper = styled.div`
+  height: 100vh;
+  padding-left: 30px;
+  padding-right: 30px;
+  display: flex;
+  flex-direction: row;
+  column-gap: 20px;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 950px) {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+  }
 `;
 
 export const Wrapper_Box = styled.div`
@@ -25,11 +61,16 @@ export const Title = styled(H3Bold)``;
 export const VideoContainer = styled(Box)`
   width: 638px;
   border-radius: 12px;
+
+  @media (max-width: 950px) {
+    width: 100%;
+  }
 `;
 
 export const ButtonWrapper = styled.label`
   display: flex;
   gap: 12px;
+  width: 100%;
 `;
 
 export const Input = styled.input`

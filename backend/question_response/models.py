@@ -31,6 +31,6 @@ class InterviewerFeedback(models.Model):
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     interview_round = models.ForeignKey(InterviewRound, on_delete=models.CASCADE)
-    note = models.TextField()
-    reaction = models.IntegerField(choices=EmojiChoice.choices)
-    score = models.IntegerField(choices=ScoreChoice.choices)
+    note = models.TextField(null=True)
+    reaction = models.IntegerField(choices=EmojiChoice.choices,null=True)
+    score = models.IntegerField(choices=ScoreChoice.choices,null=True)

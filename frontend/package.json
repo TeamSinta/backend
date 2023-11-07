@@ -6,6 +6,7 @@
   "dependencies": {
     "@daily-co/daily-js": "^0.48.0",
     "@daily-co/daily-react": "^0.10.0",
+    "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
@@ -33,6 +34,7 @@
     "react-player": "^2.12.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.12.0",
+    "recoil": "^0.7.7",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "sass": "^1.62.1",
     "styled-components": "^5.3.9",

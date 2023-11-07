@@ -6,6 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from dj_rest_auth.views import UserDetailsView
 from rest_framework.generics import ListAPIView
+from rest_framework.exceptions import PermissionDenied
+from app.permissions import isAdminRole, isInterviewerRole
+from .models import CustomUser
+from .serializers import CustomUserSerializer
 from company.serializers import DepartmentSerializer
 from user.models import UserCompanies, UserDepartments
 from company.models import Department
@@ -38,6 +42,18 @@ class CustomUserDetailsView(UserDetailsView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class GetUserByUsername(APIView):
+    # permission_classes = [IsAuthenticated, isAdminRole, isInterviewerRole]
+
+    def get(self, request, username):
+        # Use the get_object_or_404 method to try to get a user by their username.
+        user = get_object_or_404(CustomUser, username=username)
+   
+        # Serialize the user instance.
+        serializer = CustomUserSerializer(user)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserDepartmentsView(ListAPIView):
     serializer_class = DepartmentSerializer

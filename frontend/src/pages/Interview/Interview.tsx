@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   StyledIcon,
   StyledInfoDescription,
@@ -14,6 +14,8 @@ import {
   StyledTopView,
   BottomQuestionButtons,
   StyledAnswerHeading,
+  VideoScreenWrapper,
+  EmojiOverlayWrapper,
 } from "./StyledInterview";
 import { NavButton } from "@/components/layouts/sidenavbar/StyledSideNavBar";
 import { CANDIDATE_DETAILS, QUESTIONS_DATA } from "./InterviewConstant";
@@ -39,21 +41,46 @@ import Call from "./Daily/Call/Call";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
 import { startCall } from "@/features/videoCall/videoCallSlice";
+import { useWindowSize } from "@/hooks/useWindowSize";
+import {
+  getTemplateQuestionsAndTopics,
+  sendFeedback,
+  updateInterviewQuestionRating,
+} from "../../features/interviews/interviewsAPI";
+import { Cookies, useCookies } from "react-cookie";
+import { useDaily } from "@daily-co/daily-react";
 
-const Interview = ({ leaveCall }) => {
+const Interview = ({ leaveCall, interviewDetails }) => {
   const title = "FrontEnd Developer";
   const stage = "Round 3";
   const stageName = "Pair-Programming";
   const [activeTab, setActiveTab] = useState(1);
   const [initTime, setInitTime] = useState("");
-  const [reactClicked, setReactClicked] = useState({ clicked: 0, message: "" });
+  const [templateQuestionsAndTopics, setTemplateQuestionsAndTopics] =
+    useState(null);
+  const { width } = useWindowSize();
+  const [reactClicked, setReactClicked] = useState({
+    clicked: 0,
+    message: "",
+    position: {
+      left: 0,
+      top: 0,
+    },
+  });
+  const [isInterviewSideBarCollapsed, setIsInterviewSideBarCollapsed] =
+    useState(false);
+  const [cookies, ,] = useCookies(["access_token"]);
+  const callObject = useDaily();
 
   // Placeholder for functionality. Moe will have to update this once the videoscreen is done and we have correct reducers/states.
 
   const { active_call } = useSelector((state: RootState) => state.videoCall);
   const dispatch: AppDispatch = useDispatch();
 
-  //
+  const collapseInterviewSideBar = () => {
+    setIsInterviewSideBarCollapsed(!isInterviewSideBarCollapsed);
+  };
+
   const getCurrentTime = (): string => {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, "0");
@@ -61,12 +88,39 @@ const Interview = ({ leaveCall }) => {
     const seconds = now.getSeconds().toString().padStart(2, "0");
     return `${hours}:${minutes}:${seconds}`;
   };
+
   useEffect(() => {
     setInitTime(getCurrentTime());
     // placeholder dispatch for functionality, sets call as active to allow correct fullscreen rendering in App
     dispatch(startCall(true));
     // placeholder dispatch end //
   }, [active_call, dispatch]);
+
+  useEffect(() => {
+    const { message, position } = reactClicked;
+    window.dispatchEvent(
+      new CustomEvent("reaction_added", { detail: { message, position } })
+    );
+  }, [reactClicked]);
+
+  useEffect(() => {
+    if (width && width < 900) {
+      setIsInterviewSideBarCollapsed(true);
+    }
+  }, [width]);
+
+  useEffect(() => {
+    const fetchQuestionsAndTopics = async () => {
+      // get the template questions
+      const response = await getTemplateQuestionsAndTopics(
+        interviewDetails.template_id,
+        cookies.access_token
+      );
+      setTemplateQuestionsAndTopics(response);
+    };
+
+    fetchQuestionsAndTopics();
+  }, [interviewDetails]);
 
   const sidebarTabs = useMemo(() => {
     return (
@@ -181,7 +235,7 @@ const Interview = ({ leaveCall }) => {
         <>
           <Grid container>
             {" "}
-            <ImageText icon={<EmailIcon />} text={CANDIDATE_DETAILS.EMAIL} />
+            <ImageText icon={<EmailIcon />} text={interviewDetails.email} />
           </Grid>
           <br></br>
           <Grid container>
@@ -273,8 +327,14 @@ const Interview = ({ leaveCall }) => {
       setPrevNum(prevNumber);
       setNextNum(nextNumber);
     };
-    const handleRating = () => {
-      //setRating(rate);
+    const handleRating = (rating: number, question: string) => {
+      // update interview round question rating to new rating
+      updateInterviewQuestionRating(
+        rating,
+        question,
+        interviewDetails.id,
+        cookies.access_token
+      );
     };
 
     useEffect(() => {
@@ -372,7 +432,9 @@ const Interview = ({ leaveCall }) => {
                     <div style={{ marginTop: "10px" }}>
                       <Grid>
                         <RatingComponentL
+                          interviewRoundId={interviewDetails.id}
                           question={activeQuestionInfo?.question}
+                          id={activeQuestionInfo?.id}
                           setRating={handleRating}
                           rating={activeQuestionInfo?.rating}
                           width={40}
@@ -389,19 +451,7 @@ const Interview = ({ leaveCall }) => {
                         {"Answer/Prompt"}
                       </StyledAnswerHeading>
 
-                      <span>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever since the 1500s,
-                        when an unknown printer took a galley of type and
-                        scrambled it to make a type specimen book. It has
-                        survived not only five centuries, but also the leap into
-                        electronic typesetting, remaining essentially unchanged.
-                        It was popularised in the 1960s with the release of
-                        Letraset sheets containing Lorem Ipsum passages, and
-                        more recently with desktop publishing software like
-                        Aldus PageMaker including versions of Lorem Ipsum.
-                      </span>
+                      <span>{activeQuestionInfo?.answer}</span>
                     </StyledAnswerPoints>
                   </div>
                 </div>
@@ -497,99 +547,250 @@ const Interview = ({ leaveCall }) => {
       </div>
     );
   };
+
+  const interviewSideBarData = (
+    <>
+      <StyledTopView>
+        <Grid lg={12}>
+          <Grid container>
+            <Grid lg={10} md={10} sm={10} xs={10}>
+              <span style={{ fontWeight: "600", fontFamily: "ChillaxSemi" }}>
+                {interviewDetails.title}
+              </span>
+            </Grid>
+            <Grid lg={2} md={2} sm={2} xs={2}>
+              <span
+                onClick={collapseInterviewSideBar}
+                style={{ float: "right" }}
+              >
+                <BottomArrowIcon />
+              </span>
+            </Grid>
+          </Grid>
+        </Grid>
+        <br></br>
+        <Grid lg={11}>
+          <div
+            style={{
+              backgroundColor: "#F6F6FB",
+              padding: "10px",
+              borderRadius: "10px",
+              display: "flex",
+              fontSize: "9px",
+              alignItems: "center",
+              alignContent: "center",
+              width: "fit-content",
+            }}
+          >
+            <span style={{ fontWeight: "lighter", marginLeft: "2px" }}>
+              {stage + ": "}
+            </span>
+            <span
+              style={{
+                fontWeight: "600",
+                fontFamily: "ChillaxSemi",
+                marginLeft: "2px",
+              }}
+            >
+              {stageName}
+            </span>{" "}
+          </div>
+        </Grid>{" "}
+        <br></br>
+        {sidebarTabs}{" "}
+      </StyledTopView>
+      <br></br>
+      <StyledInnerDiv>
+        <StyledTabInfo>
+          {activeTab === 1 ? (
+            <>
+              <p
+                style={{
+                  fontWeight: "600",
+                  fontFamily: "ChillaxSemi",
+                  fontSize: activeTab === 1 ? "20px" : "12px",
+                }}
+              >
+                {interviewDetails.name}
+              </p>{" "}
+              <br></br>
+            </>
+          ) : null}
+
+          {activeTab === 1 ? <InfoTab /> : null}
+          {activeTab === 2 ? (
+            <InterviewQuestionTab data={templateQuestionsAndTopics?.data} />
+          ) : null}
+          {activeTab === 3 ? (
+            <Notes
+              notesEntered={notesEntered}
+              elapsedTime={initTime}
+              setReactClicked={setReactClicked}
+              reactClicked={reactClicked}
+            />
+          ) : null}
+        </StyledTabInfo>
+        <br></br>
+      </StyledInnerDiv>
+    </>
+  );
+
+  const InterviewSideBarWaiting = () => {
+    const [opacity, setOpacity] = useState(1);
+
+    useEffect(() => {
+      // This function will toggle the opacity between 1 and 0
+      const fade = () => {
+        setOpacity((prevOpacity) => (prevOpacity === 1 ? 0 : 1));
+      };
+
+      // Start an interval to toggle the opacity
+      const intervalId = setInterval(fade, 2000); // Change opacity every 3 seconds
+
+      // Clean up the interval on component unmount
+      return () => clearInterval(intervalId);
+    }, []);
+
+    return (
+      <Grid
+        style={{
+          height: "100%", // Adjust the height as needed
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        <span
+          style={{
+            fontWeight: "600",
+            fontFamily: "ChillaxSemi",
+            fontSize: "1.5em",
+            width: "100%",
+            opacity: opacity, // Apply dynamic opacity value
+            transition: "opacity 1.5s ease-in-out", // Smooth transition for opacity change
+          }}
+        >
+          Waiting for candidate...
+        </span>
+      </Grid>
+    );
+  };
+
   function InterviewSideBar(props: any) {
     const { reactClicked, setReactClicked } = props;
     return (
       <div style={{ justifyContent: "flex-end", display: "flex" }}>
         {/* {header} */}
-        <StyledInterviewContent>
-          <StyledTopView>
-            <Grid lg={12}>
-              <Grid container>
-                <Grid lg={10} md={10} sm={10} xs={10}>
-                  <span
-                    style={{ fontWeight: "600", fontFamily: "ChillaxSemi" }}
-                  >
-                    {title}
-                  </span>
-                </Grid>
-                <Grid lg={2} md={2} sm={2} xs={2}>
-                  <span style={{ float: "right" }}>
-                    <BottomArrowIcon />
-                  </span>
-                </Grid>
-              </Grid>
-            </Grid>
-            <br></br>
-            <Grid lg={11}>
-              <div
-                style={{
-                  backgroundColor: "#F6F6FB",
-                  padding: "10px",
-                  borderRadius: "10px",
-                  display: "flex",
-                  fontSize: "9px",
-                  alignItems: "center",
-                  alignContent: "center",
-                  width: "fit-content",
-                }}
-              >
-                <span style={{ fontWeight: "lighter", marginLeft: "2px" }}>
-                  {stage + ": "}
-                </span>
-                <span
-                  style={{
-                    fontWeight: "600",
-                    fontFamily: "ChillaxSemi",
-                    marginLeft: "2px",
-                  }}
-                >
-                  {stageName}
-                </span>{" "}
-              </div>
-            </Grid>{" "}
-            <br></br>
-            {sidebarTabs}{" "}
-          </StyledTopView>
-          <br></br>
-          <StyledInnerDiv>
-            <StyledTabInfo>
-              {activeTab === 1 ? (
-                <>
-                  <p
-                    style={{
-                      fontWeight: "600",
-                      fontFamily: "ChillaxSemi",
-                      fontSize: activeTab === 1 ? "20px" : "12px",
-                    }}
-                  >
-                    {CANDIDATE_DETAILS.NAME}
-                  </p>{" "}
-                  <br></br>
-                </>
-              ) : null}
-
-              {activeTab === 1 ? <InfoTab /> : null}
-              {activeTab === 2 ? (
-                <InterviewQuestionTab data={QUESTIONS_DATA.data} />
-              ) : null}
-              {activeTab === 3 ? (
-                <Notes
-                  elapsedTime={initTime}
-                  setReactClicked={setReactClicked}
-                  reactClicked={reactClicked}
-                />
-              ) : null}
-            </StyledTabInfo>
-            <br></br>
-          </StyledInnerDiv>
+        <StyledInterviewContent isCollapsed={isInterviewSideBarCollapsed}>
+          {interviewDetails.id !== "" && interviewDetails.id !== null ? (
+            interviewSideBarData
+          ) : (
+            <InterviewSideBarWaiting />
+          )}
         </StyledInterviewContent>
       </div>
     );
   }
+  const emojiClicked = (e, emoji: string, emojiNumber: number) => {
+    // send feedback
+    const data = {
+      interview_round: interviewDetails.id,
+      user: interviewDetails.candidate_id,
+      reaction: emojiNumber,
+    };
+
+    sendFeedback(data, cookies.access_token);
+    const button = e.currentTarget;
+    const rect = button.getBoundingClientRect();
+    setReactClicked({
+      clicked: reactClicked?.clicked + 1,
+      message: emoji,
+      position: {
+        left: rect.left + window.scrollX,
+        top: rect.top + window.scrollY,
+      },
+    });
+  };
+
+  function notesEntered(notes: string) {
+    console.log("notes: ", notes);
+    // send feedback
+    const data = {
+      interview_round: interviewDetails.id,
+      user: interviewDetails.candidate_id,
+      note: notes,
+    };
+
+    sendFeedback(data, cookies.access_token);
+  }
+
+  function EmojiOverlay() {
+    const overlayRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+      window.addEventListener("reaction_added", handleSendFlyingEmoji);
+
+      // Clean up the event listener
+      return () => {
+        window.removeEventListener("reaction_added", handleSendFlyingEmoji);
+      };
+    }, []);
+
+    const handleRemoveFlyingEmoji = useCallback((node) => {
+      if (!overlayRef.current) return;
+      overlayRef.current.removeChild(node);
+    }, []);
+
+    function handleSendFlyingEmoji(e) {
+      console.log(e);
+      const emoji = e.detail.message;
+      const position = e.detail.position;
+
+      if (emoji) {
+        callObject.sendAppMessage({ message: `${emoji}` }, "*");
+        handleDisplayFlyingEmoji(emoji, position);
+      }
+    }
+
+    const handleDisplayFlyingEmoji = useCallback(
+      (emoji, position) => {
+        if (!overlayRef.current) {
+          return;
+        }
+
+        const node = document.createElement("div");
+        node.appendChild(document.createTextNode(emoji));
+        node.className =
+          Math.random() * 1 > 0.5 ? "emoji wiggle-1" : "emoji wiggle-2";
+        node.style.transform = `rotate(${-30 + Math.random() * 60}deg)`;
+        node.style.left = `${position.left}px`; // Starting position from the button
+        node.style.top = `${position.top - 70}px`; // Starting position from the button
+        node.style.position = "absolute";
+        overlayRef.current.appendChild(node);
+
+        node.addEventListener("animationend", (e) =>
+          handleRemoveFlyingEmoji(e.target)
+        );
+      },
+      [handleRemoveFlyingEmoji]
+    );
+
+    const handleReceiveFlyingEmoji = useCallback(
+      (e) => {
+        if (!overlayRef.current) {
+          return;
+        }
+        handleDisplayFlyingEmoji(e.data.message, e.data.position);
+      },
+      [handleDisplayFlyingEmoji]
+    );
+
+    return <EmojiOverlayWrapper ref={overlayRef} />;
+  }
 
   return (
-    <div style={{ width: "100%", height: "100vh", position: "relative" }}>
+    <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
       <Grid
         container
         style={{
@@ -599,22 +800,20 @@ const Interview = ({ leaveCall }) => {
           padding: "2%",
         }}
       >
-        <Grid item xs={4} sm={4} md={8} lg={8}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+        <Grid item xs={4} sm={4} md={8} lg={8} style={{ height: "100%" }}>
+          <VideoScreenWrapper>
             <div>
               <img
                 alt="sinta-logo"
-                src="src\assets\images\Sinta Gray Logo.png"
+                src="src/assets/images/Sinta Gray Logo.png"
                 width="100"
                 height="40"
-              ></img>
-            </div>{" "}
+              />
+            </div>
             <div
               style={{
                 position: "relative",
                 width: "100%",
-                marginTop: "30px",
-
                 color: "white",
               }}
             >
@@ -622,9 +821,9 @@ const Interview = ({ leaveCall }) => {
                 <Call />
               </div>
             </div>
-          </div>
+          </VideoScreenWrapper>
         </Grid>
-        <Grid item xs={8} sm={8} md={4} lg={4}>
+        <Grid item xs={8} sm={8} md={4} lg={4} style={{ height: "100%" }}>
           <InterviewSideBar
             setReactClicked={setReactClicked}
             reactClicked={reactClicked}
@@ -632,10 +831,12 @@ const Interview = ({ leaveCall }) => {
         </Grid>
       </Grid>
       <BottomNavBar
+        emojiClicked={emojiClicked}
         setReactClicked={setReactClicked}
         reactClicked={reactClicked}
         leaveCall={leaveCall}
       />
+      {<EmojiOverlay />}
     </div>
   );
 };

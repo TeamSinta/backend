@@ -2,7 +2,56 @@ import styled from "styled-components";
 interface StyledVideoActionsProps {
   isEnabled: boolean;
 }
-export const StyledInterviewContent = styled.div`
+
+interface StyledInterviewContent {
+  isCollapsed: boolean;
+}
+
+export const EmojiOverlayWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* Ensure it doesn't interfere with other UI interactions */
+  overflow: hidden; /* Hide emojis that might fly outside the bounds */
+  z-index: 1000; /* Adjust according to your needs to ensure it's above all other elements */
+
+  .emoji {
+    position: absolute;
+    font-size: 1.5em; /* Adjust size as needed */
+    user-select: none;
+    pointer-events: none; /* Ignore mouse/pointer events on individual emojis */
+    animation: fly 1s linear;
+  }
+
+  @keyframes fly {
+    0% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+`;
+
+export const VideoScreenWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-start;
+
+  @media (max-width: 900px) {
+    row-gap: 60px;
+  }
+`;
+
+export const StyledInterviewContent = styled.div<StyledInterviewContent>`
   background-color: white;
   width: 80%;
   border: 1px solid black;
@@ -10,10 +59,12 @@ export const StyledInterviewContent = styled.div`
   padding: 15px;
   padding-bottom: 0px;
   position: relative;
-  height: 80vh;
+  height: ${(props) => (props.isCollapsed ? "50px" : "80vh")};
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  transition: ease-in-out 200ms;
+  z-index: 100;
 
   ::-webkit-scrollbar {
     padding: 10px;
@@ -38,6 +89,13 @@ export const StyledInterviewContent = styled.div`
     padding: 0px;
     margin: 0px;
     width: 5px;
+  }
+
+  @media (max-width: 900px) {
+    position: absolute;
+    right: 10px;
+    top: 60px;
+    width: 95%;
   }
 `;
 

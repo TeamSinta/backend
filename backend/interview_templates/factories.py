@@ -59,21 +59,18 @@ class TemplateQuestionFactory(factory.django.DjangoModelFactory):
         model = TemplateQuestion
 
     @factory.lazy_attribute
-    def template_id(cls):
-        try:
-            return Template.objects.order_by("?").first()
-        except ObjectDoesNotExist:
-            return TemplateFactory()
+    def template_id(self):
+        return self.topic.template_id
 
     @factory.lazy_attribute
-    def topic(cls):
+    def topic(self):
         try:
             return TemplateTopic.objects.order_by("?").first()
         except ObjectDoesNotExist:
             return TemplateTopicFactory()
 
     @factory.lazy_attribute
-    def question(cls):
+    def question(self):
         try:
             return Question.objects.order_by("?").first()
         except ObjectDoesNotExist:

@@ -25,6 +25,8 @@ class InterviewRound(models.Model):
     transcription_file_uri = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    template_id = models.IntegerField(default=55)
+
 
 
 class InterviewRoundQuestion(models.Model):
@@ -38,8 +40,9 @@ class InterviewRoundQuestion(models.Model):
         on_delete=models.CASCADE,
         related_name="interview_round_questions",
     )
+    rating = models.IntegerField(default=3)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.id
+        return str(self.id)

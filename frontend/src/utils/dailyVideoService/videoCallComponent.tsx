@@ -4,9 +4,10 @@ import React, {
   useCallback,
   createContext,
   useContext,
+  useRef,
 } from "react";
 import DailyIframe from "@daily-co/daily-js";
-import { DailyProvider } from "@daily-co/daily-react";
+import { DailyProvider, useDaily } from "@daily-co/daily-react";
 import videoApi from "./videoApi";
 import { roomUrlFromPageUrl, pageUrlFromRoomUrl } from "./utils";
 import Header from "@/pages/Interview/Daily/Header/Header";
@@ -20,17 +21,7 @@ import {
 } from "./StyledVideoCall"; // Update the import path
 import TopNavBar from "@/components/layouts/topnavbar/TopNavBar";
 import { Interview } from "@/pages/Interview";
-
-const defaultVideoCallContext = {
-  createCall: () => Promise.resolve("default-url"),
-  startHairCheck: (url: string) => {},
-};
-
-const VideoCallContext = createContext(defaultVideoCallContext);
-export function useVideoCall() {
-  // Custom hook to access context values
-  return useContext(VideoCallContext);
-}
+import { useLocation, useNavigate } from "react-router-dom";
 
 const STATE = {
   IDLE: "STATE_IDLE",
@@ -43,36 +34,35 @@ const STATE = {
 };
 
 export default function VideoCall() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [appState, setAppState] = useState(STATE.IDLE);
   const [roomUrl, setRoomUrl] = useState(null);
   const [callObject, setCallObject] = useState(null);
+  const [interviewRoundDetails, setInterviewRoundDetails] = useState(null);
   const [apiError, setApiError] = useState(false);
 
-  const createCall = useCallback(async () => {
-    setAppState(STATE.CREATING);
-    try {
-      const room = await videoApi.createRoom();
-      setRoomUrl(room.url);
-      return room.url;
-    } catch (error) {
-      console.error("Error creating room", error);
-      setRoomUrl(null);
-      setAppState(STATE.IDLE);
-      setApiError(true);
-      return "error-url";
-    }
-  }, []);
-
   const startHairCheck = useCallback(async (url) => {
-    const newCallObject = DailyIframe.createCallObject();
-    setRoomUrl(url);
+    const existingInstance = DailyIframe.getCallInstance();
+
+    const newCallObject = existingInstance
+      ? existingInstance
+      : DailyIframe.createCallObject();
     setCallObject(newCallObject);
+    setRoomUrl(url);
     setAppState(STATE.HAIRCHECK);
     await newCallObject.preAuth({ url });
     await newCallObject.startCamera();
   }, []);
 
-  const joinCall = useCallback(() => {
+  const setDetails = async (details: any) => {
+    new Promise((res, rej) => {
+      setInterviewRoundDetails(details);
+      res(true);
+    });
+  };
+
+  const joinCall = useCallback(async () => {
     callObject?.join({ url: roomUrl });
   }, [callObject, roomUrl]);
 
@@ -90,17 +80,31 @@ export default function VideoCall() {
     }
   }, [callObject, appState]);
 
-  const contextValue = {
-    createCall,
-    startHairCheck,
-  };
+  const startRecordingCall = useCallback(() => {
+    callObject?.startRecording();
+  }, [callObject]);
+
+  const stopRecordingCall = useCallback(() => {
+    callObject?.stopRecording();
+  }, [callObject]);
+
+  const urlRef = useRef();
+
+  useEffect(() => {
+    if (roomUrl) {
+      localStorage.setItem("roomUrl", roomUrl);
+    } else {
+      localStorage.removeItem("roomUrl");
+    }
+  }, [roomUrl]);
 
   useEffect(() => {
     const url = roomUrlFromPageUrl();
+    console.log("URL", url, callObject);
     if (url) {
       startHairCheck(url);
     }
-  }, [startHairCheck]);
+  }, []);
 
   useEffect(() => {
     if (roomUrl !== null) {
@@ -126,6 +130,7 @@ export default function VideoCall() {
             setRoomUrl(null);
             setCallObject(null);
             setAppState(STATE.IDLE);
+            navigate("/");
           });
           break;
         case "error":
@@ -150,33 +155,38 @@ export default function VideoCall() {
   const showHairCheck = !apiError && appState === STATE.HAIRCHECK;
 
   return (
-    <VideoCallContext.Provider value={contextValue}>
-      <AppContainer>
-        {!showCall && <Header />}
-        {apiError ? (
-          <ApiErrorContainer>
-            <ApiErrorHeading1>Error</ApiErrorHeading1>
-            <ApiErrorParagraph>
-              Room could not be created. Check if your `.env` file is set up
-              correctly. For more information, see the{" "}
-              <ApiErrorLink href="https://github.com/daily-demos/custom-video-daily-react-hooks#readme">
-                readme
-              </ApiErrorLink>{" "}
-              :)
-            </ApiErrorParagraph>
-          </ApiErrorContainer>
-        ) : showHairCheck ? (
-          <DailyProvider callObject={callObject}>
-            <HairCheck joinCall={joinCall} cancelCall={startLeavingCall} />
-          </DailyProvider>
-        ) : showCall ? (
-          <DailyProvider callObject={callObject}>
-            <Interview leaveCall={startLeavingCall} />
-          </DailyProvider>
-        ) : (
-          <TopNavBar createCall={createCall} startHairCheck={startHairCheck} />
-        )}
-      </AppContainer>
-    </VideoCallContext.Provider>
+    <AppContainer>
+      {!showCall && <Header />}
+      {apiError ? (
+        <ApiErrorContainer>
+          <ApiErrorHeading1>Error</ApiErrorHeading1>
+          <ApiErrorParagraph>
+            Room could not be created. Check if your `.env` file is set up
+            correctly. For more information, see the{" "}
+            <ApiErrorLink href="https://github.com/daily-demos/custom-video-daily-react-hooks#readme">
+              readme
+            </ApiErrorLink>{" "}
+            :
+          </ApiErrorParagraph>
+        </ApiErrorContainer>
+      ) : showHairCheck ? (
+        <DailyProvider callObject={callObject}>
+          <HairCheck
+            joinCall={joinCall}
+            cancelCall={startLeavingCall}
+            setInterviewRoundDetails={setDetails}
+          />
+        </DailyProvider>
+      ) : showCall ? (
+        <DailyProvider callObject={callObject}>
+          <Interview
+            interviewDetails={interviewRoundDetails}
+            leaveCall={startLeavingCall}
+            recordCall={startRecordingCall}
+            stopRecord={stopRecordingCall}
+          />
+        </DailyProvider>
+      ) : null}
+    </AppContainer>
   );
 }

@@ -47,6 +47,7 @@ def create_meeting_room():
     }
 
     response = requests.post(ROOMS_URL, headers=headers, json=data)
+
     return response.json() if response.status_code == 200 else None
 
 

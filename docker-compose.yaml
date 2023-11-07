@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   db:
@@ -7,9 +7,10 @@ services:
     volumes:
       - dbdata:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=postgres
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
     networks:
       - backend
 
@@ -36,7 +37,7 @@ services:
       - /app/node_modules
       - ./frontend:/app
     environment:
-      CHOKIDAR_USEPOLLING: 'true'
+      CHOKIDAR_USEPOLLING: "true"
     networks:
       - backend
     command: npm start

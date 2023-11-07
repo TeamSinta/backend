@@ -12,9 +12,13 @@ import { BackgroundColor } from "@/features/utils/utilEnum";
 import ElWrap from "../elWrap/ElWrap";
 import { DropDownButton } from "@/components/common/buttons/dropDownBtn/DropDownBtn";
 import { StyledTopNavBar } from "./StyledTopBarNav";
-import { useSelector } from "react-redux";
-import { RootState } from "@/app/store";
-import { Link, redirect } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../app/store";
+import {
+  createCall,
+  startHairCheck,
+} from "../../../utils/dailyVideoService/videoCallSlice";
 
 export interface IButton {
   to: string;
@@ -22,19 +26,26 @@ export interface IButton {
   text: string;
 }
 
-interface TopNavBarProps {
-  createCall: () => Promise<string>;
-  startHairCheck: (url: string) => void;
-}
+// interface TopNavBarProps {
+//   createCall: () => Promise<string>;
+//   startHairCheck: (url: string) => void;
+// }
 
-const TopNavBar = ({
-  createCall,
-  startHairCheck,
-}: TopNavBarProps): JSX.Element => {
-  const startDemo = () => {
-    createCall().then((url: string) => {
-      startHairCheck(url);
-    });
+const TopNavBar = (): JSX.Element => {
+  const navigate = useNavigate();
+
+  const dispatch: AppDispatch = useDispatch();
+
+  const startDemo = async () => {
+    try {
+      // response after creating a room
+      const responseRoom = await dispatch(createCall());
+      console.log("Room created successfully", responseRoom.payload);
+      navigate(`/video-call/?roomUrl=${encodeURIComponent(responseRoom.payload)}
+      `);
+    } catch (error) {
+      console.error(error);
+    }
   };
   const { user } = useSelector((state: RootState) => state.user);
 
