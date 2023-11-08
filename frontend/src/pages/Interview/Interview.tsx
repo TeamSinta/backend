@@ -714,7 +714,6 @@ const Interview = ({ leaveCall, interviewDetails }) => {
   };
 
   function notesEntered(notes: string) {
-    console.log("notes: ", notes);
     // send feedback
     const data = {
       interview_round: interviewDetails.id,
