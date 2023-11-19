@@ -22,7 +22,7 @@ export interface IQuestionsBank {
   competency: string;
   time: number;
   level: string;
-  detail: string;
+  guidelines: string;
   id: number;
   questionBank: [];
 }

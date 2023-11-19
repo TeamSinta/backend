@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 
-from .models import InterviewRound, InterviewRoundQuestion
+from .models import InterviewRound, InterviewRoundQuestion, Candidate
 
 
 @admin.register(InterviewRound)
@@ -29,3 +29,9 @@ class InterviewRoundQuestionAdmin(admin.ModelAdmin):
             "admin:interview_interviewround_change", args=[obj.interview_round.id]
         )
         return format_html('<a href="{}">{}</a>', url, obj.interview_round.title)
+
+
+@admin.register(Candidate)
+class Candidate(admin.ModelAdmin):
+    list_display = ("id", "name")
+    ordering = ("name",)

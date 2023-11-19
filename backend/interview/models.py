@@ -1,21 +1,21 @@
 from django.db import models
 from user.models import CustomUser
 from company.models import Company
-from question.models import Question
 from interview_templates.models import TemplateQuestion
 from django.utils import timezone
+
+
+class Candidate(models.Model):
+    username = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 # Create your models here.
 class InterviewRound(models.Model):
     title = models.CharField(max_length=200)
-    candidate = models.ForeignKey(
-        CustomUser,
-        related_name="candidate_interviews",
-        on_delete=models.CASCADE,
-        null=True,
-        default=None,
-    )
+    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
     interviewer = models.ForeignKey(
         CustomUser,
         related_name="interviewer_rounds",
@@ -26,7 +26,7 @@ class InterviewRound(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     template_id = models.IntegerField(default=55)
-
+    meeting_room_id = models.CharField(blank=True, null=True)
 
 
 class InterviewRoundQuestion(models.Model):

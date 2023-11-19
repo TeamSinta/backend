@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 // import { IMockMembers } from "../roles/rolesInterface";
 // import { InterviewDetailResponse } from "./inverviewDetailInterface";
 import { RootState } from "@/app/store";
-import { Loading } from "../utils/utilEnum";
+import { DataLoading } from "../utils/utilEnum";
 import {
   getInterviewTemplate,
   getInterviewSections,
@@ -20,7 +20,7 @@ export const initialState = {
     topics_text: "",
     time: "",
   },
-  status: Loading.UNSEND,
+  status: DataLoading.UNSEND,
 };
 
 export const getInterviewDetailAsync = createAsyncThunk(
@@ -43,7 +43,7 @@ export const interviewDetailSlice = createSlice({
       state.template = template;
       state.sections = sections;
       state.questions = questions;
-      state.status = Loading.FULFILLED;
+      state.status = DataLoading.FULFILLED;
       state.selectedSection = sections[0]; // Initialize as needed
     });
   },

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Loading } from "../utils/utilEnum";
+import { DataLoading } from "../utils/utilEnum";
 import { RootState } from "@/app/store";
 import { getQuestionsBank } from "./interviewsAPI";
 import { IQuestion } from "./interviewsInterface";
@@ -27,7 +27,7 @@ export const initialState = {
     title: "",
   },
   selectedQuestion: [] as IQuestion[],
-  status: Loading.UNSEND,
+  status: DataLoading.UNSEND,
 };
 
 export const getQuestionsBanksAsync = createAsyncThunk(
@@ -44,7 +44,7 @@ export const interviewsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getQuestionsBanksAsync.fulfilled, (state, action) => {
       state.questionBanks = action.payload;
-      state.status = Loading.FULFILLED;
+      state.status = DataLoading.FULFILLED;
     });
   },
   reducers: {
@@ -59,18 +59,19 @@ export const interviewsSlice = createSlice({
     },
     setSelectedQuestion: (state, actions) => {
       const { selectedQuestion } = actions.payload;
-      let temp: IQuestion[] = [];
-      const exit = state.selectedQuestion.find(
+      const exists = state.selectedQuestion.find(
         (question) => question.id === selectedQuestion.id
       );
-      if (!exit) {
+      if (!exists) {
         state.selectedQuestion.push(selectedQuestion);
       } else {
-        temp = state.selectedQuestion.filter(
+        state.selectedQuestion = state.selectedQuestion.filter(
           (question) => question.id !== selectedQuestion.id
         );
-        state.selectedQuestion = temp;
       }
+    },
+    setAllQuestionsSelected: (state, actions) => {
+      state.selectedQuestion = actions.payload;
     },
     resetQuestionBank: (state) => {
       Object.assign(state, initialState);
@@ -83,6 +84,7 @@ export const {
   selectQuestionBank,
   setSelectedQuestion,
   resetQuestionBank,
+  setAllQuestionsSelected,
 } = interviewsSlice.actions;
 
 export const selectInterview = (state: RootState) => state.questionBanks;

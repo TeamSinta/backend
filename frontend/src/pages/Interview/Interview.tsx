@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   StyledIcon,
@@ -14,8 +14,12 @@ import {
   StyledTopView,
   BottomQuestionButtons,
   StyledAnswerHeading,
-  VideoScreenWrapper,
   EmojiOverlayWrapper,
+  StyledImage,
+  GridContainer,
+  InterviewSideBarWrapper,
+  VideoScreenWrapper,
+  GuidelinesSection,
 } from "./StyledInterview";
 import { NavButton } from "@/components/layouts/sidenavbar/StyledSideNavBar";
 import { CANDIDATE_DETAILS, QUESTIONS_DATA } from "./InterviewConstant";
@@ -25,9 +29,12 @@ import {
   LeftArrowIcon,
   LinkedinIcon,
   MapIcon,
+  PencilIcon,
   PhoneIcon,
+  PlayIcon,
   ResumeIcon,
   RightArrowIcon,
+  TwoArrowIcon,
 } from "@/components/common/svgIcons/Icons";
 import InterviewStageSlider from "./InterviewStageSlider";
 import { QuestionMeta } from "../Interviews/Conclusion/MainScreen/InterviewQNA/Tabs/QuestionTabQNA";
@@ -49,11 +56,31 @@ import {
 } from "../../features/interviews/interviewsAPI";
 import { Cookies, useCookies } from "react-cookie";
 import { useDaily } from "@daily-co/daily-react";
+import SintaLogo from "src/assets/svg/Sinta_call_logo.svg";
+import {
+  BodyLMedium,
+  BodyMMedium,
+  BodySBold,
+  BodySMedium,
+} from "@/components/common/typeScale/StyledTypeScale";
+import { StyledCommentBox, StyledCommentInput } from "./Notes/StyledNotes";
+import { InputLabelDiv } from "@/components/pages/interview/overview_detail/StyledOverviewDetail";
+import TextArea from "@/components/common/form/textArea/TextArea";
+import { IconBtnL } from "@/components/common/buttons/iconBtn/IconBtn";
+import { BackgroundColor } from "@/features/utils/utilEnum";
+import ReactMarkdown from "react-markdown";
+import { H3 } from "@/components/common/typeScale/TypeScale";
+import Chat from "@/components/common/form/chatBox/ChatBox";
+
+const components = {
+  h3: H3,
+};
 
 const Interview = ({ leaveCall, interviewDetails }) => {
   const title = "FrontEnd Developer";
   const stage = "Round 3";
   const stageName = "Pair-Programming";
+  const commentInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState(1);
   const [initTime, setInitTime] = useState("");
   const [templateQuestionsAndTopics, setTemplateQuestionsAndTopics] =
@@ -120,7 +147,7 @@ const Interview = ({ leaveCall, interviewDetails }) => {
     };
 
     fetchQuestionsAndTopics();
-  }, [interviewDetails]);
+  }, [cookies.access_token, interviewDetails]);
 
   const sidebarTabs = useMemo(() => {
     return (
@@ -310,6 +337,10 @@ const Interview = ({ leaveCall, interviewDetails }) => {
       </>
     );
   };
+
+  interface IState {
+    notes: string;
+  }
   const InterviewQuestionTab = (info: any) => {
     const { data } = info;
     const [activeData, setActiveData] = useState(data[0]);
@@ -317,10 +348,15 @@ const Interview = ({ leaveCall, interviewDetails }) => {
     const [collapseQuestion, setCollapseQuestion] = useState(false);
     const [prevNum, setPrevNum] = useState(0);
     const [nextNum, setNextNum] = useState(2);
-    const showQuestionDetail = (questionInfo: any) => {
+    const [inputValue, setInputValue] = useState<IState>({
+      notes: "",
+    });
+    console.log(activeQuestionInfo);
+    console.log(activeData);
+    const showQuestionDetail = (questionInfo: any, index: any) => {
       setCollapseQuestion(true);
       setActiveQuestionInfo(questionInfo);
-      const currentNumber = parseInt(questionInfo.number);
+      const currentNumber = parseInt(index + 1);
       const prevNumber = currentNumber - 1;
       const nextNumber = currentNumber + 1;
 
@@ -345,206 +381,281 @@ const Interview = ({ leaveCall, interviewDetails }) => {
       setCollapseQuestion(false);
     }
 
+    const textAreaOnChange = (value: string) => {
+      inputValue["notes"] = value;
+    };
     return (
-      <div style={{ flex: "1", flexDirection: "column", display: "flex" }}>
-        <InterviewStageSlider
-          data={data}
-          setActiveData={setActiveData}
-          resetList={resetList}
-        />
-
-        <StyledInnerWrapper>
-          {" "}
-          {!collapseQuestion
-            ? activeData?.questions?.map((a: any, index: any) => {
-                return (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      fontSize: "12px",
-                      lineHeight: "15px",
-                      borderRadius: "10px",
-                      padding: "15px 10px",
-                      backgroundColor: "white",
-                      margin: "5px",
-                      marginBottom: "10px",
-                      cursor: "pointer",
-                      opacity: index === 0 ? "0.5" : "1",
-                    }}
-                    onClick={() => {
-                      showQuestionDetail(a);
-                    }}
-                  >
-                    <IndexStyle>
-                      <div>
-                        <span>{a.number}</span>{" "}
-                      </div>
-                    </IndexStyle>
-                    <div>{a.question}</div>
-                  </div>
-                );
-              })
-            : null}
+      <>
+        <div
+          style={{
+            padding: "2px",
+            flex: "1",
+            flexDirection: "column",
+            display: "flex",
+          }}
+        >
           {collapseQuestion ? (
-            <div
-              className="question-detail"
-              style={{
-                fontSize: "14px",
-              }}
-            >
-              <div style={{ marginTop: "5px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "100%",
-                  }}
-                >
-                  <div>
-                    <Grid>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-
-                          marginBottom: "12px",
-                        }}
-                      >
-                        <WhiteIndexStyle>
-                          <div>
-                            <span>{activeQuestionInfo?.number}</span>{" "}
-                          </div>
-                        </WhiteIndexStyle>
-
-                        <CompetencyStyle>
-                          <span>{activeQuestionInfo?.competency}</span>{" "}
-                        </CompetencyStyle>
-                      </div>
-                    </Grid>{" "}
-                    <p>{activeQuestionInfo?.question}</p>
-                    <div style={{ marginTop: "10px" }}>
-                      <QuestionMeta
-                        question={activeQuestionInfo}
-                        duration={""}
-                      />
-                    </div>
-                    <div style={{ marginTop: "10px" }}>
-                      <Grid>
-                        <RatingComponentL
-                          interviewRoundId={interviewDetails.id}
-                          question={activeQuestionInfo?.question}
-                          id={activeQuestionInfo?.id}
-                          setRating={handleRating}
-                          rating={activeQuestionInfo?.rating}
-                          width={40}
-                          height={40}
-                        />{" "}
-                      </Grid>
-                    </div>
-                  </div>
-                  <div
-                    style={{ flex: "1", marginTop: "20px", overflowY: "auto" }}
-                  >
-                    <StyledAnswerPoints>
-                      <StyledAnswerHeading>
-                        {"Answer/Prompt"}
-                      </StyledAnswerHeading>
-
-                      <span>{activeQuestionInfo?.answer}</span>
-                    </StyledAnswerPoints>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : null}
-        </StyledInnerWrapper>
-
-        {collapseQuestion ? (
-          <BottomQuestionButtons>
-            <div
-              style={{
-                display: "flex",
-                alignContent: "center",
-                alignItems: "center",
-                justifyContent: "space-between",
-                backgroundColor: "transparent",
-              }}
-            >
+            <Stack direction="row" justifyContent="space-between">
+              <InterviewStageSlider
+                data={data}
+                setActiveData={setActiveData}
+                resetList={resetList}
+              />
               <span
                 style={{
-                  backgroundColor: "transparent",
-                  opacity:
-                    parseInt(activeQuestionInfo?.number) === 1 ? "0.5" : "1",
-                }}
-                onClick={() => {
-                  if (parseInt(activeQuestionInfo?.number) !== 1) {
-                    setNextNum(nextNum - 1);
-                    setActiveQuestionInfo(
-                      activeData?.questions?.filter(
-                        (a: any) => parseInt(a.number) === prevNum
-                      )[0]
-                    );
-                    setPrevNum(prevNum - 1);
-                  }
-                }}
-              >
-                <ElWrap w={33}>
-                  <StyledIconBtnM>
-                    <RightArrowIcon />
-                  </StyledIconBtnM>
-                </ElWrap>
-              </span>
-              <span
-                style={{
-                  marginLeft: "5px",
-                  marginRight: "5px",
+                  marginLeft: "18px",
+
                   backgroundColor: "transparent",
                 }}
                 onClick={() => {
                   setCollapseQuestion(false);
                 }}
               >
-                <StyledIconBtnM
-                  style={{ padding: "1rem 1.25rem", backgroundColor: "white" }}
-                >
-                  See All
-                </StyledIconBtnM>
-              </span>
-              <span
-                style={{
-                  backgroundColor: "transparent",
-                  opacity:
-                    parseInt(activeQuestionInfo.number) ===
-                    activeData?.questions?.length
-                      ? "0.5"
-                      : "1",
-                }}
-                onClick={() => {
-                  if (
-                    parseInt(activeQuestionInfo?.number) !==
-                    activeData?.questions?.length
-                  ) {
-                    setActiveQuestionInfo(
-                      activeData?.questions?.filter(
-                        (a: any) => parseInt(a.number) === nextNum
-                      )[0]
-                    );
-                    setNextNum(nextNum + 1);
-                    setPrevNum(prevNum + 1);
-                  }
-                }}
-              >
-                <ElWrap w={33}>
-                  <StyledIconBtnM>
-                    <LeftArrowIcon />
+                <ElWrap w={50}>
+                  <StyledIconBtnM
+                    style={{ backgroundColor: "white", stroke: "white" }}
+                  >
+                    <div
+                      style={{
+                        transform: "rotate(45deg)",
+                        stroke: "${(props) => props.theme.colors.white",
+                      }}
+                    >
+                      <TwoArrowIcon />
+                    </div>
                   </StyledIconBtnM>
                 </ElWrap>
-              </span>{" "}
-            </div>
-          </BottomQuestionButtons>
-        ) : null}
-      </div>
+              </span>
+            </Stack>
+          ) : (
+            <InterviewStageSlider
+              data={data}
+              setActiveData={setActiveData}
+              resetList={resetList}
+            />
+          )}
+          <StyledInnerWrapper>
+            {" "}
+            {!collapseQuestion
+              ? activeData?.questions?.map((a: any, index: any) => {
+                  return (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        fontSize: "12px",
+                        lineHeight: "15px",
+                        borderRadius: "10px",
+                        padding: "15px 10px",
+                        backgroundColor: "white",
+                        margin: "5px",
+                        marginBottom: "10px",
+                        cursor: "pointer",
+                        opacity: index === 0 ? "0.5" : "1",
+                      }}
+                      onClick={() => {
+                        showQuestionDetail(a, index);
+                      }}
+                    >
+                      <IndexStyle>
+                        <div>
+                          <span>{index + 1}</span>{" "}
+                        </div>
+                      </IndexStyle>
+                      <div>{a.question}</div>
+                    </div>
+                  );
+                })
+              : null}
+            {collapseQuestion ? (
+              <div
+                className="question-detail"
+                style={{
+                  fontSize: "14px",
+                }}
+              >
+                <div style={{ marginTop: "18px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      height: "100%",
+                    }}
+                  >
+                    <div>
+                      <Stack direction="row" justifyContent="space-between">
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+
+                            marginBottom: "12px",
+                          }}
+                        >
+                          <WhiteIndexStyle>
+                            <div>
+                              <BodySBold>
+                                {activeQuestionInfo?.number}
+                              </BodySBold>{" "}
+                            </div>
+                          </WhiteIndexStyle>
+
+                          <CompetencyStyle>
+                            <BodySMedium>
+                              {activeQuestionInfo?.competency}
+                            </BodySMedium>{" "}
+                          </CompetencyStyle>
+                        </div>
+                        <Stack
+                          direction="row"
+                          justifyContent="flex-end"
+                          spacing={1}
+                        >
+                          <span
+                            style={{
+                              opacity:
+                                parseInt(activeQuestionInfo?.number) === 1
+                                  ? "0.5"
+                                  : "1",
+                            }}
+                            onClick={() => {
+                              if (parseInt(activeQuestionInfo?.number) !== 1) {
+                                setNextNum(nextNum - 1);
+                                setActiveQuestionInfo(
+                                  activeData?.questions?.filter(
+                                    (a: any) => parseInt(a.number) === prevNum
+                                  )[0]
+                                );
+                                setPrevNum(prevNum - 1);
+                              }
+                            }}
+                          >
+                            <ElWrap w={33}>
+                              <StyledIconBtnM>
+                                <RightArrowIcon />
+                              </StyledIconBtnM>
+                            </ElWrap>
+                          </span>
+                          <span
+                            style={{
+                              opacity:
+                                parseInt(activeQuestionInfo.number) ===
+                                activeData?.questions?.length
+                                  ? "0.5"
+                                  : "1",
+                            }}
+                            onClick={() => {
+                              if (
+                                parseInt(activeQuestionInfo?.number) !==
+                                activeData?.questions?.length
+                              ) {
+                                setActiveQuestionInfo(
+                                  activeData?.questions?.filter(
+                                    (a: any) => parseInt(a.number) === nextNum
+                                  )[0]
+                                );
+                                setNextNum(nextNum + 1);
+                                setPrevNum(prevNum + 1);
+                              }
+                            }}
+                          >
+                            <ElWrap w={33}>
+                              <StyledIconBtnM>
+                                <LeftArrowIcon />
+                              </StyledIconBtnM>
+                            </ElWrap>
+                          </span>{" "}
+                        </Stack>
+                      </Stack>{" "}
+                      <Stack alignItems="center" style={{ marginLeft: "8px" }}>
+                        <BodyLMedium
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-start",
+                            textAlign: "flex-start",
+                            paddingTop: "16px",
+                          }}
+                        >
+                          {activeQuestionInfo?.question}
+                        </BodyLMedium>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-start",
+                            marginTop: "16px",
+                            paddingBottom: "8px",
+                          }}
+                        >
+                          <QuestionMeta
+                            question={activeQuestionInfo.difficulty}
+                            duration={activeQuestionInfo?.duration}
+                          />
+                        </div>
+
+                        <div
+                          style={{ marginTop: "16px", marginBottom: "28px" }}
+                        >
+                          <RatingComponentL
+                            interviewRoundId={interviewDetails.id}
+                            question={activeQuestionInfo?.question}
+                            id={activeQuestionInfo?.id}
+                            setRating={handleRating}
+                            rating={activeQuestionInfo?.rating}
+                            width={40}
+                            height={40}
+                          />{" "}
+                        </div>
+                      </Stack>
+                    </div>
+                    <GuidelinesSection>
+                      <StyledAnswerPoints>
+                        <BodySBold style={{ marginBottom: "8px" }}>
+                          {"Guidelines"}
+                        </BodySBold>
+                        <ReactMarkdown components={components}>
+                          {activeQuestionInfo?.answer}
+                        </ReactMarkdown>
+                      </StyledAnswerPoints>
+                    </GuidelinesSection>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </StyledInnerWrapper>
+
+          {collapseQuestion ? (
+            <BottomQuestionButtons>
+              <Stack
+                direction="row"
+                justifyContent="flex-start"
+                spacing={1}
+                alignItems="center"
+              >
+                <InputLabelDiv style={{ width: "100%" }}>
+                  {/* <TextArea
+                    disable={false}
+                    placeholder={"Notes"}
+                    error={false}
+                    onChange={textAreaOnChange}
+                    name={"notes"}
+                    value={inputValue["notes"]}
+                  /> */}
+                  <Chat/>
+                </InputLabelDiv>
+
+                <ElWrap w={56} h={40}>
+                  <IconBtnL
+                    disable={false}
+                    onClick={handleRating}
+                    className={BackgroundColor.ACCENT_PURPLE}
+                    icon={<PlayIcon />}
+                  />
+                </ElWrap>
+              </Stack>
+            </BottomQuestionButtons>
+          ) : null}
+        </div>
+      </>
     );
   };
 
@@ -789,46 +900,21 @@ const Interview = ({ leaveCall, interviewDetails }) => {
   }
 
   return (
-    <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
-      <Grid
-        container
-        style={{
-          backgroundColor: "black",
-          height: "100%",
-          width: "100%",
-          padding: "2%",
-        }}
-      >
-        <Grid item xs={4} sm={4} md={8} lg={8} style={{ height: "100%" }}>
-          <VideoScreenWrapper>
-            <div>
-              <img
-                alt="sinta-logo"
-                src="src/assets/images/Sinta Gray Logo.png"
-                width="100"
-                height="40"
-              />
-            </div>
-            <div
-              style={{
-                position: "relative",
-                width: "100%",
-                color: "white",
-              }}
-            >
-              <div>
-                <Call />
-              </div>
-            </div>
-          </VideoScreenWrapper>
-        </Grid>
-        <Grid item xs={8} sm={8} md={4} lg={4} style={{ height: "100%" }}>
+    <div>
+      <GridContainer>
+        <div style={{ padding: "26px" }}>
+          <StyledImage src={SintaLogo} alt="Sinta_Logo" />
+        </div>
+        <VideoScreenWrapper>
+          <Call />
+        </VideoScreenWrapper>
+        <InterviewSideBarWrapper>
           <InterviewSideBar
             setReactClicked={setReactClicked}
             reactClicked={reactClicked}
           />
-        </Grid>
-      </Grid>
+        </InterviewSideBarWrapper>
+      </GridContainer>
       <BottomNavBar
         emojiClicked={emojiClicked}
         setReactClicked={setReactClicked}

@@ -1,6 +1,6 @@
 import { RootState } from "@/app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Loading } from "../utils/utilEnum";
+import { DataLoading } from "../utils/utilEnum";
 import {
   IInviteMember,
   IInviteMemberCreateSlice,
@@ -19,7 +19,7 @@ export const initialState: IInviteMemberCreateSlice = {
     member_email: "",
     admin: false,
   },
-  status: Loading.UNSEND,
+  status: DataLoading.UNSEND,
 };
 
 export const postInviteMemberAsync = createAsyncThunk(
@@ -35,12 +35,12 @@ export const inviteMemberSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder.addCase(postInviteMemberAsync.pending, (state) => {
-      state.status = Loading.PENDING;
+      state.status = DataLoading.PENDING;
     });
     builder.addCase(postInviteMemberAsync.fulfilled, (state, action) => {
       // Object.assign(state.invite_member, initialState.invite_member);
       state.invited_member = { ...action.payload, selected: false };
-      state.status = Loading.FULFILLED;
+      state.status = DataLoading.FULFILLED;
     });
   },
   reducers: {

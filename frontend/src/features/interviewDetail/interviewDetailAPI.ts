@@ -26,7 +26,7 @@ export const getInterviewSections = async (templateId: string) => {
 
 export const getInterviewDetail = async (templateId: string) => {
   const response = await instance.get(
-    `${BASE_URL}/templates/${templateId}/questions/`
+    `${BASE_URL}/templates/${templateId}/templatequestions/`
   );
   return response.data;
 };

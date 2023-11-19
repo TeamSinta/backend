@@ -11,7 +11,7 @@ import { closeModal } from "@/features/modal/modalSlice";
 import { BackgroundColor, PhotoType } from "@/features/utils/utilEnum";
 import { useDispatch, useSelector } from "react-redux";
 import { ModalContentWrap } from "./StyledModalContents";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RootState } from "@/app/store";
 
 import {
@@ -20,6 +20,11 @@ import {
 } from "@/features/settingsDetail/userSettingTypes";
 import { useCookies } from "react-cookie";
 import { useFetchCompanyMembers } from "@/components/pages/settings/memberTab/useFetchAndSortMembers";
+import {
+  useGetTemplateDetailQuery,
+  useUpdateTemplateMutation,
+} from "@/features/templates/templatesAPISlice";
+import { useParams } from "react-router-dom";
 
 const EditInterviewers = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,10 +32,13 @@ const EditInterviewers = () => {
   const workspace = useSelector((state: RootState) => state.workspace);
   const [sortCriteria] = useState("");
   const [departmentId] = useState("");
+  const [selectedMembers, setSelectedMembers] = useState<IMember[]>([]);
 
   const [cookies, ,] = useCookies(["access_token"]);
   const accessToken = cookies.access_token as AccessToken;
-  // definitely should look over this, idk what TS is doing here om on the companyId type.
+  const { templateId } = useParams();
+  const { data: templateData } = useGetTemplateDetailQuery(templateId);
+
   const companyId: CompanyID = (!workspace.id
     ? user.companies[0].id
     : workspace.id)! as unknown as CompanyID;
@@ -41,36 +49,51 @@ const EditInterviewers = () => {
     sortCriteria: sortCriteria,
   });
 
-  // const onMemberSelected = (memberIdx: number) => {
-  //   dispatch(selectedMember({ memberIdx: memberIdx }));
-  // };
+  useEffect(() => {
+    if (members && members.length > 0 && templateData) {
+      // Assuming templateData.interviewers contains the IDs of the selected interviewers
+      const interviewerIds = new Set(
+        templateData.interviewers.map((i) => i.id)
+      );
 
-  const handleNext = () => {
-    // Define the data to send to the server
-    dispatch(closeModal());
-    // Handle UPDATE Request
-    // const requestData = {
-    //   role_title: inputValue.title,
-    //   location: null,
-    //   interviewer_ids: members
-    //     .filter((member) => member.selected)
-    //     .map((member) => member.member_idx),
-    //   company_id: companyId,
-    //   department_id: null,
-    //   // Assuming the department_id is null as shown in the example. Replace as needed.
-    // };
+      const initializedMembers = members.map((member) => ({
+        ...member,
+        member_idx: member.id, // map id to member_idx
+        selected: interviewerIds.has(member.id),
+      }));
+      setSelectedMembers(initializedMembers);
+    }
+  }, [members, templateData]); // Depend on templateData as well
 
-    // axios
-    //   .post("http://localhost:8000/api/templates/", requestData)
-    //   .then((response) => {
-    //     // Handle success, e.g., show a success message or navigate to the next step
-    //     const templateID = response.data.id;
-    //     // Pass the template ID as a parameter
-    //   })
-    //   .catch((error) => {
-    //     // Handle the error, e.g., show an error message
-    //     console.error("Error:", error);
-    //   });
+  const onMemberSelected = (memberId: number) => {
+    const updatedMembers = selectedMembers.map((member) =>
+      member.id === memberId
+        ? { ...member, selected: !member.selected }
+        : member
+    );
+    setSelectedMembers(updatedMembers);
+  };
+
+  const [updateTemplate] = useUpdateTemplateMutation();
+
+  const handleNext = async () => {
+    const selectedMemberIds = selectedMembers
+      .filter((member) => member.selected)
+      .map((member) => member.id);
+
+    try {
+      const requestData = {
+        id: templateId,
+        interviewers: selectedMemberIds, // Assuming your update endpoint needs these fields
+        // Add other fields as required
+      };
+      await updateTemplate(requestData).unwrap();
+
+      dispatch(closeModal());
+    } catch (error) {
+      // Handle the error, e.g., show an error message
+      console.error("Error updating template:", error);
+    }
   };
 
   return (
@@ -78,11 +101,11 @@ const EditInterviewers = () => {
       <BodySMedium>Members</BodySMedium>
       <PhotoContainer>
         <Photos>
-          {members.map((member: any, index: number) => (
+          {selectedMembers.map((member: any, index: number) => (
             <ElWrap w={40} h={40} key={index}>
               <Photo
                 photoType={PhotoType.L}
-                onSelect={() => {}}
+                onSelect={() => onMemberSelected(member.id)}
                 member_idx={member.id}
                 member_firstName={member.first_name}
                 member_lastName={member.last_name}

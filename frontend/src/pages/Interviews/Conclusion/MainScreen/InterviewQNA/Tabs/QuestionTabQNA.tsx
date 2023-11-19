@@ -2,7 +2,10 @@ import React from "react";
 import { IndexStyle, InterviewContainerStyle } from "../InterviewQNA";
 import { Grid } from "@mui/material";
 import { QuestionCollapsible } from "../QuestionCollapsible";
-import { ClockIcon } from "@/components/common/svgIcons/CustomIcons";
+import {
+  ClockIcon,
+  SoundLevelIcon,
+} from "@/components/common/svgIcons/CustomIcons";
 import { PredefinedRatingsAndCompetency } from "../RatingComponent";
 import styled from "styled-components";
 
@@ -36,6 +39,7 @@ interface QuestionTextDisplayProps {
 interface QuestionMetaProps {
   duration: string;
   question: string;
+  difficulty: string;
 }
 
 interface TextProps {
@@ -93,7 +97,10 @@ const AnswerContainer = styled.div`
   line-height: 1.5;
 `;
 
-export const QuestionMeta: React.FC<QuestionMetaProps> = ({ duration }) => {
+export const QuestionMeta: React.FC<QuestionMetaProps> = ({
+  duration,
+  difficulty,
+}) => {
   return (
     <p>
       <FlexContainer>
@@ -101,6 +108,11 @@ export const QuestionMeta: React.FC<QuestionMetaProps> = ({ duration }) => {
           <ClockIcon width={12} height={12} active={0} />
         </IconContainer>
         <Text>{duration}</Text>
+
+        <IconContainer style={{ marginLeft: "12px" }}>
+          <SoundLevelIcon width={12} height={12} active={0} />
+        </IconContainer>
+        <Text>{difficulty}</Text>
       </FlexContainer>
     </p>
   );

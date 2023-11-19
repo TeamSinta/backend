@@ -113,7 +113,9 @@ DATABASES = {
 # Configure your S3 settings
 AWS_ACCESS_KEY_ID = KEYS["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = KEYS["AWS_SECRET_ACCESS_KEY"]
-AWS_STORAGE_BUCKET_NAME = "team-sinta"
+AWS_STORAGE_BUCKET_NAME = "sinta-media"
+AWS_S3_FILE_OVERWRITE = False
+AWS_QUERYSTRING_AUTH = False
 AWS_S3_REGION_NAME = "eu-west-1"  # e.g., 'us-east-1'
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
@@ -169,9 +171,9 @@ AUTH_USER_MODEL = "user.CustomUser"
 ADMINS = [(KEYS["SUPERUSER"], KEYS["SUPERUSER_EMAIL"])]
 
 SIMPLE_JWT = {
-    # "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    # "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=90),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "TOKEN_OBTAIN_SERIALIZER": "app.serializers.MyTokenObtainPairSerializer",

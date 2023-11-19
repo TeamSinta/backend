@@ -14,6 +14,7 @@ import SelectTemplate from "./modalContents/SelectTemplate";
 import MemberSettings from "./userSettingsModal/MemberSettings";
 import EditInterviews from "./modalContents/EditInterview";
 import EditInterviewers from "./modalContents/EditInterviewrs";
+import SelectAllQuestions from "./modalContents/SelectAllQuestions";
 
 export enum MODAL_TYPE {
   CREATE_DEP = "CREATE_DEP",
@@ -23,6 +24,7 @@ export enum MODAL_TYPE {
   MEMBER_SET = "MEMBER_SET",
   EDIT_INT = "EDIT_INT",
   EDIT_MEM = "EDIT_MEM",
+  SELECT_ALL_QUESTIONS = "SELECT_ALL_QUESTIONS",
   // ModalL = "ModalL",
 }
 
@@ -66,6 +68,12 @@ const GlobalModal = (): JSX.Element => {
           <Modal title="Create New Departments">
             <CreateDepartment />
           </Modal>
+        );
+      case MODAL_TYPE.SELECT_ALL_QUESTIONS:
+        return (
+          <ModalL title="All Questions Library">
+            <SelectAllQuestions />
+          </ModalL>
         );
       case MODAL_TYPE.CREATE_INT:
         return (

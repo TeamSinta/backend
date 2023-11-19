@@ -1,41 +1,56 @@
 import styled from "styled-components";
 import {
-  H1,
   H2Bold,
   BodySMedium,
+  H2Medium,
 } from "@/components/common/typeScale/StyledTypeScale";
 import { Box } from "@mui/material";
 
 export const YourNewContainer = styled.div`
   display: flex;
-  height: 100vh;
-  gap: 32px;
+  height: 100%;
+  gap: 80px;
   flex-direction: column;
+  justify-content: space-between;
 `;
 
 export const YourMainContentContainer = styled.div`
   flex: 0.8; // Makes it grow to take all available space, pushing TemplateCardsBox to the bottom.
   display: flex;
-`;
-export const WelcomeHeading = styled(H1)`
-  font-size: 44px;
+  align-items: flex-end;
+  justify-content: flex-end;
 
-  @media (max-width: 1600px) {
+  @media (min-width: 1450px) {
+    /* Adjust styles for screens with a max width of 768px */
+    padding-left: 248px;
+  }
+`;
+export const WelcomeHeading = styled(H2Medium)`
+  font-size: 52px;
+  width: 400px;
+  font-weight: 700;
+  padding-bottom: 8px;
+
+  @media (max-width: 1450px) {
     /* Adjust styles for screens with a max width of 768px */
     text-align: center;
     font-size: 38px;
     padding-bottom: 8px;
+    width: 600px;
   }
 `;
 
 export const DescriptionText = styled(BodySMedium)`
   /* Your styling for description text here */
   font-size: 16px;
-  padding-left: 4px;
+  width: 400px;
+  align-items: center;
+  text-align: center;
 
-  @media (max-width: 1600px) {
+  @media (max-width: 1450px) {
     /* Adjust styles for screens with a max width of 768px */
-    text-align: center;
+
+    width: 600px;
   }
 `;
 
@@ -49,31 +64,14 @@ export const Container = styled(Box)`
   text-align: center;
   flex-direction: column;
   justify-content: center;
-  gap: 28px;
-  @media (max-width: 1600px) {
+  gap: 24px;
+  align-content: flex-end;
+  @media (max-width: 1450px) {
     /* Adjust styles for screens with a max width of 768px */
-    gap: 18px;
+    gap: 28px;
     align-items: center;
     text-align: center;
-  }
-`;
-
-export const PendingReviewsBox = styled(Box)`
-  border-radius: 18px;
-  border: 1px solid #e0e0e0;
-  display: inline-flex;
-  padding: 24px 0px 24px 24px;
-  gap: 8px;
-  align-items: flex-start;
-  height: 50%;
-  width: -webkit-fill-available;
-
-  @media (max-width: 1600px) {
-    /* Adjust styles for screens with a max width of 768px */
-    justify-content: center;
-
-    width: 90%;
-    border: 1px solid #e0e0e0;
+    padding-bottom: 16px;
   }
 `;
 
@@ -92,7 +90,7 @@ export const TemplateCardsBox = styled(Box)`
 
 export const TextBox = styled(Box)`
   display: flex;
-  gap: 8px;
+  gap: 16px;
   flex-direction: column;
 `;
 
@@ -107,37 +105,38 @@ export const IconStyle = styled.div`
 export const MainContainer = styled(Box)`
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  gap: 1px;
+  gap: 88px;
+  justify-content: space-between;
 
   @media (min-width: 1900px) {
     /* Adjust styles for screens with a max width of 768px */
-    justify-content: space-around;
+    justify-content: space-between;
   }
 
-  @media (max-width: 1600px) {
+  @media (max-width: 1450px) {
     /* Adjust styles for screens with a max width of 768px */
-    justify-content: center;
-    align-items: center;
+
     gap: 28px;
-    flex-direction: column;
+    justify-content: space-between;
+    flex-direction: column-reverse;
   }
 `;
 
 export const StyledImage = styled.img`
-  min-width: 100px;
-  min-height: 440px;
   flex: 1;
+  width: 1000px;
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1450px) {
     /* Adjust styles for screens with a max width of 768px */
-    width: 90%;
     flex: 1;
+    width: 650px;
+    padding-bottom: 30px;
   }
 
-  @media (min-width: 1600px) {
+  @media (min-width: 1700px) {
     /* Adjust styles for screens with a max width of 768px */
     flex: 1;
+    min-width: 1200px;
   }
 `;
 

@@ -13,7 +13,7 @@ from .models import (
 # Id, RoleTitle, Company
 @admin.register(Template)
 class TemplateAdmin(admin.ModelAdmin):
-    list_display = ("id", "role_title", "company_link")
+    list_display = ("id", "role_title", "company_link", "description", "department")
 
     def company_link(self, obj):
         url = reverse("admin:user_usercompanies_change", args=[obj.company.id])

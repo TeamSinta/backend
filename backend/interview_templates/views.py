@@ -7,6 +7,116 @@ from company.models import Company
 from question.models import Question
 import json
 from django.urls import reverse
+from rest_framework import generics, status
+from .serializers import (
+    TemplateQuestionSerializer,
+    TemplatesSerializer,
+    TemplateTopicSerializer,
+)
+from question.serializers import QuestionSerializer
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+
+
+class TemplateTopicList(generics.ListCreateAPIView):
+    serializer_class = TemplateTopicSerializer
+
+    def get_queryset(self):
+        queryset = TemplateTopic.objects.all()
+        template = self.request.query_params.get("template")
+        if template is not None:
+            queryset = queryset.filter(template_id=template)
+        return queryset
+
+
+class TemplateTopicDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TemplateTopicSerializer
+    queryset = TemplateTopic.objects.all()
+
+
+class TemplateQuestionsList(generics.ListCreateAPIView):
+    serializer_class = TemplateQuestionSerializer
+
+    def get_queryset(self):
+        queryset = TemplateQuestion.objects.all()
+        template = self.request.query_params.get("template")
+        template_topic = self.request.query_params.get("topic")
+        if template is not None:
+            queryset = queryset.filter(template_id=template)
+        if template_topic is not None:
+            queryset = queryset.filter(topic_id=template_topic)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        # Extract the question data from the request
+        print(request)
+        question_data = request.data.get("question")
+        # Extract the "difficulty" field from question_data and convert it
+        difficulty_mapping = {
+            "Low": 1,
+            "Medium": 2,
+            "High": 3,
+        }
+        difficulty_display = question_data.pop(
+            "difficulty", ""
+        )  # Remove "difficulty" from question_data
+        difficulty = difficulty_mapping.get(difficulty_display, None)
+        question_data[
+            "difficulty"
+        ] = difficulty  # Add the converted "difficulty" back to question_data
+        # Create a new Question object
+        print(question_data)
+        question_serializer = QuestionSerializer(data=question_data)
+        print(question_serializer)
+        if question_serializer.is_valid():
+            question = question_serializer.save()
+        else:
+            return JsonResponse(
+                question_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        question_id = question.id
+        try:
+            question = Question.objects.get(id=question_id)
+        except Question.DoesNotExist:
+            return JsonResponse(
+                {"error": "Question not found"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+            # Create the TemplateQuestion object with the associated Question
+        template_question_data = {
+            "template_id": request.data.get("template_id"),
+            "topic": request.data.get("topic"),
+            "question": question.id,
+        }
+        print(template_question_data)
+        template_question_serializer = TemplateQuestionSerializer(
+            data=template_question_data, context={"request": request}
+        )
+        if template_question_serializer.is_valid():
+            template_question_serializer.save()
+            return JsonResponse(
+                template_question_serializer.data, status=status.HTTP_201_CREATED
+            )
+        else:
+            return JsonResponse(
+                template_question_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class TemplateQuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TemplateQuestionSerializer
+    queryset = TemplateQuestion.objects.all()
+
+
+class TemplatesList(generics.ListCreateAPIView):
+    serializer_class = TemplatesSerializer
+    queryset = Template.objects.all()
+
+
+class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = TemplatesSerializer
+    queryset = Template.objects.all()
+    parser_classes = (MultiPartParser, FormParser, JSONParser)
 
 
 # CRUD for Templates, TemplateTopics, TemplateInterviewers, & TemplateQuestions
@@ -344,6 +454,7 @@ def get_all_template_topics(request, template_id):
         error_response = {"error": "Invalid request method"}
         return JsonResponse(error_response, status=405)
 
+
 # Create a TemplateQuestion
 @csrf_exempt
 def create_template_question(request, template_id):
@@ -388,7 +499,6 @@ def create_template_question(request, template_id):
     else:
         error_response = {"error": "Invalid request method"}
         return JsonResponse(error_response, status=405)
-
 
 
 # Read TemplateQuestions for a Template
@@ -473,7 +583,9 @@ def delete_template_questions(request, template_id):
 def get_all_template_questions(request, template_id):
     if request.method == "GET":
         template = get_object_or_404(Template, pk=template_id)
-        template_questions = TemplateQuestion.objects.filter(template_id=template_id).select_related('question', 'topic')
+        template_questions = TemplateQuestion.objects.filter(
+            template_id=template_id
+        ).select_related("question", "topic")
 
         # Using a dictionary to group by topics
         stages = {}
@@ -483,13 +595,13 @@ def get_all_template_questions(request, template_id):
                 stages[topic_name] = {
                     "stage": topic_name,
                     "stageId": template_question.topic.id,
-                    "questions": []
+                    "questions": [],
                 }
 
             question = template_question.question
-            stages[topic_name]['questions'].append(
+            stages[topic_name]["questions"].append(
                 {
-                    "number": "1",
+                    "number": str(question.id),
                     "question": question.question_text,
                     "duration": f"{question.reply_time} min",
                     "competency": question.competency,
@@ -503,6 +615,38 @@ def get_all_template_questions(request, template_id):
         stages_list = list(stages.values())
 
         return JsonResponse({"data": stages_list}, status=200, safe=False)
+    else:
+        error_response = {"error": "Invalid request method"}
+        return JsonResponse(error_response, status=405)
+
+
+@csrf_exempt
+def get_all_questions(request, template_id):
+    if request.method == "GET":
+        template = get_object_or_404(Template, pk=template_id)
+        template_questions = TemplateQuestion.objects.filter(template_id=template_id)
+
+        # Create a list of dictionaries containing information about each TemplateQuestion
+        template_question_list = []
+        for template_question in template_questions:
+            question = template_question.question  # Fetch the question details
+            template_question_list.append(
+                {
+                    "template_id": template_id,
+                    "template_topic_id": template_question.topic.id,
+                    "question_id": question.id,
+                    "question_text": question.question_text,
+                    "guidelines": question.guidelines,
+                    "reply_time": question.reply_time,
+                    "competency": question.competency,
+                    "difficulty": question.difficulty,
+                    "review": question.review,
+                    "created_at": question.created_at,
+                    "updated_at": question.updated_at,
+                }
+            )
+
+        return JsonResponse(template_question_list, status=200, safe=False)
     else:
         error_response = {"error": "Invalid request method"}
         return JsonResponse(error_response, status=405)

@@ -2,9 +2,25 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AuthState } from "./authenticationInterface";
 import { authAPI } from "./authenticationAPI";
 
+function getCookie(name: string) {
+  const cookieValue = document.cookie.match(
+    new RegExp("(^| )" + name + "=([^;]+)")
+  );
+  if (cookieValue) {
+    return cookieValue[2];
+  }
+  return null;
+}
+
+function checkTokensInCookies() {
+  const accessToken = getCookie("access_token");
+  const refreshToken = getCookie("refresh_token");
+  return !!accessToken || !!refreshToken;
+}
+
 const initialState: AuthState = {
   status: "IDLE",
-  isAuthenticated: false,
+  isAuthenticated: checkTokensInCookies(),
   user: {
     username: null,
     first_name: null,

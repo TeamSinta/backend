@@ -1,5 +1,4 @@
 import Cover from "@/assets/svg/sinta_default_card.svg";
-import TempCover from "@/assets/images/cover_1.jpg";
 import styled from "styled-components";
 
 export const Card = styled.div`
@@ -28,7 +27,7 @@ interface ICardCover {
 export const CardCover = styled.div<ICardCover>`
   //Use when we have cover url. Right now I used jpg file.
   /* background-image: url(${(props) => props.imgUrl}); */
-  background-image: url(${TempCover});
+  background-image: url(${(props) => props.imgUrl});
   background-size: cover, contain;
   background-position: center, right bottom;
   background-repeat: no-repeat, no-repeat;

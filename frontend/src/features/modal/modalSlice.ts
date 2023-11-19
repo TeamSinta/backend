@@ -7,6 +7,7 @@ export interface ModalState {
   templateID: string;
   isOpen: boolean;
   history: string;
+  questionBankID: string;
 }
 
 const initialState: ModalState = {
@@ -14,6 +15,7 @@ const initialState: ModalState = {
   isOpen: false,
   history: "",
   templateID: "",
+  questionBankID: "",
 };
 
 export const modalSlice = createSlice({
@@ -21,9 +23,10 @@ export const modalSlice = createSlice({
   initialState,
   reducers: {
     openModal: (state, actions) => {
-      const { modalType, templateID } = actions.payload;
+      const { modalType, templateID, questionBankID } = actions.payload;
       state.modalType = modalType;
       state.templateID = templateID;
+      state.questionBankID = questionBankID;
       state.isOpen = true;
     },
     closeModal: (state) => {

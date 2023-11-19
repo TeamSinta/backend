@@ -29,16 +29,22 @@ export const StyledCardContent = styled(CardContent)`
   align-items: flex-start;
 `;
 
-export const StyledCardMedia = styled(CardMedia)`
+interface ICardCover {
+  imgUrl: string;
+}
+export const StyledCardMedia = styled(CardMedia)<ICardCover>`
   position: absolute;
   right: 16px;
 
   width: 82px;
   height: 94px;
-  background-image: url("https://i.postimg.cc/qR0phQNJ/ed446e8d10de855690a5e6c000177fe2.png"),
+  background-image: url(${(props) => props.imgUrl}),
     linear-gradient(0deg, black 0%, white 100%);
   border-radius: 8px;
   min-width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const StyledBox = styled(Box)`

@@ -1,4 +1,4 @@
-export enum Loading {
+export enum DataLoading {
   UNSEND = "UNSEND",
   PENDING = "PENDING",
   FULFILLED = "FULFILLED",
@@ -18,9 +18,9 @@ export enum PhotoType {
 }
 
 export enum StatusDropdownFilter {
-  ACTIVE = "Active",
-  CLOSED = "Closed",
-  WAITING = "Waiting",
+  LOW = "Low",
+  MEDIUM = "Medium",
+  HIGH = "High",
 }
 
 export enum TABS {

@@ -5,11 +5,21 @@ import {
   useLocalParticipant,
   useDailyEvent,
   DailyAudio,
+  useDaily,
 } from "@daily-co/daily-react";
 
 import "./Call.css";
 import Tile from "../Tile/Tile";
 import UserMediaError from "../UserMediaError/UserMediaError";
+import {
+  BodyLMedium,
+  BodyLSemiBold,
+  BodyMMedium,
+  BodySMedium,
+} from "@/components/common/typeScale/StyledTypeScale";
+import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBtn";
+import ElWrap from "@/components/layouts/elWrap/ElWrap";
+import { BackgroundColor } from "@/features/utils/utilEnum";
 
 export default function Call() {
   /* If a participant runs into a getUserMedia() error, we need to warn them. */
@@ -23,6 +33,7 @@ export default function Call() {
       setGetUserMediaError(true);
     }, [])
   );
+  const callObject = useDaily();
 
   /* This is for displaying remote participants: this includes other humans, but also screen shares. */
   const { screens } = useScreenShare();
@@ -48,6 +59,7 @@ export default function Call() {
           isScreenShare={false}
         />
       )}
+
       {/* Videos of remote participants and screen shares */}
       {remoteParticipantIds?.length! > 0 || screens?.length! > 0 ? (
         <>
@@ -73,10 +85,25 @@ export default function Call() {
         </>
       ) : (
         // When there are no remote participants or screen shares
-        <div className="info-box">
-          <h1>Waiting for others</h1>
-          <p>Invite someone by sharing this link:</p>
-          <span className="room-url">{window.location.href}</span>
+        <div className="join-now-box">
+          <BodyLSemiBold style={{ color: "white" }}>
+            ⚡️ Share the link with your candidate to start the meeting ⚡️
+          </BodyLSemiBold>
+          <div className="meeting-container">
+            <div className="meeting-link">
+              <BodyMMedium style={{ color: "white" }}>
+                {callObject.properties.url}
+              </BodyMMedium>
+            </div>
+            <ElWrap w={400}>
+              <TextIconBtnL
+                label="Copy Link"
+                onClick={() => {}}
+                disable={false}
+                className={BackgroundColor.ACCENT_PURPLE}
+              />
+            </ElWrap>
+          </div>
         </div>
       )}
     </div>

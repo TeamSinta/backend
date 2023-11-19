@@ -1,4 +1,4 @@
-import { Loading } from "../utils/utilEnum";
+import { DataLoading } from "../utils/utilEnum";
 
 export interface IInviteMemberCreateSlice {
   invited_member: {
@@ -13,10 +13,10 @@ export interface IInviteMemberCreateSlice {
     admin: boolean;
   };
   status:
-    | Loading.UNSEND
-    | Loading.FULFILLED
-    | Loading.PENDING
-    | Loading.REJECTED;
+    | DataLoading.UNSEND
+    | DataLoading.FULFILLED
+    | DataLoading.PENDING
+    | DataLoading.REJECTED;
 }
 
 export interface IInviteMember {

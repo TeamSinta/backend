@@ -15,17 +15,18 @@ import { StatusDropdownFilter } from "@/features/utils/utilEnum";
 import { BodyMMedium } from "../../typeScale/StyledTypeScale";
 
 const optionArr: StatusDropdownFilter[] = [
-  StatusDropdownFilter.ACTIVE,
-  StatusDropdownFilter.WAITING,
-  StatusDropdownFilter.CLOSED,
+  StatusDropdownFilter.LOW,
+  StatusDropdownFilter.MEDIUM,
+  StatusDropdownFilter.HIGH,
 ];
 
 interface IStatusFilterProps {
   status:
-    | StatusDropdownFilter.ACTIVE
-    | StatusDropdownFilter.CLOSED
-    | StatusDropdownFilter.WAITING
+    | StatusDropdownFilter.LOW
+    | StatusDropdownFilter.MEDIUM
+    | StatusDropdownFilter.HIGH
     | null;
+  onSelectStatus: (status: StatusDropdownFilter | null) => void; // Add this callback prop
 }
 
 const StatusFilter = (props: IStatusFilterProps): JSX.Element => {
@@ -49,6 +50,7 @@ const StatusFilter = (props: IStatusFilterProps): JSX.Element => {
     setSelectedItem(item);
     setSelectedItemName(item);
     setOpen(false);
+    props.onSelectStatus(item);
   };
 
   return (

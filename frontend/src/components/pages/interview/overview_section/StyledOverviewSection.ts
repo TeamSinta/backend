@@ -65,3 +65,15 @@ export const SectionList = styled.button`
     }
   }
 `;
+
+export const EmptySectionContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  padding-left: 62px;
+  padding-right: 62px;
+
+  flex-direction: column;
+  text-align: center;
+`;

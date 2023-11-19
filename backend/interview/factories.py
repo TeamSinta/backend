@@ -6,10 +6,18 @@ from user.models import CustomUser, Role
 from .models import (
     InterviewRound,
     InterviewRoundQuestion,
-    CustomUser,
+    Candidate,
 )
 from user.factories import UserFactory
 from interview_templates.factories import TemplateQuestion, TemplateQuestionFactory
+
+
+class CandidateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Candidate
+
+    name = factory.Faker("name")
+    username = factory.Faker("name")
 
 
 class InterviewRoundFactory(factory.django.DjangoModelFactory):
@@ -17,7 +25,7 @@ class InterviewRoundFactory(factory.django.DjangoModelFactory):
         model = InterviewRound
 
     title = factory.Faker("job")
-    candidate = factory.SubFactory(UserFactory)
+    candidate = factory.SubFactory(CandidateFactory)
 
     @factory.lazy_attribute
     def interviewer(cls):

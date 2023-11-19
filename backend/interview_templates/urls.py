@@ -3,6 +3,12 @@ from . import views
 
 urlpatterns = [
     # Templates
+    path("templates/", views.TemplatesList.as_view()),
+    path("templates/<int:pk>/", views.TemplateDetail.as_view()),
+    path("topics/<int:pk>/", views.TemplateTopicDetail.as_view()),
+    path("topics/", views.TemplateTopicList.as_view()),
+    path("template_questions/", views.TemplateQuestionsList.as_view()),
+    path("template_questions/<int:pk>/", views.TemplateQuestionsDetail.as_view()),
     path("", views.get_all_templates, name="get_all_templates"),
     path("add/", views.create_template, name="create_template"),
     path("<int:template_id>/", views.read_template, name="get_template"),
@@ -34,16 +40,15 @@ urlpatterns = [
         views.delete_template_topic,
         name="delete_template_topic",
     ),
-    # # Template Interviewers
-    # path("<int:template_id>/interviewers/", views.get_all_template_interviewers, name="get_all_template_interviewers"),
-    # path("<int:template_id>/interviewers/add/", views.create_template_interviewers, name="create_template_interviewers"),
-    # path("<int:template_id>/interviewers/edit/", views.update_template_interviewers, name="update_template_interviewers"),
-    # path("<int:template_id>/interviewers/remove/", views.delete_template_interviewers, name="delete_template_interviewers"),
-    # Template Questions
     path(
         "<int:template_id>/questions/",
         views.get_all_template_questions,
         name="get_all_template_questions",
+    ),
+    path(
+        "<int:template_id>/templatequestions/",
+        views.get_all_questions,
+        name="get_all_questions",
     ),
     path(
         "<int:template_id>/questions/add/",

@@ -21,17 +21,19 @@ import {
 } from "@/components/common/typeScale/StyledTypeScale";
 import Photos from "../../buttons/photo/Photos";
 import { InitialsGenerator } from "@/utils/Utils";
+import TempCover from "@/assets/images/cover_1.jpg";
 
 export interface IMember {
-  id: number; // Change to match your backend model
+  id: number;
   profile_picture: string;
   first_name: string;
-  last_name: string; // Change to match your backend model
+  last_name: string;
 }
 
 interface ITemplateHomeCard {
   title: string;
   disable: boolean;
+  imageUrl: string;
   questions: undefined[];
   members: IMember[];
   sections: undefined[];
@@ -40,7 +42,10 @@ interface ITemplateHomeCard {
 
 const TemplateHomeCard = (props: ITemplateHomeCard) => {
   const [hover, setHover] = useState(false);
-  const { title, disable, members, questions, sections, onClick } = props;
+  const { title, imageUrl, disable, members, questions, sections, onClick } =
+    props;
+
+  const coverImage = imageUrl || TempCover;
 
   return (
     <ElWrap w={370} h={216}>
@@ -58,7 +63,7 @@ const TemplateHomeCard = (props: ITemplateHomeCard) => {
             />
           </ElWrap>
         </CardButtons>
-        <CardCover imgUrl={""}></CardCover>
+        <CardCover imgUrl={coverImage}></CardCover>
 
         <CardWrap>
           <CardContent

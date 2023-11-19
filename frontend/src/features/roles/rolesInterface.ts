@@ -1,4 +1,4 @@
-import { Loading } from "../utils/utilEnum";
+import { DataLoading } from "../utils/utilEnum";
 
 export interface IMockMembers {
   id: number;
@@ -17,8 +17,8 @@ export interface RolesCreateSlice {
   title: string;
   all_members: IMember[];
   status:
-    | Loading.UNSEND
-    | Loading.FULFILLED
-    | Loading.PENDING
-    | Loading.REJECTED;
+    | DataLoading.UNSEND
+    | DataLoading.FULFILLED
+    | DataLoading.PENDING
+    | DataLoading.REJECTED;
 }

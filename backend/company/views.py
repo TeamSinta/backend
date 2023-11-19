@@ -9,6 +9,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from django.core.exceptions import PermissionDenied
 from app.permissions import isAdminRole, isDepartmentManagerRole, isManagerRole
+import json
 
 
 def check_permissions_and_existence(user, **kwargs):
@@ -31,6 +32,8 @@ def check_permissions_and_existence(user, **kwargs):
 
 
 def check_role_permission(view_instance, request):
+    print(view_instance)
+    print(view_instance.permission_classes)
     for permission_class in view_instance.permission_classes:
         if not permission_class().has_permission(request, view_instance):
             raise PermissionDenied
@@ -223,7 +226,8 @@ class CompanyDepartments(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         self.permission_classes = [isAdminRole | isManagerRole]
-        company_id = request.GET.get("company", None)
+        data = json.loads(request.body)
+        company_id = data.get("company_id", None)
         user_from_jwt = request.user
 
         # Check Role & Permission

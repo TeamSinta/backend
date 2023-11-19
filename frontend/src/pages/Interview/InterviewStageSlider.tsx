@@ -32,7 +32,6 @@ export default function InterviewStageSlider({
 
   useEffect(() => {
     itemRefs.current = itemRefs.current.slice(0, data.length);
-    console.log(data);
   }, [data]);
 
   const scrollToItem = (index: number, alignToStart = false) => {

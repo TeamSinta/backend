@@ -11,7 +11,7 @@ export const GridContainer = styled.div`
   }
 
   @media (max-width: 1900px) {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
   @media (max-width: 1700px) {

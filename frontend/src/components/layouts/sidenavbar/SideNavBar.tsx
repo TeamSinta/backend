@@ -6,10 +6,11 @@ import {
   RoleIcon,
   SettingIcon,
   InfoIcon,
+  ChatIcon,
 } from "@/components/common/svgIcons/Icons";
 import { BodyMMedium } from "@/components/common/typeScale/StyledTypeScale";
 import { type ReactElement } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import SideNavBarDropdown from "./SideNavBarDropdown";
 import {
@@ -49,6 +50,11 @@ const navButtonLinks: INavButtonLink[] = [
     icon: <CandidateIcon />,
   },
   {
+    text: "Questions",
+    to: "/questionbank",
+    icon: <ChatIcon />,
+  },
+  {
     text: "Notifications",
     to: "/Notifications",
     icon: <InfoIcon />,
@@ -73,7 +79,8 @@ const SideNavBar = (): ReactElement => {
   let location = useLocation();
   const dispatch: AppDispatch = useDispatch();
   const [, , removeCookie] = useCookies(["refresh_token", "access_token"]);
-
+  const navigate = useNavigate();
+  console.log(navConfigLinks);
   const args = {
     optionArr: user.companies.map((company) => ({
       id: company.id,
@@ -91,7 +98,20 @@ const SideNavBar = (): ReactElement => {
       removeCookie("refresh_token");
       dispatch(resetUserState());
       dispatch(resetCurrentWorkspace());
+      navigate('/login');
     }
+  };
+
+  const redirectToRoot = () => {
+    window.location.href = "/";
+  };
+
+  const buttonStyle = {
+    background: "none",
+    border: "none",
+    padding: 0,
+    cursor: "pointer",
+    // Add any additional styling as needed
   };
 
   return (
@@ -101,9 +121,16 @@ const SideNavBar = (): ReactElement => {
       alignItems="center"
       spacing={8}
     >
-      <div>
-        <LogoImage className="m-top-3 m-bottom" src={image} alt="Sinta Logo" />
-      </div>
+      <button style={buttonStyle} onClick={redirectToRoot}>
+        <div>
+          {/* Your LogoImage component */}
+          <LogoImage
+            className="m-top-3 m-bottom"
+            src={image}
+            alt="Sinta Logo"
+          />
+        </div>
+      </button>
 
       <StyledSideNavLinksWrap>
         <StyledSideNavBarTitle style={{ opacity: "0.5" }}>

@@ -2,7 +2,7 @@ import { AppDispatch, RootState } from "@/app/store";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import { openModal } from "@/features/modal/modalSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IconBtnM } from "../../buttons/iconBtn/IconBtn";
 import { TextBtnL } from "../../buttons/textBtn/TextBtn";
@@ -21,24 +21,22 @@ import {
   SelectedButtonWrap,
   SelectedValueWrap,
 } from "./StyledModalContents";
-import axios from "axios";
 import { CompanyID } from "@/features/settingsDetail/userSettingTypes";
+import { useAddTopicMutation } from "@/features/templates/templatesAPISlice";
+import { useGetQuestionsQuery } from "@/features/questions/questionsAPISlice";
+import Loading from "../../elements/loading/Loading";
 
 const iconBtnMProps = {
   icon: <PlusIcon />,
   className: BackgroundColor.ACCENT_PURPLE,
   disable: false,
 };
-let competencies: any[] = [];
-
-for (var i = 1; i <= 30; i++) {
-  competencies.push(i);
-}
 
 const SelectValue = () => {
   const user = useSelector((state: RootState) => state.user.user);
   const workspace = useSelector((state: RootState) => state.workspace);
   const [selectedComp, setSelectedComp] = useState<Array<string>>([]);
+  const [competencies, setCompetencies] = useState<string[]>([]);
   const [newComp, setNewComp] = useState<string>("");
   const [showNewCompInput, setShowNewCompInput] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -56,31 +54,29 @@ const SelectValue = () => {
     );
   };
 
-  const handleNext = () => {
-    // Define the data to send to the server
-    selectedComp.forEach((value, index) => {
+  const [addTopic] = useAddTopicMutation();
+
+  const handleNext = async () => {
+    for (const value of selectedComp) {
       const requestData = {
         topics_text: value,
         company_id: companyId,
+        template_id: templateID.templateID,
       };
 
-      axios
-        .post(
-          `http://localhost:8000/api/templates/${templateID.templateID}/topics/add/`,
-          requestData
-        )
-        .then((response) => {
-          // Handle success, e.g., show a success message or navigate to the next step
-          if (index === selectedComp.length - 1) {
-            const templateID = response.data.template_id;
-            onClickModalOpen(MODAL_TYPE.SELECT_TEM, { templateID }); // Pass the template ID as a parameter
-          }
-        })
-        .catch((error) => {
-          // Handle the error, e.g., show an error message
-          console.error("Error:", error);
-        });
-    });
+      try {
+        const response = await addTopic(requestData).unwrap();
+        const templateID = response.template_id;
+
+        if (value === selectedComp[selectedComp.length - 1]) {
+          onClickModalOpen(MODAL_TYPE.SELECT_TEM, { templateID });
+        }
+      } catch (error) {
+        console.error("Failed to add topics:", error);
+        // Optionally, break out of the loop on error
+        break;
+      }
+    }
   };
 
   const onSelectComp = (value: string) => {
@@ -111,6 +107,33 @@ const SelectValue = () => {
     setNewComp("");
   };
 
+  const {
+    data: questionsResponse,
+    isLoading,
+    isError,
+    error,
+  } = useGetQuestionsQuery();
+
+  useEffect(() => {
+    if (questionsResponse) {
+      // Extract unique competencies from questions
+      const extractedCompetencies = new Set<string>();
+      questionsResponse.forEach((question) => {
+        if (question.competency) {
+          extractedCompetencies.add(question.competency);
+        }
+      });
+      setCompetencies(Array.from(extractedCompetencies));
+    }
+  }, [questionsResponse]);
+
+  if (isLoading) {
+    return <Loading />; // Your loading component
+  }
+
+  if (isError) {
+    return <div>Error: {error}</div>; // Error handling
+  }
   return (
     <>
       <ModalContentWrap>
@@ -167,7 +190,7 @@ const SelectValue = () => {
               </ElWrap>
             </NewComInputWrap>
             <InputLayout>
-              <BodySMedium>Topics:</BodySMedium>
+              <BodySMedium>Recent Sections:</BodySMedium>
               <CompetencesWrap>
                 {competencies.map((index: number) => (
                   <Competencies

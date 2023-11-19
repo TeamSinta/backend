@@ -1,5 +1,9 @@
 from django.core.management.base import BaseCommand
-from interview.factories import InterviewRoundFactory, InterviewRoundQuestionFactory
+from interview.factories import (
+    InterviewRoundFactory,
+    InterviewRoundQuestionFactory,
+    CandidateFactory,
+)
 
 
 class Command(BaseCommand):
@@ -7,6 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         self.stdout.write("Seeding DB...")
+        CandidateFactory.create_batch(5)
         InterviewRoundFactory.create_batch(5)
         InterviewRoundQuestionFactory.create_batch(10)
         self.stdout.write("Done.")

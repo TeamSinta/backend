@@ -1,10 +1,10 @@
 .tile-video {
   position: relative;
-  width: 480px;
-  height: 270px;
+  height: 560px;
+  width: 600px;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 900px) {
   .tile-video {
     width: 240px;
     height: 135px;
@@ -12,12 +12,12 @@
 }
 
 .self-view {
-  width: 480px;
-  height: 270px;
+  height: 560px;
+  width: 600px;
   position: relative;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 900px) {
   .self-view {
     width: 240px;
     height: 135px;
@@ -34,11 +34,11 @@
 
 /* Hard-code the self-view size if there's no one else in the call, just to make it align with the info-box */
 .self-view.alone {
-  width: 480px;
-  height: 270px;
+  height: 560px;
+  width: 600px;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 900px) {
   .self-view.alone {
     width: 240px;
     height: 135px;

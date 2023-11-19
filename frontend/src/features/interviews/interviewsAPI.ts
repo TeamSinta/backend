@@ -24,13 +24,14 @@ export const createInterviewRound = async (
   title: string,
   candidate_id: number,
   template_id: string | null,
-  token: string
+  token: string,
+  meeting_room_id: string
 ) => {
-  console.log(title, candidate_id, template_id);
   const data = {
     title: title,
     candidate_id: candidate_id,
     template_id: template_id,
+    meeting_room_id: meeting_room_id,
   };
   const config = {
     headers: {
@@ -44,7 +45,6 @@ export const createInterviewRound = async (
     config
   );
 
-  // console.log(result);
   return result.data;
 };
 
@@ -54,7 +54,6 @@ export const updateInterviewQuestionRating = async (
   interview_round_id: string,
   token: string
 ) => {
-  console.log(rating, question_id, interview_round_id);
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -73,12 +72,10 @@ export const updateInterviewQuestionRating = async (
     config
   );
 
-  console.log(result);
   // return result.data;
 };
 
 export const sendFeedback = async (data: FeedbackData, token: string) => {
-  console.log(data);
   try {
     const config = {
       headers: {
@@ -120,7 +117,6 @@ export const getTemplateQuestionsAndTopics = async (
       },
     }
   );
-  console.log(result);
   return result.data;
 };
 
@@ -137,6 +133,5 @@ export const getInterviewRoundQuestion = async (
       },
     }
   );
-  console.log(result);
   return result.data;
 };

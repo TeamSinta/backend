@@ -11,7 +11,7 @@ admin.site.register(QuestionBank)
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("id", "question_text", "review")
+    list_display = ("id", "question_text", "review", "difficulty")
     ordering = ("id",)
 
 

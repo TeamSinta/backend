@@ -1,17 +1,57 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-
-from interview_templates.models import TemplateQuestion
-from .models import InterviewRound, InterviewRoundQuestion
+from .models import InterviewRound, InterviewRoundQuestion, Candidate
 import json
 from datetime import datetime
-from rest_framework.permissions import IsAuthenticated
-from app.permissions import isAdminRole,isInterviewerRole
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import generics
 from rest_framework.generics import CreateAPIView
+from .serializers import (
+    InterviewRoundQuestionSerializer,
+    InterviewRoundSerializer,
+    CandidateSerializer,
+)
+from interview_templates.models import TemplateQuestion
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+
+
+class InterviewRoundList(generics.ListCreateAPIView):
+    serializer_class = InterviewRoundSerializer
+    queryset = InterviewRound.objects.all()
+
+
+class InterviewRoundDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = InterviewRoundSerializer
+    queryset = InterviewRound.objects.all()
+
+
+class CandidateList(generics.ListCreateAPIView):
+    serializer_class = CandidateSerializer
+    queryset = Candidate.objects.all()
+
+
+class CandidateDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = CandidateSerializer
+    queryset = Candidate.objects.all()
+
+
+class InterviewRoundQuestionList(generics.ListCreateAPIView):
+    serializer_class = InterviewRoundQuestionSerializer
+
+    def get_queryset(self):
+        queryset = InterviewRoundQuestion.objects.all()
+        interviewRound = self.request.query_params.get("interview round")
+        if interviewRound is not None:
+            queryset = queryset.filter(interviewRound_id=interviewRound)
+        return queryset
+
+
+class InterviewRoundQuestionDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = InterviewRoundQuestionSerializer
+    queryset = InterviewRoundQuestion.objects.all()
+
 
 class CreateInterviewRound(CreateAPIView):
     # permission_classes = [IsAuthenticated, isAdminRole, isInterviewerRole]
@@ -27,14 +67,14 @@ class CreateInterviewRound(CreateAPIView):
                     title=title,
                     template_id=template_id,
                     candidate_id=candidate_id,
-                    interviewer_id=interviewer_id
+                    interviewer_id=interviewer_id,
                 )
                 response = {
                     "id": interview_round.id,
                     "title": interview_round.title,
                     "candidate_id": interview_round.candidate_id,
                     "template_id": interview_round.template_id,
-                    "interviewer_id":interview_round.interviewer_id
+                    "interviewer_id": interview_round.interviewer_id,
                 }
                 return Response(response, status=status.HTTP_201_CREATED)
             return Response({}, status=status.HTTP_200_OK)
@@ -81,8 +121,7 @@ def get_all_interview_rounds(request):
 def get_interview_round_question(request, interview_round_id, question_id):
     try:
         interview_round_question = InterviewRoundQuestion.objects.get(
-            interview_round_id=interview_round_id, 
-            question_id=question_id
+            interview_round_id=interview_round_id, question_id=question_id
         )
         response_data = {
             "id": interview_round_question.id,
@@ -90,11 +129,12 @@ def get_interview_round_question(request, interview_round_id, question_id):
             "question_id": interview_round_question.question_id,
             "rating": interview_round_question.rating,
             "created_at": interview_round_question.created_at,
-            "updated_at": interview_round_question.updated_at
+            "updated_at": interview_round_question.updated_at,
         }
         return JsonResponse(response_data, status=200)
     except InterviewRoundQuestion.DoesNotExist:
         return JsonResponse({"error": "Interview round question not found"}, status=404)
+
 
 # Update Interview Round
 @csrf_exempt
@@ -134,6 +174,7 @@ def update_interview_round(request, interview_round_id):
         error_response = {"error": "Invalid request method"}
         return JsonResponse(error_response, status=405)
 
+
 class RateInterviewRoundQuestion(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
@@ -146,10 +187,13 @@ class RateInterviewRoundQuestion(CreateAPIView):
             interview_round = InterviewRound.objects.get(pk=interview_round_id)
             template_question = TemplateQuestion.objects.get(pk=question_id)
 
-            interview_round_question, created = InterviewRoundQuestion.objects.get_or_create(
+            (
+                interview_round_question,
+                created,
+            ) = InterviewRoundQuestion.objects.get_or_create(
                 interview_round=interview_round,
                 question=template_question,
-                defaults={"rating": rating}
+                defaults={"rating": rating},
             )
 
             if not created:
@@ -158,21 +202,24 @@ class RateInterviewRoundQuestion(CreateAPIView):
 
             response = {
                 "message": "Question rated successfully",
-                "interview_round_question_id": interview_round_question.id
+                "interview_round_question_id": interview_round_question.id,
             }
 
             return Response(response, status=status.HTTP_201_CREATED)
 
         except InterviewRound.DoesNotExist:
-            return Response({"error": "Interview round not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Interview round not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
         except TemplateQuestion.DoesNotExist:
-            return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
- 
 
 # Delete Interview Round
 @csrf_exempt

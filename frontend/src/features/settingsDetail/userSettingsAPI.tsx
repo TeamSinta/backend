@@ -10,6 +10,7 @@ import {
 export const userAPI = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/api" }),
+  tagTypes: ["Departments"],
   endpoints: (builder) => ({
     updateUser: builder.mutation<
       void,
@@ -70,6 +71,7 @@ export const userAPI = createApi({
           },
         };
       },
+      providesTags: ["Departments"],
     }),
     getUserDepartments: builder.mutation<
       void,
@@ -85,6 +87,27 @@ export const userAPI = createApi({
         };
       },
     }),
+    createNewDepartment: builder.mutation<
+      void,
+      {
+        access: AccessToken;
+        company_id: CompanyID;
+        departmentTitle: string; // Assuming the department has a title field
+      }
+    >({
+      query: ({ access, company_id, departmentTitle }) => ({
+        url: `/company/departments`, // Updated URL as per your API
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+        body: {
+          title: departmentTitle,
+          company_id: company_id, // Assuming 'title' is the expected field name for the department title
+        },
+      }),
+      invalidatesTags: ["Departments"],
+    }),
   }),
 });
 
@@ -94,4 +117,5 @@ export const {
   useGetCompanyMembersQuery,
   useGetCompanyDepartmentsMutation,
   useGetUserDepartmentsMutation,
+  useCreateNewDepartmentMutation,
 } = userAPI;

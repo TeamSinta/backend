@@ -17,7 +17,7 @@ import {
   selectQuestionBank,
 } from "@/features/interviews/interviewsSlice";
 import { IQuestionsBank } from "@/features/interviews/interviewsInterface";
-import { Loading } from "@/features/utils/utilEnum";
+import { DataLoading } from "@/features/utils/utilEnum";
 
 const TemplateList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -50,8 +50,8 @@ const TemplateList = () => {
         </div>
       </TemplateListInputWrap>
       <TemplateListContentWrap>
-        {status === Loading.FULFILLED ? (
-          questionBanks.question_banks.map((template: IQuestionsBank) => (
+        {status === DataLoading.FULFILLED ? (
+          questionBanks.map((template: IQuestionsBank) => (
             <TemplateInterviewCard
               title={template.title}
               questions={template.questions}

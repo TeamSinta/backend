@@ -10,28 +10,42 @@ import {
   StyledCard,
   StyledCardContent,
   StyledCardMedia,
+  StyledBox,
+  CenteredTypography,
 } from "./StyledInterviewRoundCard";
 import Photos from "../../buttons/photo/Photos";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import { NumberIcon, PhotoIcon } from "../card/StyledCard";
 import { InitialsGenerator } from "@/utils/Utils";
+import TempCover from "@/assets/images/cover_1.jpg";
 
 export interface InterviewRoundCardProps {
   templateId: string;
   image?: string;
   title?: string;
   numberOfQuestions?: string;
-  interviewers?: Array<{
+  members?: Array<{
     first_name: string;
     last_name: string;
     profile_picture: string;
   }>;
   selected?: boolean;
+  imageUrl: string;
   onClick?: (templateId: string) => void;
 }
 
 const InterviewRoundCard = (props: InterviewRoundCardProps) => {
-  const { templateId, title, interviewers, selected, onClick } = props;
+  const {
+    templateId,
+    title,
+    imageUrl,
+    numberOfQuestions,
+    members,
+    selected,
+    onClick,
+  } = props;
+
+  const coverImage = imageUrl || TempCover;
 
   const handleClick = () => {
     if (onClick) onClick(templateId);
@@ -62,7 +76,9 @@ const InterviewRoundCard = (props: InterviewRoundCardProps) => {
               marginTop: "-16px",
             }}
           >
-            <BodySMedium style={{ opacity: "0.5" }}>{5}</BodySMedium>
+            <BodySMedium style={{ opacity: "0.5" }}>
+              {numberOfQuestions}
+            </BodySMedium>
             <BodyMBold
               style={{
                 overflow: "hidden",
@@ -78,8 +94,8 @@ const InterviewRoundCard = (props: InterviewRoundCardProps) => {
         <Box sx={{ display: "flex", gap: "4px" }}>
           <Photos>
             <>
-              {interviewers
-                ?.slice(0, interviewers.length > 4 ? 3 : 4)
+              {members
+                ?.slice(0, members.length > 4 ? 3 : 4)
                 .map((member, index) => (
                   <ElWrap w={32} h={32} key={index}>
                     <PhotoIcon imgUrl={member.profile_picture}>
@@ -96,9 +112,9 @@ const InterviewRoundCard = (props: InterviewRoundCardProps) => {
                 ))}
             </>
             <>
-              {interviewers?.length && interviewers.length > 4 ? (
+              {members?.length && members.length > 4 ? (
                 <NumberIcon imgUrl="">
-                  <BodySBold>+{interviewers.length - 3}</BodySBold>
+                  <BodySBold>+{members.length - 3}</BodySBold>
                 </NumberIcon>
               ) : (
                 <></>
@@ -107,10 +123,9 @@ const InterviewRoundCard = (props: InterviewRoundCardProps) => {
           </Photos>
         </Box>
       </StyledCardContent>
-      <StyledCardMedia>
-        {/* Commented content */}
+      <StyledCardMedia imgUrl={coverImage}>
         {/* <StyledBox>
-          <CenteredTypography>1</CenteredTypography>
+          <CenteredTypography>8</CenteredTypography>
         </StyledBox> */}
       </StyledCardMedia>
     </StyledCard>

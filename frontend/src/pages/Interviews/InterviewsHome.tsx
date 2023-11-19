@@ -27,7 +27,7 @@ function CustomTabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 0 }}>
           <BodySMedium>{children}</BodySMedium>
         </Box>
       )}
@@ -112,7 +112,7 @@ export default function BasicTabs() {
 
   return (
     <>
-      <Stack spacing={4}>
+      <Stack spacing={3}>
         <Box>
           <BodySMedium
             style={{
@@ -127,26 +127,31 @@ export default function BasicTabs() {
         <Box sx={{ width: "100%" }}>
           <Box
             sx={{
-              borderBottom: 1,
-              borderColor: "divider",
-              padding: "18px",
+              marginBottom: "24px",
               gap: "12px",
-              display: "flex",
             }}
           >
             <TextIconFilter
               label="Interviews"
-              icon={<ResumeIcon />}
               select={activeTab === TABS.INTERVIEWS}
               onClick={() => handleTabChange(TABS.INTERVIEWS)}
             />
             <TextIconFilter
               label="Archived"
-              icon={<BinIcon />}
               select={activeTab === TABS.ARCHIVED}
               onClick={() => handleTabChange(TABS.ARCHIVED)}
             />
           </Box>
+          <Box
+            sx={{
+              borderBottom: 1,
+              borderColor: "divider",
+              padding: "2px",
+              gap: "12px",
+              display: "flex",
+              marginBottom: "24px",
+            }}
+          ></Box>
           {activeTab === TABS.INTERVIEWS && (
             <CustomTabPanel value={activeTab} index={TABS.INTERVIEWS}>
               <GridContainer>

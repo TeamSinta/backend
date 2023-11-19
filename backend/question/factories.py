@@ -2,7 +2,6 @@ import factory
 from django.core.exceptions import ObjectDoesNotExist
 from .models import (
     Question,
-    Competency,
     Comment,
     QuestionBank,
     ReviewChoices,
@@ -19,6 +18,7 @@ class QuestionFactory(factory.django.DjangoModelFactory):
         [factory.Faker("pyfloat", min_value=-1, max_value=1) for _ in range(1536)]
     )
     guidelines = factory.Faker("paragraph")
+    competency = factory.Faker("word")
     reply_time = factory.Faker("random_int", min=1, max=60)
     review = factory.Faker("random_element", elements=[e.value for e in ReviewChoices])
     difficulty = factory.Faker(
@@ -26,14 +26,6 @@ class QuestionFactory(factory.django.DjangoModelFactory):
     )
     created_at = factory.Faker("date_time_this_year", before_now=True, after_now=False)
     updated_at = factory.Faker("date_time_this_year", before_now=True, after_now=False)
-
-
-class CompetencyFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Competency
-
-    # question = factory.SubFactory(QuestionFactory)
-    competency_text = factory.Faker("sentence", nb_words=5)
 
 
 class CommentFactory(factory.django.DjangoModelFactory):
@@ -56,4 +48,18 @@ class QuestionBankFactory(factory.django.DjangoModelFactory):
 
     title = factory.Faker("catch_phrase")
 
-    questions = factory.RelatedFactory(QuestionFactory, "questionbank")
+    @factory.post_generation
+    def questions(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            # A list of groups were passed in, use them
+            for question in extracted:
+                self.questions.add(question)
+        else:
+            # Add default number of questions
+            for _ in range(5):  # Adjust the number as needed
+                question = QuestionFactory()
+                self.questions.add(question)

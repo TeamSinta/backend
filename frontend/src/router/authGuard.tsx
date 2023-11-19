@@ -43,6 +43,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
       const result = await validateToken({ access: accessToken });
       if ("data" in result) {
         dispatch(setIsAuthenticated(true));
+        await getUser({ access: accessToken });
       } else {
         handleTokenRefresh();
       }
@@ -58,7 +59,6 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const handleTokenRefresh = async () => {
     if (refreshToken) {
       const newAccessToken = await getAccessToken({ refresh: refreshToken });
-
       if ("data" in newAccessToken && newAccessToken.data?.access) {
         const { access } = newAccessToken.data;
         setCookies("access_token", access);
@@ -118,7 +118,6 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     };
 
     initAuth();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>{children}</>;

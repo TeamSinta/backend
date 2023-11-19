@@ -6,6 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 // } from "@videosdk.live/react-sdk";
 // import ReactPlayer from "react-player";
 import {
+  InterviewSideBarWrapper,
+  StyledInterviewContent,
   StyledVideoActionContainer,
   StyledVideoActions,
   StyledVideoContainer,
@@ -18,6 +20,8 @@ import {
 //   NavMicIcon,
 // } from "@/components/common/svgIcons/Icons";
 import { CamIcon, MicIcon } from "@/components/common/svgIcons/CustomIcons";
+import InterviewWork from "./InterviewWork";
+import { Grid } from "@mui/material";
 
 // type ParticipantViewProps = {
 //   participantId: string;
@@ -149,7 +153,59 @@ const VideoSDK = () => {
   const findActiveMicIndex = (index: number) => {
     return activeMicIndexes.some((a: any) => a.index === index) ? true : false;
   };
+  const InterviewSideBarWaiting = () => {
+    const [opacity, setOpacity] = useState(1);
 
+    useEffect(() => {
+      // This function will toggle the opacity between 1 and 0
+      const fade = () => {
+        setOpacity((prevOpacity) => (prevOpacity === 1 ? 0 : 1));
+      };
+
+      // Start an interval to toggle the opacity
+      const intervalId = setInterval(fade, 2000); // Change opacity every 3 seconds
+
+      // Clean up the interval on component unmount
+      return () => clearInterval(intervalId);
+    }, []);
+
+    return (
+      <Grid
+        style={{
+          height: "100%", // Adjust the height as needed
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+        }}
+      >
+        <span
+          style={{
+            fontWeight: "600",
+            fontFamily: "ChillaxSemi",
+            fontSize: "1.5em",
+            width: "100%",
+            opacity: opacity, // Apply dynamic opacity value
+            transition: "opacity 1.5s ease-in-out", // Smooth transition for opacity change
+          }}
+        >
+          Waiting for candidate...
+        </span>
+      </Grid>
+    );
+  };
+
+  function InterviewSideBar(props: any) {
+    const { reactClicked, setReactClicked } = props;
+    return (
+      <div style={{ justifyContent: "flex-end", display: "flex" }}>
+        {/* {header} */}
+        <StyledInterviewContent isCollapsed={false}>
+          <InterviewSideBarWaiting />
+        </StyledInterviewContent>
+      </div>
+    );
+  }
   return (
     <div>
       <StyledVideoContainer>
@@ -221,7 +277,14 @@ const VideoSDK = () => {
             </StyledVideoWindow>
           );
         })}
+        <InterviewSideBarWrapper>
+          <InterviewSideBar
+            setReactClicked={findActiveCamIndex}
+            reactClicked={findActiveCamIndex}
+          />
+        </InterviewSideBarWrapper>
       </StyledVideoContainer>
+
       {/* <MeetingProvider
         config={{
           meetingId: "mwqz-ee5u-7dr3",

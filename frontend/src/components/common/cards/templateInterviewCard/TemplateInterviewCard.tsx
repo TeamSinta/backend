@@ -13,6 +13,7 @@ import {
   CardCover,
   CardSubTitle,
 } from "../card/StyledCard";
+import TempCover from "@/assets/svg/questions_cover.svg";
 
 interface ITemplateInterviewCardProps {
   title: string;
@@ -20,11 +21,14 @@ interface ITemplateInterviewCardProps {
   questions: IQuestion[];
   disable: boolean;
   onClick: () => void;
+  imageUrl: string;
 }
 
 const TemplateInterviewCard = (props: ITemplateInterviewCardProps) => {
   const [hover, setHover] = useState(false);
-  const { title, questions, disable, onClick } = props;
+  const { title, questions, imageUrl, disable, onClick } = props;
+
+  const coverImage = imageUrl || TempCover;
 
   return (
     <ElWrap w={312} h={216}>
@@ -50,7 +54,7 @@ const TemplateInterviewCard = (props: ITemplateInterviewCardProps) => {
             />
           </ElWrap>
         </CardButtons>
-        <CardCover imgUrl={""}></CardCover>
+        <CardCover imgUrl={coverImage}></CardCover>
         <CardContent
           onMouseEnter={() => {
             setHover(disable ? false : true);
@@ -59,7 +63,12 @@ const TemplateInterviewCard = (props: ITemplateInterviewCardProps) => {
             setHover(false);
           }}
         >
-          <BodyMBold>{title}</BodyMBold>
+          <BodyMBold  style={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                maxWidth: "300px",
+                whiteSpace: "nowrap",
+              }}>{title}</BodyMBold>
           <CardSubTitle>
             <BodySMedium>{questions.length} Questions</BodySMedium>
           </CardSubTitle>

@@ -14,19 +14,19 @@ class Template(models.Model):
     location = models.CharField(max_length=255, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     interviewers = models.ManyToManyField(CustomUser)
+    description = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to="template_images/", null=True, blank=True)
 
     def __str__(self):
         return self.role_title
 
 
 class TemplateTopic(models.Model):
-    TIME_CHOICES = [(i, str(i)) for i in range(1, 61)]  # Creates choices from 1 to 60
+    TIME_CHOICES = [(i, str(i)) for i in range(1, 61)]
     topics_text = models.CharField(max_length=200)
     template_id = models.ForeignKey(Template, on_delete=models.CASCADE)
     company_id = models.ForeignKey(Company, on_delete=models.CASCADE)
-    time = models.PositiveSmallIntegerField(
-        choices=TIME_CHOICES, default=1  # Set a default value if needed
-    )
+    time = models.PositiveSmallIntegerField(choices=TIME_CHOICES, default=1)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 

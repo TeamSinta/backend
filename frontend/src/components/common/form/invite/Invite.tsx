@@ -6,7 +6,7 @@ import {
   setInviteMemberInput,
 } from "@/features/inviteMember/inviteMemberSlice";
 import { addInvitedMember } from "@/features/roles/rolesSlice";
-import { BackgroundColor, Loading } from "@/features/utils/utilEnum";
+import { BackgroundColor, DataLoading } from "@/features/utils/utilEnum";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { TextBtnL } from "../../buttons/textBtn/TextBtn";
@@ -28,10 +28,10 @@ export interface IInviteProps {
     admin: boolean;
   };
   status:
-    | Loading.FULFILLED
-    | Loading.PENDING
-    | Loading.UNSEND
-    | Loading.REJECTED;
+    | DataLoading.FULFILLED
+    | DataLoading.PENDING
+    | DataLoading.UNSEND
+    | DataLoading.REJECTED;
 }
 
 const Invite = () => {
@@ -47,7 +47,7 @@ const Invite = () => {
   );
   const [apiStatus, setApiStatus] = useState(status);
 
-  if (apiStatus === Loading.PENDING) {
+  if (apiStatus === DataLoading.PENDING) {
     TextBtnLProps.disable = true;
   } else {
     TextBtnLProps.disable = false;
@@ -64,7 +64,7 @@ const Invite = () => {
   };
 
   const onIviteMemberClick = () => {
-    setApiStatus(Loading.PENDING);
+    setApiStatus(DataLoading.PENDING);
     dispatch(postInviteMemberAsync(invite_member))
       .then((action) => {
         dispatch(addInvitedMember({ invitedMember: action.payload }));
@@ -72,7 +72,7 @@ const Invite = () => {
       .then(() => {
         setInviteMemberEmail("");
         setInviteMemberAdmin(false);
-        setApiStatus(Loading.FULFILLED);
+        setApiStatus(DataLoading.FULFILLED);
       });
   };
 
@@ -86,13 +86,13 @@ const Invite = () => {
             onInviteMemberChange(e);
           }}
           value={inviteMemberEmail}
-          disabled={apiStatus === Loading.PENDING ? true : false}
+          disabled={apiStatus === DataLoading.PENDING ? true : false}
         />
         <ElWrap w={120}>
           <TextBtnL
             {...TextBtnLProps}
             onClick={
-              apiStatus === Loading.PENDING ? () => {} : onIviteMemberClick
+              apiStatus === DataLoading.PENDING ? () => {} : onIviteMemberClick
             }
           />
         </ElWrap>
@@ -104,7 +104,7 @@ const Invite = () => {
         }}
         inputName={"admin"}
         checked={inviteMemberAdmin}
-        disabled={apiStatus === Loading.PENDING ? true : false}
+        disabled={apiStatus === DataLoading.PENDING ? true : false}
       />
     </InviteWrap>
   );

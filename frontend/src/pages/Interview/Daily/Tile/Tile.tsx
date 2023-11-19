@@ -39,6 +39,12 @@ export default function Tile({
         automirror
         sessionId={id}
         type={isScreenShare ? "screenVideo" : "video"}
+        style={{
+          height: "100%",
+          minWidth: "100%",
+          flex: "1",
+        }}
+        fit={"cover"}
       />
       <Username id={id} isLocal={isLocal} />
     </div>

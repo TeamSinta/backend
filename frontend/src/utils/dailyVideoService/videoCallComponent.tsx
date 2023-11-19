@@ -100,7 +100,6 @@ export default function VideoCall() {
 
   useEffect(() => {
     const url = roomUrlFromPageUrl();
-    console.log("URL", url, callObject);
     if (url) {
       startHairCheck(url);
     }

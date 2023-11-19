@@ -11,7 +11,6 @@ import {
 } from "@/components/common/typeScale/StyledTypeScale";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
 import { openModal } from "@/features/modal/modalSlice";
-import { getMemberAsync } from "@/features/roles/rolesSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { Key, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
@@ -20,7 +19,6 @@ import TemplateHomeCard, {
   IMember,
 } from "@/components/common/cards/teamplateHomeCard/TemplateHomeCard";
 import { useState } from "react";
-import { fetchInterviewRounds } from "@/features/dashboardDetail/dashboardAPI";
 import { TemplateCardsBox } from "../Dashboard/StyledDashboard";
 import { useNavigate } from "react-router-dom";
 import { CreateInterviewBox, DepartmentHeading } from "./StyledTemplates";
@@ -29,6 +27,8 @@ import {
   IconBtnM,
 } from "@/components/common/buttons/iconBtn/IconBtn";
 import DropdownFilter from "@/components/common/filters/dropdownFilter/DropdownFilter";
+import Loading from "@/components/common/elements/loading/Loading";
+import { useGetTemplatesQuery } from "@/features/templates/templatesAPISlice";
 
 export interface Template {
   roundId: Key | null | undefined;
@@ -36,7 +36,8 @@ export interface Template {
   disable: boolean;
   interviewers?: IMember[];
   id: string;
-  department_name?: string;
+  image: string;
+  department?: string;
 }
 
 const Templates = () => {
@@ -46,6 +47,7 @@ const Templates = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
+  const [showEmptyState, setShowEmptyState] = useState(false);
 
   const onClickModalOpen = (modalType: MODAL_TYPE) => {
     dispatch(
@@ -63,25 +65,40 @@ const Templates = () => {
       onClickModalOpen(MODAL_TYPE.CREATE_INT);
     },
   };
-  // const template_arg = {
-  //   icon: <ResumeIcon />,
-  //   disable: false,
-  //   className: BackgroundColor.LIGHT_PURPLE,
-  //   onClick: () => {
-  //     onClickModalOpen(MODAL_TYPE.CREATE_INT);
-  //   },
-  // };
+
+  const {
+    data: templates,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetTemplatesQuery();
 
   useEffect(() => {
-    dispatch(getMemberAsync());
-    const fetchData = async () => {
-      try {
-        const data = await fetchInterviewRounds();
-        setTemplateData(data);
-      } catch (error) {}
-    };
-    fetchData();
-  }, [dispatch]);
+    if (isSuccess) {
+      setTemplateData(templates);
+
+      if (templates.length === 0) {
+        const timeout = setTimeout(() => {
+          setShowEmptyState(true);
+        }, 500); // Delay of 500 milliseconds
+
+        return () => clearTimeout(timeout);
+      }
+    }
+  }, [isSuccess, templates]);
+
+  if (isLoading) {
+    return <Loading />; // Render the loading component when data is still loading
+  }
+
+  if (isError) {
+    return (
+      <div>
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
 
   const handleCardClick = (templateId: string) => {
     navigate(`/templates/${templateId}`);
@@ -89,7 +106,7 @@ const Templates = () => {
 
   const templatesByDepartment: { [key: string]: Template[] } =
     templateData.reduce((groups, template: Template) => {
-      const department = template.department_name || "Unassigned";
+      const department = template.department || "General";
 
       if (!groups[department]) {
         groups[department] = [];
@@ -129,230 +146,165 @@ const Templates = () => {
     setStartX(x);
   };
 
-  if (!templateData) {
-    return (
-      <>
-        <H1>Templates</H1>
+  const mainContent = () => {
+    // Conditional rendering based on whether template data is empty
 
-        <Stack
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-          spacing={3}
-          mt={4}
-        >
-          <img
-            src="src/assets/svg/'Empty Roles' Page Illustration.svg"
-            alt="template_empty_screen"
-          />
+    if (templateData === null) {
+      return <Loading />;
+    } else if (templateData.length === 0 && showEmptyState) {
+      return (
+        <>
+          <H1>Templates</H1>
 
-          <H1>Work’s always better together.</H1>
-          <Box sx={{ textAlign: "center" }}>
-            <BodyLMedium>
-              {" "}
-              Start by creating a interview template.
-              <br /> Invite your teammates to collaborate and quickly get a
-              sense of what’s happening
-              <br /> with interviews.{" "}
-            </BodyLMedium>
-          </Box>
-          <ElWrap w={250} h={40}>
-            <TextIconBtnL
-              disable={false}
-              label="Create New Template"
-              icon={<PlusIcon />}
-              onClick={() => {
-                onClickModalOpen(MODAL_TYPE.CREATE_INT);
-              }}
-              className={BackgroundColor.ACCENT_PURPLE}
-            />
-          </ElWrap>
-          <GlobalModal></GlobalModal>
-        </Stack>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Stack direction="column" spacing={1}>
-          <H2Bold>Create an interview</H2Bold>
-
-          <CreateInterviewBox
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseUp}
-            ref={scrollContainerRef}
-          >
-            <Box>
-              <ElWrap w={168} h={114}>
-                <IconBtnL {...arg} />
-              </ElWrap>
-              <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
-                + New Template
-              </BodyMMedium>
-            </Box>
-
-            {/* <Box>
-            <ElWrap w={168} h={114}>
-              <IconBtnL {...template_arg} />
-            </ElWrap>
-            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
-                     + Culture Fit Template
-            </BodyMMedium>
-            </Box>
-
-            <Box>
-            <ElWrap w={168} h={114}>
-              <IconBtnL {...template_arg} />
-            </ElWrap>
-            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
-                     + Leadership Template
-            </BodyMMedium>
-            </Box>
-            <Box>
-            <ElWrap w={168} h={114}>
-              <IconBtnL {...template_arg} />
-            </ElWrap>
-            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
-                     + Culture Fit Template
-            </BodyMMedium>
-            </Box>
-            <Box>
-            <ElWrap w={168} h={114}>
-              <IconBtnL {...template_arg} />
-            </ElWrap>
-            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
-                     + Culture Fit Template
-            </BodyMMedium>
-            </Box>
-            <Box>
-            <ElWrap w={168} h={114}>
-              <IconBtnL {...template_arg} />
-            </ElWrap>
-            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
-                     + Culture Fit Template
-            </BodyMMedium>
-            </Box>
-            <Box>
-            <ElWrap w={168} h={114}>
-              <IconBtnL {...template_arg} />
-            </ElWrap>
-            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
-                     + Culture Fit Template
-            </BodyMMedium>
-            </Box>
-            <Box>
-            <ElWrap w={168} h={114}>
-              <IconBtnL {...template_arg} />
-            </ElWrap>
-            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
-                     + Culture Fit Template
-            </BodyMMedium>
-            </Box>
-            <Box>
-            <ElWrap w={168} h={114}>
-              <IconBtnL {...template_arg} />
-            </ElWrap>
-            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
-                     + Culture Fit Template
-            </BodyMMedium>
-            </Box>
-            <Box>
-            <ElWrap w={168} h={114}>
-              <IconBtnL {...template_arg} />
-            </ElWrap>
-            <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
-                     + Culture Fit Template
-            </BodyMMedium>
-            </Box> */}
-          </CreateInterviewBox>
-        </Stack>
-        <Stack direction="column" spacing={4}>
           <Stack
-            direction="row"
-            justifyContent="space-between"
-            style={{ marginTop: "32px" }}
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            spacing={4}
+            mt={12}
           >
-            <H2Medium style={{ marginTop: "18px" }}>Your Templates</H2Medium>
+            <img
+              src="src/assets/svg/'Empty Roles' Page Illustration.svg"
+              alt="template_empty_screen"
+            />
 
-            <ElWrap w={180}>
-              <DropdownFilter
-                label="Sort By"
-                optionArr={[
-                  { name: "Name (A-Z)", value: "name-asc" },
-                  { name: "Name (Z-A)", value: "name-desc" },
-                  { name: "Permission Level", value: "permission" },
-                ]}
-                dropdownName="sort"
-                value={""}
+            <H1>Work’s always better together.</H1>
+            <Box sx={{ textAlign: "center" }}>
+              <BodyLMedium style={{ color: "#6C6685" }}>
+                {" "}
+                Start by creating a interview template.
+                <br /> Invite your teammates to collaborate and quickly get a
+                sense of what’s happening
+                <br /> with interviews.{" "}
+              </BodyLMedium>
+            </Box>
+            <ElWrap w={400} h={40}>
+              <TextIconBtnL
+                disable={false}
+                label="Create New Template"
+                icon={<PlusIcon />}
+                onClick={() => {
+                  onClickModalOpen(MODAL_TYPE.CREATE_INT);
+                }}
+                className={BackgroundColor.ACCENT_PURPLE}
               />
             </ElWrap>
+            <GlobalModal></GlobalModal>
           </Stack>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Stack direction="column" spacing={1}>
+            <H2Bold>Create a Template</H2Bold>
 
-          {Object.entries(templatesByDepartment).map(
-            ([department, templates]) => (
-              <Stack
-                key={department}
-                direction="column"
-                spacing={1}
-                style={{ paddingLeft: "38px", paddingRight: "38px" }}
-              >
+            <CreateInterviewBox
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseUp}
+              ref={scrollContainerRef}
+            >
+              <Box>
+                <ElWrap w={168} h={114}>
+                  <IconBtnL {...arg} />
+                </ElWrap>
+                <BodyMMedium style={{ color: "black", marginTop: "4px" }}>
+                  + New Template
+                </BodyMMedium>
+              </Box>
+            </CreateInterviewBox>
+          </Stack>
+          <Stack direction="column" spacing={4}>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              style={{ marginTop: "32px" }}
+            >
+              <H2Medium style={{ marginTop: "18px" }}>Your Templates</H2Medium>
+
+              <ElWrap w={180}>
+                <DropdownFilter
+                  label="Sort By"
+                  optionArr={[
+                    { name: "Name (A-Z)", value: "name-asc" },
+                    { name: "Name (Z-A)", value: "name-desc" },
+                    { name: "Permission Level", value: "permission" },
+                  ]}
+                  dropdownName="sort"
+                  value={""}
+                />
+              </ElWrap>
+            </Stack>
+
+            {Object.entries(templatesByDepartment).map(
+              ([department, templates]) => (
                 <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  style={{ width: "100%" }}
+                  key={department}
+                  direction="column"
+                  spacing={1}
+                  style={{ paddingLeft: "38px", paddingRight: "38px" }}
                 >
                   <Stack
                     direction="row"
-                    alignItems="center"
                     justifyContent="space-between"
-                    spacing={1}
+                    alignItems="center"
+                    style={{ width: "100%" }}
                   >
-                    <DepartmentHeading>{department}</DepartmentHeading>
-                    <BodyLMedium> · </BodyLMedium>
-                    <BodyLMedium style={{ color: "grey" }}>
-                      {templates?.length} Roles
-                    </BodyLMedium>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      spacing={1}
+                    >
+                      <DepartmentHeading>{department}</DepartmentHeading>
+                      <BodyLMedium> · </BodyLMedium>
+                      <BodyLMedium style={{ color: "grey" }}>
+                        {templates?.length} Roles
+                      </BodyLMedium>
+                    </Stack>
+                    <Box style={{ margin: "8px" }}>
+                      <ElWrap w={32} h={32}>
+                        <IconBtnM
+                          icon={<EditIcon />}
+                          disable={false}
+                          className={BackgroundColor.WHITE}
+                          onClick={() => {}}
+                        />
+                      </ElWrap>
+                    </Box>
                   </Stack>
-                  <Box style={{ margin: "8px" }}>
-                    <ElWrap w={32} h={32}>
-                      <IconBtnM
-                        icon={<EditIcon />}
-                        disable={false}
-                        className={BackgroundColor.WHITE}
-                        onClick={() => {}}
-                      />
-                    </ElWrap>
-                  </Box>
+                  <TemplateCardsBox>
+                    {templates.map(
+                      (
+                        template: Template // Specify the Template type
+                      ) => (
+                        <TemplateHomeCard
+                          key={template.id}
+                          title={template.role_title}
+                          disable={template.disable || false}
+                          questions={new Array(8)} // or you can provide actual data if available
+                          sections={new Array(15)}
+                          imageUrl={template.image}
+                          members={template.interviewers || []}
+                          // Include other template information as needed
+                          onClick={() => handleCardClick(template.id)}
+                        />
+                      )
+                    )}
+                  </TemplateCardsBox>
                 </Stack>
-                <TemplateCardsBox>
-                  {templates.map(
-                    (
-                      template: Template // Specify the Template type
-                    ) => (
-                      <TemplateHomeCard
-                        key={template.id}
-                        title={template.role_title}
-                        disable={template.disable || false}
-                        questions={new Array(8)} // or you can provide actual data if available
-                        sections={new Array(15)}
-                        members={template.interviewers || []}
-                        // Include other template information as needed
-                        onClick={() => handleCardClick(template.id)}
-                      />
-                    )
-                  )}
-                </TemplateCardsBox>
-              </Stack>
-            )
-          )}
-          <GlobalModal></GlobalModal>
-        </Stack>
-      </>
-    );
-  }
+              )
+            )}
+            <GlobalModal></GlobalModal>
+          </Stack>
+        </>
+      );
+    }
+  };
+
+  return <>{mainContent()}</>;
 };
 
 export default Templates;

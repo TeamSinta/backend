@@ -17,13 +17,18 @@ import { BackgroundColor, PhotoType } from "@/features/utils/utilEnum";
 import { useDispatch, useSelector } from "react-redux";
 import { ModalContentWrap } from "./StyledModalContents";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { RootState } from "@/app/store";
 import {
   AccessToken,
   CompanyID,
 } from "@/features/settingsDetail/userSettingTypes";
 import { useCookies } from "react-cookie";
+import { useAddTemplateMutation } from "@/features/templates/templatesAPISlice";
+import StatusFilter from "../../filters/statusFilter/StatusFilter";
+import DropdownFilter from "../../filters/dropdownFilter/DropdownFilter";
+import DepartmentDropDown from "@/components/pages/settings/memberTab/DepartmentDropdown";
+import { useFetchCompanyDepartments } from "@/components/pages/settings/memberTab/useFetchAndSortMembers";
+import NewDepartment from "../../form/newDepartment/newDepartment";
 
 const titleInputArg = {
   error: false,
@@ -50,9 +55,10 @@ const CreateInterviews = () => {
   const user = useSelector((state: RootState) => state.user.user);
   const workspace = useSelector((state: RootState) => state.workspace);
   const [sortCriteria] = useState("");
-  const [departmentId] = useState("");
+  const [departmentId, setDepartmentId] = useState("");
   const [selectedMembers, setSelectedMembers] = useState<IMember[]>([]);
 
+  console.log(departmentId);
   const [cookies, ,] = useCookies(["access_token"]);
   const accessToken = cookies.access_token as AccessToken;
   // definitely should look over this, idk what TS is doing here om on the companyId type.
@@ -71,10 +77,13 @@ const CreateInterviews = () => {
     if (members && members.length > 0) {
       const initializedMembers = members.map((member) => ({
         ...member,
-        member_idx: member.id, // map id to member_idx
-        selected: false,
+        member_idx: member.id,
+        selected: !!selectedMembers.find((m) => m.id === member.id)?.selected,
       }));
       setSelectedMembers(initializedMembers);
+    } else {
+      // Handle the case where there are no members
+      setSelectedMembers([]);
     }
   }, [members]);
 
@@ -92,9 +101,10 @@ const CreateInterviews = () => {
     description: "",
   });
 
-  const handleNext = () => {
-    // Define the data to send to the server
+  const [addTemplate] = useAddTemplateMutation();
 
+  const handleNext = async () => {
+    // Define the data to send to the server
     const selectedMemberIds = selectedMembers
       .filter((member) => member.selected)
       .map((member) => member.id);
@@ -103,22 +113,19 @@ const CreateInterviews = () => {
     const requestData = {
       role_title: inputValue.title,
       location: null,
-      interviewer_ids: selectedMemberIds,
-      company_id: companyId,
-      department_id: null, // Assuming the department_id is null as shown in the example. Replace as needed.
+      interviewers: selectedMemberIds,
+      company: companyId,
+      department_id: departmentId,
     };
 
-    axios
-      .post("http://localhost:8000/api/templates/add/", requestData)
-      .then((response) => {
-        // Handle success, e.g., show a success message or navigate to the next step
-        const templateID = response.data.id;
-        onClickModalOpen(MODAL_TYPE.SELECT_VAL, { templateID }); // Pass the template ID as a parameter
-      })
-      .catch((error) => {
-        // Handle the error, e.g., show an error message
-        console.error("Error:", error);
-      });
+    try {
+      const response = await addTemplate(requestData).unwrap();
+      const templateID = response.id;
+      onClickModalOpen(MODAL_TYPE.SELECT_VAL, { templateID });
+    } catch (error) {
+      // Handle error, e.g., display a notification
+      console.error("Failed to add template:", error);
+    }
   };
 
   const inputOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,6 +148,15 @@ const CreateInterviews = () => {
     );
   };
 
+  const departments = useFetchCompanyDepartments(
+    accessToken,
+    companyId as CompanyID
+  );
+
+  const handleSetDepartment = (value: string) => {
+    setDepartmentId(value);
+  };
+
   return (
     <ModalContentWrap>
       <InputLayout>
@@ -160,10 +176,16 @@ const CreateInterviews = () => {
         />
       </InputLayout>
       <InputLayout>
+        <DepartmentDropDown
+          departments={departments}
+          handleSetDepartment={handleSetDepartment}
+          workspaceId={workspace.id}
+        />
+        <NewDepartment />
         <BodySMedium>Members</BodySMedium>
         <PhotoContainer>
           <Photos>
-            {members.map((member: any, index: number) => (
+            {selectedMembers.map((member: any, index: number) => (
               <ElWrap w={40} h={40} key={index}>
                 <Photo
                   photoType={PhotoType.L}
@@ -179,7 +201,7 @@ const CreateInterviews = () => {
           </Photos>
         </PhotoContainer>
       </InputLayout>
-      <Invite />
+
       <div style={{ marginTop: "8px" }}>
         <TextBtnL
           label="Next"

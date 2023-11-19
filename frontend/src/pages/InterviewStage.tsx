@@ -27,47 +27,60 @@ import {
   Subtitle,
   Title,
 } from "@/components/pages/interview/StyledInterview";
-import {
-  getInterviewDetailAsync,
-  selectInterviewDetail,
-} from "@/features/interviewDetail/interviewDetailSlice";
+import { getInterviewDetailAsync } from "@/features/interviewDetail/interviewDetailSlice";
 import { openModal } from "@/features/modal/modalSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import InterviewRoundCard from "@/components/common/cards/interviewRoundCard/InterviewRoundCard";
 import { Template } from "./Templates_/Templates";
-import { fetchInterviewRounds } from "@/features/dashboardDetail/dashboardAPI";
 import { IMember } from "@/components/common/cards/teamplateHomeCard/TemplateHomeCard";
 import { AppDispatch } from "@/app/store";
+import Loading from "@/components/common/elements/loading/Loading";
+import { useGetTemplatesQuery } from "@/features/templates/templatesAPISlice";
+import { useGetTemplateQuestionsQuery } from "@/features/templates/templatesQuestionsAPISlice";
+import { TemplateQuestions } from "@/features/templates/templatesInterface";
 
 const InterviewStage = () => {
-  const { questions } = useSelector(selectInterviewDetail);
   const dispatch = useDispatch<AppDispatch>();
   const { templateId } = useParams();
   const navigate = useNavigate();
   const [templateData, setTemplateData] = useState<Template[]>([]);
-
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (templateId) {
-          dispatch(getInterviewDetailAsync(templateId));
-          const data = await fetchInterviewRounds();
-          setTemplateData(data);
-        }
-      } catch (error) {
-        console.error("Error fetching interview rounds:", error);
-      }
-    };
+  const {
+    data: templates,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetTemplatesQuery();
 
-    fetchData();
-  }, [dispatch, templateId]);
+  const { data: templateQuestions } = useGetTemplateQuestionsQuery();
+
+  useEffect(() => {
+    if (templateId) {
+      dispatch(getInterviewDetailAsync(templateId));
+    }
+    if (isSuccess) {
+      setTemplateData(templates);
+    }
+  }, [dispatch, isSuccess, templateId, templates]);
+
+  if (isLoading) {
+    return <Loading />; // Render the loading component when data is still loading
+  }
+
+  if (isError) {
+    return (
+      <div>
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
@@ -112,10 +125,23 @@ const InterviewStage = () => {
     (t) => Number(t.id) === numericTemplateId
   );
   const templatesOfSameDepartment = currentTemplate
-    ? templateData.filter(
-        (t) => t.department_name === currentTemplate.department_name
-      )
+    ? templateData.filter((t) => t.department === currentTemplate.department)
     : [];
+
+  const getFilteredTemplateQuestionsLength = (
+    templateQuestions: Record<string, TemplateQuestions> | null,
+    templateId: number | null
+  ): number => {
+    if (!templateQuestions || !templateId) {
+      return 0; // Return 0 if templateQuestions or templateId is not available
+    }
+
+    const filteredQuestions = Object.values(templateQuestions).filter(
+      (templateQuestion) => templateQuestion.template_id === templateId
+    );
+
+    return filteredQuestions.length;
+  };
 
   return (
     <InterviewStageContainer>
@@ -125,7 +151,7 @@ const InterviewStage = () => {
           <Star1Icon />
 
           <BodyLMedium className="inactive">{`${
-            currentTemplate?.department_name || "Unassigned"
+            currentTemplate?.department || "General"
           } `}</BodyLMedium>
           <Star1Icon />
           <BodyLBold>{`${currentTemplate?.role_title || ""} `}</BodyLBold>
@@ -141,9 +167,13 @@ const InterviewStage = () => {
             {templatesOfSameDepartment.map((template: Template, index) => (
               <InterviewRoundCard
                 key={index}
-                image="https://ca.slack-edge.com/T04C82XCPRU-U04KS4AQG0N-5dc6b4356f80-512"
+                templateId={template.id}
+                imageUrl={template.image}
                 title={template.role_title}
-                numberOfQuestions={`${questions?.length || 0} Questions`}
+                numberOfQuestions={`${getFilteredTemplateQuestionsLength(
+                  templateQuestions,
+                  template.id
+                )} Questions`}
                 onClick={() => handleCardClick(template.id)}
                 selected={Number(template.id) === numericTemplateId}
                 members={template.interviewers?.map((interviewer: IMember) => ({
@@ -153,7 +183,6 @@ const InterviewStage = () => {
                 }))}
               />
             ))}
-
             <ElWrap w={56} h={134}>
               <IconBtnL
                 disable={false}

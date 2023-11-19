@@ -205,7 +205,6 @@ export const RatingComponent: React.FC<any> = ({
   };
 
   React.useEffect(() => {
-    console.log(interviewRoundId);
     // getInterviewRoundQuestion();
   }, [interviewRoundId]);
 
@@ -245,8 +244,8 @@ export function RatingComponentL({
     <div
       style={{
         display: "flex",
-        marginLeft: "8px",
-        gap: "17px",
+        marginLeft: "4px",
+        gap: "8px",
         marginRight: "0.5%",
         justifyContent: "flex-start",
       }}
@@ -279,7 +278,7 @@ export function RatingComponentL({
           </span>{" "}
         </StyledIconBtnM>{" "}
       </ElWrap>
-      <ElWrap w={40}>
+      <ElWrap w={35}>
         <StyledIconBtnM>
           <span onClick={() => handleRating(5)}>
             <TopStarButtonL width={width} height={height} active={activeTab} />

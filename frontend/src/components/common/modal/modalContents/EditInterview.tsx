@@ -3,25 +3,37 @@ import { TextBtnL } from "@/components/common/buttons/textBtn/TextBtn";
 import { InputLayout } from "@/components/common/form/input/StyledInput";
 import TextArea from "@/components/common/form/textArea/TextArea";
 import TextInput from "@/components/common/form/textInput/TextInput";
-// import { MODAL_TYPE } from "@/components/common/modal/GlobalModal";
 import { BodySMedium } from "@/components/common/typeScale/StyledTypeScale";
 import { closeModal } from "@/features/modal/modalSlice";
-// import { selectRole, selectedMember } from "@/features/roles/rolesSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useDispatch } from "react-redux";
 import { ModalContentWrap } from "./StyledModalContents";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-// import { RootState } from "@/app/store";
-// import { CompanyID } from "@/features/settingsDetail/userSettingTypes";
 import { CoverPictureContainer } from "@/pages/Interview/StyledInterview";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+
+import {
+  useDeleteTemplateMutation,
+  useGetTemplateDetailQuery,
+  useUpdateTemplateMutation,
+} from "@/features/templates/templatesAPISlice";
+import { TextIconBtnL } from "../../buttons/textIconBtn/TextIconBtn";
+import {
+  BinIcon,
+  DocumentIcon,
+  PencilIcon,
+  RoleIcon,
+} from "../../svgIcons/Icons";
+import ElWrap from "@/components/layouts/elWrap/ElWrap";
+import { PhotoIcon } from "../../cards/card/StyledCard";
 
 const titleInputArg = {
   error: false,
   disable: false,
   placeholder: "Title",
-  name: "title",
+  name: "role_title",
 };
 
 const descriptionInputArg = {
@@ -33,71 +45,77 @@ const descriptionInputArg = {
 
 interface IState {
   [key: string]: any;
-  title: string;
+  role_title: string;
   description: string;
 }
 
 const EditInterviews = () => {
-  // const { user } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
-  // const { members } = useSelector(selectRole);
-  // const onMemberSelected = (memberIdx: number) => {
-  //   dispatch(selectedMember({ memberIdx: memberIdx }));
-  // };
+  const { templateId } = useParams();
+  const navigate = useNavigate();
 
   const [inputValue, setInputValue] = useState<IState>({
-    title: "",
+    role_title: "",
     description: "",
   });
-  // const companyId = user.company as CompanyID;
 
-  const handleNext = () => {
-    // Define the data to send to the server
-    dispatch(closeModal());
-    // Handle UPDATE Request
-    // const requestData = {
-    //   role_title: inputValue.title,
-    //   location: null,
-    //   interviewer_ids: members
-    //     .filter((member) => member.selected)
-    //     .map((member) => member.member_idx),
-    //   company_id: companyId,
-    //   department_id: null,
-    //   // Assuming the department_id is null as shown in the example. Replace as needed.
-    // };
+  // Example hook to fetch template details - replace with your actual implementation
+  const { data: templateData, isLoading } =
+    useGetTemplateDetailQuery(templateId);
 
-    // axios
-    //   .post("http://localhost:8000/api/templates/", requestData)
-    //   .then((response) => {
-    //     // Handle success, e.g., show a success message or navigate to the next step
-    //     const templateID = response.data.id;
-    //     // Pass the template ID as a parameter
-    //   })
-    //   .catch((error) => {
-    //     // Handle the error, e.g., show an error message
-    //     console.error("Error:", error);
-    //   });
+  useEffect(() => {
+    if (templateData) {
+      setInputValue({
+        role_title: templateData.role_title,
+        description: templateData.description,
+      });
+    }
+  }, [templateData]);
+
+  const [updateTemplate] = useUpdateTemplateMutation();
+  const [deleteTemplate] = useDeleteTemplateMutation();
+
+  const handleNext = async () => {
+    try {
+      const requestData = {
+        id: templateId,
+        ...inputValue, // Assuming your update endpoint needs these fields
+        // Add other fields as required
+      };
+      await updateTemplate(requestData).unwrap();
+      dispatch(closeModal());
+      navigate(0);
+      // Handle success, e.g., show a success message
+    } catch (error) {
+      // Handle the error, e.g., show an error message
+      console.error("Error updating template:", error);
+    }
+  };
+
+  const handleDeleteTemplate = async () => {
+    try {
+      await deleteTemplate(templateId);
+      dispatch(closeModal());
+      navigate(`/templates`);
+      navigate(0);
+      // Handle success, e.g., show a success message
+    } catch (error) {
+      // Handle the error, e.g., show an error message
+      console.error("Error updating template:", error);
+    }
   };
 
   const inputOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue({
       ...inputValue,
+
       [event.target.name]: event.target.value,
     });
   };
 
   const textAreaOnChange = (value: string) => {
-    inputValue["description"] = value;
+    inputValue["detail"] = value;
   };
-
-  // const onClickModalOpen = (modalType: MODAL_TYPE, templateID: any) => {
-  //   dispatch(
-  //     openModal({
-  //       modalType: modalType,
-  //       templateID: templateID,
-  //     })
-  //   );
-  // };
 
   return (
     <ModalContentWrap>
@@ -106,21 +124,53 @@ const EditInterviews = () => {
         <TextInput
           {...titleInputArg}
           onChange={inputOnChange}
-          value={inputValue["title"]}
+          value={inputValue["role_title"]}
         />
       </InputLayout>
       <InputLayout>
         <BodySMedium>Description</BodySMedium>
+        {/* Need to switch back to textAREA component, Suwon help plsss? */}
+
         <TextArea
           {...descriptionInputArg}
           onChange={textAreaOnChange}
           value={inputValue["description"]}
         />
       </InputLayout>
-      <BodySMedium>Template Cover Photo</BodySMedium>
-      <CoverPictureContainer>
-        <Box>Click Here</Box>
-      </CoverPictureContainer>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        sx={{ alignItems: "center" }}
+      >
+        <BodySMedium>Template Cover Photo</BodySMedium>
+        <CoverPictureContainer>
+          <ElWrap w={150}>
+            <TextIconBtnL
+              label="Change Cover"
+              icon={<DocumentIcon />}
+              disable={false}
+              className={BackgroundColor.WHITE}
+              onClick={() => {}}
+            />
+          </ElWrap>
+        </CoverPictureContainer>
+      </Stack>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        sx={{ alignItems: "center" }}
+      >
+        <BodySMedium>Delete Template? </BodySMedium>
+        <ElWrap w={150}>
+          <TextIconBtnL
+            label="Delete"
+            icon={<BinIcon />}
+            disable={false}
+            className={BackgroundColor.WHITE}
+            onClick={handleDeleteTemplate}
+          />
+        </ElWrap>
+      </Stack>
       <div style={{ marginTop: "8px" }}>
         <TextBtnL
           label="Save"

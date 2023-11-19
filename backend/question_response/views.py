@@ -14,6 +14,7 @@ import json
 from user.models import CustomUser
 from typing import List, Dict
 from .serializers import InterviewerFeedbackSerializer
+from interview.models import Candidate
 
 
 class QuestionSummarizedAnswerView(APIView):
@@ -88,14 +89,17 @@ class QuestionSummarizedAnswerView(APIView):
             data = json.load(f)
 
             interviewer = interview_round.interviewer
-            candidate = interview_round.candidate
 
             for utterance in data["utterances"]:
                 # TODO: We assume that the first speaker is always an interviewer. Fix this.
                 # TODO: If this is not the case, we then need to rerun this code after modifying the transcript chunks for the interviewer.
                 # TODO: This will also only work for one interviewer and one candidate. We need to support multiple interviewers and candidates.
 
-                user = interviewer if utterance["speaker"] == "A" else candidate
+                user = (
+                    interviewer
+                    if utterance["speaker"] == "A"
+                    else interview_round.candidate
+                )
                 # user = CustomUser.objects.get(id=utterance["speaker"])
                 TranscriptChunk.objects.create(
                     chunk_text=utterance["text"],
@@ -153,15 +157,16 @@ class InterviewerFeedbackListCreateView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         # Initialize a serializer with the request data.
         serializer = self.get_serializer(data=request.data)
-        
+
         # Check if the serializer is valid.
         if serializer.is_valid():
             # Save the serializer will create a new instance with the provided data.
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        
+
         # If the data is not valid, return a bad request response.
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class InterviewerFeedbackDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = InterviewerFeedback.objects.all()

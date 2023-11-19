@@ -40,17 +40,6 @@ export const EmojiOverlayWrapper = styled.div`
   }
 `;
 
-export const VideoScreenWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  justify-content: flex-start;
-
-  @media (max-width: 900px) {
-    row-gap: 60px;
-  }
-`;
-
 export const StyledInterviewContent = styled.div<StyledInterviewContent>`
   background-color: white;
   width: 80%;
@@ -170,6 +159,18 @@ export const StyledIcon = styled.div`
   }
 `;
 
+export const GuidelinesSection = styled.div`
+  flex: 1;
+  margin-top: 20px;
+  overflow-y: auto;
+  ul {
+    list-style: disc;
+    font-size: 12px;
+    line-height: 170%;
+    padding: 0 20px;
+  }
+`;
+
 export const StyledInfoDescription = styled.div`
   padding: 10px;
   border-radius: 10px;
@@ -219,24 +220,18 @@ export const IndexStyle = styled.div`
 `;
 
 export const WhiteIndexStyle = styled.div`
-  span {
-    border-radius: 10px;
-    background-color: white;
-    padding: 9px 14px;
-    font-size: 14px;
-
-    margin-right: 5px;
-    font-weight: bold;
-  }
+  border-radius: 10px;
+  background-color: white;
+  padding: 8px 18px;
+  margin-right: 5px;
 `;
 
 export const CompetencyStyle = styled.span`
-  border: 1px solid black;
-  border-radius: 8px;
+  border: 1.2px solid black;
+  border-radius: 10px;
   background-color: white;
-  padding: 10px 18px;
+  padding: 8px 18px;
   margin-right: 5px;
-  height: auto;
 `;
 
 export const StyledInnerWrapper = styled.div`
@@ -315,12 +310,7 @@ export const StyledAnswerPoints = styled.div`
     width: 5px;
   }
 `;
-export const StyledAnswerHeading = styled.p`
-  font-family: ChillaxSemi;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  line-height: 125%;
-`;
+
 export const BottomQuestionButtons = styled.span`
   bottom: 0;
   position: absolute;
@@ -412,4 +402,46 @@ export const CoverPictureContainer = styled.div`
   &:hover input[type="file"]:hover + .profile-picture {
     opacity: 1;
   }
+`;
+
+export const StyledImage = styled.img`
+  width: 90px;
+  min-width: 90px;
+  min-height: 60px;
+  max-height: 100px;
+`;
+
+// export const GridContainer = styled.div`
+//   display: grid;
+//   grid-template-columns: repeat(4, 1fr);
+//   gap: 20px; // adjust this value for space between grid items
+//   // adjust this value for space around the grid
+//   display: flex;
+//   flex-wrap: wrap;
+
+//   backgroundColor: "black",
+//   height: "100%",
+//   width: "100%",
+//   padding: "2%",
+
+export const VideoScreenWrapper = styled.div`
+  flex: 1; /* Minimum width before wrapping */
+  display: flex;
+  padding: 48px;
+  justify-content: flex-end;
+`;
+
+export const InterviewSideBarWrapper = styled.div`
+  flex: 0 0 660px; /* This sets the InterviewSideBar to a fixed width of 300px */
+  height: 100vh;
+  padding: 56px;
+`;
+
+export const GridContainer = styled.div`
+  display: flex;
+  flex-wrap: nowrap; /* Prevent wrapping to the next line */
+  background-color: #000; /* Assuming you want a black background */
+  height: 100vh; /* Full viewport height */
+  width: 100%; /* Full viewport width */
+  align-items: stretch; /* Stretch items to fill the container height */
 `;

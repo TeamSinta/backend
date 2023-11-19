@@ -56,7 +56,7 @@ const TopNavBar = (): JSX.Element => {
           <SearchInput disable={false} placeholder={"Search"} error={false} />
         </Box>
 
-        <ElWrap w={380}>
+        <ElWrap w={480}>
           <DropDownButton
             label="Create a Meeting"
             onClick={() => {}}

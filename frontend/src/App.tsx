@@ -3,58 +3,48 @@ import SideNavBar from "./components/layouts/sidenavbar/SideNavBar";
 import { StyledMain } from "./components/layouts/container/StyledContainer";
 import Container from "./components/layouts/container/Container";
 import Routers from "./router/Routers";
-
-// import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { RootState } from "./app/store";
 import Loading from "./components/common/elements/loading/Loading";
-import VideoCallComponent from "@/utils/dailyVideoService/videoCallComponent";
-import { useLocation } from "react-router-dom";
-import { AppDispatch } from "@/app/store";
-// Node: server, Browser : worker.
-if (import.meta.env.VITE_ENV !== "develop") {
-  if (typeof window === "undefined") {
-    (async () => {
-      const { server } = await import("@/mocks/server");
-      server.listen();
-    })();
-  } else {
-    (async () => {
-      const { worker } = await import("@/mocks/browser");
-      worker.start({ onUnhandledRequest: "bypass" });
-    })();
-  }
-}
-
-interface VideoCallContextType {
-  createCall: () => Promise<string>;
-  startHairCheck: (url: string) => void;
-}
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function App() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { isAuthenticated, status } = useSelector(
     (state: RootState) => state.user
   );
+  const [isLoading, setIsLoading] = useState(true);
 
-  const isLoggedIn = isAuthenticated;
+  useEffect(() => {
+    if (status === "LOADING") {
+      // Keep showing loading while status is LOADING
+      setIsLoading(true);
+    } else if (!isAuthenticated && location.pathname !== "/login") {
+      // Redirect to login if not authenticated and not already on the login page
+      navigate("/login");
+    } else {
+      // Otherwise, we are authenticated or on the login page, so set loading to false
+      setIsLoading(false);
+    }
+  }, [isAuthenticated, location.pathname, navigate, status]);
 
-  // Check if the current path is "/video-call"
-  const isVideoCallRoute = location.pathname.startsWith("/video-call/");
-
-  if (status === "LOADING") {
+  if (isLoading) {
     return <Loading />;
   }
 
-  // Render only the Routers component if we're on the "/video-call" route
+  const isVideoCallRoute = location.pathname.startsWith("/video-call/");
+
   if (isVideoCallRoute) {
     return <Routers />;
   }
 
-  // Render the full app layout if we're NOT on the "/video-call" route
+  console.log(isAuthenticated);
+  // After this point, the user is either authenticated or on the login page
   return (
     <>
-      {isLoggedIn ? (
+      {isAuthenticated ? (
         <Container>
           <SideNavBar />
           <TopNavBar />
@@ -63,10 +53,10 @@ function App() {
           </StyledMain>
         </Container>
       ) : (
+        // If not authenticated, render the login or other public routes
         <Routers />
       )}
     </>
   );
 }
-
 export default App;

@@ -3,15 +3,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from transcription.models import TranscriptChunk
-from interview.models import InterviewRound
+from interview.models import InterviewRound, Candidate
 from pgvector.django import CosineDistance
 from app.utils import seconds_to_minutes
 from typing import List, Dict
 from django.shortcuts import get_object_or_404
-
+from user.models import CustomUser
 from interview.models import InterviewRound
 from django.http import HttpRequest
 from transcription.jobs.get_transcripts import generate_transcriptions_from_assembly
+from django.db.models import Q
+from django.contrib.contenttypes.models import ContentType
 
 
 class QuestionTranscriptView(APIView):
@@ -30,14 +32,28 @@ class QuestionTranscriptView(APIView):
         interview_round = get_object_or_404(InterviewRound, pk=interview_round_id)
         interview_questions = interview_round.interview_round_questions.all()
         tc = interview_round.transcript_chunks.all()
-        tc_by_interviewer = tc.filter(speaker=interview_round.interviewer)
 
         for q in interview_questions:
             template_question = q.question  # Access the related TemplateQuestion
             question = template_question.question  # Access the related Question
-            asked_question = tc_by_interviewer.order_by(
-                CosineDistance("embedding", question.embedding)
-            ).first()
+            asked_question = (
+                tc.filter(
+                    Q(
+                        speaker_content_type=ContentType.objects.get_for_model(
+                            CustomUser
+                        ),
+                        speaker_object_id=interview_round.interviewer.id,
+                    )
+                    | Q(
+                        speaker_content_type=ContentType.objects.get_for_model(
+                            Candidate
+                        ),
+                        speaker_object_id=interview_round.candidate.id,
+                    )
+                )
+                .order_by(CosineDistance("embedding", question.embedding))
+                .first()
+            )
             question_start_times.append((question, asked_question.start_time - 1))
 
         question_start_times.sort(key=lambda x: x[1])

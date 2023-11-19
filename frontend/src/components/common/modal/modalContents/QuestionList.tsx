@@ -5,6 +5,7 @@ import {
   resetQuestionBank,
   selectInterview,
   setSelectedQuestion,
+  setAllQuestionsSelected,
 } from "@/features/interviews/interviewsSlice";
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { useEffect, useState } from "react";
@@ -33,6 +34,12 @@ import {
   QuestionNumber,
   QuestionValue,
 } from "./StyledModalContents";
+import ReactMarkdown from "react-markdown";
+import { H3 } from "../../typeScale/TypeScale";
+
+const components = {
+  h3: H3,
+};
 
 const QuestionList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -72,7 +79,9 @@ const QuestionList = () => {
         <ElWrap w={240}>
           <TextIconBtnL
             disable={false}
-            onClick={() => {}}
+            onClick={() => {
+              dispatch(setAllQuestionsSelected(questions));
+            }}
             className={BackgroundColor.ACCENT_PURPLE}
             icon={<PlusIcon />}
             label="Add All Questions"
@@ -118,11 +127,11 @@ const QuestionList = () => {
                 )}
                 <div className="title">
                   <QuestionNumber>{index + 1}</QuestionNumber>
-                  <BodyLBold>{question.title}</BodyLBold>
+                  <BodyLBold>{question.question_text}</BodyLBold>
                   <DetailOpenIcon
                     open={openItems.has(question.id)}
                     onClick={() => {
-                      setHtml(question.detail);
+                      setHtml(question.guidelines);
                       openDetailHandler(
                         question.id,
                         openItems.has(question.id)
@@ -135,16 +144,16 @@ const QuestionList = () => {
                 </div>
                 <div className="body">
                   <QuestionValue>
-                    <BodySMedium>{question.competencies}</BodySMedium>
+                    <BodySMedium>{question.competency}</BodySMedium>
                   </QuestionValue>
 
                   <div className="iconDiv">
                     <TimeIcon />
-                    <BodySMedium>{question.time}min</BodySMedium>
+                    <BodySMedium>{question.reply_time}min</BodySMedium>
                   </div>
                   <div className="iconDiv">
                     <GraphIcon />
-                    <BodySMedium>{question.level}</BodySMedium>
+                    <BodySMedium>{question.difficulty}</BodySMedium>
                   </div>
                 </div>
                 <div
@@ -152,7 +161,9 @@ const QuestionList = () => {
                     openItems.has(question.id) ? "detail" : "detail none"
                   }
                 >
-                  <div dangerouslySetInnerHTML={{ __html: html }}></div>
+                  <ReactMarkdown components={components}>
+                    {question.guidelines}
+                  </ReactMarkdown>
                 </div>
               </div>
             ))}

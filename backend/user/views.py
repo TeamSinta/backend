@@ -49,11 +49,12 @@ class GetUserByUsername(APIView):
     def get(self, request, username):
         # Use the get_object_or_404 method to try to get a user by their username.
         user = get_object_or_404(CustomUser, username=username)
-   
+
         # Serialize the user instance.
         serializer = CustomUserSerializer(user)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class UserDepartmentsView(ListAPIView):
     serializer_class = DepartmentSerializer

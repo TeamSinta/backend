@@ -24,7 +24,9 @@ class Question(models.Model):
     reply_time = models.IntegerField()
     difficulty = models.IntegerField(choices=DifficultyChoices.choices, default=None)
     competency = models.CharField(max_length=200)
-    review = models.IntegerField(choices=ReviewChoices.choices, default=None)
+    review = models.IntegerField(
+        choices=ReviewChoices.choices, null=True, blank=True, default=None
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

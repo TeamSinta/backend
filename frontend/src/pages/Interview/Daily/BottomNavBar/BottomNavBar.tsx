@@ -147,12 +147,13 @@ function BottomNavBar(props: any) {
               {/* Integrate Daily's tray components here */}
 
               {/* Your custom emoji buttons */}
+
               <StyledBottomNavButtons
                 onClick={(e) => {
-                  emojiClicked(e, "🔥", 1);
+                  emojiClicked(e, "👍", 2);
                 }}
               >
-                🔥
+                👍
               </StyledBottomNavButtons>
               <StyledBottomNavButtons
                 onClick={(e) => {
@@ -163,11 +164,12 @@ function BottomNavBar(props: any) {
               </StyledBottomNavButtons>
               <StyledBottomNavButtons
                 onClick={(e) => {
-                  emojiClicked(e, "👍", 2);
+                  emojiClicked(e, "🔥", 1);
                 }}
               >
-                👍
+                🔥
               </StyledBottomNavButtons>
+
               <StyledBottomNavButtons
                 onClick={(e) => {
                   emojiClicked(e, "😂", 5);
@@ -182,64 +184,50 @@ function BottomNavBar(props: any) {
               >
                 <i className="fa fa-heart" style={{ color: "#FF3D2F" }}></i>
               </StyledBottomNavButtons>
+              <div style={{ paddingLeft: "16px", paddingRight: "16px" }}>
+                <NavCircle />
+              </div>
+              <StyledBottomNavButtons>
+                <NavBookmarkIcon />
+              </StyledBottomNavButtons>
+              <StyledBottomNavButtons>
+                <NavFlagIcon />
+              </StyledBottomNavButtons>
+
+              <StyledBottomNavButtons
+                onClick={toggleScreenShare}
+                type="button"
+                style={{ gap: "4px" }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <span
+                    className="record-label"
+                    style={{ marginLeft: "5px", marginRight: "5px" }}
+                  >
+                    {isSharingScreen ? " Stop sharing screen" : " Share screen"}{" "}
+                  </span>{" "}
+                  <span className="icon" style={{ marginLeft: "5px" }}>
+                    <NavScreenShareIcon />
+                  </span>
+                </div>
+              </StyledBottomNavButtons>
+
+              <StyledBottomNavButtons onClick={toggleChat} type="button">
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <span
+                    className="record-label"
+                    style={{ marginLeft: "5px", marginRight: "5px" }}
+                  >
+                    {newChatMessage ? "Hide chat" : "Show chat"}
+                  </span>{" "}
+                  <span className="icon" style={{ marginLeft: "5px" }}>
+                    {newChatMessage ? <NavCircle /> : <NavFlagIcon />}
+                  </span>
+                </div>
+              </StyledBottomNavButtons>
             </StyledColumns>
           </Grid>
         )}
-
-        <Grid lg={6} md={6} sm={6} xl={6} xs={6}>
-          {" "}
-          <StyledColumns>
-            {/* Integrate Daily's tray components here */}
-
-            <StyledBottomNavButtons>
-              <NavBookmarkIcon />
-            </StyledBottomNavButtons>
-            <StyledBottomNavButtons>
-              <NavFlagIcon />
-            </StyledBottomNavButtons>
-
-            <StyledBottomNavButtons
-              onClick={toggleScreenShare}
-              type="button"
-              style={{ gap: "4px" }}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <span
-                  className="record-label"
-                  style={{ marginLeft: "5px", marginRight: "5px" }}
-                >
-                  {isSharingScreen ? " Stop sharing screen" : " Share screen"}{" "}
-                </span>{" "}
-                <span className="icon" style={{ marginLeft: "5px" }}>
-                  <NavScreenShareIcon />
-                </span>
-              </div>
-            </StyledBottomNavButtons>
-
-            <StyledBottomNavButtons
-              onClick={toggleMeetingInformation}
-              type="button"
-            >
-              {showMeetingInformation ? "Hide info" : "Show info"}
-            </StyledBottomNavButtons>
-
-            <StyledBottomNavButtons onClick={toggleChat} type="button">
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <span
-                  className="record-label"
-                  style={{ marginLeft: "5px", marginRight: "5px" }}
-                >
-                  {newChatMessage ? "Hide chat" : "Show chat"}
-                </span>{" "}
-                <span className="icon" style={{ marginLeft: "5px" }}>
-                  {newChatMessage ? <NavCircle /> : <NavFlagIcon />}
-                </span>
-              </div>
-            </StyledBottomNavButtons>
-
-            {/* ... (other tray buttons) */}
-          </StyledColumns>
-        </Grid>
 
         <FinishButtonContainer>
           {" "}

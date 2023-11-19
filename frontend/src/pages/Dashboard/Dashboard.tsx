@@ -4,7 +4,7 @@ import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBt
 import { BackgroundColor } from "@/features/utils/utilEnum";
 import { PlusIcon, RightBracketIcon } from "@/components/common/svgIcons/Icons";
 import TemplateHomeCard from "@/components/common/cards/teamplateHomeCard/TemplateHomeCard";
-import { fetchInterviewRounds } from "@/features/dashboardDetail/dashboardAPI";
+import { useGetTemplatesQuery } from "@/features/templates/templatesAPISlice";
 import {
   MainContainer,
   WelcomeHeading,
@@ -17,36 +17,21 @@ import {
   YourMainContentContainer,
   ButtonContainer,
 } from "./StyledDashboard";
-import dashboardImage from "src/assets/svg/homepage.svg";
+import dashboardImage from "src/assets/svg/SintaHomeFullScreen.svg";
 import { StyledImage } from "./StyledDashboard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store";
-import { IMember } from "@/components/common/cards/teamplateHomeCard/TemplateHomeCard";
 import { useNavigate } from "react-router-dom";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
-
-interface interviewRound {
-  role_title: string;
-  disable: boolean;
-  interviewers?: IMember[];
-  id: string;
-}
+import Loading from "@/components/common/elements/loading/Loading";
+import { TemplateResponse } from "@/features/templates/templatesInterface";
+import { createCall } from "@/utils/dailyVideoService/videoCallSlice";
 
 const DashBoard = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.user);
-  const [interviewRounds, setInterviewRounds] = useState<interviewRound[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchInterviewRounds();
-        setInterviewRounds(data);
-      } catch (error) {}
-    };
-    fetchData();
-  }, []);
-
+  const [newTemplates, setTemplates] = useState<TemplateResponse[]>([]);
+  const dispatch: AppDispatch = useDispatch();
   const handleButtonClick = () => {
     navigate("/templates");
   };
@@ -70,11 +55,9 @@ const DashBoard = () => {
       : e.pageX; // if there's no ref, just use the pageX value as fallback
     setStartX(x);
   };
-
   const handleMouseUp = () => {
     setIsDragging(false);
   };
-
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging) return;
 
@@ -97,13 +80,50 @@ const DashBoard = () => {
     navigate(`/templates/${templateId}`);
   };
 
+  const {
+    data: templates,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetTemplatesQuery();
+
+  useEffect(() => {
+    if (isSuccess) {
+      setTemplates(templates);
+    }
+  }, [isSuccess, templates]);
+
+  if (isLoading) {
+    return <Loading />; // Render the loading component when data is still loading
+  }
+
+  if (isError) {
+    return (
+      <div>
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
+  const startDemo = async () => {
+    try {
+      // response after creating a room
+      const responseRoom = await dispatch(createCall());
+      console.log("Room created successfully", responseRoom.payload);
+      navigate(`/video-call/?roomUrl=${encodeURIComponent(responseRoom.payload)}
+      `);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <YourNewContainer>
         <YourMainContentContainer>
           <Stack
             direction="column"
-            justifyContent="center"
+            justifyContent="space-between"
             alignItems="center"
             spacing={1}
             style={{
@@ -117,31 +137,19 @@ const DashBoard = () => {
                     Welcome back, {user.first_name} 👋
                   </WelcomeHeading>
                   <DescriptionText>
-                    Helping teams hire faster and smarter.
+                    Helping teams hire faster and better. Get{" "}
+                    <DescriptionText>
+                      {" "}
+                      started by creating a template or launch a meeting.{" "}
+                    </DescriptionText>
                   </DescriptionText>
                 </TextBox>
-                {/* <PendingReviewsBox>
-                <IconStyle>
-                  <CalendarIcon />
-                </IconStyle>
-
-                <BodyLMedium>Pending Reviews</BodyLMedium>
-              </PendingReviewsBox> */}
 
                 <ButtonContainer>
-                  <ElWrap w={240}>
-                    <TextIconBtnL
-                      label="Create a Interview"
-                      onClick={() => {}}
-                      icon={<PlusIcon />}
-                      disable={false}
-                      className={BackgroundColor.WHITE}
-                    />
-                  </ElWrap>
-                  <ElWrap w={240}>
+                  <ElWrap w={400}>
                     <TextIconBtnL
                       label="Start a Meeting"
-                      onClick={() => {}}
+                      onClick={startDemo}
                       icon={<RightBracketIcon />}
                       disable={false}
                       className={BackgroundColor.ACCENT_PURPLE}
@@ -176,14 +184,14 @@ const DashBoard = () => {
             onMouseLeave={handleMouseUp}
             ref={scrollContainerRef}
           >
-            {interviewRounds.map((interviewRound) => (
+            {newTemplates.map((interviewRound) => (
               <TemplateHomeCard
                 key={interviewRound.id}
                 title={interviewRound.role_title}
-                // Determine the disable state based on a condition, e.g., if interviewRound.disable exists and is true
-                disable={interviewRound.disable || false}
+                disable={false}
                 questions={new Array(8)} // or you can provide actual data if available
                 sections={new Array(15)} // or you can provide actual data if available
+                imageUrl={interviewRound.image}
                 members={interviewRound.interviewers || []}
                 onClick={() => handleCardClick(interviewRound.id)} // Use interviewRound.id as the template ID
               />

@@ -36,7 +36,7 @@ interface UserModalProps {
 
 const MemberSettings: React.FC<UserModalProps> = () => {
   const member = useSelector(selectSetMember);
-  console.log(member);
+
   const workspace = useSelector((state: RootState) => state.workspace);
   const [memberDepartments, setMemberDepartments] = useState([]);
   const [getMemberDepartments] = useGetUserDepartmentsMutation();

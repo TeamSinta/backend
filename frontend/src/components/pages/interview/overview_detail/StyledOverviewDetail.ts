@@ -211,3 +211,20 @@ export const TimeQuestionDiv = styled.div`
     }
   }
 `;
+
+export const StyledImage = styled.img`
+  flex: 1;
+  max-width: 250px;
+  max-height: 250px;
+`;
+
+export const EmptySectionContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  height: 85%;
+  gap: 16px;
+  flex-direction: column;
+  text-align: center;
+`;

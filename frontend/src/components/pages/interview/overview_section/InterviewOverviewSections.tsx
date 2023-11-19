@@ -4,13 +4,15 @@ import {
   H3Bold,
   BodyLBold,
   BodySMedium,
+  BodyLMedium,
 } from "@/components/common/typeScale/StyledTypeScale";
 import {
   OverviewSections,
   SectionLists,
   SectionList,
+  EmptySectionContainer,
 } from "./StyledOverviewSection";
-import { Loading } from "@/features/utils/utilEnum";
+import { DataLoading } from "@/features/utils/utilEnum";
 import { Title } from "../StyledInterview";
 import { useDispatch } from "react-redux";
 import { setSelectedSection } from "@/features/interviewDetail/interviewDetailSlice";
@@ -33,6 +35,7 @@ const InterviewOverviewSections: React.FC = () => {
   const { sections, status, selectedSection, questions } = useSelector(
     selectInterviewDetail
   );
+
   const dispatch = useDispatch();
   const [activeSectionId, setActiveSectionId] = useState<number | null>(
     selectedSection?.id || null
@@ -89,33 +92,43 @@ const InterviewOverviewSections: React.FC = () => {
         <H3Bold>Sections</H3Bold>
       </Title>
       <SectionLists>
-        {status === Loading.FULFILLED && Array.isArray(sections) ? (
-          sections.map((sectionItem: ISection, index: number) => {
-            const questionCount = getRelevantQuestionCount(sectionItem.id);
-            const totalReplyTime = getTotalReplyTime(sectionItem.id);
+        {Array.isArray(sections) && sections.length > 0 ? (
+          status === DataLoading.FULFILLED ? (
+            sections.map((sectionItem: ISection, index: number) => {
+              const questionCount = getRelevantQuestionCount(sectionItem.id);
+              const totalReplyTime = getTotalReplyTime(sectionItem.id);
 
-            return (
-              <SectionList
-                key={index}
-                className={activeSectionId === sectionItem.id ? "active" : ""}
-                onClick={() => handleButtonClick(sectionItem)}
-              >
-                <BodyLBold>{sectionItem.topics_text}</BodyLBold>
-                <TimeQuestionDiv>
-                  <div className="icon-div">
-                    <TimeIcon />
-                    <BodySMedium>{totalReplyTime} min</BodySMedium>
-                  </div>
-                  <div className="icon-div">
-                    <QuestionIcon />
-                    <BodySMedium>{questionCount} Questions</BodySMedium>
-                  </div>
-                </TimeQuestionDiv>
-              </SectionList>
-            );
-          })
+              return (
+                <SectionList
+                  key={index}
+                  className={activeSectionId === sectionItem.id ? "active" : ""}
+                  onClick={() => handleButtonClick(sectionItem)}
+                >
+                  <BodyLBold>{sectionItem.topics_text}</BodyLBold>
+                  <TimeQuestionDiv>
+                    <div className="icon-div">
+                      <TimeIcon />
+                      <BodySMedium>{totalReplyTime} min</BodySMedium>
+                    </div>
+                    <div className="icon-div">
+                      <QuestionIcon />
+                      <BodySMedium>{questionCount} Questions</BodySMedium>
+                    </div>
+                  </TimeQuestionDiv>
+                </SectionList>
+              );
+            })
+          ) : (
+            <></>
+          )
         ) : (
-          <></>
+          <EmptySectionContainer>
+            {" "}
+            <BodyLMedium>
+              To get started, start by adding a topic or section for your
+              interview
+            </BodyLMedium>
+          </EmptySectionContainer>
         )}
       </SectionLists>
       <div style={{ borderTop: "16px solid white" }}>

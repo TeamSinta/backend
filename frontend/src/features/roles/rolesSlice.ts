@@ -1,6 +1,6 @@
 import { RootState } from "@/app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Loading } from "../utils/utilEnum";
+import { DataLoading } from "../utils/utilEnum";
 import { fetchMembers } from "./rolesAPI";
 import { IMember, IMockMembers, RolesCreateSlice } from "./rolesInterface";
 import { useGetCompanyMembersQuery } from "../settingsDetail/userSettingsAPI";
@@ -22,7 +22,7 @@ export const initialState: RolesCreateSlice = {
       selected: false,
     },
   ],
-  status: Loading.UNSEND,
+  status: DataLoading.UNSEND,
 };
 
 export const useFetchSelectMembers = ({

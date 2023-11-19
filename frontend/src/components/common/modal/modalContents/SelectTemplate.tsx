@@ -136,7 +136,7 @@ const SelectTemplate = () => {
                     <SelectedQuestionList>
                       <QuestionNumber>{index + 1}</QuestionNumber>
                       <div className="title">
-                        <BodyLMedium>{question.title}</BodyLMedium>
+                        <BodyLMedium>{question.question_text}</BodyLMedium>
                       </div>
                       <ElWrap h={32} w={32}>
                         <IconBtnM
@@ -166,7 +166,7 @@ const SelectTemplate = () => {
               <TextBtnL
                 label="Skip"
                 disable={false}
-                onClick={() => {}}
+                onClick={() => navigate(0)}
                 className={BackgroundColor.WHITE}
               />
               <TextIconBtnL
