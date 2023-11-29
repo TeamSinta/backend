@@ -5,11 +5,11 @@ export const StyledContainer = styled.div`
   grid-template-areas:
     "side header"
     "side main";
-  grid-template-columns: 180px 1fr;
+  grid-template-columns: 240px 1fr;
   grid-template-rows: 100px 1fr;
   max-width: 100%;
 
-  /* Add more media queries for other screen sizes as needed */
+  /* Add more media queries for othesr screen sizes as needed */
 `;
 
 export const StyledMain = styled.div`

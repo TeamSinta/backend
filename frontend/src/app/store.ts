@@ -8,6 +8,7 @@ import interviewDetailReducer from "@/features/interviewDetail/interviewDetailSl
 import userReducer from "@/features/authentication/authenticationSlice";
 import workSpaceReducer from "@/features/workspace/userWorkspaceSlice";
 import memberReducer from "@/features/members/memberSlice";
+import notesReducer from "@/features/interviews/notesSlice";
 import { authAPI } from "@/features/authentication/authenticationAPI";
 import videoCallReducer from "@/features/videoCall/videoCallSlice";
 import { userAPI } from "@/features/settingsDetail/userSettingsAPI";
@@ -28,6 +29,7 @@ export const store = configureStore({
     videoCall: videoCallReducer,
     modal: modalReducer,
     role: roleReducer,
+    notes: notesReducer,
     inviteMember: inviteMemberReducer,
     questionBanks: questionBanksReducer,
     interviewDetail: interviewDetailReducer,

@@ -63,12 +63,16 @@ const TemplateInterviewCard = (props: ITemplateInterviewCardProps) => {
             setHover(false);
           }}
         >
-          <BodyMBold  style={{
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                maxWidth: "300px",
-                whiteSpace: "nowrap",
-              }}>{title}</BodyMBold>
+          <BodyMBold
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "300px",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {title}
+          </BodyMBold>
           <CardSubTitle>
             <BodySMedium>{questions.length} Questions</BodySMedium>
           </CardSubTitle>

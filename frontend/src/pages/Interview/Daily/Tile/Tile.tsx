@@ -2,6 +2,10 @@ import React from "react";
 import "./Tile.css";
 import { DailyVideo, useMediaTrack } from "@daily-co/daily-react";
 import Username from "../Username/Username";
+import {
+  BodyLMedium,
+  BodyLSemiBold,
+} from "@/components/common/typeScale/StyledTypeScale";
 
 interface TileProps {
   id: string;
@@ -46,7 +50,9 @@ export default function Tile({
         }}
         fit={"cover"}
       />
-      <Username id={id} isLocal={isLocal} />
+      <BodyLSemiBold style={{ color: "white" }}>
+        <Username id={id} isLocal={isLocal} />
+      </BodyLSemiBold>
     </div>
   );
 }

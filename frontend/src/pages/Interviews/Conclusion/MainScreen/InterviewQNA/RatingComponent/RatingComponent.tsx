@@ -65,6 +65,8 @@ export const WrongButtonL = (props: ICustomIconProps): JSX.Element => {
             style={{
               background: "#FABBCF",
               boxShadow: "none",
+              outline: "1.7px solid black",
+              outlineOffset: "-1",
             }}
           >
             <WrongIcon />
@@ -76,7 +78,9 @@ export const WrongButtonL = (props: ICustomIconProps): JSX.Element => {
     return (
       <div style={{ marginRight: "5px" }}>
         <ElWrap w={40}>
-          <StyledRatingBtnL>
+          <StyledRatingBtnL
+            style={{ outline: "1.7px solid black", outlineOffset: "-1" }}
+          >
             <WrongIcon />
           </StyledRatingBtnL>
         </ElWrap>
@@ -92,7 +96,12 @@ export const DislikeButtonL = (props: ICustomIconProps): JSX.Element => {
       <div style={{ marginRight: "5px" }}>
         <ElWrap w={40}>
           <StyledRatingBtnL
-            style={{ background: "#FABBCF", boxShadow: "none" }}
+            style={{
+              background: "#FABBCF",
+              boxShadow: "none",
+              outline: "1.7px solid black",
+              outlineOffset: "-1",
+            }}
           >
             <DislikeIcon />
           </StyledRatingBtnL>
@@ -104,7 +113,9 @@ export const DislikeButtonL = (props: ICustomIconProps): JSX.Element => {
       <div style={{ marginRight: "5px" }}>
         {" "}
         <ElWrap w={40}>
-          <StyledRatingBtnL>
+          <StyledRatingBtnL
+            style={{ outline: "1.7px solid black", outlineOffset: "-1" }}
+          >
             <DislikeIcon />
           </StyledRatingBtnL>
         </ElWrap>
@@ -121,7 +132,12 @@ export const NeutralButtonL = (props: ICustomIconProps): JSX.Element => {
         {" "}
         <ElWrap w={40}>
           <StyledRatingBtnL
-            style={{ background: "#FFFABF", boxShadow: "none" }}
+            style={{
+              background: "#FFFABF",
+              boxShadow: "none",
+              outline: "1.7px solid black",
+              outlineOffset: "-1",
+            }}
           >
             <NeutralIcon />
           </StyledRatingBtnL>
@@ -133,7 +149,9 @@ export const NeutralButtonL = (props: ICustomIconProps): JSX.Element => {
       <div style={{ marginRight: "5px" }}>
         {" "}
         <ElWrap w={40}>
-          <StyledRatingBtnL>
+          <StyledRatingBtnL
+            style={{ outline: "1.7px solid black", outlineOffset: "-1" }}
+          >
             <NeutralIcon />
           </StyledRatingBtnL>
         </ElWrap>
@@ -149,7 +167,12 @@ export const LikeButtonL = (props: ICustomIconProps): JSX.Element => {
       <div style={{ marginRight: "5px" }}>
         <ElWrap w={40}>
           <StyledRatingBtnL
-            style={{ background: "#DBFDDC", boxShadow: "none" }}
+            style={{
+              background: "#DBFDDC",
+              boxShadow: "none",
+              outline: "1.7px solid black",
+              outlineOffset: "-1",
+            }}
           >
             <LikeIcon />
           </StyledRatingBtnL>
@@ -161,7 +184,9 @@ export const LikeButtonL = (props: ICustomIconProps): JSX.Element => {
       <div style={{ marginRight: "5px" }}>
         {" "}
         <ElWrap w={40}>
-          <StyledRatingBtnL>
+          <StyledRatingBtnL
+            style={{ outline: "1.7px solid black", outlineOffset: "-1" }}
+          >
             <LikeIcon />
           </StyledRatingBtnL>
         </ElWrap>
@@ -175,7 +200,14 @@ export const TopStarButtonL = (props: ICustomIconProps): JSX.Element => {
   if (active === 5) {
     return (
       <ElWrap w={40}>
-        <StyledRatingBtnL style={{ background: "#DBFDDC", boxShadow: "none" }}>
+        <StyledRatingBtnL
+          style={{
+            background: "#DBFDDC",
+            boxShadow: "none",
+            outline: "1.7px solid black",
+            outlineOffset: "-1",
+          }}
+        >
           <TopStarIcon />
         </StyledRatingBtnL>
       </ElWrap>
@@ -183,7 +215,9 @@ export const TopStarButtonL = (props: ICustomIconProps): JSX.Element => {
   } else {
     return (
       <ElWrap w={40}>
-        <StyledRatingBtnL>
+        <StyledRatingBtnL
+          style={{ outline: "1.7px solid black", outlineOffset: "-1" }}
+        >
           <TopStarIcon />
         </StyledRatingBtnL>
       </ElWrap>
@@ -245,7 +279,7 @@ export function RatingComponentL({
       style={{
         display: "flex",
         marginLeft: "4px",
-        gap: "8px",
+        gap: "16px",
         marginRight: "0.5%",
         justifyContent: "flex-start",
       }}

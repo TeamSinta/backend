@@ -6,6 +6,7 @@ import {
   useDailyEvent,
   DailyAudio,
   useDaily,
+  useVideoTrack,
 } from "@daily-co/daily-react";
 
 import "./Call.css";
@@ -16,6 +17,8 @@ import {
   BodyLSemiBold,
   BodyMMedium,
   BodySMedium,
+  H1,
+  H2Bold,
 } from "@/components/common/typeScale/StyledTypeScale";
 import { TextIconBtnL } from "@/components/common/buttons/textIconBtn/TextIconBtn";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
@@ -43,70 +46,101 @@ export default function Call() {
 
   /* This is for displaying our self-view. */
   const localParticipant = useLocalParticipant();
+  const localVideo = useVideoTrack(localParticipant?.session_id);
+  const mutedVideo = localVideo.isOff;
+
   const isAlone: boolean = useMemo(
     () => remoteParticipantIds?.length! < 1 || screens?.length! < 1,
     [remoteParticipantIds, screens]
   );
+  console.log(localParticipant);
+
+  const copyToClipboard = () => {
+    const textField = document.createElement("textarea");
+    textField.innerText = window.location.href;
+    document.body.appendChild(textField);
+    textField.select();
+    document.execCommand("copy");
+    textField.remove();
+    alert("Link copied to clipboard!");
+  };
 
   const renderCallScreen = () => (
-    <div className={screens.length! > 0 ? "is-screenshare" : "call"}>
-      {/* Your self view */}
-      {localParticipant && (
-        <Tile
-          id={localParticipant.session_id}
-          isLocal
-          isAlone={isAlone}
-          isScreenShare={false}
-        />
-      )}
-
-      {/* Videos of remote participants and screen shares */}
-      {remoteParticipantIds?.length! > 0 || screens?.length! > 0 ? (
-        <>
-          {remoteParticipantIds!.map((id) => (
-            <Tile
-              key={id}
-              id={id}
-              isScreenShare={false}
-              isLocal={false}
-              isAlone={false}
-            />
-          ))}
-          {screens!.map((screen) => (
-            <Tile
-              key={screen.screenId}
-              id={screen.session_id}
-              isScreenShare
-              isLocal={false}
-              isAlone={false}
-            />
-          ))}
-          <DailyAudio />
-        </>
-      ) : (
-        // When there are no remote participants or screen shares
-        <div className="join-now-box">
-          <BodyLSemiBold style={{ color: "white" }}>
-            ⚡️ Share the link with your candidate to start the meeting ⚡️
-          </BodyLSemiBold>
-          <div className="meeting-container">
-            <div className="meeting-link">
-              <BodyMMedium style={{ color: "white" }}>
-                {callObject.properties.url}
-              </BodyMMedium>
-            </div>
-            <ElWrap w={400}>
-              <TextIconBtnL
-                label="Copy Link"
-                onClick={() => {}}
-                disable={false}
-                className={BackgroundColor.ACCENT_PURPLE}
-              />
-            </ElWrap>
+    <>
+      <DailyAudio />
+      <div className={screens.length! > 0 ? "is-screenshare" : "call"}>
+        {localParticipant && !mutedVideo && (
+          <Tile
+            id={localParticipant.session_id}
+            isLocal
+            isAlone={isAlone}
+            isScreenShare={false}
+          />
+        )}
+        {mutedVideo && (
+          <div className="join-now-box">
+            <H2Bold style={{ color: "white" }}>
+              {localParticipant?.user_name} (You)
+            </H2Bold>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+        {remoteParticipantIds?.length! > 0 || screens?.length! > 0 ? (
+          <>
+            {remoteParticipantIds!.map((id) => (
+              <div className="join-now-box">
+                <Tile
+                  key={id}
+                  id={id}
+                  isScreenShare={false}
+                  isLocal={false}
+                  isAlone={false}
+                />
+              </div>
+            ))}
+            {screens!.map((screen) => (
+              <Tile
+                key={screen.screenId}
+                id={screen.session_id}
+                isScreenShare
+                isLocal={false}
+                isAlone={false}
+              />
+            ))}
+          </>
+        ) : (
+          <div className="join-now-box">
+            <div className="content">
+              <BodyLSemiBold style={{ color: "white" }}>
+                ⚡️ Share the link with your candidate to start the meeting ⚡️
+              </BodyLSemiBold>
+              <div className="meeting-container">
+                <div className="meeting-link">
+                  <BodyMMedium
+                    style={{
+                      color: "white",
+                      whiteSpace: "nowrap",
+                      overflow: "scroll",
+
+                      display: "inline-block",
+                    }}
+                  >
+                    {window.location.href}
+                  </BodyMMedium>
+                </div>
+                <ElWrap>
+                  <TextIconBtnL
+                    label="Copy Link"
+                    onClick={copyToClipboard}
+                    disable={false}
+                    className={BackgroundColor.ACCENT_PURPLE}
+                  />
+                </ElWrap>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 
   return getUserMediaError ? <UserMediaError /> : renderCallScreen();

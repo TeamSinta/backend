@@ -13,6 +13,8 @@ services:
       - LC_ALL=C.UTF-8
     networks:
       - backend
+    ports:
+      - 5656:5656
 
   backend:
     build: ./backend

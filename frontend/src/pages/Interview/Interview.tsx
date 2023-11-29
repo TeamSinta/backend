@@ -13,25 +13,23 @@ import {
   StyledInnerDiv,
   StyledTopView,
   BottomQuestionButtons,
-  StyledAnswerHeading,
   EmojiOverlayWrapper,
   StyledImage,
   GridContainer,
   InterviewSideBarWrapper,
   VideoScreenWrapper,
   GuidelinesSection,
+  InterviewLayout,
 } from "./StyledInterview";
 import { NavButton } from "@/components/layouts/sidenavbar/StyledSideNavBar";
-import { CANDIDATE_DETAILS, QUESTIONS_DATA } from "./InterviewConstant";
+import { CANDIDATE_DETAILS } from "./InterviewConstant";
 import {
   BottomArrowIcon,
   EmailIcon,
   LeftArrowIcon,
   LinkedinIcon,
   MapIcon,
-  PencilIcon,
   PhoneIcon,
-  PlayIcon,
   ResumeIcon,
   RightArrowIcon,
   TwoArrowIcon,
@@ -54,20 +52,16 @@ import {
   sendFeedback,
   updateInterviewQuestionRating,
 } from "../../features/interviews/interviewsAPI";
-import { Cookies, useCookies } from "react-cookie";
+import { useCookies } from "react-cookie";
 import { useDaily } from "@daily-co/daily-react";
 import SintaLogo from "src/assets/svg/Sinta_call_logo.svg";
 import {
   BodyLMedium,
-  BodyMMedium,
   BodySBold,
   BodySMedium,
 } from "@/components/common/typeScale/StyledTypeScale";
-import { StyledCommentBox, StyledCommentInput } from "./Notes/StyledNotes";
 import { InputLabelDiv } from "@/components/pages/interview/overview_detail/StyledOverviewDetail";
-import TextArea from "@/components/common/form/textArea/TextArea";
-import { IconBtnL } from "@/components/common/buttons/iconBtn/IconBtn";
-import { BackgroundColor } from "@/features/utils/utilEnum";
+
 import ReactMarkdown from "react-markdown";
 import { H3 } from "@/components/common/typeScale/TypeScale";
 import Chat from "@/components/common/form/chatBox/ChatBox";
@@ -345,17 +339,18 @@ const Interview = ({ leaveCall, interviewDetails }) => {
     const { data } = info;
     const [activeData, setActiveData] = useState(data[0]);
     const [activeQuestionInfo, setActiveQuestionInfo] = useState<any>("");
+    const [activeNumber, setActiveNumber] = useState<any>("");
     const [collapseQuestion, setCollapseQuestion] = useState(false);
     const [prevNum, setPrevNum] = useState(0);
     const [nextNum, setNextNum] = useState(2);
     const [inputValue, setInputValue] = useState<IState>({
       notes: "",
     });
-    console.log(activeQuestionInfo);
-    console.log(activeData);
+
     const showQuestionDetail = (questionInfo: any, index: any) => {
       setCollapseQuestion(true);
       setActiveQuestionInfo(questionInfo);
+      setActiveNumber(index + 1);
       const currentNumber = parseInt(index + 1);
       const prevNumber = currentNumber - 1;
       const nextNumber = currentNumber + 1;
@@ -494,9 +489,7 @@ const Interview = ({ leaveCall, interviewDetails }) => {
                         >
                           <WhiteIndexStyle>
                             <div>
-                              <BodySBold>
-                                {activeQuestionInfo?.number}
-                              </BodySBold>{" "}
+                              <BodySBold>{activeNumber}</BodySBold>{" "}
                             </div>
                           </WhiteIndexStyle>
 
@@ -514,16 +507,14 @@ const Interview = ({ leaveCall, interviewDetails }) => {
                           <span
                             style={{
                               opacity:
-                                parseInt(activeQuestionInfo?.number) === 1
-                                  ? "0.5"
-                                  : "1",
+                                parseInt(activeNumber) === 1 ? "0.5" : "1",
                             }}
                             onClick={() => {
-                              if (parseInt(activeQuestionInfo?.number) !== 1) {
+                              if (parseInt(activeNumber) !== 1) {
                                 setNextNum(nextNum - 1);
                                 setActiveQuestionInfo(
                                   activeData?.questions?.filter(
-                                    (a: any) => parseInt(a.number) === prevNum
+                                    (a: any) => parseInt(index) === prevNum
                                   )[0]
                                 );
                                 setPrevNum(prevNum - 1);
@@ -531,7 +522,7 @@ const Interview = ({ leaveCall, interviewDetails }) => {
                             }}
                           >
                             <ElWrap w={33}>
-                              <StyledIconBtnM>
+                              <StyledIconBtnM style={{ background: "white" }}>
                                 <RightArrowIcon />
                               </StyledIconBtnM>
                             </ElWrap>
@@ -539,14 +530,14 @@ const Interview = ({ leaveCall, interviewDetails }) => {
                           <span
                             style={{
                               opacity:
-                                parseInt(activeQuestionInfo.number) ===
+                                parseInt(activeNumber) ===
                                 activeData?.questions?.length
                                   ? "0.5"
                                   : "1",
                             }}
                             onClick={() => {
                               if (
-                                parseInt(activeQuestionInfo?.number) !==
+                                parseInt(activeNumber) !==
                                 activeData?.questions?.length
                               ) {
                                 setActiveQuestionInfo(
@@ -560,14 +551,17 @@ const Interview = ({ leaveCall, interviewDetails }) => {
                             }}
                           >
                             <ElWrap w={33}>
-                              <StyledIconBtnM>
+                              <StyledIconBtnM style={{ background: "white" }}>
                                 <LeftArrowIcon />
                               </StyledIconBtnM>
                             </ElWrap>
                           </span>{" "}
                         </Stack>
                       </Stack>{" "}
-                      <Stack alignItems="center" style={{ marginLeft: "8px" }}>
+                      <Stack
+                        alignItems="flex-start"
+                        style={{ marginLeft: "8px" }}
+                      >
                         <BodyLMedium
                           style={{
                             display: "flex",
@@ -587,7 +581,7 @@ const Interview = ({ leaveCall, interviewDetails }) => {
                           }}
                         >
                           <QuestionMeta
-                            question={activeQuestionInfo.difficulty}
+                            question={"low"}
                             duration={activeQuestionInfo?.duration}
                           />
                         </div>
@@ -627,9 +621,9 @@ const Interview = ({ leaveCall, interviewDetails }) => {
             <BottomQuestionButtons>
               <Stack
                 direction="row"
-                justifyContent="flex-start"
+                justifyContent="flex-end"
                 spacing={1}
-                alignItems="center"
+                alignItems="flex-end"
               >
                 <InputLabelDiv style={{ width: "100%" }}>
                   {/* <TextArea
@@ -640,17 +634,15 @@ const Interview = ({ leaveCall, interviewDetails }) => {
                     name={"notes"}
                     value={inputValue["notes"]}
                   /> */}
-                  <Chat/>
-                </InputLabelDiv>
-
-                <ElWrap w={56} h={40}>
-                  <IconBtnL
-                    disable={false}
-                    onClick={handleRating}
-                    className={BackgroundColor.ACCENT_PURPLE}
-                    icon={<PlayIcon />}
+                  <Chat
+                    notesEntered={notesEntered}
+                    elapsedTime={initTime}
+                    setReactClicked={setReactClicked}
+                    activeQuestionID={activeQuestionInfo.id}
+                    reactClicked={reactClicked}
                   />
-                </ElWrap>
+                  {console.log(activeQuestionInfo.id)}
+                </InputLabelDiv>
               </Stack>
             </BottomQuestionButtons>
           ) : null}
@@ -791,10 +783,10 @@ const Interview = ({ leaveCall, interviewDetails }) => {
   function InterviewSideBar(props: any) {
     const { reactClicked, setReactClicked } = props;
     return (
-      <div style={{ justifyContent: "flex-end", display: "flex" }}>
+      <div>
         {/* {header} */}
         <StyledInterviewContent isCollapsed={isInterviewSideBarCollapsed}>
-          {interviewDetails.id !== "" && interviewDetails.id !== null ? (
+          {interviewDetails.name !== "" || interviewDetails.name !== null ? (
             interviewSideBarData
           ) : (
             <InterviewSideBarWaiting />
@@ -853,7 +845,6 @@ const Interview = ({ leaveCall, interviewDetails }) => {
     }, []);
 
     function handleSendFlyingEmoji(e) {
-      console.log(e);
       const emoji = e.detail.message;
       const position = e.detail.position;
 
@@ -902,18 +893,25 @@ const Interview = ({ leaveCall, interviewDetails }) => {
   return (
     <div>
       <GridContainer>
-        <div style={{ padding: "26px" }}>
+        <div
+          style={{
+            paddingLeft: "26px",
+            marginTop: "26px",
+            maxWidth: "200px",
+            position: "absolute",
+          }}
+        >
           <StyledImage src={SintaLogo} alt="Sinta_Logo" />
         </div>
-        <VideoScreenWrapper>
+        <InterviewLayout>
           <Call />
-        </VideoScreenWrapper>
-        <InterviewSideBarWrapper>
-          <InterviewSideBar
-            setReactClicked={setReactClicked}
-            reactClicked={reactClicked}
-          />
-        </InterviewSideBarWrapper>
+          <div className="side">
+            <InterviewSideBar
+              setReactClicked={setReactClicked}
+              reactClicked={reactClicked}
+            />
+          </div>
+        </InterviewLayout>
       </GridContainer>
       <BottomNavBar
         emojiClicked={emojiClicked}

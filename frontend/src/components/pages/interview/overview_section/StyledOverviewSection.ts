@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { BoderBox, Title } from "../StyledInterview";
+import { postInviteMember } from "../../../../features/inviteMember/inviteMemberAPI";
 
 export const OverviewSections = styled(BoderBox)`
   padding: 24px;
@@ -25,6 +26,7 @@ export const SectionLists = styled.div`
 `;
 
 export const SectionList = styled.button`
+  position: relative; /* Add relative positioning */
   padding: 12px 16px;
   display: flex;
   gap: 6px;
@@ -41,8 +43,6 @@ export const SectionList = styled.button`
     order: 0;
     flex-grow: 0;
     border-radius: 12px;
-
-    /* border: 1px solid ${(props) => props.theme.colors.black}; */
   }
 
   &.active {
@@ -64,6 +64,7 @@ export const SectionList = styled.button`
       }
     }
   }
+}
 `;
 
 export const EmptySectionContainer = styled.div`

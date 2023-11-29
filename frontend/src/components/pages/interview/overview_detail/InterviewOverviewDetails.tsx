@@ -169,7 +169,6 @@ const InterviewOverviewDetails = () => {
   };
 
   const setEditDetailInputs = (question: IQuestion) => {
-    console.log(question.question);
     setInputValue({
       question_text: question.question.question_text,
       guidelines: question.question.guidelines,
@@ -451,7 +450,7 @@ const InterviewOverviewDetails = () => {
                             <div className="dropdowns">
                               <InputLabelDiv className="competencies">
                                 <label>
-                                  <BodySMedium>Competencies</BodySMedium>
+                                  <BodySMedium>Competency</BodySMedium>
                                 </label>
                                 <TextInput
                                   disable={false}
@@ -464,7 +463,7 @@ const InterviewOverviewDetails = () => {
                               </InputLabelDiv>
                               <InputLabelDiv className="time">
                                 <label>
-                                  <BodySMedium>Time to reply</BodySMedium>
+                                  <BodySMedium>Time for reply</BodySMedium>
                                 </label>
                                 <TextInput
                                   disable={false}

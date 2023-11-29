@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const templatesAPI = createApi({
   reducerPath: "templatesAPI",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/api" }),
-  tagTypes: ["Templates"],
+  tagTypes: ["Templates", "Topics"],
   endpoints: (builder) => ({
     getTemplates: builder.query<object, void>({
       query: () => "/templates/templates/",
@@ -42,12 +42,24 @@ export const templatesAPI = createApi({
       }),
       invalidatesTags: ["Templates"],
     }),
+    getTopics: builder.query<object, void>({
+      query: () => "/templates/topics/",
+      providesTags: ["Topics"],
+    }),
     addTopic: builder.mutation({
       query: (template) => ({
         url: "/templates/topics/",
         method: "POST",
         body: template,
       }),
+    }),
+    deleteTopic: builder.mutation({
+      query: (id) => ({
+        url: `/templates/topics/${id}/`,
+        method: "DELETE",
+        body: id,
+      }),
+      invalidatesTags: ["Topics"],
     }),
   }),
 });
@@ -59,4 +71,6 @@ export const {
   useDeleteTemplateMutation,
   useUpdateTemplateMutation,
   useAddTopicMutation,
+  useGetTopicsQuery,
+  useDeleteTopicMutation,
 } = templatesAPI;

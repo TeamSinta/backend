@@ -4,26 +4,30 @@ const RoomService = {
     const exp = Math.round(Date.now() / 1000) + 60 * 30;
     const options = {
       properties: {
-        // exp,
-        enable_recording: "cloud",
-        recordings_bucket: {
-          bucket_name: "team-sinta",
-          bucket_region: "eu-west-1",
-          assume_role_arn: "arn:aws:iam::314160095310:role/BucketRole",
-          allow_api_access: true,
-        },
+        exp,
+        // enable_recording: "cloud",
+        // recordings_bucket: {
+        //   bucket_name: "team-sinta",
+        //   bucket_region: "eu-west-1",
+        //   assume_role_arn: "arn:aws:iam::314160095310:role/BucketRole",
+        //   allow_api_access: true,
+        // },
       },
     };
 
-    const VITE_DAILY_API_KEY = import.meta.env.VITE_DAILY_API_KEY;
+    const VITE_DAI_TEST_KEY = import.meta.env.VITE_DAI_TEST_KEY;
+    console.log(VITE_DAI_TEST_KEY);
     const response = await fetch("https://api.daily.co/v1/rooms/", {
       method: "POST",
       body: JSON.stringify(options),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${VITE_DAILY_API_KEY}`,
+
+        Authorization: `Bearer ${VITE_DAI_TEST_KEY}`,
       },
     });
+    console.log(VITE_DAI_TEST_KEY);
+    console.log(response);
 
     return await response.json();
   },
@@ -31,13 +35,13 @@ const RoomService = {
     // const options = {
     // };
 
-    const VITE_DAILY_API_KEY = import.meta.env.VITE_DAILY_API_KEY;
+    const VITE_DAI_TEST_KEY = import.meta.env.VITE_DAI_TEST_KEY;
     const response = await fetch(`https://api.daily.co/v1/rooms/${room}`, {
       method: "POST",
       // body: JSON.stringify(options),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${VITE_DAILY_API_KEY}`,
+        Authorization: `Bearer ${VITE_DAI_TEST_KEY}`,
       },
     });
 

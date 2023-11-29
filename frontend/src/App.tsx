@@ -15,24 +15,6 @@ function App() {
   const { isAuthenticated, status } = useSelector(
     (state: RootState) => state.user
   );
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (status === "LOADING") {
-      // Keep showing loading while status is LOADING
-      setIsLoading(true);
-    } else if (!isAuthenticated && location.pathname !== "/login") {
-      // Redirect to login if not authenticated and not already on the login page
-      navigate("/login");
-    } else {
-      // Otherwise, we are authenticated or on the login page, so set loading to false
-      setIsLoading(false);
-    }
-  }, [isAuthenticated, location.pathname, navigate, status]);
-
-  if (isLoading) {
-    return <Loading />;
-  }
 
   const isVideoCallRoute = location.pathname.startsWith("/video-call/");
 
@@ -40,7 +22,6 @@ function App() {
     return <Routers />;
   }
 
-  console.log(isAuthenticated);
   // After this point, the user is either authenticated or on the login page
   return (
     <>

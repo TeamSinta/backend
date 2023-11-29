@@ -17,6 +17,8 @@ import {
   MicMuteIcon,
   VideoSound,
   SoundIcon,
+  SettingIcon,
+  ChatIcon,
 } from "@/components/common/svgIcons/Icons";
 
 import {
@@ -24,11 +26,19 @@ import {
   StyledBottomNavButtons,
   StyledColumns,
   StyledFinishBtn,
+  StyledMiddleColumns,
 } from "./StyledBottomNavBar";
 import { Grid } from "@mui/material";
 import "./index.css";
+import { openModal } from "@/features/modal/modalSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/store";
+import { MODAL_TYPE } from "@/components/common/modal/GlobalModal";
+import Chat from "../Chat/Chat";
 
 function BottomNavBarCandidate(props: any) {
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
   const { setReactClicked, reactClicked, leaveCall } = props;
   const callObject = useDaily();
   const { isSharingScreen, startScreenShare, stopScreenShare } =
@@ -47,7 +57,6 @@ function BottomNavBarCandidate(props: any) {
     callObject.setLocalAudio(mutedAudio);
   }, [callObject, mutedAudio]);
 
-  const [showMeetingInformation, setShowMeetingInformation] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [newChatMessage, setNewChatMessage] = useState(false);
 
@@ -59,30 +68,33 @@ function BottomNavBarCandidate(props: any) {
       }
     }, [showChat])
   );
+  const dispatch: AppDispatch = useDispatch();
+
+  const onClickModalOpen = (modalType: MODAL_TYPE) => {
+    dispatch(openModal({ modalType }));
+  };
 
   const toggleScreenShare = () => {
     isSharingScreen ? stopScreenShare() : startScreenShare();
   };
 
-  const toggleMeetingInformation = () => {
-    setShowMeetingInformation(!showMeetingInformation);
-  };
-
   const toggleChat = () => {
-    console.log("here");
     setShowChat(!showChat);
     if (newChatMessage) {
       setNewChatMessage(!newChatMessage);
     }
   };
-
+  const openSettingsModal = () => {
+    setIsSettingsModalOpen(true);
+    onClickModalOpen(MODAL_TYPE.VIDEO_SETTINGS);
+  };
   return (
     <StyledBottomBar>
-      <Grid container>
-        <Grid lg={3} md={3} sm={3} xl={3} xs={3}>
+      <Grid container style={{ justifyContent: "space-between" }}>
+        <Grid lg={2} md={2} sm={2} xl={2} xs={2}>
           <StyledColumns>
             <StyledBottomNavButtons
-              style={{ marginLeft: "18px" }}
+              style={{ marginLeft: "22px" }}
               onClick={toggleAudio}
               type="button"
             >
@@ -91,15 +103,23 @@ function BottomNavBarCandidate(props: any) {
             <StyledBottomNavButtons onClick={toggleVideo} type="button">
               {mutedVideo ? <CamHideIcon /> : <NavCamIcon />}
             </StyledBottomNavButtons>
-            <StyledBottomNavButtons onClick={toggleVideo} type="button">
-              {mutedVideo ? <SoundIcon /> : <SoundIcon />}
+            <StyledBottomNavButtons onClick={openSettingsModal}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  stroke: "white",
+                }}
+              >
+                <SettingIcon />
+              </div>
             </StyledBottomNavButtons>
           </StyledColumns>
         </Grid>
-        <Grid lg={1} md={1} sm={1} xl={1} xs={1}></Grid>
+
         <Grid lg={6} md={6} sm={6} xl={6} xs={6}>
           {" "}
-          <StyledColumns>
+          <StyledMiddleColumns>
             {/* Integrate Daily's tray components here */}
             <StyledBottomNavButtons
               onClick={toggleScreenShare}
@@ -111,29 +131,54 @@ function BottomNavBarCandidate(props: any) {
               ) : (
                 <NavScreenShareIcon />
               )}
-              {isSharingScreen ? " Stop sharing screen" : " Share screen"}
+              <span
+                className="record-label"
+                style={{ marginLeft: "5px", marginRight: "5px" }}
+              >
+                {isSharingScreen ? " Stop sharing screen" : " Share screen"}
+              </span>
             </StyledBottomNavButtons>
 
             <div style={{ marginRight: "10px", marginLeft: "10px" }}>
               <NavCircle />
             </div>
 
-            <StyledBottomNavButtons
-              onClick={toggleMeetingInformation}
-              type="button"
-            >
-              {showMeetingInformation ? "Hide info" : "Show info"}
-            </StyledBottomNavButtons>
             <StyledBottomNavButtons onClick={toggleChat} type="button">
-              {newChatMessage ? "Hide chat" : "Show chat"}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span
+                  className="record-label"
+                  style={{ marginLeft: "5px", marginRight: "5px" }}
+                >
+                  {showChat ? "Hide Chat" : "Chat"}
+                </span>{" "}
+                <span className="icon" style={{ marginLeft: "5px" }}>
+                  {showChat ? (
+                    <div style={{ display: "flex", stroke: "white" }}>
+                      {" "}
+                      <ChatIcon />{" "}
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", stroke: "white" }}>
+                      {" "}
+                      <ChatIcon />{" "}
+                    </div>
+                  )}
+                </span>
+              </div>
             </StyledBottomNavButtons>
-
             {/* ... (other tray buttons) */}
-          </StyledColumns>
+          </StyledMiddleColumns>
         </Grid>
 
         <Grid lg={2} md={2} sm={2} xl={2} xs={2}>
           {" "}
+          <Chat showChat={showChat} toggleChat={toggleChat} />
           <StyledColumns style={{ paddingRight: "20px", float: "right" }}>
             <StyledFinishBtn className="accentPurple" onClick={leaveCall}>
               Finish

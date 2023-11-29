@@ -116,9 +116,9 @@ export default function HairCheck({
         id: response.id,
         title: response.title,
         template_id: response.template_id,
-        email: "Jimmy",
-        name: "Carol Sykes",
-        candidate_id: 1,
+        email: "support@sintahr.com",
+        name: "Template Details",
+        candidate_id: candidateId,
       };
 
       setInterviewRoundDetails(interviewDetails).then(() => {

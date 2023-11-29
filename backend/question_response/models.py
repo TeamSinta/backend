@@ -1,8 +1,10 @@
 from django.db import models
 from user.models import CustomUser
 from interview.models import InterviewRoundQuestion, InterviewRound
+from interview_templates.models import TemplateQuestion
 from transcription.models import TranscriptChunk
 from pgvector.django import VectorField
+from django.utils import timezone
 
 
 class Answer(models.Model):
@@ -22,15 +24,14 @@ class InterviewerFeedback(models.Model):
         HEART = 4
         LAUGH = 5
 
-    class ScoreChoice(models.IntegerChoices):
-        ONE = 1
-        TWO = 2
-        THREE = 3
-        FOUR = 4
-        FIVE = 5
-
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     interview_round = models.ForeignKey(InterviewRound, on_delete=models.CASCADE)
     note = models.TextField(null=True)
     reaction = models.IntegerField(choices=EmojiChoice.choices, null=True)
-    score = models.IntegerField(choices=ScoreChoice.choices, null=True)
+    template_question = models.ForeignKey(
+        TemplateQuestion,
+        on_delete=models.CASCADE,
+        default=None,  # You can set your default value here
+    )
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)

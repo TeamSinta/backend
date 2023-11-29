@@ -15,6 +15,8 @@ import MemberSettings from "./userSettingsModal/MemberSettings";
 import EditInterviews from "./modalContents/EditInterview";
 import EditInterviewers from "./modalContents/EditInterviewrs";
 import SelectAllQuestions from "./modalContents/SelectAllQuestions";
+import VideoSettings from "./modalContents/videoSettingsModal/VideoSettings";
+import VideoSettingsContent from "./modalContents/videoSettingsModal/VideoSettingsContent";
 
 export enum MODAL_TYPE {
   CREATE_DEP = "CREATE_DEP",
@@ -24,6 +26,7 @@ export enum MODAL_TYPE {
   MEMBER_SET = "MEMBER_SET",
   EDIT_INT = "EDIT_INT",
   EDIT_MEM = "EDIT_MEM",
+  VIDEO_SETTINGS = "VIDEO_SET",
   SELECT_ALL_QUESTIONS = "SELECT_ALL_QUESTIONS",
   // ModalL = "ModalL",
 }
@@ -104,6 +107,12 @@ const GlobalModal = (): JSX.Element => {
           <ModalL title="Select your values">
             <SelectTemplate />
           </ModalL>
+        );
+      case MODAL_TYPE.VIDEO_SETTINGS:
+        return (
+          <Modal title="Settings">
+            <VideoSettingsContent />
+          </Modal>
         );
       case MODAL_TYPE.MEMBER_SET:
         return (

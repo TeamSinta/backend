@@ -6,46 +6,31 @@
  */
 .call {
   display: grid;
-  grid-template-columns: repeat(2, minmax(620px, 1fr));
-  /* Define two columns */
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  /* Adjust minimum size */
   justify-content: center;
-  max-width: 50vw;
   align-items: center;
-  margin-bottom: 66px;
+  gap: 20px;
+  /* Space between tiles */
+  max-width: calc(100% - 710px);
+  /* Account for sidebar width and gap */
+  height: auto;
+  flex: 1;
+}
+.call-external {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  /* Adjust minimum size */
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  /* Space between tiles */
+  /* Account for sidebar width and gap */
+  height: auto;
   flex: 1;
 }
 
-@media only screen and (max-width: 600px) {
-  .call {
-    padding: 0;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    grid-auto-rows: unset;
-    flex: 1;
-  } /* Updated CSS for the Daily Prebuilt video chat layout */
-
-  /* Set the aspect ratio for the video containers */
-  .call {
-    display: grid;
-    padding: 5rem;
-    align-items: center;
-    justify-items: center;
-    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-    grid-auto-rows: minmax(0, 1fr); /* Use minmax(0, 1fr) for aspect ratio */
-    grid-column-gap: 30px;
-    grid-row-gap: 30px;
-    width: 100%;
-    position: relative;
-    flex: 1;
-  }
-
-  /* Media query for smaller screens */
-  @media only screen and (max-width: 600px) {
-    .call {
-      padding: 0;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    }
-  }
-
+@media only screen and (min-width: 1600px) {
   /* Styling for screenshare layout */
   /* Styling for screenshare layout */
   .is-screenshare {
@@ -60,39 +45,6 @@
   .is-screenshare .tile-video {
     width: 100%; /* Adjust as needed */
     aspect-ratio: 16 / 9; /* Maintain a 16:9 aspect ratio for video */
-  }
-
-  /* Styling for the info box */
-  .info-box {
-    background: var(--dark-blue-border);
-    color: var(--white);
-    width: 480px;
-    aspect-ratio: 16 / 9; /* Maintain a 16:9 aspect ratio for the info box */
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 3rem;
-    box-sizing: border-box;
-    border-radius: 4px;
-  }
-
-  /* Media query for smaller screens */
-  @media only screen and (max-width: 600px) {
-    .info-box {
-      width: 100%; /* Make the info box full width on smaller screens */
-      aspect-ratio: unset; /* Remove aspect ratio on smaller screens */
-      height: auto; /* Allow the height to adjust based on content */
-      padding: 2rem 1rem;
-    }
-  }
-
-  /* Styling for the room URL */
-  .room-url {
-    padding: 0 1rem;
-    word-break: break-word;
-    font-weight: normal;
-    font-size: 12px;
   }
 }
 
@@ -118,19 +70,21 @@
   height: 135px;
 }
 
-@media only screen and (max-width: 600px) {
-  .info-box {
-    width: 240px;
-    height: auto;
-    padding: 2rem 1rem;
-  }
-}
-
 .room-url {
   padding: 0 1rem;
   word-break: break-word;
   font-weight: normal;
   font-size: 12px;
+}
+.content {
+  width: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  gap: 20px;
+  padding: 18px;
 }
 
 .join-now-box {
@@ -140,30 +94,45 @@
   flex-direction: column;
   background-color: #303030;
   border-radius: 8px;
-  height: 560px;
-  width: 600px;
+  aspect-ratio: 1 / 1;
+  /* New: Maintain a square aspect ratio */
+  width: 100%;
+  /* Width will be determined by the grid */
+  object-fit: cover;
+  /* Optional: for video fit */
+  overflow-x: hidden;
+  /* Prevent horizontal overflow */
 }
 
 .meeting-link {
   background-color: #9b9b9b;
   align-items: center;
-  overflow-x: auto;
-  /* Show scrollbar only when needed */
-  white-space: nowrap;
-  /* Prevent text from wrapping */
   border-radius: 10px;
   height: 40px;
-  padding: 6px;
   display: flex;
+  justify-content: center;
+  overflow-x: scroll;
+  min-width: 60%;
   /* Use flexbox to align items */
 }
 
 .meeting-container {
   display: flex;
   flex-direction: row;
-  height: 63px;
-  width: 446px;
   gap: 8px;
-  padding: 26px;
-  align-items: flex-start;
+  overflow-x: auto;
+  width: 98%;
+
+  justify-content: center;
+  /* Add horizontal scroll if content overflows */
+
+  /* Allow items to wrap on smaller screens */
+}
+
+@media only screen and (max-width: 1300px) {
+  .meeting-container {
+    flex-direction: column;
+
+    /* Stack items vertically on smaller screens */
+  }
 }

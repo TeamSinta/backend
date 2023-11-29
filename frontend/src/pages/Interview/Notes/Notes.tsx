@@ -3,9 +3,17 @@ import {
   StyledCommentBox,
   StyledCommentInput,
   StyledCommentList,
-} from "./StyledNotes";
-import { PencilIcon } from "@/components/common/svgIcons/Icons";
+} from "../../Interviews/StyledNotes";
+import { PencilIcon, Send } from "@/components/common/svgIcons/Icons";
 import ElWrap from "@/components/layouts/elWrap/ElWrap";
+import { Stack } from "@mui/material";
+import { InputLabelDiv } from "@/components/pages/interview/overview_detail/StyledOverviewDetail";
+import Chat from "@/components/common/form/chatBox/ChatBox";
+import { IconBtnL } from "@/components/common/buttons/iconBtn/IconBtn";
+import { BackgroundColor } from "@/features/utils/utilEnum";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/app/store";
+import { addNote } from "@/features/interviews/notesSlice";
 
 type Comment = {
   timestamp: string;
@@ -15,8 +23,10 @@ type Comment = {
 
 function Notes(props: any) {
   const { elapsedTime, reactClicked, notesEntered } = props;
-  const [comments, setComments] = useState<Comment[]>([]);
   const commentInputRef = useRef<HTMLInputElement>(null);
+  const comments = useSelector((state: RootState) => state.notes.notes);
+  const dispatch = useDispatch(); // Get the dispatch function from Redux
+  const [inputText, setInputText] = useState<string>("");
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,25 +36,40 @@ function Notes(props: any) {
       if (comment) {
         const timestamp = getCurrentTime();
         const timeDelta = calculateTimeDelta(timestamp);
-        const newComment: Comment = { timestamp, timeDelta, comment };
-        setComments((prevComments) => [...prevComments, newComment]);
+        // Dispatch the action to add a note to Redux with timestamp and timeDelta
+        dispatch(addNote({ comment, timestamp, timeDelta }));
         commentInput.value = "";
-        //Put this in API. timestamp ,timeDelta, newComment.
+        // Put this in API: timestamp, timeDelta, newComment
         notesEntered(comment);
       }
     }
   };
+
+  const handleSend = () => {
+    const trimmedText = inputText.trim();
+    if (trimmedText !== "") {
+      if (trimmedText) {
+        setInputText("");
+        const timestamp = getCurrentTime();
+        const timeDelta = calculateTimeDelta(timestamp);
+        dispatch(addNote({ comment: trimmedText, timestamp, timeDelta }));
+        notesEntered(trimmedText);
+        // Show the prompt when a message is sent
+      }
+    }
+  };
+
   const handleReacts = (reactClicked: any = "") => {
     const comment = reactClicked?.message ?? "";
     if (comment) {
       const timestamp = getCurrentTime();
       const timeDelta = calculateTimeDelta(timestamp);
-      const newComment: Comment = { timestamp, timeDelta, comment };
-      setComments((prevComments) => [...prevComments, newComment]);
-      //Put this in API. timestamp ,timeDelta, newComment.
+      // Dispatch the action to add a note to Redux with timestamp and timeDelta
+      dispatch(addNote({ comment, timestamp, timeDelta }));
+      // Put this in API: timestamp, timeDelta, newComment
+      notesEntered(comment);
     }
   };
-
   const getCurrentTime = (): string => {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, "0");
@@ -71,7 +96,11 @@ function Notes(props: any) {
   }
 
   return (
-    <div>
+    <Stack
+      direction="column"
+      justifyContent="space-between"
+      style={{ height: "100%" }}
+    >
       <StyledCommentList>
         {comments.map((c, index) => (
           <div
@@ -81,6 +110,8 @@ function Notes(props: any) {
               marginBottom: "10px",
               paddingBottom: "10px",
               border: "none",
+              display: "flex",
+              gap: "8px",
             }}
           >
             <span
@@ -105,25 +136,32 @@ function Notes(props: any) {
             </p>
           </div>
         ))}
-      </StyledCommentList>
+      </StyledCommentList>{" "}
       <StyledCommentBox style={{}} className="inputContainer">
-        <ElWrap w={35}>
-          <PencilIcon />
-        </ElWrap>
+        {/* <Chat /> */}
+
         <StyledCommentInput
           ref={commentInputRef}
           type="text"
           name="comment"
-          placeholder="Write your comment"
+          placeholder="Write notes here..."
           className="commentInput"
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !e.shiftKey) {
               handleCommentSubmit(e);
             }
           }}
         />
+        <ElWrap w={40} h={35}>
+          <IconBtnL
+            disable={false}
+            onClick={handleSend} // Use the handleSend function
+            className={BackgroundColor.ACCENT_PURPLE}
+            icon={<Send />}
+          />
+        </ElWrap>
       </StyledCommentBox>
-    </div>
+    </Stack>
   );
 }
 

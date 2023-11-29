@@ -35,6 +35,7 @@ import { ReactComponent as Question } from "@/assets/svg/question.svg";
 import { ReactComponent as Move } from "@/assets/svg/move.svg";
 import { ReactComponent as RightArrow } from "@/assets/svg/rightArrow.svg";
 import { ReactComponent as LeftArrow } from "@/assets/svg/leftArrow.svg";
+import { ReactComponent as SendIcon } from "@/assets/svg/Send Icon.svg";
 
 import { ReactComponent as FullScreen } from "@/assets/svg/fullscreen.svg";
 import { ReactComponent as Play } from "@/assets/svg/play.svg";
@@ -82,6 +83,10 @@ export const VideoMic = (): JSX.Element => {
 
 export const VideoSound = (): JSX.Element => {
   return <VideoSoundIcon />;
+};
+
+export const Send = (): JSX.Element => {
+  return <SendIcon />;
 };
 
 export const VideoCam = (): JSX.Element => {

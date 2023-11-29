@@ -1,26 +1,10 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AuthState } from "./authenticationInterface";
 import { authAPI } from "./authenticationAPI";
 
-function getCookie(name: string) {
-  const cookieValue = document.cookie.match(
-    new RegExp("(^| )" + name + "=([^;]+)")
-  );
-  if (cookieValue) {
-    return cookieValue[2];
-  }
-  return null;
-}
-
-function checkTokensInCookies() {
-  const accessToken = getCookie("access_token");
-  const refreshToken = getCookie("refresh_token");
-  return !!accessToken || !!refreshToken;
-}
-
 const initialState: AuthState = {
   status: "IDLE",
-  isAuthenticated: checkTokensInCookies(),
+  isAuthenticated: false,
   user: {
     username: null,
     first_name: null,
@@ -75,6 +59,27 @@ export const userSlice = createSlice({
       });
   },
 });
+
+export const checkUserAuthentication = createAsyncThunk(
+  "user/checkUserAuthentication",
+  async (_, { dispatch }) => {
+    try {
+      // Call the appropriate API endpoint to check authentication status
+      const result = await authAPI.endpoints.validateToken;
+
+      if (result.error) {
+        dispatch(setIsAuthenticated(false));
+      } else {
+        // Authentication check succeeded
+        dispatch(setIsAuthenticated(true));
+      }
+    } catch (error) {
+      // Handle errors here, e.g., dispatch a "FAILED" action
+      dispatch(setStatus("FAILED"));
+      console.error("Error checking authentication:", error);
+    }
+  }
+);
 
 export const { setStatus, resetUserState, setIsAuthenticated } =
   userSlice.actions;

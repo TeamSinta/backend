@@ -75,6 +75,7 @@ export const DropdownWrap = styled.div`
   width: 100%;
   background: ${(props) => props.theme.colors.palePurple};
   border-radius: 12px;
+  z-index: 1;
 
   &.hover {
     cursor: pointer;
@@ -172,6 +173,7 @@ export const OptionA = styled.a`
 export const OptionUl = styled.ul<IDropdownOpen>`
   top: 0;
   padding: 12px 0;
+  z-index: 2;
   ${(props) =>
     props.open
       ? css`

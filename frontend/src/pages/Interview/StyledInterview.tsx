@@ -42,7 +42,7 @@ export const EmojiOverlayWrapper = styled.div`
 
 export const StyledInterviewContent = styled.div<StyledInterviewContent>`
   background-color: white;
-  width: 80%;
+  width: 100%;
   border: 1px solid black;
   border-radius: 10px;
   padding: 15px;
@@ -54,6 +54,7 @@ export const StyledInterviewContent = styled.div<StyledInterviewContent>`
   flex-direction: column;
   transition: ease-in-out 200ms;
   z-index: 100;
+  min-width: 330px;
 
   ::-webkit-scrollbar {
     padding: 10px;
@@ -84,7 +85,7 @@ export const StyledInterviewContent = styled.div<StyledInterviewContent>`
     position: absolute;
     right: 10px;
     top: 60px;
-    width: 95%;
+    width: 50%;
   }
 `;
 
@@ -227,7 +228,7 @@ export const WhiteIndexStyle = styled.div`
 `;
 
 export const CompetencyStyle = styled.span`
-  border: 1.2px solid black;
+  border: 1.6px solid black;
   border-radius: 10px;
   background-color: white;
   padding: 8px 18px;
@@ -253,7 +254,7 @@ export const StyledInnerWrapper = styled.div`
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: white;
+    background-color: lightgrey;
     border-radius: 5px;
     padding: 0px;
     margin: 0px;
@@ -424,24 +425,45 @@ export const StyledImage = styled.img`
 //   width: "100%",
 //   padding: "2%",
 
-export const VideoScreenWrapper = styled.div`
-  flex: 1; /* Minimum width before wrapping */
-  display: flex;
-  padding: 48px;
-  justify-content: flex-end;
-`;
-
 export const InterviewSideBarWrapper = styled.div`
-  flex: 0 0 660px; /* This sets the InterviewSideBar to a fixed width of 300px */
+  /* This sets the InterviewSideBar to a fixed width of 300px */
   height: 100vh;
-  padding: 56px;
 `;
 
 export const GridContainer = styled.div`
-  display: flex;
-  flex-wrap: nowrap; /* Prevent wrapping to the next line */
+  /* Prevent wrapping to the next line */
   background-color: #000; /* Assuming you want a black background */
   height: 100vh; /* Full viewport height */
-  width: 100%; /* Full viewport width */
+  width: 100vw; /* Full viewport width */
+  overflow-y: hidden;
   align-items: stretch; /* Stretch items to fill the container height */
+`;
+
+export const InterviewLayout = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+
+  .side {
+    flex-direction: column;
+    height: 100%;
+    padding-top: 58px;
+  }
+
+  @media (min-width: 901px) {
+    .side {
+      width: 556px;
+      max-width: 550px;
+    }
+  }
+`;
+
+export const InterviewLayoutExternal = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 160px;
 `;

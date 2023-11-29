@@ -35,7 +35,10 @@ interface HairCheckProps {
   cancelCall: () => void;
 }
 
-export default function HairCheck({ joinCall, cancelCall }: HairCheckProps) {
+export default function HairCheckCandidate({
+  joinCall,
+  cancelCall,
+}: HairCheckProps) {
   const localParticipant = useLocalParticipant();
   const {
     microphones,

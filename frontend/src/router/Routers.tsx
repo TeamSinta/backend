@@ -12,11 +12,18 @@ import Settings from "@/pages/Settings/Settings";
 import { ProtectedRoutes } from "./authenticated/privateRoutes";
 import Questions from "@/pages/Questions/Questions";
 import QuestionBankStage from "@/pages/Questions/QuestionBanksTab/QuestionBankStage";
+import SignUpScreen from "@/pages/SignUp/SignUp";
+import CheckType from "./CheckType";
+import { AuthGuard } from "./authGuard";
+import EndCallScreen from "@/pages/Interview/Daily/Call/EndCallScreenExternal";
 
 const Routers = () => {
   return (
     <Routes>
       <Route path="/login" element={<LoginScreen />} />
+      <Route path="/sign-up" element={<SignUpScreen />} />
+      <Route path="/video-call" element={<CheckType />} />
+      <Route path="end-call-screen" element={<EndCallScreen />} />
 
       <Route path="" element={<ProtectedRoutes />}>
         <Route path="/" element={<DashBoard />} />

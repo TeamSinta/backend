@@ -18,6 +18,7 @@ import {
 import { Stack } from "@mui/material";
 import LoginPageImage from "src/assets/svg/LogInPageIllustration.svg";
 import LogoImage from "src/assets/images/SintaLogo.png";
+import { Link } from "react-router-dom";
 
 const LoginScreen = () => {
   return (
@@ -42,14 +43,21 @@ const LoginScreen = () => {
             </Stack>
             <TextRow>
               <GrayBodyLMedium>New to Sinta?</GrayBodyLMedium>
-              <BodyLSemiBold> Join.</BodyLSemiBold>
+              <Link to={"/sign-up"}>
+                {" "}
+                <BodyLSemiBold> Join.</BodyLSemiBold>
+              </Link>
             </TextRow>
           </Container>
           <TextBox>
             <GrayBodyMMedium>By signing in you agree to our</GrayBodyMMedium>
-            <BodyMSemiBold>Terms of Use</BodyMSemiBold>
+            <a href="https://teamsinta.com/terms">
+              <BodyMSemiBold>Terms of Use</BodyMSemiBold>
+            </a>
             <GrayBodyMMedium>and </GrayBodyMMedium>
-            <BodyMSemiBold>Privacy Policy.</BodyMSemiBold>
+            <a href="https://teamsinta.com/privacy-policy">
+              <BodyMSemiBold>Privacy Policy</BodyMSemiBold>
+            </a>
           </TextBox>
         </MainContainer>
       </Stack>

@@ -58,7 +58,6 @@ const CreateInterviews = () => {
   const [departmentId, setDepartmentId] = useState("");
   const [selectedMembers, setSelectedMembers] = useState<IMember[]>([]);
 
-  console.log(departmentId);
   const [cookies, ,] = useCookies(["access_token"]);
   const accessToken = cookies.access_token as AccessToken;
   // definitely should look over this, idk what TS is doing here om on the companyId type.

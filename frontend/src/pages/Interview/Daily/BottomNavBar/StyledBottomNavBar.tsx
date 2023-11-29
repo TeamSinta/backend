@@ -38,6 +38,18 @@ export const StyledColumns = styled.div`
   text-align: center;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+
+  @media (max-width: 786px) {
+    width: 100%;
+  }
+`;
+
+export const StyledMiddleColumns = styled.div`
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   @media (max-width: 786px) {
     width: 100%;

@@ -17,6 +17,7 @@ import {
   DropWrapper,
   LogoImage,
   NavButton,
+  Spacer,
   StyledSideNavBarTitle,
   StyledSideNavLinksWrap,
   StyledStack,
@@ -25,6 +26,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
 import { resetUserState } from "@/features/authentication/authenticationSlice";
 import { resetCurrentWorkspace } from "@/features/workspace/userWorkspaceSlice";
+import ProfileCard from "./profieCard/ProfileCard";
+import { Stack } from "@mui/material";
 
 export interface INavButtonLink {
   to: string;
@@ -80,7 +83,6 @@ const SideNavBar = (): ReactElement => {
   const dispatch: AppDispatch = useDispatch();
   const [, , removeCookie] = useCookies(["refresh_token", "access_token"]);
   const navigate = useNavigate();
-  console.log(navConfigLinks);
   const args = {
     optionArr: user.companies.map((company) => ({
       id: company.id,
@@ -98,7 +100,7 @@ const SideNavBar = (): ReactElement => {
       removeCookie("refresh_token");
       dispatch(resetUserState());
       dispatch(resetCurrentWorkspace());
-      navigate('/login');
+      navigate("/login");
     }
   };
 
@@ -116,13 +118,18 @@ const SideNavBar = (): ReactElement => {
 
   return (
     <StyledStack
-      className="p-top-3"
+      className="p-top-4"
       direction="column"
-      alignItems="center"
-      spacing={8}
+      alignItems="flex-start"
+      spacing={4}
     >
       <button style={buttonStyle} onClick={redirectToRoot}>
-        <div>
+        <div
+          style={{
+            paddingLeft: "16px",
+            paddingTop: "6px",
+          }}
+        >
           {/* Your LogoImage component */}
           <LogoImage
             className="m-top-3 m-bottom"
@@ -186,6 +193,8 @@ const SideNavBar = (): ReactElement => {
           </NavButton>
         ))}
       </StyledSideNavLinksWrap>
+      <Spacer />
+      <ProfileCard />
     </StyledStack>
   );
 };

@@ -12,7 +12,8 @@ import requests
 load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 KEYS = dotenv_values(BASE_DIR / ".env")
-API_KEY = KEYS["DAILY_API_KEY"]
+API_KEY = KEYS["DAI_TEST_KEY"]
+
 
 headers = {
     "Accept": "application/json",

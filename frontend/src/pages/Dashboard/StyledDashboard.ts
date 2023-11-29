@@ -24,6 +24,12 @@ export const YourMainContentContainer = styled.div`
     /* Adjust styles for screens with a max width of 768px */
     padding-left: 248px;
   }
+
+  @media (min-height: 1150px) {
+    /* Adjust styles for screens with a max width of 768px */
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
 `;
 export const WelcomeHeading = styled(H2Medium)`
   font-size: 52px;

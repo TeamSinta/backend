@@ -145,7 +145,7 @@ function CustomQuestionForm(
           <div className="dropdowns">
             <InputLabelDiv className="competencies">
               <label>
-                <BodySMedium>Competencies</BodySMedium>
+                <BodySMedium>Competency</BodySMedium>
               </label>
               <TextInput
                 disable={false}
@@ -158,7 +158,7 @@ function CustomQuestionForm(
             </InputLabelDiv>
             <InputLabelDiv className="time">
               <label>
-                <BodySMedium>Time to reply (mins)</BodySMedium>
+                <BodySMedium>Time for reply (mins)</BodySMedium>
               </label>
               <TextInput
                 disable={false}
@@ -171,7 +171,7 @@ function CustomQuestionForm(
             </InputLabelDiv>
             <InputLabelDiv className="difficulty">
               <label>
-                <BodySMedium>Difficulty level</BodySMedium>
+                <BodySMedium>Difficulty</BodySMedium>
               </label>
               <StatusFilter
                 status={inputValue.difficulty} // Pass selected difficulty as status prop

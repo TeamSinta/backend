@@ -47,7 +47,6 @@ const TopNavBar = (): JSX.Element => {
       console.error(error);
     }
   };
-  const { user } = useSelector((state: RootState) => state.user);
 
   return (
     <StyledTopNavBar sx={{ width: "100%" }}>
@@ -78,10 +77,6 @@ const TopNavBar = (): JSX.Element => {
             ]}
           />
         </ElWrap>
-
-        <Link to="/settings">
-          <LogoImage src={user.profile_picture as string} alt="user photo" />
-        </Link>
       </Stack>
     </StyledTopNavBar>
   );

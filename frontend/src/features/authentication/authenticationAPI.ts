@@ -48,6 +48,16 @@ export const authAPI = createApi({
         };
       },
     }),
+    checkRefreshTokenValidity: builder.mutation<
+      { valid: boolean },
+      RefreshToken
+    >({
+      query: (refresh) => ({
+        url: "/auth/check-refresh-token-validity/",
+        method: "POST",
+        body: { refresh: refresh.refresh },
+      }),
+    }),
   }),
 });
 
@@ -56,4 +66,5 @@ export const {
   useGetUserMutation,
   useValidateTokenMutation,
   useGetAccessTokenMutation,
+  useCheckRefreshTokenValidityMutation,
 } = authAPI;

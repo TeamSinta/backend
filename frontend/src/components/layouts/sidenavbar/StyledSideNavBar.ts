@@ -5,10 +5,10 @@ export const StyledStack = styled(Stack)`
   background-color: ${(props) => props.theme.colors.whisperGrey};
   min-height: 100vh;
   height: 100% !important;
-  width: 180px;
+  width: 240px;
   left: 0px;
   top: 0px;
-  padding-left: 16px;
+  padding-left: 8px;
   padding-right: 16px;
   grid-area: side;
   position: -webkit-fixed; /* For Safari */
@@ -23,10 +23,10 @@ export const LogoImage = styled.img`
 
 export const NavButton = styled(Stack)`
   height: 44px;
-  width: 148px;
+  width: 220px;
   color: ${(props) => props.theme.colors.black};
   gap: 8px;
-  border-radius: 12px;
+  border-radius: 8px;
   align-items: center;
 
   svg {
@@ -66,7 +66,9 @@ export const NavButton = styled(Stack)`
 
 export const DropWrapper = styled(Stack)`
   height: auto !important;
-  width: 148px;
+  width: 220px;
+  display: flex;
+  justify-content: flex-start;
 `;
 
 export const StyledLink = styled.link`
@@ -88,5 +90,11 @@ export const StyledSideNavBarTitle = styled.p`
 export const StyledSideNavLinksWrap = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   gap: 8px;
+`;
+
+export const Spacer = styled.div`
+  flex-grow: 0.9; // Takes up all available space
+  padding-bottom: -8px;
 `;

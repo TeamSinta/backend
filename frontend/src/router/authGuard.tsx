@@ -14,6 +14,7 @@ import {
   useValidateTokenMutation,
 } from "@/features/authentication/authenticationAPI";
 import { setCurrentWorkspace } from "@/features/workspace/userWorkspaceSlice";
+import Loading from "@/components/common/elements/loading/Loading";
 
 interface AuthGuardProps {
   children: ReactNode;
@@ -42,8 +43,8 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     try {
       const result = await validateToken({ access: accessToken });
       if ("data" in result) {
-        dispatch(setIsAuthenticated(true));
         await getUser({ access: accessToken });
+        dispatch(setIsAuthenticated(true));
       } else {
         handleTokenRefresh();
       }
@@ -88,15 +89,27 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
 
   useEffect(() => {
     const initAuth = async () => {
+      console.log("Status:", status);
+      console.log("IsAuthenticated:", isAuthenticated);
       switch (status) {
         case "IDLE":
           if (!isAuthenticated) {
             if (accessToken) {
+              console.log(
+                "Authenticating user with access token:",
+                accessToken
+              );
               await authenticateUser(accessToken);
             } else {
+              console.log("Handling token refresh");
+
               await handleTokenRefresh();
             }
           }
+          if (!user.email) {
+            await getUser({ access: accessToken });
+          }
+          setDefaultWorkspace();
           break;
 
         case "AUTHENTICATED":
@@ -118,8 +131,9 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     };
 
     initAuth();
-  }, []);
+  }, [accessToken, status, isAuthenticated, user.email]);
 
+  if (status === "IDLE" || status === "LOADING") return <Loading />;
   return <>{children}</>;
 };
 
