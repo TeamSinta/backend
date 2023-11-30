@@ -28,6 +28,8 @@ class InterviewerFeedback(models.Model):
     interview_round = models.ForeignKey(InterviewRound, on_delete=models.CASCADE)
     note = models.TextField(null=True)
     reaction = models.IntegerField(choices=EmojiChoice.choices, null=True)
+    comment = models.CharField(max_length=255, null=True)
+    time = models.CharField(blank=True, null=True)
     template_question = models.ForeignKey(
         TemplateQuestion,
         on_delete=models.CASCADE,

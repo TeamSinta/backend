@@ -29,6 +29,7 @@ urlpatterns = [
     path("api/question_response/", include("question_response.urls")),
     path("api/templates/", include("interview_templates.urls")),
     path("api/videosdk/", include("videosdk.urls")),
+    # path('sse_endpoint/', YourViewClassName.as_view(), name='sse_endpoint'),
     path(
         "api/summary/", include("summary.urls")
     ),  # Add this line for the "summary" app

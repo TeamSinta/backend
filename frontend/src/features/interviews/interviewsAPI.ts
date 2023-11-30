@@ -9,6 +9,7 @@ type FeedbackData = {
   score?: number;
   reaction?: number;
   note?: string;
+  time: string;
 };
 
 export const getQuestionsBank = async () => {
@@ -22,17 +23,17 @@ export const getQuestionsBank = async () => {
 
 export const createInterviewRound = async (
   title: string,
-  candidate_id: number,
   template_id: string | null,
   token: string,
   meeting_room_id: string
 ) => {
   const data = {
     title: title,
-    candidate_id: candidate_id,
     template_id: template_id,
-    meeting_room_id: meeting_room_id,
+    room_id: meeting_room_id,
   };
+
+  console.log(data);
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -44,6 +45,19 @@ export const createInterviewRound = async (
     data,
     config
   );
+
+  return result.data;
+};
+
+export const getTemplate = async (
+  template_id: string | null,
+  token: string
+) => {
+  const result = await instance.get(`${BASE_URL}/templates/${template_id}/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   return result.data;
 };
@@ -95,12 +109,73 @@ export const sendFeedback = async (data: FeedbackData, token: string) => {
   }
 };
 
-export const getCandidate = async (username: string, token: string) => {
-  const result = await instance.get(`${BASE_URL}/user/users/${username}/`, {
+export const getInterviewRoundQuestions = async (
+  interviewRoundId: string,
+  token: string
+) => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const response = await instance.get(
+      `${BASE_URL}/interview-rounds/interviewroundquestions/?interviewRound=${interviewRoundId}`,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    throw error; // Re-throw the error so that the calling function can handle it
+  }
+};
+
+export const getCandidateByUsername = async (
+  username: string,
+  token: string
+) => {
+  const result = await instance.get(
+    `${BASE_URL}/user/usersbyusername/${username}/`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return result.data;
+};
+
+export const getCandidateById = async (id: string, token: string) => {
+  const result = await instance.get(`${BASE_URL}/user/usersbyid/${id}/`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+
+  return result.data;
+};
+
+export const getInterviews = async (token: string) => {
+  const result = await instance.get(`${BASE_URL}/interview-rounds/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return result.data;
+};
+
+export const getInterview = async (interviewRoundId: string, token: string) => {
+  const result = await instance.get(
+    `${BASE_URL}/interview-rounds/${interviewRoundId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   return result.data;
 };

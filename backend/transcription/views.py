@@ -109,15 +109,30 @@ class GenerateTranscript(APIView):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     def post(self, request: HttpRequest, *args, **kwargs):
-        # Retrieve the interview_round_id and video_path_uri from the request body
-        print(request.POST)
+        # Retrieve the interview_round_id from the request body
         interview_round_id = request.POST.get("interview_round_id")
-        video_path_uri = request.POST.get("video_path_uri")
 
+        # Get the file from the request
+        video_file = request.FILES.get("video_file")
+
+        # Ensure that a file is provided
+        if not video_file:
+            return Response(
+                {"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Save the file to a temporary location
+        video_path = "/tmp/interview_video.mp4"  # Change this path as needed
+        with open(video_path, "wb") as f:
+            for chunk in video_file.chunks():
+                f.write(chunk)
+
+        # Set the video_uri in the InterviewRound model
         interview_round = get_object_or_404(InterviewRound, pk=interview_round_id)
-        interview_round.video_uri = video_path_uri
+        interview_round.video_uri = video_path
         interview_round.save()
 
-        generate_transcriptions_from_assembly(interview_round_id, video_path_uri)
+        # Generate transcriptions
+        generate_transcriptions_from_assembly(interview_round_id, video_path)
 
         return Response(status=status.HTTP_200_OK)

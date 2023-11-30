@@ -43,7 +43,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../app/store";
 import {
   createInterviewRound,
-  getCandidate,
+  getCandidateByUsername,
 } from "../../../../features/interviews/interviewsAPI";
 import { useCookies } from "react-cookie";
 import { IMember } from "@/components/common/cards/teamplateHomeCard/TemplateHomeCard";
@@ -94,6 +94,22 @@ export default function HairCheck({
 
   // const setTemplate
 
+  const getRoomNameFromUrl = (url: string): string => {
+    // Create a new URL object from the given URL string
+    const urlObj = new URL(url);
+
+    // Get the pathname from the URL object
+    const pathname = urlObj.pathname;
+
+    // Split the pathname by '/' and filter out empty strings
+    const segments = pathname.split("/").filter((segment) => segment !== "");
+
+    // Get the last segment
+    const lastSegment = segments[segments.length - 1];
+
+    return lastSegment;
+  };
+
   const startMeeting = async () => {
     if (newTitle === "") throw new Error("Empty candidate username");
     if (selectedTemplateId === "" || !selectedTemplateId)
@@ -103,10 +119,9 @@ export default function HairCheck({
       const title = newTitle;
       const candidateId = 1;
 
-      const meeting_room_id = callObject.properties.url;
+      const meeting_room_id = getRoomNameFromUrl(callObject?.properties.url);
       const response = await createInterviewRound(
         title,
-        candidateId,
         selectedTemplateId,
         cookies.access_token,
         meeting_room_id

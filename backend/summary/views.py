@@ -67,6 +67,11 @@ class GenerateSummaryView(APIView):
         )
 
         return self._generate_response(interview_round_id, summary)
+        # return StreamingHttpResponse(self.stream_sse(response), content_type="text/event-stream")
+
+    # def stream_sse(self, response):
+    #     for fragment in response.streaming_content:
+    #         yield f"data: {fragment.decode('utf-8')}\n\n"
 
     def get(self, request, interview_round_id, *args, **kwargs):
         # Retrieve the interview

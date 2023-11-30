@@ -5,14 +5,21 @@ import { BodySMedium } from "@/components/common/typeScale/StyledTypeScale";
 import { H1 } from "@/components/common/typeScale/StyledTypeScale";
 import ConclusionInterviewCard from "@/components/common/cards/conclusionInterivewCard/ConclusionInterviewCard";
 import { GridContainer } from "./StyledConclusions";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TextIconFilter from "@/components/common/filters/textIconFilter/TextIconFilter";
 import { BinIcon, ResumeIcon } from "@/components/common/svgIcons/Icons";
+import { getInterviews } from "../../features/interviews/interviewsAPI";
+import { useCookies } from "react-cookie";
+import { InterviewRoundCardProps } from "../../components/common/cards/interviewRoundCard/InterviewRoundCard";
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: string; // Change the type to string
   value: string; // Change the type to string
+}
+
+interface IInterviewRound {
+  title: string;
 }
 
 function CustomTabPanel(props: TabPanelProps) {
@@ -105,6 +112,21 @@ const TABS = {
 
 export default function BasicTabs() {
   const [activeTab, setActiveTab] = React.useState(TABS.INTERVIEWS);
+  const [interviews, setInterviews] = React.useState([]);
+
+  const [cookies, ,] = useCookies(["access_token"]);
+
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const fetchInterviews = async () => {
+      const response = await getInterviews(cookies.access_token);
+      console.log(response);
+      setInterviews(response);
+    };
+
+    fetchInterviews();
+  }, []);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -155,16 +177,23 @@ export default function BasicTabs() {
           {activeTab === TABS.INTERVIEWS && (
             <CustomTabPanel value={activeTab} index={TABS.INTERVIEWS}>
               <GridContainer>
-                {fakeInterviewRounds.map((interviewRound, index) => (
-                  <Link to={`/interviews/conclusion`} key={index}>
+                {interviews.map((interviewRound: IInterviewRound, index) => (
+                  <div
+                    onClick={() => {
+                      navigate("/interviews/conclusion/", {
+                        state: { id: interviewRound.id, useTimer: false },
+                      });
+                    }}
+                    key={index}
+                  >
                     <ConclusionInterviewCard
                       key={index}
                       title={interviewRound.title}
-                      disable={interviewRound.disable}
-                      name={interviewRound.name}
-                      date={interviewRound.date}
+                      disable={false}
+                      name={"default name"}
+                      date={new Date().getTime() - 1000 * 60 * 60 * 24 * 15}
                     />
-                  </Link>
+                  </div>
                 ))}
               </GridContainer>
             </CustomTabPanel>

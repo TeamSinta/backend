@@ -17,7 +17,6 @@ import {
   StyledImage,
   GridContainer,
   InterviewSideBarWrapper,
-  VideoScreenWrapper,
   GuidelinesSection,
   InterviewLayout,
 } from "./StyledInterview";
@@ -88,6 +87,7 @@ const Interview = ({ leaveCall, interviewDetails }) => {
       top: 0,
     },
   });
+  const [startTime, setStartTime] = useState(null);
   const [isInterviewSideBarCollapsed, setIsInterviewSideBarCollapsed] =
     useState(false);
   const [cookies, ,] = useCookies(["access_token"]);
@@ -137,6 +137,7 @@ const Interview = ({ leaveCall, interviewDetails }) => {
         interviewDetails.template_id,
         cookies.access_token
       );
+      console.log(response);
       setTemplateQuestionsAndTopics(response);
     };
 
@@ -148,7 +149,9 @@ const Interview = ({ leaveCall, interviewDetails }) => {
       <div style={{ display: "flex" }}>
         <span>
           <NavButton
-            onClick={() => setActiveTab(1)}
+            onClick={() => {
+              setActiveTab(1);
+            }}
             direction="row"
             style={{
               fontSize: "12px",
@@ -372,6 +375,10 @@ const Interview = ({ leaveCall, interviewDetails }) => {
       setCollapseQuestion(false);
     }, [activeData]);
 
+    useEffect(() => {
+      console.log(activeQuestionInfo);
+    }, [activeQuestionInfo]);
+
     function resetList() {
       setCollapseQuestion(false);
     }
@@ -510,11 +517,14 @@ const Interview = ({ leaveCall, interviewDetails }) => {
                                 parseInt(activeNumber) === 1 ? "0.5" : "1",
                             }}
                             onClick={() => {
+                              console.log(activeNumber);
                               if (parseInt(activeNumber) !== 1) {
                                 setNextNum(nextNum - 1);
+                                setActiveNumber(prevNum);
                                 setActiveQuestionInfo(
                                   activeData?.questions?.filter(
-                                    (a: any) => parseInt(index) === prevNum
+                                    (a: any, index: number) =>
+                                      index + 1 === prevNum
                                   )[0]
                                 );
                                 setPrevNum(prevNum - 1);
@@ -523,6 +533,7 @@ const Interview = ({ leaveCall, interviewDetails }) => {
                           >
                             <ElWrap w={33}>
                               <StyledIconBtnM style={{ background: "white" }}>
+                                {/* this is actually left arrow icon */}
                                 <RightArrowIcon />
                               </StyledIconBtnM>
                             </ElWrap>
@@ -542,9 +553,11 @@ const Interview = ({ leaveCall, interviewDetails }) => {
                               ) {
                                 setActiveQuestionInfo(
                                   activeData?.questions?.filter(
-                                    (a: any) => parseInt(a.number) === nextNum
+                                    (a: any, index: number) =>
+                                      index + 1 === nextNum
                                   )[0]
                                 );
+                                setActiveNumber(nextNum);
                                 setNextNum(nextNum + 1);
                                 setPrevNum(prevNum + 1);
                               }
@@ -795,12 +808,32 @@ const Interview = ({ leaveCall, interviewDetails }) => {
       </div>
     );
   }
+
+  const getEmojiClickTime = () => {
+    const reactClickTime = Date.now();
+
+    // Calculate elapsed time in milliseconds
+    const elapsedTime =
+      reactClickTime - (startTime === null ? Date.now() : startTime);
+
+    // Convert elapsed time to minutes and seconds
+    const minutes = Math.floor(elapsedTime / 60000);
+    let seconds = ((elapsedTime % 60000) / 1000).toFixed(0);
+
+    const secondsNum = parseInt(seconds, 10);
+
+    // Format minutes and seconds to 'mm:ss'
+    const formattedTime = `${minutes}:${secondsNum < 10 ? "0" : ""}${seconds}`;
+    return formattedTime;
+  };
+
   const emojiClicked = (e, emoji: string, emojiNumber: number) => {
     // send feedback
     const data = {
       interview_round: interviewDetails.id,
       user: interviewDetails.candidate_id,
       reaction: emojiNumber,
+      time: getEmojiClickTime(),
     };
 
     sendFeedback(data, cookies.access_token);
@@ -918,6 +951,7 @@ const Interview = ({ leaveCall, interviewDetails }) => {
         setReactClicked={setReactClicked}
         reactClicked={reactClicked}
         leaveCall={leaveCall}
+        setStartTime={setStartTime}
       />
       {<EmojiOverlay />}
     </div>

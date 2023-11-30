@@ -101,11 +101,10 @@ export const FullscreenButton = (props: ICustomIconProps): JSX.Element => {
   );
 };
 
-const VideoPlayer = ({ questionsTranscript }) => {
+const VideoPlayer = ({ questionsTranscript, videoUrl, emojisData }) => {
   const videoRef = useRef<any>(null);
   const questionBarRef = useRef<any>(null);
   const [isPlaying, setIsPlaying] = useState<any>(false);
-  // const [videoLoading, setVideoLoading] = useState<any>(true);
   const [isMuted, setIsMuted] = useState<any>(false);
   // const [isFullScreen, setIsFullScreen] = useState<any>(false);
   const [currentTime, setCurrentTime] = useState<any>(0);
@@ -124,7 +123,13 @@ const VideoPlayer = ({ questionsTranscript }) => {
   const [interviewerData, setInterviewerData] = useState<any>([]);
   const [questionData, setQuestionData] = useState<any>([]);
 
-  console.log(questionsTranscript);
+  const emoticonKeyPairs = {
+    "1": "🔥",
+    "2": "👍🏻",
+    "3": "👎🏻",
+    "4": "❤️",
+    "5": "😂",
+  };
 
   // TODO: Convert questionsTranscript to resemble the questionData format.
 
@@ -274,17 +279,22 @@ const VideoPlayer = ({ questionsTranscript }) => {
     ],
   };
 
-  useEffect(() => {
-    setInterviewerData(response?.interviewerData);
-    setQuestionData(response?.questionData);
-    setEmoticonData(response?.emoticonData);
-    setTotalDuration(response?.videoDuration);
-  }, [
-    response?.emoticonData,
-    response?.interviewerData,
-    response?.questionData,
-    response?.videoDuration,
-  ]);
+  useEffect(
+    () => {
+      setInterviewerData(response?.interviewerData);
+      setQuestionData(response?.questionData);
+      setEmoticonData(emojisData);
+      // setTotalDuration(response?.videoDuration);
+      console.log(emoticonData);
+    },
+    [
+      // response?.emoticonData,
+      // response?.interviewerData,
+      // response?.questionData,
+      // response?.videoDuration,
+      // emojisData,
+    ]
+  );
 
   const handleTimeUpdate = () => {
     const video = videoRef.current;
@@ -303,6 +313,17 @@ const VideoPlayer = ({ questionsTranscript }) => {
       setIsPlaying(false);
       video.pause();
     }
+  };
+
+  const handleLoadedMetadata = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const duration = video.duration;
+    const minutes = Math.floor(duration / 60);
+    const seconds = Math.floor(duration % 60);
+    const formattedDuration = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    // console.log(formattedDuration);
+    setTotalDuration(formattedDuration);
   };
 
   const handleProgressBarClick = (event: any) => {
@@ -405,7 +426,7 @@ const VideoPlayer = ({ questionsTranscript }) => {
     return (
       <>
         <StyledInterviewerImage>
-          <img
+          {/* <img
             width="20"
             height="20"
             style={{
@@ -418,12 +439,12 @@ const VideoPlayer = ({ questionsTranscript }) => {
               transcriptionInfo.questionData[0].transcription[0].userImageUrl
             }
             alt="styled interviewer img"
-          />
+          /> */}
           <span style={{ color: "white", fontSize: "10px", padding: "2px" }}>
-            {"Bill - Interviewer"}
+            {"Reactions"}
           </span>
         </StyledInterviewerImage>
-        <StyledCandidateImage>
+        {/* <StyledCandidateImage>
           <img
             width="20"
             height="20"
@@ -441,8 +462,8 @@ const VideoPlayer = ({ questionsTranscript }) => {
           <span style={{ color: "white", fontSize: "10px", padding: "2px" }}>
             {"Harry - Candidate"}
           </span>
-        </StyledCandidateImage>
-        <div style={{ display: "flex", margin: "0px" }}>
+        </StyledCandidateImage> */}
+        {/* <div style={{ display: "flex", margin: "0px" }}>
           {interviewerData?.map((data: any) => {
             return (
               <>
@@ -461,7 +482,7 @@ const VideoPlayer = ({ questionsTranscript }) => {
               </>
             );
           })}
-        </div>
+        </div> */}
         <div style={{ display: "flex", margin: "0px" }}>
           {interviewerData?.map((data: any) => {
             return (
@@ -557,7 +578,7 @@ const VideoPlayer = ({ questionsTranscript }) => {
               zIndex: "99",
             }}
           >
-            {emoticon.emoticon}
+            {emoticonKeyPairs[emoticon.reaction]}
           </div>
         );
       });
@@ -603,7 +624,8 @@ const VideoPlayer = ({ questionsTranscript }) => {
               <video
                 className={`${isPlaying ? "" : "blurred"}`}
                 ref={videoRef}
-                src="/src/pages/Interviews/Conclusion/MainScreen/VideoPlayer/mock_microsoft_interview.mp4"
+                onLoadedMetadata={handleLoadedMetadata}
+                src={videoUrl}
                 onTimeUpdate={handleTimeUpdate}
               ></video>
             </div>

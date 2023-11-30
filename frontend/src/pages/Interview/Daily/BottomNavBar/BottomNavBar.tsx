@@ -50,7 +50,13 @@ function BottomNavBar(props: any) {
 
   const [isEmojiTrayOpened, setIsEmojiTrayOpened] = useState<boolean>(false);
   const [cookies, ,] = useCookies(["access_token"]);
-  const { setReactClicked, reactClicked, leaveCall, emojiClicked } = props;
+  const {
+    setReactClicked,
+    reactClicked,
+    leaveCall,
+    emojiClicked,
+    setStartTime,
+  } = props;
   const callObject = useDaily();
   const { isSharingScreen, startScreenShare, stopScreenShare } =
     useScreenShare();
@@ -101,6 +107,9 @@ function BottomNavBar(props: any) {
     const room = await callObject?.room();
     if (shouldUpload) {
       const response = await dispatch(uploadRecording(room?.name));
+    } else {
+      // recording has started, set the starting time
+      setStartTime(new Date());
     }
   };
 
@@ -115,6 +124,11 @@ function BottomNavBar(props: any) {
   const openSettingsModal = () => {
     setIsSettingsModalOpen(true);
     onClickModalOpen(MODAL_TYPE.VIDEO_SETTINGS);
+  };
+
+  // Function to close the settings modal
+  const closeSettingsModal = () => {
+    setIsSettingsModalOpen(false);
   };
 
   return (

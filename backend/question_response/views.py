@@ -15,6 +15,7 @@ from user.models import CustomUser
 from typing import List, Dict
 from .serializers import InterviewerFeedbackSerializer
 from interview.models import Candidate
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
 
 
 class QuestionSummarizedAnswerView(APIView):
@@ -168,6 +169,13 @@ class InterviewerFeedbackListCreateView(generics.ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class InterviewerFeedbackDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = InterviewerFeedback.objects.all()
+class InterviewerFeedbackDetailView(generics.ListCreateAPIView):
     serializer_class = InterviewerFeedbackSerializer
+
+    def get_queryset(self):
+        round_id = self.kwargs.get("pk")
+        queryset = InterviewerFeedback.objects.all()
+        queryset = queryset.filter(interview_round_id=round_id)
+        print(round_id)
+        print(queryset)
+        return queryset

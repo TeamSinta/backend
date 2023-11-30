@@ -22,6 +22,7 @@ import {
 import TopNavBar from "@/components/layouts/topnavbar/TopNavBar";
 import { Interview } from "@/pages/Interview";
 import { useLocation, useNavigate } from "react-router-dom";
+import { interviewDetail } from "../../mocks/mockDatas";
 
 const STATE = {
   IDLE: "STATE_IDLE",
@@ -58,6 +59,8 @@ export default function VideoCall() {
   const setDetails = async (details: any) => {
     new Promise((res, rej) => {
       setInterviewRoundDetails(details);
+      console.log(details);
+      localStorage.setItem("interviewRoundId", details.id);
       res(true);
     });
   };
@@ -125,11 +128,16 @@ export default function VideoCall() {
           setAppState(STATE.JOINED);
           break;
         case "left-meeting":
+          const interviewRoundId = localStorage.getItem("interviewRoundId");
+          localStorage.clear();
+          console.log(interviewRoundId);
           callObject.destroy().then(() => {
             setRoomUrl(null);
             setCallObject(null);
             setAppState(STATE.IDLE);
-            navigate("/");
+            navigate("/interviews/Conclusion", {
+              state: { id: interviewRoundId, useTimer: true },
+            });
           });
           break;
         case "error":

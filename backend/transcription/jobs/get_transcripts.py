@@ -7,9 +7,32 @@ from dotenv import dotenv_values
 from moviepy.editor import VideoFileClip
 from interview.models import InterviewRoundQuestion, InterviewRound
 from question_response.models import Answer
+import boto3
+from botocore.exceptions import NoCredentialsError
+from django.conf import settings
 
 BASE_URL = "https://api.assemblyai.com/v2"
 TRANSCRIPT_ENDPOINT = f"{BASE_URL}/transcript"
+
+
+# Upload JSON file to S3 bucket
+def upload_to_s3(local_file_path, bucket_name, s3_file_name):
+    try:
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        )
+
+        s3.upload_file(local_file_path, bucket_name, s3_file_name)
+        print("File uploaded successfully to S3")
+        return True
+    except FileNotFoundError:
+        print("The file was not found")
+        return False
+    except NoCredentialsError:
+        print("Credentials not available")
+        return False
 
 
 def generate_wav_from_video(video_path):
@@ -92,6 +115,17 @@ def generate_transcriptions_from_assembly(interview_round_id, video_path):
     interview_round.transcription_file_uri = transcription_json
 
     try:
+        #  # Upload transcription JSON file to S3 with interview round ID in its name
+        # s3_file_name = f"{interview_round_id}_transcription_result.json"
+        # success = upload_to_s3(transcription_json, 'sinta-media', s3_file_name)
+
+        # if success:
+        #     # Update interview round with S3 bucket information
+        #     # interview_round.transcription_file_uri = f"s3://team-sinta/{s3_file_name}"
+        #     interview_round.save()
+        #     print("Interview round saved with S3 bucket information.")
+        # else:
+        #     print("Failed to upload JSON file to S3.")
         interview_round.save()
         return True
     except Exception as e:

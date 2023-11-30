@@ -27,7 +27,14 @@ SECRET_KEY = KEYS["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver", "[::1]", "0.0.0.0"]
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "testserver",
+    "[::1]",
+    "0.0.0.0",
+    "ef95-103-137-24-0.ngrok-free.app",
+]
 
 
 # Application definition
@@ -103,10 +110,13 @@ WSGI_APPLICATION = "app.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
+        # "NAME": "sinta-revamped",
         "NAME": "postgres",
         "USER": KEYS["DB_USER"],
         "PASSWORD": KEYS["DB_PASSWORD"],
+        # "HOST": "host.docker.internal",
         "HOST": "db",
+        # "PORT": "5433",
         "PORT": "5432",
     }
 }
@@ -200,4 +210,8 @@ APPEND_SLASH = False
 
 # CORS
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ["http://localhost:3001", "http://127.0.0.1:3001"]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3001",
+    "http://127.0.0.1:3001",
+    "https://ef95-103-137-24-0.ngrok-free.app",
+]

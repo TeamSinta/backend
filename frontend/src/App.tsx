@@ -7,11 +7,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "./app/store";
 import Loading from "./components/common/elements/loading/Loading";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 
 function App() {
   const location = useLocation();
-  const navigate = useNavigate();
   const { isAuthenticated, status } = useSelector(
     (state: RootState) => state.user
   );

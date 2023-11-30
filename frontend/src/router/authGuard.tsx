@@ -6,6 +6,7 @@ import { useCookies } from "react-cookie";
 import {
   setIsAuthenticated,
   resetUserState,
+  checkUserAuthentication,
 } from "@/features/authentication/authenticationSlice";
 import { RootState, AppDispatch } from "@/app/store";
 import {
@@ -38,6 +39,40 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const [validateToken] = useValidateTokenMutation();
   const [getUser] = useGetUserMutation();
   const [getAccessToken] = useGetAccessTokenMutation();
+
+  const checkAuthentication = async () => {
+    try {
+      // Dispatch the checkUserAuthentication action to check if the user is authenticated
+      await dispatch(checkUserAuthentication());
+
+      // Check the user's authentication status
+      if (!isAuthenticated) {
+        // User is not authenticated, handle it accordingly
+        if (accessToken) {
+          console.log("Authenticating user with access token:", accessToken);
+          await authenticateUser(accessToken);
+        } else {
+          console.log("Handling token refresh");
+          await handleTokenRefresh();
+        }
+      }
+
+      // Check if user email is missing and fetch it if needed
+      if (!user.email) {
+        await getUser({ access: accessToken });
+      }
+
+      // Set the default workspace if needed
+      setDefaultWorkspace();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log("Authentication check failed:", error.message);
+        failedAuthentication();
+      } else {
+        failedAuthentication();
+      }
+    }
+  };
 
   const authenticateUser = async (accessToken: string) => {
     try {

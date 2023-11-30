@@ -15,7 +15,9 @@ class Candidate(models.Model):
 # Create your models here.
 class InterviewRound(models.Model):
     title = models.CharField(max_length=200)
-    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(
+        Candidate, on_delete=models.CASCADE, null=True, blank=True
+    )
     interviewer = models.ForeignKey(
         CustomUser,
         related_name="interviewer_rounds",

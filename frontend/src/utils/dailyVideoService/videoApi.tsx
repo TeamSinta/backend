@@ -4,14 +4,13 @@ const RoomService = {
     const exp = Math.round(Date.now() / 1000) + 60 * 30;
     const options = {
       properties: {
-        exp,
-        // enable_recording: "cloud",
-        // recordings_bucket: {
-        //   bucket_name: "team-sinta",
-        //   bucket_region: "eu-west-1",
-        //   assume_role_arn: "arn:aws:iam::314160095310:role/BucketRole",
-        //   allow_api_access: true,
-        // },
+        enable_recording: "cloud",
+        recordings_bucket: {
+          bucket_name: "team-sinta",
+          bucket_region: "eu-west-1",
+          assume_role_arn: "arn:aws:iam::314160095310:role/BucketRole",
+          allow_api_access: true,
+        },
       },
     };
 

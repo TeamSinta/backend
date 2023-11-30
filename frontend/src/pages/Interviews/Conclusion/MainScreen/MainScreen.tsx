@@ -9,7 +9,9 @@ import ConclusionData from "@/services/conclusionService";
 import InterviewQNA from "./InterviewQNA/InterviewQNA";
 import SummaryTab from "./SummaryTab/SummaryTab";
 
-interface MainScreenProps {}
+interface MainScreenProps {
+  interviewRoundId: string;
+}
 
 interface setActiveTabProps {
   (tabNumber: number): void;
@@ -81,16 +83,18 @@ const TabButton: React.FC<TabButtonProps> = ({
   </StyledNavButton>
 );
 
-const MainScreen: React.FC<MainScreenProps> = () => {
+const MainScreen: React.FC<MainScreenProps> = ({ interviewRoundId }) => {
   const [activeTab, setActiveTab] = useState<number>(1);
 
   const [
     summarizedAnswers,
     questionsTranscript,
     summarizedInterview,
+    videoUrl,
+    emojisData,
     loading,
     error,
-  ] = ConclusionData();
+  ] = ConclusionData(interviewRoundId);
 
   const infoTabs = useMemo(
     () => (
@@ -142,7 +146,11 @@ const MainScreen: React.FC<MainScreenProps> = () => {
         >
           <H3Bold>Behavioral Interview</H3Bold>
           <div className="video-player-wrapper">
-            <VideoPlayer questionsTranscript={questionsTranscript?.data} />
+            <VideoPlayer
+              questionsTranscript={questionsTranscript?.data}
+              videoUrl={videoUrl?.url}
+              emojisData={emojisData}
+            />
           </div>
         </Grid>
         <Grid item xs={12} sm={12} md={12} lg={6}>

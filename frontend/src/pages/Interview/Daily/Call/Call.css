@@ -119,6 +119,8 @@
 .meeting-container {
   display: flex;
   flex-direction: row;
+  height: 63px;
+  width: 500px;
   gap: 8px;
   overflow-x: auto;
   width: 98%;

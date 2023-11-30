@@ -68,10 +68,17 @@
   border-radius: 10px;
 }
 
-.sentimentIcon {
+.positiveSentimentIcon {
   -webkit-text-stroke-width: 2px;
   -webkit-text-stroke-color: #000;
   color: #dbfddc !important;
+  margin-right: 5px;
+}
+
+.negativeSentimentIcon {
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #000;
+  color: #fddbdb !important;
   margin-right: 5px;
 }
 .sentiment-meta {

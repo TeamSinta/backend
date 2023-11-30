@@ -56,6 +56,19 @@ class GetUserByUsername(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class GetUserById(APIView):
+    # permission_classes = [IsAuthenticated, isAdminRole, isInterviewerRole]
+
+    def get(self, request, candidate_id):
+        # Use the get_object_or_404 method to try to get a user by their username.
+        user = get_object_or_404(CustomUser, id=candidate_id)
+
+        # Serialize the user instance.
+        serializer = CustomUserSerializer(user)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class UserDepartmentsView(ListAPIView):
     serializer_class = DepartmentSerializer
 
