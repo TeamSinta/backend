@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: sinta-db
+    build:
+      context: ./database
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    env_file:
+      - ./api/config/dev/.env.dev
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - backend-network
+
+  backend:
+    container_name: sinta-api
+    build:
+      context: ./api
+      dockerfile: dev.Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./api:/backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    env_file:
+      - ./api/config/dev/.env.dev
+    environment:
+      - ENVIRONMENT=dev
+    networks:
+      - backend-network
+
+volumes:
+  dbdata:
+
+networks:
+  backend-network:
+    driver: bridge
