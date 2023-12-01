@@ -8,7 +8,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 ADMINS = [(os.environ.get("SUPERUSER"), os.environ.get("SUPERUSER_EMAIL"))]
 
 ALLOWED_HOSTS = ["localhost", "*"]
-CORS_ALLOWED_ORIGINS = ["http://localhost", "https://localhost"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3001", "https://localhost"]
 
 # Database Settings
 DATABASES = {
