@@ -7,8 +7,12 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # Default Admin Account
 ADMINS = [(os.environ.get("SUPERUSER"), os.environ.get("SUPERUSER_EMAIL"))]
 
-ALLOWED_HOSTS = ["localhost", "*"]
-CORS_ALLOWED_ORIGINS = ["http://localhost:3001", "https://localhost"]
+ALLOWED_HOSTS_ENV = os.environ.get("ALLOWED_HOSTS")
+ALLOWED_HOSTS = ALLOWED_HOSTS_ENV.split(",") if ALLOWED_HOSTS_ENV else []
+
+
+CORS_ALLOWED_ORIGINS_ENV = os.environ.get("CORS_ALLOWED_ORIGINS")
+CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS_ENV.split(",") if CORS_ALLOWED_ORIGINS_ENV else []
 
 # Database Settings
 DATABASES = {
