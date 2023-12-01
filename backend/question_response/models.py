@@ -28,12 +28,12 @@ class InterviewerFeedback(models.Model):
     interview_round = models.ForeignKey(InterviewRound, on_delete=models.CASCADE)
     note = models.TextField(null=True)
     reaction = models.IntegerField(choices=EmojiChoice.choices, null=True)
-    comment = models.CharField(max_length=255, null=True)
     time = models.CharField(blank=True, null=True)
     template_question = models.ForeignKey(
         TemplateQuestion,
         on_delete=models.CASCADE,
-        default=None,  # You can set your default value here
+        default=None,
+        null=True  # You can set your default value here
     )
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)

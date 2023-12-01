@@ -14,18 +14,18 @@ const RoomService = {
       },
     };
 
-    const VITE_DAI_TEST_KEY = import.meta.env.VITE_DAI_TEST_KEY;
-    console.log(VITE_DAI_TEST_KEY);
+    const VITE_DAILY_API_KEY = import.meta.env.VITE_DAILY_API_KEY;
+    console.log(VITE_DAILY_API_KEY);
     const response = await fetch("https://api.daily.co/v1/rooms/", {
       method: "POST",
       body: JSON.stringify(options),
       headers: {
         "Content-Type": "application/json",
 
-        Authorization: `Bearer ${VITE_DAI_TEST_KEY}`,
+        Authorization: `Bearer ${VITE_DAILY_API_KEY}`,
       },
     });
-    console.log(VITE_DAI_TEST_KEY);
+    console.log(VITE_DAILY_API_KEY);
     console.log(response);
 
     return await response.json();
@@ -34,13 +34,13 @@ const RoomService = {
     // const options = {
     // };
 
-    const VITE_DAI_TEST_KEY = import.meta.env.VITE_DAI_TEST_KEY;
+    const VITE_DAILY_API_KEY = import.meta.env.VITE_DAILY_API_KEY;
     const response = await fetch(`https://api.daily.co/v1/rooms/${room}`, {
       method: "POST",
       // body: JSON.stringify(options),
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${VITE_DAI_TEST_KEY}`,
+        Authorization: `Bearer ${VITE_DAILY_API_KEY}`,
       },
     });
 

@@ -1,4 +1,5 @@
-import openai
+from openai import OpenAI
+
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 from dotenv import dotenv_values
 from typing import List
@@ -10,35 +11,38 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 KEYS = dotenv_values(BASE_DIR / ".env")
 
 EMBEDDING_MODEL = KEYS["EMBEDDINGS_MODEL"]
-openai.api_key = KEYS["OPENAI_API_KEY"]
+client = OpenAI(api_key=KEYS["OPENAI_API_KEY"])
+
 
 
 @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(6))
 def get_embedding(text: str) -> List[float]:
-    return openai.Embedding.create(input=[text], model=EMBEDDING_MODEL)["data"][0][
-        "embedding"
-    ]
+    response = client.embeddings.create(input=[text], model=EMBEDDING_MODEL)
+    print(response)
+    embedding_data = response.get("data", [])
+    print(embedding_data)
+    if embedding_data:
+        return embedding_data[0].get("embedding", [])
+    return []
 
 
 def get_answer_notes_for_question(context_text: str, question: str) -> str:
     context = '"""' + "".join(context_text) + '"""' + "Question: " + question
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a shadow interviewer. You are incredible at summarizing chunks of interview after it's complete.",
-            },
-            {
-                "role": "assistant",
-                "content": "You will be given all the information in the context and followed by a question. This is the response from an interview candidate. You are helping the interviewer gain insights from the interview. Respond in first person. Use 3-4 bullet points to respond. Throw away any content not relevant to the question. Ensure all the bullet points start with `-`.",
-            },
-            {"role": "user", "content": context},
-        ],
-        temperature=0,
-        top_p=1,
-    )
+    response = client.chat.completions.create(model="gpt-3.5-turbo",
+    messages=[
+        {
+            "role": "system",
+            "content": "You are a shadow interviewer. You are incredible at summarizing chunks of interview after it's complete.",
+        },
+        {
+            "role": "assistant",
+            "content": "You will be given all the information in the context and followed by a question. This is the response from an interview candidate. You are helping the interviewer gain insights from the interview. Respond in first person. Use 3-4 bullet points to respond. Throw away any content not relevant to the question. Ensure all the bullet points start with `-`.",
+        },
+        {"role": "user", "content": context},
+    ],
+    temperature=0,
+    top_p=1)
 
     return response["choices"][0]["message"]["content"]
 
@@ -93,12 +97,10 @@ def _summarized_interview_description_helper(q_text_list: List) -> str:
         {"role": "user", "content": context},
     ]
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        temperature=0,
-        top_p=1,
-    )
+    response = client.chat.completions.create(model="gpt-3.5-turbo",
+    messages=messages,
+    temperature=0,
+    top_p=1)
 
     content_generated = response["choices"][0]["message"]["content"]
 
@@ -129,12 +131,10 @@ def _summarized_interview_faq_helper(qa_text: str, retry: int = 0) -> str:
     if retry:
         messages.insert(-1, scold_gpt)
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        temperature=0,
-        top_p=1,
-    )
+    response = client.chat.completions.create(model="gpt-3.5-turbo",
+    messages=messages,
+    temperature=0,
+    top_p=1)
 
     content_generated = response["choices"][0]["message"]["content"]
 
