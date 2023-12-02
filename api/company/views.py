@@ -218,18 +218,15 @@ class CompanyDepartments(viewsets.ModelViewSet):
         return Department.objects.filter(company__id=company_id)
 
     def create(self, request, *args, **kwargs):
-        self.permission_classes = [isAdminRole | isManagerRole]
         data = json.loads(request.body)
         company_id = data.get("company_id", None)
-        user_from_jwt = request.user
 
-        # Check Role & Permission
-        if not check_permissions_and_existence(user_from_jwt, company_id=company_id):
+        # Check if the user is authorized to create a department
+        if not self.has_permission(request, company_id):
             return Response(
-                {"detail": "User is not a member of the requested company"},
+                {"detail": "User is not authorized to create a department in the requested company"},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        check_role_permission(self, request)
 
         # Data Validation
         serializer = self.get_serializer(data=request.data)
@@ -248,6 +245,20 @@ class CompanyDepartments(viewsets.ModelViewSet):
                 {"detail": "Department already exists."},
                 status=status.HTTP_409_CONFLICT,
             )
+
+    def has_permission(self, request, company_id):
+        user = request.user
+        if company_id:
+            company = get_object_or_404(Company, id=company_id)
+
+            # Check if the user is a member of the requested company
+            user_company = UserCompanies.objects.filter(user=user, company=company).first()
+            if user_company:
+                # Check if the user's role is either "admin" or "manager"
+                role_name = user_company.role.name
+                return role_name in ["admin", "manager"]
+
+        return False
 
     def destroy(self, request, *args, **kwargs):
         self.permission_classes = [isAdminRole]

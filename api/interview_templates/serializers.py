@@ -9,9 +9,12 @@ from .models import Template, TemplateQuestion, TemplateTopic
 
 
 class TemplatesSerializer(serializers.ModelSerializer):
-    department = serializers.StringRelatedField()
+    department = serializers.StringRelatedField(required=False)  # Make it optional
     department_id = serializers.PrimaryKeyRelatedField(
-        write_only=True, queryset=Department.objects.all(), source="department"
+        write_only=True,
+        queryset=Department.objects.all(),
+        source="department",
+        allow_null=True,
     )
     company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all(), write_only=True)
     interviewers = serializers.PrimaryKeyRelatedField(

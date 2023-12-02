@@ -69,7 +69,7 @@ class CreateInterviewRound(CreateAPIView):
             interviewer_id = request.user.id
             data = request.data
             title = data.get("title")
-            # candidate_id = data.get("candidate_id")
+
             template_id = data.get("template_id")
             room_id = data.get("room_id")
             print(room_id, title, template_id)
@@ -77,14 +77,12 @@ class CreateInterviewRound(CreateAPIView):
                 interview_round = InterviewRound.objects.create(
                     title=title,
                     template_id=template_id,
-                    candidate_id=1,
                     interviewer_id=interviewer_id,
                     meeting_room_id=room_id,
                 )
                 response = {
                     "id": interview_round.id,
                     "title": interview_round.title,
-                    # "candidate_id": interview_round.candidate_id,
                     "template_id": interview_round.template_id,
                     "interviewer_id": interview_round.interviewer_id,
                     "meeting_room_id": interview_round.meeting_room_id,
