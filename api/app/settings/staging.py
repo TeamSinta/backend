@@ -2,7 +2,7 @@ from .base import *
 
 print("STAGING ENVIRONMENT SETTINGS LOADED")
 
-DEBUG = True
+DEBUG = False
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # Default Admin Account
