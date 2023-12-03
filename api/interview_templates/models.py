@@ -12,9 +12,10 @@ class Template(models.Model):
     role_title = models.CharField(max_length=255)
     location = models.CharField(max_length=255, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    interviewers = models.ManyToManyField(CustomUser)
+    interviewers = models.ManyToManyField(CustomUser, related_name="template_interviewers")
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to="template_images/", null=True, blank=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="template_creator")
 
     def __str__(self):
         return self.role_title
