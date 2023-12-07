@@ -4,16 +4,8 @@ from . import views
 
 urlpatterns = [
     # Templates
-    path(
-        "templates",
-        views.TemplatesList.as_view({"get": "list", "post": "create", "put": "update", "delete": "destroy"}),
-        name="templates-list",
-    ),
-    path(
-        "templates/<int:pk>",
-        views.TemplateDetail.as_view({"get": "list", "post": "create", "put": "update", "delete": "destroy"}),
-        name="template-detail",
-    ),
+    path("templates/", views.TemplatesList.as_view()),
+    path("templates/<int:pk>/", views.TemplateDetail.as_view()),
     path("topics/<int:pk>/", views.TemplateTopicDetail.as_view()),
     path("topics/", views.TemplateTopicList.as_view()),
     path("template_questions/", views.TemplateQuestionsList.as_view()),
