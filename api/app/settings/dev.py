@@ -1,6 +1,5 @@
 from .base import *
 
-print("DEV ENVIRONMENT SETTINGS LOADED")
 DEBUG = True
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
@@ -8,7 +7,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 ADMINS = [(os.environ.get("SUPERUSER"), os.environ.get("SUPERUSER_EMAIL"))]
 
 ALLOWED_HOSTS = ["*"]
-CORS_ALLOWED_ORIGINS = ["http://localhost:3001", "http://localhost:80", "http://localhost:8000"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3001", "http://localhost:80", "http://localhost:8000", "http://127.0.0.1"]
 # Database Settings
 DATABASES = {
     "default": {
