@@ -15,3 +15,5 @@ RUN cd /tmp && \
     cd pgvector && \
     make && \
     make install
+
+EXPOSE 5432

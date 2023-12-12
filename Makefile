@@ -32,10 +32,6 @@ lint:
 run-dev:
 	docker compose -f docker-compose-dev.yaml up
 
-.PHONY: run-staging
-run-staging:
-	docker compose -f docker-compose-staging.yaml up
-
 # Seed Commands
 .PHONY: superuser
 superuser:
