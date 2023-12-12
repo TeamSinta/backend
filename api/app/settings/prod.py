@@ -1,7 +1,5 @@
 from .base import *
 
-print("PROD ENVIRONMENT SETTINGS LOADED")
-
 SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = False
 
