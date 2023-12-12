@@ -18,8 +18,8 @@ DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 # Static and Media Temp
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATIC_URL = "/static/static/"
-MEDIA_URL = "/static/media/"
+STATIC_URL = "/staticfiles/static/"
+MEDIA_URL = "/staticfiles/media/"
 
 
 # HTTPS Settings

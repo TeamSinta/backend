@@ -14,14 +14,13 @@ AWS_QUERYSTRING_AUTH = False
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 # Static and Media
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATIC_URL = "/static/static/"
-MEDIA_URL = "/static/media/"
-
+STATIC_URL = "/staticfiles/static/"
+MEDIA_URL = "/staticfiles/media/"
 
 # HTTPS Settings
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
+# SECURE_SSL_REDIRECT = True # must be disabled for CORS
 
 # HSTS Settings
 SECURE_HSTS_SECONDS = 3153600
@@ -37,6 +36,7 @@ print(ALLOWED_HOSTS)
 
 CORS_ALLOWED_ORIGINS_ENV = os.environ.get("CORS_ALLOWED_ORIGINS")
 CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS_ENV.split(",") if CORS_ALLOWED_ORIGINS_ENV else []
+print(CORS_ALLOWED_ORIGINS)
 
 # DB settings
 DATABASES = {
