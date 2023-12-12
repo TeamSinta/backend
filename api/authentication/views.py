@@ -13,10 +13,12 @@ from user.models import CustomUser, Role, UserCompanies
 
 # API receives a authorization code from FE and then goes on with creating/authenticating the user.
 class GoogleLogin(SocialLoginView):
-    authentication_classes = ()
-    permission_classes = ()
+    # authentication_classes = ()
+    # permission_classes = ()
+    print("auth google login")
     adapter_class = GoogleOAuth2Adapter
     callback_url = os.environ.get("FRONTEND_CALLBACK_URL")
+    print(callback_url)
     client_class = OAuth2Client
 
 
