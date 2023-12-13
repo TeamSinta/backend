@@ -14,7 +14,21 @@ from django.http import HttpRequest
 from transcription.jobs.get_transcripts import generate_transcriptions_from_assembly
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
+def send_transcription_completed_message(interview_round_id):
+    channel_layer = get_channel_layer()
+    group_name = f'interview_{interview_round_id}'
+    print(group_name)
+    # Trigger an event to notify the WebSocket group
+    async_to_sync(channel_layer.group_send)(
+        group_name,
+        {
+            'type': 'transcription_generation_completed',
+            'message': 'Transcription generation completed for round!',
+        }
+    )
 
 class QuestionTranscriptView(APIView):
     def get(self, request: HttpRequest, interview_round_id: int) -> Response:
@@ -134,5 +148,15 @@ class GenerateTranscript(APIView):
 
         # Generate transcriptions
         generate_transcriptions_from_assembly(interview_round_id, video_path)
+
+        return Response(status=status.HTTP_200_OK)
+
+class AnnounceTranscriptResult(APIView):
+
+    def post(self, request: HttpRequest, *args, **kwargs):
+        # Retrieve the interview_round_id from the request body
+        interview_round_id = request.POST.get("interview_round_id")
+
+        send_transcription_completed_message(interview_round_id)
 
         return Response(status=status.HTTP_200_OK)

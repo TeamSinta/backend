@@ -33,13 +33,14 @@ ALLOWED_HOSTS = [
     "testserver",
     "[::1]",
     "0.0.0.0",
-    "ef95-103-137-24-0.ngrok-free.app",
+    "7c58-103-137-24-161.ngrok-free.app",
 ]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     # Apps
     "company",
     "user",
+    "channels",
     "interview_templates",
     "files",
     "transcription.apps.TranscriptionConfig",
@@ -73,6 +75,14 @@ INSTALLED_APPS = [
     "storages",
 ]
 
+# Channels configuration
+ASGI_APPLICATION = "app.asgi.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -213,5 +223,5 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3001",
     "http://127.0.0.1:3001",
-    "https://ef95-103-137-24-0.ngrok-free.app",
+    "https://7c58-103-137-24-161.ngrok-free.app",
 ]

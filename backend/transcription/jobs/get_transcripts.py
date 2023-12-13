@@ -10,6 +10,7 @@ from question_response.models import Answer
 import boto3
 from botocore.exceptions import NoCredentialsError
 from django.conf import settings
+import ffmpeg
 
 BASE_URL = "https://api.assemblyai.com/v2"
 TRANSCRIPT_ENDPOINT = f"{BASE_URL}/transcript"
@@ -36,16 +37,9 @@ def upload_to_s3(local_file_path, bucket_name, s3_file_name):
 
 
 def generate_wav_from_video(video_path):
-    video_filename = os.path.basename(video_path)
-    audio_filename = os.path.splitext(video_filename)[0] + ".wav"
-    audio_path = os.path.join(os.path.dirname(video_path), audio_filename)
-
-    print(audio_path)
-
-    video = VideoFileClip(video_path)
-    audio = video.audio
-    audio.write_audiofile(audio_path, codec="pcm_s16le")
-
+    audio_path = video_path.rsplit('.', 1)[0] + '.wav'
+    # Extract audio using ffmpeg with overwrite option
+    ffmpeg.input(video_path).output(audio_path, acodec='pcm_s16le', ar='44100', y=None).run()
     return audio_path
 
 

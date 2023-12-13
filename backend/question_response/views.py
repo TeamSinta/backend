@@ -115,9 +115,7 @@ class QuestionSummarizedAnswerView(APIView):
 
     def _get_question_and_answers(self, interview_round: InterviewRound) -> List[Dict]:
         interview_round_questions = interview_round.interview_round_questions.all()
-
         question_answers = []
-
         for interview_round_question in interview_round_questions:
             # TODO: Add speaker image url
             # TODO: Support showing competency and score
@@ -125,19 +123,18 @@ class QuestionSummarizedAnswerView(APIView):
             # TODO: UPdate competency and score
             template_question = interview_round_question.question
             question = template_question.question
-
             answer = interview_round_question.answer.all()[0]
             tc = []
             for chunk in answer.transcript_chunks.all():
+                speaker_username = chunk.speaker.username if chunk.speaker is not None else "Unknown"
                 tc.append(
                     {
                         "chunk_text": chunk.chunk_text,
                         "start_time": chunk.start_time,
                         "end_time": chunk.end_time,
-                        "speaker": chunk.speaker.username,
+                        "speaker": speaker_username,
                     }
                 )
-
             question_answers.append(
                 {
                     "question": question.question_text,
@@ -147,8 +144,8 @@ class QuestionSummarizedAnswerView(APIView):
                     "score": 4,
                 }
             )
-
         return question_answers
+
 
 
 class InterviewerFeedbackListCreateView(generics.ListCreateAPIView):
@@ -179,3 +176,5 @@ class InterviewerFeedbackDetailView(generics.ListCreateAPIView):
         print(round_id)
         print(queryset)
         return queryset
+
+

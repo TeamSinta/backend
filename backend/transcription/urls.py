@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import QuestionTranscriptView, GenerateTranscript
+from .views import QuestionTranscriptView, GenerateTranscript, AnnounceTranscriptResult
 
 urlpatterns = [
     path(
@@ -13,4 +13,9 @@ urlpatterns = [
         QuestionTranscriptView.as_view(),
         name="get_transcripts_for_questions",
     ),
+    path(
+        "announce_transcription_result/",
+        AnnounceTranscriptResult.as_view(),
+        name="get_transcripts_for_questions",
+    )
 ]
