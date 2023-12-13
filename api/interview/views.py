@@ -8,6 +8,7 @@ from rest_framework import generics, status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
 
 from interview_templates.models import TemplateQuestion
 
@@ -26,6 +27,7 @@ class InterviewRoundDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class CandidateList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = CandidateSerializer
     queryset = Candidate.objects.all()
 
@@ -36,6 +38,7 @@ class CandidateDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class InterviewRoundQuestionList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = InterviewRoundQuestionSerializer
 
     def get_queryset(self):
@@ -47,6 +50,7 @@ class InterviewRoundQuestionList(generics.ListCreateAPIView):
 
 
 class InterviewRoundVideo(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = InterviewRoundQuestionSerializer
 
     def get_queryset(self):
@@ -58,12 +62,13 @@ class InterviewRoundVideo(generics.ListCreateAPIView):
 
 
 class InterviewRoundQuestionDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = InterviewRoundQuestionSerializer
     queryset = InterviewRoundQuestion.objects.all()
 
 
 class CreateInterviewRound(CreateAPIView):
-    # permission_classes = [IsAuthenticated, isAdminRole, isInterviewerRole]
+    permission_classes = [IsAuthenticated]
     def create(self, request, *args, **kwargs):
         try:
             interviewer_id = request.user.id
@@ -132,6 +137,8 @@ def get_interview_round_by_room_id(request, room_id):
 
 
 # Read All Interview Rounds
+@api_view()
+@permission_classes([IsAuthenticated])
 def get_all_interview_rounds(request):
     interview_rounds = InterviewRound.objects.all()
     response = []

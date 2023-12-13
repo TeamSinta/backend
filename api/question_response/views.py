@@ -8,6 +8,7 @@ from pgvector.django import CosineDistance
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from interview.models import InterviewRound
 from openai_helper.utils import get_answer_notes_for_question, get_embedding
@@ -18,6 +19,7 @@ from .serializers import InterviewerFeedbackSerializer
 
 
 class QuestionSummarizedAnswerView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request: HttpRequest, interview_round_id: int) -> Response:
         interview_round = get_object_or_404(InterviewRound, pk=interview_round_id)
         return self._serve_question_answers(interview_round)
@@ -139,6 +141,7 @@ class QuestionSummarizedAnswerView(APIView):
 
 
 class InterviewerFeedbackListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = InterviewerFeedback.objects.all()
     serializer_class = InterviewerFeedbackSerializer
 
@@ -157,6 +160,7 @@ class InterviewerFeedbackListCreateView(generics.ListCreateAPIView):
 
 
 class InterviewerFeedbackDetailView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = InterviewerFeedbackSerializer
 
     def get_queryset(self):

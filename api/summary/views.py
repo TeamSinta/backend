@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from interview.models import InterviewRound, InterviewRoundQuestion
 from openai_helper.utils import summarize_interview
@@ -33,6 +34,7 @@ def summarize_qa_pairs(qa_pairs):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class GenerateSummaryView(APIView):
+    permission_classes = [IsAuthenticated]
     def _generate_response(self, interview_round_id, summary):
         response_data = {
             "title": "Summary",
