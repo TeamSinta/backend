@@ -100,6 +100,8 @@ class CreateInterviewRound(CreateAPIView):
 
 # Read Interview Round(:id)
 @csrf_exempt
+@api_view()
+@permission_classes([IsAuthenticated])
 def get_interview_round(request, interview_round_id):
     try:
         interview_round = InterviewRound.objects.get(id=interview_round_id)
@@ -119,6 +121,8 @@ def get_interview_round(request, interview_round_id):
 
 
 @csrf_exempt
+@api_view()
+@permission_classes([IsAuthenticated])
 def get_interview_round_by_room_id(request, room_id):
     try:
         interview_round = InterviewRound.objects.get(meeting_room_id=room_id)
@@ -155,7 +159,8 @@ def get_all_interview_rounds(request):
 
     return JsonResponse(response, safe=False)
 
-
+@api_view()
+@permission_classes([IsAuthenticated])
 def get_interview_round_question(request, interview_round_id, question_id):
     try:
         interview_round_question = InterviewRoundQuestion.objects.get(
@@ -176,6 +181,8 @@ def get_interview_round_question(request, interview_round_id, question_id):
 
 # Update Interview Round
 @csrf_exempt
+@api_view()
+@permission_classes([IsAuthenticated])
 def update_interview_round(request, interview_round_id):
     try:
         interview_round = InterviewRound.objects.get(id=interview_round_id)
@@ -237,7 +244,8 @@ def get_video_duration(file_name, bucket_name):
     duration_string = f"{minutes:02d}:{seconds:02d}"
     return duration_string
 
-
+@api_view()
+@permission_classes([IsAuthenticated])
 def get_interview_round_video(request, interview_round_id):
     try:
         interview_round = InterviewRound.objects.get(id=interview_round_id)
