@@ -6,6 +6,8 @@ RUN apt-get -o Acquire::Check-Valid-Until=false update
 RUN apt-get update && \
     apt-get install -y git build-essential postgresql-server-dev-all
 
+# Copy init.sql to the docker entrypoint
+COPY init.sql /docker-entrypoint-initdb.d/
 
 # Clone and build pgvector
 RUN cd /tmp && \
@@ -13,6 +15,3 @@ RUN cd /tmp && \
     cd pgvector && \
     make && \
     make install
-
-# Copy init.sql to the docker entrypoint
-COPY init.sql /docker-entrypoint-initdb.d/
