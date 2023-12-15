@@ -1,0 +1,29 @@
+name: Backend
+
+on:
+  push:
+    branches: [staging]
+  pull_request:
+    branches: [staging]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install pip
+        run: sudo apt install python3-pip
+
+      - name: Install requirements
+        run: pip install -r backend/requirements.txt
+
+      - name: Formatting Check
+        run: |
+          pip install black
+          python -m black . --check --exclude="migrations/.*"

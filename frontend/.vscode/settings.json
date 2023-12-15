@@ -1,0 +1,10 @@
+{
+  "editor.formatOnPaste": false,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.format": true
+  },
+  "cSpell.words": ["HAIRCHECK", "mainavbar", "sidenavbar", "Sinta", "topnavbar"]
+}

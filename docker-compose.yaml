@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  db:
+    build:
+      context: ./database
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
+    networks:
+      - backend
+    ports:
+      - 5656:5656
+
+  backend:
+    build: ./backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    networks:
+      - backend
+
+  frontend:
+    build: ./frontend
+    ports:
+      - 3001:3001
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    networks:
+      - backend
+    command: npm start
+
+volumes:
+  dbdata:
+
+networks:
+  backend:
+  frontend:
