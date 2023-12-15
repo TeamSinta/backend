@@ -1,18 +1,11 @@
 from .base import *
 
 print("DEV ENVIRONMENT SETTINGS LOADED")
-DEBUG = True
+DEBUG = False
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# Default Admin Account
-ADMINS = [(os.environ.get("SUPERUSER"), os.environ.get("SUPERUSER_EMAIL"))]
-
-ALLOWED_HOSTS_ENV = os.environ.get("ALLOWED_HOSTS")
-ALLOWED_HOSTS = ALLOWED_HOSTS_ENV.split(",") if ALLOWED_HOSTS_ENV else []
-print(ALLOWED_HOSTS)
-
-CORS_ALLOWED_ORIGINS_ENV = os.environ.get("CORS_ALLOWED_ORIGINS")
-CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS_ENV.split(",") if CORS_ALLOWED_ORIGINS_ENV else []
+ALLOWED_HOSTS = ["*"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3001", "http://localhost", "http://127.0.0.1:3001", "http://127.0.0.1"]
 
 # Database Settings
 DATABASES = {

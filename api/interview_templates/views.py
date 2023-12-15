@@ -3,35 +3,16 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import generics, status, viewsets
-from rest_framework.exceptions import PermissionDenied
+from rest_framework import generics, status
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
-from rest_framework.permissions import IsAuthenticated
 
 from company.models import Company
 from question.models import Question
 from question.serializers import QuestionSerializer
-from user.models import CustomUser, UserCompanies, UserDepartments
+from user.models import CustomUser
 
-from .models import Department, Template, TemplateQuestion, TemplateTopic
+from .models import Template, TemplateQuestion, TemplateTopic
 from .serializers import TemplateQuestionSerializer, TemplatesSerializer, TemplateTopicSerializer
-
-
-def check_permissions_and_existence(user, **kwargs):
-    company_id = kwargs.get("company_id")
-    department_id = kwargs.get("department_id")
-
-    if department_id:
-        print("Checking department ID", department_id)
-        get_object_or_404(Department, id=department_id)
-        return UserDepartments.objects.filter(user=user, department_id=department_id).exists()
-
-    elif company_id:
-        print("Checking company ID", company_id)
-        get_object_or_404(Company, id=company_id)
-        return UserCompanies.objects.filter(user=user, company_id=company_id).exists()
-    else:
-        return False
 
 
 class TemplateTopicList(generics.ListCreateAPIView):
@@ -113,60 +94,14 @@ class TemplateQuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = TemplateQuestion.objects.all()
 
 
-class TemplatesList(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+class TemplatesList(generics.ListCreateAPIView):
     serializer_class = TemplatesSerializer
-
-    def get_queryset(self):
-        company_id = self.request.GET.get("company", None)
-        department_id = self.request.GET.get("department", None)
-        sort_by = self.request.GET.get("sort_by", None)
-        user_from_jwt = self.request.user
-
-        if not check_permissions_and_existence(user_from_jwt, company_id=company_id):
-            return JsonResponse(
-                {"detail": "User is not a member of the requested Template"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-        queryset = (
-            Template.objects.filter(department_id=department_id)
-            if department_id
-            else Template.objects.filter(user=user_from_jwt)
-        )
-
-        if sort_by == "1":
-            return queryset.order_by("template__role_title")
-        elif sort_by == "2":
-            return queryset.order_by("-template__role_title")
-        elif sort_by == "3":
-            return queryset.order_by("template__created_at")
-        else:
-            return queryset
+    queryset = Template.objects.all()
 
 
-class TemplateDetail(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TemplatesSerializer
-
-    def get_queryset(self):
-        request = self.request
-        user = request.user
-        company_id = self.request.GET.get("company")
-        template_id = self.kwargs.get("id")  # Assuming you're using a URL parameter for the template id
-
-        # Check if the user has permission to access this template
-        if not check_permissions_and_existence(user, company_id=company_id):
-            raise PermissionDenied("You do not have permission to access this template.")
-
-        # Modify the queryset based on user role and permissions
-        queryset = Template.objects.get(pk=template_id)
-
-        if not user.is_admin:  # Replace with your actual admin role check logic
-            queryset = queryset.filter(interviewers=user)
-
-        return queryset
-
+    queryset = Template.objects.all()
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
 

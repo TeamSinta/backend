@@ -1,5 +1,6 @@
 python manage.py makemigrations company
 python manage.py makemigrations user
+python manage.py makemigrations question
 python manage.py makemigrations
 python manage.py migrate
 echo "Migrations completed"
