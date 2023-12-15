@@ -16,6 +16,8 @@ class Template(models.Model):
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to="template_images/", null=True, blank=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="template_creator")
+    deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
+    deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     def __str__(self):
         return self.role_title
@@ -29,6 +31,8 @@ class TemplateTopic(models.Model):
     time = models.PositiveSmallIntegerField(choices=TIME_CHOICES, default=1)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
+    deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     def __str__(self):
         return self.topics_text
@@ -40,3 +44,5 @@ class TemplateQuestion(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="interview_round_questions")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
+    deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)

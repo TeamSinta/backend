@@ -26,6 +26,8 @@ class InterviewRound(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     template_id = models.IntegerField(default=55)
     meeting_room_id = models.CharField(blank=True, null=True)
+    deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
+    deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
 
 class InterviewRoundQuestion(models.Model):
