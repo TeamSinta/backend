@@ -9,7 +9,7 @@ from .views import GoogleLogin, MockGoogleLogin
 environment = os.environ.get("ENVIRONMENT")
 urlpatterns = [
     path("mocklogin/", MockGoogleLogin.as_view(), name="mock_auth_login")
-    if environment == "dev"
+    if environment in ["dev", "staging"]
     else path("", lambda request: None),
     path("login/", GoogleLogin.as_view(), name="auth_login"),
     path("logout/", LogoutView.as_view(), name="auth_logout"),
