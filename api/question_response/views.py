@@ -116,12 +116,13 @@ class QuestionSummarizedAnswerView(APIView):
             answer = interview_round_question.answer.all()[0]
             tc = []
             for chunk in answer.transcript_chunks.all():
+                speaker_username = chunk.speaker.username if chunk.speaker is not None else "Unknown"
                 tc.append(
                     {
                         "chunk_text": chunk.chunk_text,
                         "start_time": chunk.start_time,
                         "end_time": chunk.end_time,
-                        "speaker": chunk.speaker.username,
+                        "speaker": speaker_username,
                     }
                 )
 

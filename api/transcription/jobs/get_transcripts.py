@@ -4,11 +4,11 @@ import os
 import time
 
 import boto3
+import ffmpeg
 import requests
 from botocore.exceptions import NoCredentialsError
 from django.conf import settings
 from dotenv import dotenv_values
-from moviepy.editor import VideoFileClip
 
 from interview.models import InterviewRound
 
@@ -37,15 +37,10 @@ def upload_to_s3(local_file_path, bucket_name, s3_file_name):
 
 
 def generate_wav_from_video(video_path):
-    video_filename = os.path.basename(video_path)
-    audio_filename = os.path.splitext(video_filename)[0] + ".wav"
-    audio_path = os.path.join(os.path.dirname(video_path), audio_filename)
+    audio_path = video_path.rsplit(".", 1)[0] + ".wav"
 
-    print(audio_path)
-
-    video = VideoFileClip(video_path)
-    audio = video.audio
-    audio.write_audiofile(audio_path, codec="pcm_s16le")
+    # Extract audio using ffmpeg with overwrite option
+    ffmpeg.input(video_path).output(audio_path, acodec="pcm_s16le", ar="44100", y=None).run()
 
     return audio_path
 

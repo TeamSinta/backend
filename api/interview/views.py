@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from interview_templates.models import TemplateQuestion
+from user.serializers import CustomUserSerializer
 
 from .models import Candidate, InterviewRound, InterviewRoundQuestion
 from .serializers import CandidateSerializer, InterviewRoundQuestionSerializer, InterviewRoundSerializer
@@ -98,11 +99,18 @@ class CreateInterviewRound(CreateAPIView):
 def get_interview_round(request, interview_round_id):
     try:
         interview_round = InterviewRound.objects.get(id=interview_round_id)
+        candidate_name = interview_round.candidate.name if interview_round.candidate else None
+        interviewer = CustomUserSerializer(interview_round.interviewer).data
+        formatted_date = interview_round.created_at.strftime("%B %d, %Y")
+
         response = {
             "id": interview_round.id,
             "title": interview_round.title,
             "candidate_id": interview_round.candidate_id,
+            "candidate_name": candidate_name,  # Include candidate's name
+            "interviewer": interviewer,  # Include candidate's name
             "template_id": interview_round.template_id,
+            "created_at": formatted_date,
             # "description": interview_round.description,
             "room_id": interview_round.meeting_room_id,
             # "video_uri": interview_round.video_uri, ## placehodler, this needs to be updated later.

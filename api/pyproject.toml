@@ -25,6 +25,7 @@ tenacity="8.2.3"
 pandas="2.0.3"
 django-storages = { version = "1.14.2", extras = ["boto3"] }
 boto3 = "^1.33.5"
+ffmpeg-python = "^0.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
