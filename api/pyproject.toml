@@ -11,7 +11,7 @@ python = "^3.11"
 django = "^4.2.4"
 psycopg2 = "2.9.9"
 uWSGI = "^2.0.18,<2.1"
-gunicorn = "21.2.0"  # Added this line
+gunicorn = "21.2.0"
 djangorestframework="3.14.0"
 django-cors-headers="^4.2.0"
 python-dotenv="1.0.0"
@@ -26,6 +26,8 @@ pandas="2.0.3"
 django-storages = { version = "1.14.2", extras = ["boto3"] }
 boto3 = "^1.33.5"
 ffmpeg-python = "^0.2.0"
+daphne = "^3.0.2"
+channels = "^3.0.0"
 
 
 [tool.poetry.group.dev.dependencies]

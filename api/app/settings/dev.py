@@ -14,11 +14,15 @@ AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")  # "eu-west-1"
 AWS_S3_FILE_OVERWRITE = False
 AWS_QUERYSTRING_AUTH = False
 
-ALLOWED_HOSTS_ENV = os.environ.get("ALLOWED_HOSTS")
-ALLOWED_HOSTS = ["localhost"]
 
-CORS_ALLOWED_ORIGINS_ENV = os.environ.get("CORS_ALLOWED_ORIGINS")
-CORS_ALLOWED_ORIGINS = ["http://localhost:3001"]
+ALLOWED_HOSTS = ["*"]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3001",
+    "https://9fa0-212-78-174-2.ngrok-free.app ",
+    "http://localhost",
+    "http://127.0.0.1:3001",
+    "http://127.0.0.1",
+]
 
 # Database Settings
 DATABASES = {

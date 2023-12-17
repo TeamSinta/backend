@@ -1,6 +1,8 @@
 from django.db import models
 from pgvector.django import VectorField
 
+from user.models import CustomUser
+
 
 class ReviewChoices(models.IntegerChoices):
     ONE = 1
@@ -26,6 +28,8 @@ class Question(models.Model):
     review = models.IntegerField(choices=ReviewChoices.choices, null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
+    deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     def __str__(self):
         return self.question_text
@@ -53,6 +57,10 @@ class Comment(models.Model):
 class QuestionBank(models.Model):
     title = models.CharField(max_length=255)
     questions = models.ManyToManyField(Question)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
+    deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     def __str__(self):
         return self.title

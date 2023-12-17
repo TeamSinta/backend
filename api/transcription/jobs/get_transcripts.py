@@ -8,12 +8,12 @@ import ffmpeg
 import requests
 from botocore.exceptions import NoCredentialsError
 from django.conf import settings
-from dotenv import dotenv_values
 
 from interview.models import InterviewRound
 
 BASE_URL = "https://api.assemblyai.com/v2"
 TRANSCRIPT_ENDPOINT = f"{BASE_URL}/transcript"
+ASSEMBLY_AI_KEY = os.environ.get("ASSEMBLY_AI_KEY")
 
 
 # Upload JSON file to S3 bucket
@@ -51,10 +51,8 @@ def convert_to_minutes(milliseconds):
 
 
 def _generate_headers():
-    # TODO: Get the .env file from cloud storage
-    env_values = dotenv_values("/backend/.env")
     headers = {
-        "authorization": env_values["ASSEMBLY_AI_KEY"],
+        "authorization": ASSEMBLY_AI_KEY,
         "Content-Type": "application/json",
     }
     return headers
