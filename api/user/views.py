@@ -44,7 +44,7 @@ class CustomUserDetailsView(UserDetailsView):
 
 
 class GetUserByUsername(APIView):
-    # permission_classes = [IsAuthenticated, isAdminRole, isInterviewerRole]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, username):
         # Use the get_object_or_404 method to try to get a user by their username.
@@ -57,7 +57,7 @@ class GetUserByUsername(APIView):
 
 
 class GetUserById(APIView):
-    # permission_classes = [IsAuthenticated, isAdminRole, isInterviewerRole]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, candidate_id):
         # Use the get_object_or_404 method to try to get a user by their username.
@@ -70,6 +70,7 @@ class GetUserById(APIView):
 
 
 class UserDepartmentsView(ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = DepartmentSerializer
 
     def get_queryset(self):

@@ -5,6 +5,9 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+
 
 from company.models import Company
 from question.models import Question
@@ -16,6 +19,7 @@ from .serializers import TemplateQuestionSerializer, TemplatesSerializer, Templa
 
 
 class TemplateTopicList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = TemplateTopicSerializer
 
     def get_queryset(self):
@@ -27,11 +31,13 @@ class TemplateTopicList(generics.ListCreateAPIView):
 
 
 class TemplateTopicDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = TemplateTopicSerializer
     queryset = TemplateTopic.objects.all()
 
 
 class TemplateQuestionsList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = TemplateQuestionSerializer
 
     def get_queryset(self):
@@ -90,16 +96,19 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
 
 
 class TemplateQuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = TemplateQuestionSerializer
     queryset = TemplateQuestion.objects.all()
 
 
 class TemplatesList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = TemplatesSerializer
     queryset = Template.objects.all()
 
 
 class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = TemplatesSerializer
     queryset = Template.objects.all()
     parser_classes = (MultiPartParser, FormParser, JSONParser)
@@ -108,6 +117,8 @@ class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
 # CRUD for Templates, TemplateTopics, TemplateInterviewers, & TemplateQuestions
 # Create a Template
 @csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_template(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -144,6 +155,8 @@ def create_template(request):
 
 # Update a Template
 @csrf_exempt
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_template(request, template_id):
     if request.method == "PUT":
         template = get_object_or_404(Template, pk=template_id)
@@ -192,6 +205,8 @@ def update_template(request, template_id):
 
 # Read a Template
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def read_template(request, template_id):
     if request.method == "GET":
         template = get_object_or_404(Template, pk=template_id)
@@ -225,6 +240,8 @@ def read_template(request, template_id):
 
 # Get all Templates
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_all_templates(request):
     if request.method == "GET":
         templates = Template.objects.all()
@@ -261,6 +278,8 @@ def get_all_templates(request):
 
 # Delete a Template
 @csrf_exempt
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_template(request, template_id):
     if request.method == "DELETE":
         template = get_object_or_404(Template, pk=template_id)
@@ -274,6 +293,8 @@ def delete_template(request, template_id):
 
 # Create a TemplateTopic
 @csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_template_topic(request, template_id):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -316,6 +337,8 @@ def create_template_topic(request, template_id):
 
 # Read a TemplateTopic
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def read_template_topic(request, template_topic_id):
     if request.method == "GET":
         template_topic = get_object_or_404(TemplateTopic, pk=template_topic_id)
@@ -340,6 +363,8 @@ def read_template_topic(request, template_topic_id):
 
 # Update a TemplateTopic
 @csrf_exempt
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_template_topic(request, template_id, template_topic_id):
     if request.method == "PUT":
         template_topic = get_object_or_404(TemplateTopic, pk=template_topic_id)
@@ -393,6 +418,8 @@ def update_template_topic(request, template_id, template_topic_id):
 
 # Delete a TemplateTopic
 @csrf_exempt
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_template_topic(request, template_topic_id):
     if request.method == "DELETE":
         template_topic = get_object_or_404(TemplateTopic, pk=template_topic_id)
@@ -406,6 +433,8 @@ def delete_template_topic(request, template_topic_id):
 
 # Get all TemplateTopics
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_all_template_topics(request, template_id):
     if request.method == "GET":
         template_topics = TemplateTopic.objects.filter(template_id=template_id)
@@ -433,6 +462,8 @@ def get_all_template_topics(request, template_id):
 
 # Create a TemplateQuestion
 @csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_template_question(request, template_id):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -499,6 +530,8 @@ def read_template_questions(request, template_id):
 
 # Update TemplateQuestions for a Template
 @csrf_exempt
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_template_questions(request, template_id):
     if request.method == "PUT":
         data = json.loads(request.body)
@@ -534,6 +567,8 @@ def update_template_questions(request, template_id):
 
 # Delete TemplateQuestions for a Template
 @csrf_exempt
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_template_questions(request, template_id):
     if request.method == "DELETE":
         template = get_object_or_404(Template, pk=template_id)
@@ -550,6 +585,8 @@ def delete_template_questions(request, template_id):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_all_template_questions(request, template_id):
     if request.method == "GET":
         template = get_object_or_404(Template, pk=template_id)
@@ -591,6 +628,8 @@ def get_all_template_questions(request, template_id):
 
 
 @csrf_exempt
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_all_questions(request, template_id):
     if request.method == "GET":
         template = get_object_or_404(Template, pk=template_id)

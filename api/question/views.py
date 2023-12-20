@@ -1,4 +1,6 @@
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+
 
 # Create your views here.
 from openai_helper.utils import get_embedding
@@ -8,6 +10,7 @@ from .serializers import QuestionBankSerializer, QuestionBankUpdateSerializer, Q
 
 
 class QuestionBankList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = QuestionBankSerializer
 
     def get_queryset(self):
@@ -19,11 +22,13 @@ class QuestionBankList(generics.ListCreateAPIView):
 
 
 class QuestionBankDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = QuestionBankSerializer
     queryset = QuestionBank.objects.all()
 
 
 class QuestionList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = QuestionSerializer
     queryset = Question.objects.all()
 
@@ -35,10 +40,12 @@ class QuestionList(generics.ListCreateAPIView):
 
 
 class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = QuestionSerializer
     queryset = Question.objects.all()
 
 
 class QuestionBankUpdateView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = QuestionBank.objects.all()
     serializer_class = QuestionBankUpdateSerializer
