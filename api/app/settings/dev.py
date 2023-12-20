@@ -1,7 +1,7 @@
 from .base import *
 
 print("DEV ENVIRONMENT SETTINGS LOADED")
-DEBUG = False
+DEBUG = True
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 ALLOWED_HOSTS = ["*"]
