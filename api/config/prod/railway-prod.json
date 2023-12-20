@@ -5,7 +5,7 @@
 		"buildCommand": "poetry install"
 	},
 	"deploy": {
-		"startCommand": "python manage.py collectstatic --noinput && gunicorn app.wsgi",
+		"startCommand": "python manage.py collectstatic --noinput && daphne -b 0.0.0.0 app.asgi:application",
 		"restartPolicyType": "NEVER",
 		"restartPolicyMaxRetries": 10
 	}
