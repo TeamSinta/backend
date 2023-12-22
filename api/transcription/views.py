@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from app.utils import seconds_to_minutes
 from interview.models import InterviewRound
@@ -29,6 +30,7 @@ def send_transcription_completed_message(interview_round_id):
 
 
 class QuestionTranscriptView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request: HttpRequest, interview_round_id: int) -> Response:
         transcripts = self._get_transcripts_for_questions(interview_round_id)
         return Response({"data": transcripts}, status=status.HTTP_200_OK)
@@ -69,6 +71,7 @@ class QuestionTranscriptView(APIView):
 
 
 class GenerateTranscript(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request: HttpRequest, interview_round_id: int) -> Response:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 

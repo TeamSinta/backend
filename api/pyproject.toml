@@ -8,12 +8,10 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-django = "^4.2.4"
+django = "4.2.4"
 psycopg2 = "2.9.9"
-uWSGI = "^2.0.18,<2.1"
-gunicorn = "21.2.0"
 djangorestframework="3.14.0"
-django-cors-headers="^4.2.0"
+django-cors-headers="4.2.0"
 python-dotenv="1.0.0"
 dj-rest-auth={version = "5.0.1", extras = ["with_social"]}
 django-allauth="^0.55.0,<0.56.0"
@@ -28,6 +26,7 @@ boto3 = "^1.33.5"
 ffmpeg-python = "^0.2.0"
 daphne = "^3.0.2"
 channels = "^3.0.0"
+
 
 
 [tool.poetry.group.dev.dependencies]
