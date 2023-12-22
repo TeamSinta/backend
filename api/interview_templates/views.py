@@ -2,12 +2,13 @@ import json
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
-
+from rest_framework.response import Response
 
 from company.models import Company
 from question.models import Question
@@ -16,9 +17,6 @@ from user.models import CustomUser
 
 from .models import Template, TemplateQuestion, TemplateTopic
 from .serializers import TemplateQuestionSerializer, TemplatesSerializer, TemplateTopicSerializer
-
-from rest_framework.response import Response
-from django.utils import timezone
 
 
 class TemplateTopicList(generics.ListCreateAPIView):
@@ -40,7 +38,7 @@ class TemplateTopicDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         obj = super().get_object()
-        
+
         if obj.deleted_at is not None and obj.deleted_by is not None:
             return ""
         else:
@@ -117,7 +115,7 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
 
 
 class TemplateQuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = TemplateQuestionSerializer
     queryset = TemplateQuestion.objects.all()
 
@@ -129,7 +127,7 @@ class TemplatesList(generics.ListCreateAPIView):
 
 
 class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = TemplatesSerializer
     queryset = Template.objects.all()
     parser_classes = (MultiPartParser, FormParser, JSONParser)
@@ -138,7 +136,7 @@ class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
 # CRUD for Templates, TemplateTopics, TemplateInterviewers, & TemplateQuestions
 # Create a Template
 @csrf_exempt
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_template(request):
     if request.method == "POST":
@@ -176,7 +174,7 @@ def create_template(request):
 
 # Update a Template
 @csrf_exempt
-@api_view(['PUT'])
+@api_view(["PUT"])
 @permission_classes([IsAuthenticated])
 def update_template(request, template_id):
     if request.method == "PUT":
@@ -226,7 +224,7 @@ def update_template(request, template_id):
 
 # Read a Template
 @csrf_exempt
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def read_template(request, template_id):
     if request.method == "GET":
@@ -261,7 +259,7 @@ def read_template(request, template_id):
 
 # Get all Templates
 @csrf_exempt
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_all_templates(request):
     if request.method == "GET":
@@ -299,7 +297,7 @@ def get_all_templates(request):
 
 # Delete a Template
 @csrf_exempt
-@api_view(['DELETE'])
+@api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def delete_template(request, template_id):
     if request.method == "DELETE":
@@ -314,7 +312,7 @@ def delete_template(request, template_id):
 
 # Create a TemplateTopic
 @csrf_exempt
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_template_topic(request, template_id):
     if request.method == "POST":
@@ -358,7 +356,7 @@ def create_template_topic(request, template_id):
 
 # Read a TemplateTopic
 @csrf_exempt
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def read_template_topic(request, template_topic_id):
     if request.method == "GET":
@@ -384,7 +382,7 @@ def read_template_topic(request, template_topic_id):
 
 # Update a TemplateTopic
 @csrf_exempt
-@api_view(['PUT'])
+@api_view(["PUT"])
 @permission_classes([IsAuthenticated])
 def update_template_topic(request, template_id, template_topic_id):
     if request.method == "PUT":
@@ -439,7 +437,7 @@ def update_template_topic(request, template_id, template_topic_id):
 
 # Delete a TemplateTopic
 @csrf_exempt
-@api_view(['DELETE'])
+@api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def delete_template_topic(request, template_topic_id):
     if request.method == "DELETE":
@@ -454,7 +452,7 @@ def delete_template_topic(request, template_topic_id):
 
 # Get all TemplateTopics
 @csrf_exempt
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_all_template_topics(request, template_id):
     if request.method == "GET":
@@ -483,7 +481,7 @@ def get_all_template_topics(request, template_id):
 
 # Create a TemplateQuestion
 @csrf_exempt
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_template_question(request, template_id):
     if request.method == "POST":
@@ -551,7 +549,7 @@ def read_template_questions(request, template_id):
 
 # Update TemplateQuestions for a Template
 @csrf_exempt
-@api_view(['PUT'])
+@api_view(["PUT"])
 @permission_classes([IsAuthenticated])
 def update_template_questions(request, template_id):
     if request.method == "PUT":
@@ -588,7 +586,7 @@ def update_template_questions(request, template_id):
 
 # Delete TemplateQuestions for a Template
 @csrf_exempt
-@api_view(['DELETE'])
+@api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def delete_template_questions(request, template_id):
     if request.method == "DELETE":
@@ -606,7 +604,7 @@ def delete_template_questions(request, template_id):
 
 
 @csrf_exempt
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_all_template_questions(request, template_id):
     if request.method == "GET":
@@ -649,7 +647,7 @@ def get_all_template_questions(request, template_id):
 
 
 @csrf_exempt
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_all_questions(request, template_id):
     if request.method == "GET":
