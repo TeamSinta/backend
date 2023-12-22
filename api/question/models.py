@@ -1,6 +1,8 @@
 from django.db import models
 from pgvector.django import VectorField
+
 from user.models import CustomUser
+
 
 class ReviewChoices(models.IntegerChoices):
     ONE = 1
@@ -59,5 +61,6 @@ class QuestionBank(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
     deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)
+
     def __str__(self):
         return self.title

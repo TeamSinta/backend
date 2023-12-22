@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from interview.models import InterviewRound
+from interview.models import InterviewRound, InterviewRoundQuestion
 from openai_helper.utils import get_answer_notes_for_question, get_embedding
 from question_response.models import Answer, InterviewerFeedback
 from transcription.models import TranscriptChunk
@@ -103,8 +103,7 @@ class QuestionSummarizedAnswerView(APIView):
         self._generate_answers_for_interview_round(interview_round)
 
     def _get_question_and_answers(self, interview_round: InterviewRound) -> List[Dict]:
-        interview_round_questions = interview_round.interview_round_questions.all()
-
+        interview_round_questions = InterviewRoundQuestion.objects.filter(interview_round=interview_round)
         question_answers = []
 
         for interview_round_question in interview_round_questions:
@@ -118,12 +117,13 @@ class QuestionSummarizedAnswerView(APIView):
             answer = interview_round_question.answer.all()[0]
             tc = []
             for chunk in answer.transcript_chunks.all():
+                speaker_username = chunk.speaker.username if chunk.speaker is not None else "Unknown"
                 tc.append(
                     {
                         "chunk_text": chunk.chunk_text,
                         "start_time": chunk.start_time,
                         "end_time": chunk.end_time,
-                        "speaker": chunk.speaker.username,
+                        "speaker": speaker_username,
                     }
                 )
 
@@ -132,8 +132,8 @@ class QuestionSummarizedAnswerView(APIView):
                     "question": question.question_text,
                     "answer": answer.answer_text,
                     "transcript_chunks": tc,
-                    "competency": "Leadership",
-                    "score": 4,
+                    "competency": question.competency,
+                    "score": interview_round_question.rating,
                 }
             )
 
