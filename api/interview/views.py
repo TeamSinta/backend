@@ -121,9 +121,8 @@ def get_interview_round(request, interview_round_id):
             "interviewer": interviewer,  # Include candidate's name
             "template_id": interview_round.template_id,
             "created_at": formatted_date,
-            # "description": interview_round.description,
             "room_id": interview_round.meeting_room_id,
-            # "video_uri": interview_round.video_uri, ## placehodler, this needs to be updated later.
+            "video_uri": interview_round.video_uri,  # placehodler, this needs to be updated later.
         }
         return JsonResponse(response)
     except InterviewRound.DoesNotExist:
@@ -141,9 +140,8 @@ def get_interview_round_by_room_id(request, room_id):
             "id": interview_round.id,
             "title": interview_round.title,
             "candidate_id": interview_round.candidate_id,
-            # "description": interview_round.description,
             "room_id": interview_round.meeting_room_id,
-            # "video_uri": interview_round.video_uri, ## placehodler, this needs to be updated later.
+            "video_uri": interview_round.video_uri,
         }
         return JsonResponse(response)
     except InterviewRound.DoesNotExist:
@@ -164,7 +162,6 @@ def get_all_interview_rounds(request):
                 "id": interview_round.id,
                 "title": interview_round.title,
                 "candidate_id": interview_round.candidate_id,
-                # "description": interview_round.description,
             }
         )
 
