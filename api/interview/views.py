@@ -5,10 +5,10 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
 
 from interview_templates.models import TemplateQuestion
 from user.serializers import CustomUserSerializer
@@ -70,6 +70,7 @@ class InterviewRoundQuestionDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class CreateInterviewRound(CreateAPIView):
     permission_classes = [IsAuthenticated]
+
     def create(self, request, *args, **kwargs):
         try:
             interviewer_id = request.user.id
@@ -169,6 +170,7 @@ def get_all_interview_rounds(request):
 
     return JsonResponse(response, safe=False)
 
+
 @api_view()
 @permission_classes([IsAuthenticated])
 def get_interview_round_question(request, interview_round_id, question_id):
@@ -254,6 +256,7 @@ def get_video_duration(file_name, bucket_name):
     duration_string = f"{minutes:02d}:{seconds:02d}"
     return duration_string
 
+
 @api_view()
 @permission_classes([IsAuthenticated])
 def get_interview_round_video(request, interview_round_id):
@@ -302,7 +305,10 @@ class RateInterviewRoundQuestion(CreateAPIView):
             rating = request.data.get("rating")
 
             interview_round = InterviewRound.objects.get(pk=interview_round_id)
-            template_question = TemplateQuestion.objects.get(question_id=question_id)
+            template_question = TemplateQuestion.objects.filter(question__id=question_id)
+
+            if template_question.exists():
+                template_question = template_question.first()
 
             (
                 interview_round_question,
