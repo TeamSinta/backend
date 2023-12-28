@@ -608,7 +608,6 @@ def delete_template_questions(request, template_id):
 @permission_classes([IsAuthenticated])
 def get_all_template_questions(request, template_id):
     if request.method == "GET":
-        template = get_object_or_404(Template, pk=template_id)
         template_questions = TemplateQuestion.objects.filter(template_id=template_id).select_related(
             "question", "topic"
         )
@@ -625,15 +624,17 @@ def get_all_template_questions(request, template_id):
                 }
 
             question = template_question.question
+            question_data = QuestionSerializer(question).data  # Serialize the question object
             stages[topic_name]["questions"].append(
                 {
-                    "number": str(question.id),
-                    "question": question.question_text,
-                    "duration": f"{question.reply_time} min",
-                    "competency": question.competency,
-                    "rating": question.review,
-                    "answer": question.guidelines,
-                    "id": str(question.id),
+                    "number": str(question_data["id"]),
+                    "question": question_data["question_text"],
+                    "duration": f"{question_data['reply_time']} min",
+                    "competency": question_data["competency"],
+                    "difficulty": question_data["difficulty"],  # This should now return the string representation
+                    "rating": question_data["review"],
+                    "answer": question_data["guidelines"],
+                    "id": str(question_data["id"]),
                 }
             )
 
