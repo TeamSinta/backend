@@ -1,5 +1,6 @@
 from django.db import models
 
+from company.models import Company
 from interview_templates.models import TemplateQuestion
 from user.models import CustomUser
 
@@ -28,6 +29,7 @@ class InterviewRound(models.Model):
     meeting_room_id = models.CharField(blank=True, null=True)
     deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
     deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    company_id = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
 
 class InterviewRoundQuestion(models.Model):
@@ -44,6 +46,8 @@ class InterviewRoundQuestion(models.Model):
     rating = models.IntegerField(default=3)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
+    deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     def __str__(self):
         return str(self.id)
