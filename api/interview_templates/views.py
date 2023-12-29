@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from company.models import Company
 from question.models import Question
 from question.serializers import QuestionSerializer
-from user.models import CustomUser
+from user.models import CustomUser, UserCompanies
 
 from .models import Template, TemplateQuestion, TemplateTopic
 from .serializers import TemplateQuestionSerializer, TemplatesSerializer, TemplateTopicSerializer
@@ -21,10 +21,16 @@ class TemplateTopicList(generics.ListCreateAPIView):
     serializer_class = TemplateTopicSerializer
 
     def get_queryset(self):
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
         queryset = TemplateTopic.objects.all()
+        queryset = queryset.filter(company_id=company_id)
+
         template = self.request.query_params.get("template")
         if template is not None:
             queryset = queryset.filter(template_id=template)
+
         return queryset
 
 
@@ -102,7 +108,15 @@ class TemplateQuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
 class TemplatesList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplatesSerializer
-    queryset = Template.objects.all()
+
+    def get_queryset(self):
+        # Retrieve the company associated with the logged-in user
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        # Filter Template objects by the company ID associated with the logged-in user
+        queryset = Template.objects.filter(company_id=company_id)
+        return queryset
 
 
 class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -208,7 +222,10 @@ class ReadTemplate(APIView):
 
     def get(self, request, template_id):
         if request.method == "GET":
-            template = get_object_or_404(Template, pk=template_id)
+            user_company = get_object_or_404(UserCompanies, user=request.user)
+            company_id = user_company.company_id
+
+            template = get_object_or_404(Template, pk=template_id, company_id=company_id)
 
             response = {
                 "id": template.id,
@@ -242,7 +259,9 @@ class GetAllTemplates(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        templates = Template.objects.all()
+        user_company = get_object_or_404(UserCompanies, user=request.user)
+        company_id = user_company.company_id
+        templates = Template.objects.filter(company_id=company_id)
         template_list = []
 
         for template in templates:
@@ -431,8 +450,10 @@ class GetAllTemplateTopics(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, template_id):
+        user_company = get_object_or_404(UserCompanies, user=request.user)
+        company_id = user_company.company_id
         if request.method == "GET":
-            template_topics = TemplateTopic.objects.filter(template_id=template_id)
+            template_topics = TemplateTopic.objects.filter(template_id=template_id, company_id=company_id)
 
             template_topic_list = []
 
