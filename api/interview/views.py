@@ -1,7 +1,6 @@
 import json
 
 import boto3
-from backend.api.user.admin import UserCompanies
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -12,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from interview_templates.models import TemplateQuestion
+from user.models import UserCompanies
 from user.serializers import CustomUserSerializer
 
 from .models import Candidate, InterviewRound, InterviewRoundQuestion

@@ -38,10 +38,14 @@ class TemplateTopicDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TemplateTopicSerializer
 
     def get_queryset(self):
+        topic_id = self.kwargs["pk"]
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
         queryset = TemplateTopic.objects.filter(company_id=company_id)
+        if topic_id is not None:
+            queryset = queryset.filter(topic_id=topic_id)
+
         return queryset
 
 
@@ -53,7 +57,7 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
-        templates = Template.objects.filter(company_id=company_id)
+        templates = Template.objects.filter(company=company_id)
         template_ids = templates.values_list("id", flat=True)
 
         queryset = TemplateQuestion.objects.filter(template_id__in=template_ids)
@@ -120,7 +124,7 @@ class TemplateQuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
-        templates = Template.objects.filter(company_id=company_id)
+        templates = Template.objects.filter(company=company_id)
         template_ids = templates.values_list("id", flat=True)
 
         queryset = TemplateQuestion.objects.filter(template_id__in=template_ids)
@@ -137,7 +141,7 @@ class TemplatesList(generics.ListCreateAPIView):
         company_id = user_company.company_id
 
         # Filter Template objects by the company ID associated with the logged-in user
-        queryset = Template.objects.filter(company_id=company_id)
+        queryset = Template.objects.filter(company=company_id)
         return queryset
 
 
@@ -145,13 +149,16 @@ class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplatesSerializer
 
-    def get_queryset(self, *args, **kwargs):
+    def get_queryset(self):
+        template_id = self.kwargs["pk"]
         # Retrieve the company associated with the logged-in user
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
         # Filter Template objects by the company ID
         queryset = Template.objects.filter(company=company_id)
+        if template_id is not None:
+            queryset = queryset.filter(id=template_id)
 
         return queryset
 
@@ -293,7 +300,7 @@ class GetAllTemplates(APIView):
     def get(self, request):
         user_company = get_object_or_404(UserCompanies, user=request.user)
         company_id = user_company.company_id
-        templates = Template.objects.filter(company_id=company_id)
+        templates = Template.objects.filter(company=company_id)
         template_list = []
 
         for template in templates:
