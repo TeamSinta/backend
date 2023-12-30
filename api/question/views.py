@@ -1,6 +1,7 @@
-from rest_framework import generics
+from django.utils import timezone
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.response import Response
 
 # Create your views here.
 from openai_helper.utils import get_embedding
@@ -8,8 +9,22 @@ from openai_helper.utils import get_embedding
 from .models import Question, QuestionBank
 from .serializers import QuestionBankSerializer, QuestionBankUpdateSerializer, QuestionSerializer
 
+DELETE_SUCCESS = {"detail": "Successfully deleted"}
 
-class QuestionBankList(generics.ListCreateAPIView):
+
+class BaseDeleteInstance(generics.DestroyAPIView):
+    def perform_destroy(self, instance):
+        instance.deleted_at = timezone.now()
+        instance.deleted_by = self.request.user
+        instance.save()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(DELETE_SUCCESS, status=status.HTTP_204_NO_CONTENT)
+
+
+class QuestionBankList(BaseDeleteInstance, generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = QuestionBankSerializer
 
@@ -21,13 +36,13 @@ class QuestionBankList(generics.ListCreateAPIView):
         return queryset
 
 
-class QuestionBankDetail(generics.RetrieveUpdateDestroyAPIView):
+class QuestionBankDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = QuestionBankSerializer
     queryset = QuestionBank.objects.all()
 
 
-class QuestionList(generics.ListCreateAPIView):
+class QuestionList(BaseDeleteInstance, generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = QuestionSerializer
     queryset = Question.objects.all()
@@ -39,13 +54,13 @@ class QuestionList(generics.ListCreateAPIView):
         question_instance.save()
 
 
-class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
+class QuestionDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = QuestionSerializer
     queryset = Question.objects.all()
 
 
-class QuestionBankUpdateView(generics.RetrieveUpdateAPIView):
+class QuestionBankUpdateView(BaseDeleteInstance, generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = QuestionBank.objects.all()
     serializer_class = QuestionBankUpdateSerializer

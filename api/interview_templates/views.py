@@ -18,6 +18,20 @@ from user.models import CustomUser
 from .models import Template, TemplateQuestion, TemplateTopic
 from .serializers import TemplateQuestionSerializer, TemplatesSerializer, TemplateTopicSerializer
 
+DELETE_SUCCESS = {"detail": "Successfully deleted"}
+
+
+class BaseDeleteInstance(generics.DestroyAPIView):
+    def perform_destroy(self, instance):
+        instance.deleted_at = timezone.now()
+        instance.deleted_by = self.request.user
+        instance.save()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(DELETE_SUCCESS, status=status.HTTP_204_NO_CONTENT)
+
 
 class TemplateTopicList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -31,7 +45,7 @@ class TemplateTopicList(generics.ListCreateAPIView):
         return queryset
 
 
-class TemplateTopicDetail(generics.RetrieveUpdateDestroyAPIView):
+class TemplateTopicDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplateTopicSerializer
     queryset = TemplateTopic.objects.all()
@@ -43,16 +57,6 @@ class TemplateTopicDetail(generics.RetrieveUpdateDestroyAPIView):
             return ""
         else:
             return obj
-
-    def perform_destroy(self, instance):
-        instance.deleted_at = timezone.now()
-        instance.deleted_by = self.request.user
-        instance.save()
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response({"detail": "Successfully deleted"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class TemplateQuestionsList(generics.ListCreateAPIView):
@@ -114,7 +118,7 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
             return JsonResponse(template_question_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TemplateQuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
+class TemplateQuestionsDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplateQuestionSerializer
     queryset = TemplateQuestion.objects.all()
@@ -126,7 +130,7 @@ class TemplatesList(generics.ListCreateAPIView):
     queryset = Template.objects.all()
 
 
-class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
+class TemplateDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplatesSerializer
     queryset = Template.objects.all()
@@ -301,8 +305,10 @@ def get_all_templates(request):
 @permission_classes([IsAuthenticated])
 def delete_template(request, template_id):
     if request.method == "DELETE":
-        template = get_object_or_404(Template, pk=template_id)
-        template.delete()
+        template = get_object_or_404(Template, pk=template_id, deleted_at__isnull=True)
+        template.deleted_at = timezone.now()
+        template.deleted_by = request.user
+        template.save()
 
         return JsonResponse({"message": "Template deleted successfully"}, status=204)
     else:
@@ -441,8 +447,10 @@ def update_template_topic(request, template_id, template_topic_id):
 @permission_classes([IsAuthenticated])
 def delete_template_topic(request, template_topic_id):
     if request.method == "DELETE":
-        template_topic = get_object_or_404(TemplateTopic, pk=template_topic_id)
-        template_topic.delete()
+        template_topic = get_object_or_404(TemplateTopic, pk=template_topic_id, deleted_at__isnull=True)
+        template_topic.deleted_at = timezone.now()
+        template_topic.deleted_by = request.user
+        template_topic.save()
 
         return JsonResponse({"message": "TemplateTopic deleted successfully"}, status=204)
     else:
@@ -590,9 +598,11 @@ def update_template_questions(request, template_id):
 @permission_classes([IsAuthenticated])
 def delete_template_questions(request, template_id):
     if request.method == "DELETE":
-        template = get_object_or_404(Template, pk=template_id)
-        template_questions = TemplateQuestion.objects.filter(template_id=template_id)
-        template_questions.delete()
+        get_object_or_404(Template, pk=template_id, deleted_at__isnull=True)
+        template_questions = TemplateQuestion.objects.filter(template_id=template_id, deleted_at__isnull=True)
+        template_questions.deleted_at = timezone.now()
+        template_questions.deleted_by = request.user
+        template_questions.save()
 
         return JsonResponse({"message": "TemplateQuestions deleted successfully"}, status=204)
     else:

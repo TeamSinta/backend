@@ -1,14 +1,15 @@
 import json
+from datetime import timezone
 
 import boto3
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
 
 from interview_templates.models import TemplateQuestion
 from user.serializers import CustomUserSerializer
@@ -16,60 +17,91 @@ from user.serializers import CustomUserSerializer
 from .models import Candidate, InterviewRound, InterviewRoundQuestion
 from .serializers import CandidateSerializer, InterviewRoundQuestionSerializer, InterviewRoundSerializer
 
+DELETE_SUCCESS = {"detail": "Successfully deleted"}
 
-class InterviewRoundList(generics.ListCreateAPIView):
+
+class BaseDeleteInstance(generics.DestroyAPIView):
+    def perform_destroy(self, instance):
+        instance.deleted_at = timezone.now()
+        instance.deleted_by = self.request.user
+        instance.save()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(DELETE_SUCCESS, status=status.HTTP_204_NO_CONTENT)
+
+
+class InterviewRoundList(BaseDeleteInstance, generics.ListCreateAPIView):
     serializer_class = InterviewRoundSerializer
-    queryset = InterviewRound.objects.all()
+
+    def get_queryset(self):
+        queryset = InterviewRound.objects.filter(deleted_at__isnull=True)
+        return queryset
 
 
-class InterviewRoundDetail(generics.RetrieveUpdateDestroyAPIView):
+class InterviewRoundDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = InterviewRoundSerializer
-    queryset = InterviewRound.objects.all()
+
+    def get_queryset(self):
+        queryset = InterviewRound.objects.filter(deleted_at__isnull=True)
+        return queryset
 
 
-class CandidateList(generics.ListCreateAPIView):
+class CandidateList(BaseDeleteInstance, generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CandidateSerializer
     queryset = Candidate.objects.all()
 
+    def get_queryset(self):
+        queryset = Candidate.objects.filter(deleted_at__isnull=True)
+        return queryset
 
-class CandidateDetail(generics.RetrieveUpdateDestroyAPIView):
+
+class CandidateDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CandidateSerializer
-    queryset = Candidate.objects.all()
+
+    def get_queryset(self):
+        queryset = Candidate.objects.filter(deleted_at__isnull=True)
+        return queryset
 
 
-class InterviewRoundQuestionList(generics.ListCreateAPIView):
+class InterviewRoundQuestionList(BaseDeleteInstance, generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = InterviewRoundQuestionSerializer
 
     def get_queryset(self):
-        queryset = InterviewRoundQuestion.objects.all()
-        interviewRound = self.request.query_params.get("interviewRound")  # Correct query parameter
-        if interviewRound is not None:
-            queryset = queryset.filter(interview_round_id=interviewRound)
+        queryset = InterviewRoundQuestion.objects.filter(deleted_at__isnull=True)
+        interview_round = self.request.query_params.get("interviewRound")  # Correct query parameter
+        if interview_round is not None:
+            queryset = queryset.filter(interview_round_id=interview_round)
         return queryset
 
 
-class InterviewRoundVideo(generics.ListCreateAPIView):
+class InterviewRoundVideo(BaseDeleteInstance, generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = InterviewRoundQuestionSerializer
 
     def get_queryset(self):
-        queryset = InterviewRoundQuestion.objects.all()
-        interviewRound = self.request.query_params.get("interviewRound")  # Correct query parameter
-        if interviewRound is not None:
-            queryset = queryset.filter(interview_round_id=interviewRound)
+        queryset = InterviewRoundQuestion.objects.filter(deleted_at__isnull=True)
+        interview_round = self.request.query_params.get("interviewRound")  # Correct query parameter
+        if interview_round is not None:
+            queryset = queryset.filter(interview_round_id=interview_round)
         return queryset
 
 
-class InterviewRoundQuestionDetail(generics.RetrieveUpdateDestroyAPIView):
+class InterviewRoundQuestionDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = InterviewRoundQuestionSerializer
-    queryset = InterviewRoundQuestion.objects.all()
+
+    def get_queryset(self):
+        queryset = InterviewRoundQuestion.objects.filter(deleted_at__isnull=True)
+        return queryset
 
 
 class CreateInterviewRound(CreateAPIView):
     permission_classes = [IsAuthenticated]
+
     def create(self, request, *args, **kwargs):
         try:
             interviewer_id = request.user.id
@@ -169,6 +201,7 @@ def get_all_interview_rounds(request):
 
     return JsonResponse(response, safe=False)
 
+
 @api_view()
 @permission_classes([IsAuthenticated])
 def get_interview_round_question(request, interview_round_id, question_id):
@@ -254,6 +287,7 @@ def get_video_duration(file_name, bucket_name):
     duration_string = f"{minutes:02d}:{seconds:02d}"
     return duration_string
 
+
 @api_view()
 @permission_classes([IsAuthenticated])
 def get_interview_round_video(request, interview_round_id):
@@ -338,8 +372,11 @@ class RateInterviewRoundQuestion(CreateAPIView):
 @csrf_exempt
 def delete_interview_round(request, interview_round_id):
     try:
-        interview_round = InterviewRound.objects.get(id=interview_round_id)
-        interview_round.delete()
+        interview_round = InterviewRound.objects.get(id=interview_round_id, deleted_at__isnull=True)
+        interview_round.deleted_at = timezone.now()
+        interview_round.deleted_by = request.user
+        interview_round.save()
+
         response = {"message": "InterviewRound deleted successfully"}
         return JsonResponse(response)
     except InterviewRound.DoesNotExist:
