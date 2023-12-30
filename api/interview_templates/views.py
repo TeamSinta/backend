@@ -2,9 +2,11 @@ import json
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from company.models import Company
@@ -21,7 +23,7 @@ class TemplateTopicList(generics.ListCreateAPIView):
     serializer_class = TemplateTopicSerializer
 
     def get_queryset(self):
-        queryset = TemplateTopic.objects.all()
+        queryset = TemplateTopic.objects.filter(deleted_at__isnull=True)
         template = self.request.query_params.get("template")
         if template is not None:
             queryset = queryset.filter(template_id=template)
@@ -32,6 +34,24 @@ class TemplateTopicDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplateTopicSerializer
     queryset = TemplateTopic.objects.all()
+
+    def get_object(self):
+        obj = super().get_object()
+
+        if obj.deleted_at is not None and obj.deleted_by is not None:
+            return ""
+        else:
+            return obj
+
+    def perform_destroy(self, instance):
+        instance.deleted_at = timezone.now()
+        instance.deleted_by = self.request.user
+        instance.save()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"detail": "Successfully deleted"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class TemplateQuestionsList(generics.ListCreateAPIView):
