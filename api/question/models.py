@@ -1,6 +1,7 @@
 from django.db import models
 from pgvector.django import VectorField
 
+from company.models import Company
 from user.models import CustomUser
 
 
@@ -26,6 +27,9 @@ class Question(models.Model):
     difficulty = models.IntegerField(choices=DifficultyChoices.choices, default=None)
     competency = models.CharField(max_length=200)
     review = models.IntegerField(choices=ReviewChoices.choices, null=True, blank=True, default=None)
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.SET_NULL, null=True, blank=True, default=None, related_name="question_creator"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
@@ -49,6 +53,11 @@ class Comment(models.Model):
     comment_text = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.SET_NULL, null=True, blank=True, default=None, related_name="person_commented"
+    )
+    deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
+    deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
     def __str__(self):
         return self.comment_text
@@ -57,6 +66,15 @@ class Comment(models.Model):
 class QuestionBank(models.Model):
     title = models.CharField(max_length=255)
     questions = models.ManyToManyField(Question)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="question_bank_creator",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)

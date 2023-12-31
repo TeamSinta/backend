@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from company.models import Company
 from question.models import Question
 from question.serializers import QuestionSerializer
-from user.models import CustomUser
+from user.models import CustomUser, UserCompanies
 
 from .models import Template, TemplateQuestion, TemplateTopic
 from .serializers import TemplateQuestionSerializer, TemplatesSerializer, TemplateTopicSerializer
@@ -23,17 +23,32 @@ class TemplateTopicList(generics.ListCreateAPIView):
     serializer_class = TemplateTopicSerializer
 
     def get_queryset(self):
-        queryset = TemplateTopic.objects.filter(deleted_at__isnull=True)
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        queryset = TemplateTopic.objects.filter(company_id=company_id, deleted_at__isnull=True)
+
         template = self.request.query_params.get("template")
         if template is not None:
             queryset = queryset.filter(template_id=template)
+
         return queryset
 
 
 class TemplateTopicDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplateTopicSerializer
-    queryset = TemplateTopic.objects.all()
+
+    def get_queryset(self):
+        topic_id = self.kwargs["pk"]
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        queryset = TemplateTopic.objects.filter(company_id=company_id)
+        if topic_id is not None:
+            queryset = queryset.filter(topic_id=topic_id)
+
+        return queryset
 
     def get_object(self):
         obj = super().get_object()
@@ -59,7 +74,14 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
     serializer_class = TemplateQuestionSerializer
 
     def get_queryset(self):
-        queryset = TemplateQuestion.objects.all()
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        templates = Template.objects.filter(company=company_id)
+        template_ids = templates.values_list("id", flat=True)
+
+        queryset = TemplateQuestion.objects.filter(template_id__in=template_ids)
+
         template = self.request.query_params.get("template")
         template_topic = self.request.query_params.get("topic")
         if template is not None:
@@ -116,19 +138,50 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
 class TemplateQuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplateQuestionSerializer
-    queryset = TemplateQuestion.objects.all()
+
+    def get_queryset(self):
+        # Retrieve the company associated with the logged-in user
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        templates = Template.objects.filter(company=company_id)
+        template_ids = templates.values_list("id", flat=True)
+
+        queryset = TemplateQuestion.objects.filter(template_id__in=template_ids)
+        return queryset
 
 
 class TemplatesList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplatesSerializer
-    queryset = Template.objects.all()
+
+    def get_queryset(self):
+        # Retrieve the company associated with the logged-in user
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        # Filter Template objects by the company ID associated with the logged-in user
+        queryset = Template.objects.filter(company=company_id)
+        return queryset
 
 
 class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplatesSerializer
-    queryset = Template.objects.all()
+
+    def get_queryset(self):
+        template_id = self.kwargs["pk"]
+        # Retrieve the company associated with the logged-in user
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        # Filter Template objects by the company ID
+        queryset = Template.objects.filter(company=company_id)
+        if template_id is not None:
+            queryset = queryset.filter(id=template_id)
+
+        return queryset
+
     parser_classes = (MultiPartParser, FormParser, JSONParser)
 
 
@@ -228,7 +281,10 @@ class ReadTemplate(APIView):
 
     def get(self, request, template_id):
         if request.method == "GET":
-            template = get_object_or_404(Template, pk=template_id)
+            user_company = get_object_or_404(UserCompanies, user=request.user)
+            company_id = user_company.company_id
+
+            template = get_object_or_404(Template, pk=template_id, company_id=company_id)
 
             response = {
                 "id": template.id,
@@ -262,7 +318,9 @@ class GetAllTemplates(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        templates = Template.objects.all()
+        user_company = get_object_or_404(UserCompanies, user=request.user)
+        company_id = user_company.company_id
+        templates = Template.objects.filter(company=company_id)
         template_list = []
 
         for template in templates:
@@ -297,7 +355,9 @@ class DeleteTemplate(APIView):
 
     def delete(self, request, template_id):
         if request.method == "DELETE":
-            template = get_object_or_404(Template, pk=template_id)
+            user_company = get_object_or_404(UserCompanies, user=request.user)
+            company_id = user_company.company_id
+            template = get_object_or_404(Template, pk=template_id, company_id=company_id)
             template.delete()
 
             return JsonResponse({"message": "Template deleted successfully"}, status=204)
@@ -356,7 +416,10 @@ class ReadTemplateTopic(APIView):
 
     def get(self, request, template_topic_id):
         if request.method == "GET":
-            template_topic = get_object_or_404(TemplateTopic, pk=template_topic_id)
+            user_company = get_object_or_404(UserCompanies, user=request.user)
+            company_id = user_company.company_id
+
+            template_topic = get_object_or_404(TemplateTopic, pk=template_topic_id, company_id=company_id)
 
             # Get the IDs of associated questions
             question_ids = template_topic.questions.values_list("id", flat=True)
@@ -451,8 +514,10 @@ class GetAllTemplateTopics(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, template_id):
+        user_company = get_object_or_404(UserCompanies, user=request.user)
+        company_id = user_company.company_id
         if request.method == "GET":
-            template_topics = TemplateTopic.objects.filter(template_id=template_id)
+            template_topics = TemplateTopic.objects.filter(template_id=template_id, company_id=company_id)
 
             template_topic_list = []
 
@@ -523,30 +588,6 @@ class CreateTemplateQuestion(APIView):
             return JsonResponse(error_response, status=405)
 
 
-# Read TemplateQuestions for a Template
-class ReadTemplateQuestions(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, template_id):
-        if request.method == "GET":
-            template = get_object_or_404(Template, pk=template_id)
-            template_questions = TemplateQuestion.objects.filter(template_id=template_id)
-
-            template_topic_ids = list(template_questions.values_list("template_topic_id__id", flat=True))
-            question_id = template_questions.first().question.id
-
-            response = {
-                "template_id": template_id,
-                "template_topic_ids": template_topic_ids,
-                "question_id": question_id,
-            }
-
-            return JsonResponse(response, status=200)
-        else:
-            error_response = {"error": "Invalid request method"}
-            return JsonResponse(error_response, status=405)
-
-
 # Update TemplateQuestions for a Template
 class UpdateTemplateQuestions(APIView):
     permission_classes = [IsAuthenticated]
@@ -591,7 +632,7 @@ class DeleteTemplateQuestions(APIView):
     def delete(self, request, template_id):
         if request.method == "DELETE":
             template = get_object_or_404(Template, pk=template_id)
-            template_questions = TemplateQuestion.objects.filter(template_id=template_id)
+            template_questions = TemplateQuestion.objects.filter(template_id=template.id)
             template_questions.delete()
 
             return JsonResponse({"message": "TemplateQuestions deleted successfully"}, status=204)
@@ -606,37 +647,43 @@ class GetAllTemplateQuestions(APIView):
 
     def get(self, request, template_id):
         if request.method == "GET":
-            template = get_object_or_404(Template, pk=template_id)
-            template_questions = TemplateQuestion.objects.filter(template_id=template_id).select_related(
-                "question", "topic"
-            )
-            # Using a dictionary to group by topics
-            stages = {}
-            for template_question in template_questions:
-                topic_name = template_question.topic.topics_text
-                if topic_name not in stages:
-                    stages[topic_name] = {
-                        "stage": topic_name,
-                        "stageId": template_question.topic.id,
-                        "questions": [],
-                    }
-
-                question = template_question.question
-                stages[topic_name]["questions"].append(
-                    {
-                        "number": str(question.id),
-                        "question": question.question_text,
-                        "duration": f"{question.reply_time} min",
-                        "competency": question.competency,
-                        "rating": question.review,
-                        "answer": question.guidelines,
-                        "id": str(question.id),
-                    }
+            try:
+                user_company = get_object_or_404(UserCompanies, user=request.user)
+                company_id = user_company.company_id
+                template = get_object_or_404(Template, pk=template_id, company_id=company_id)
+                template_questions = TemplateQuestion.objects.filter(template_id=template.id).select_related(
+                    "question", "topic"
                 )
-            # Convert stages dictionary to a list
-            stages_list = list(stages.values())
+                # Using a dictionary to group by topics
+                stages = {}
+                for template_question in template_questions:
+                    topic_name = template_question.topic.topics_text
+                    if topic_name not in stages:
+                        stages[topic_name] = {
+                            "stage": topic_name,
+                            "stageId": template_question.topic.id,
+                            "questions": [],
+                        }
 
-            return JsonResponse({"data": stages_list}, status=200, safe=False)
+                    question = template_question.question
+                    stages[topic_name]["questions"].append(
+                        {
+                            "number": str(question.id),
+                            "question": question.question_text,
+                            "duration": f"{question.reply_time} min",
+                            "competency": question.competency,
+                            "rating": question.review,
+                            "answer": question.guidelines,
+                            "id": str(question.id),
+                        }
+                    )
+                # Convert stages dictionary to a list
+                stages_list = list(stages.values())
+
+                return JsonResponse({"data": stages_list}, status=200, safe=False)
+            except Template.DoesNotExist:
+                error_response = {"error": "Template not found"}
+                return JsonResponse(error_response, status=404)
         else:
             error_response = {"error": "Invalid request method"}
             return JsonResponse(error_response, status=405)
@@ -647,30 +694,36 @@ class GetAllQuestions(APIView):
 
     def get(self, request, template_id):
         if request.method == "GET":
-            template = get_object_or_404(Template, pk=template_id)
-            template_questions = TemplateQuestion.objects.filter(template_id=template_id)
+            try:
+                user_company = get_object_or_404(UserCompanies, user=request.user)
+                company_id = user_company.company_id
+                template = get_object_or_404(Template, pk=template_id, company_id=company_id)
+                template_questions = TemplateQuestion.objects.filter(template_id=template.id)
 
-            # Create a list of dictionaries containing information about each TemplateQuestion
-            template_question_list = []
-            for template_question in template_questions:
-                question = template_question.question  # Fetch the question details
-                template_question_list.append(
-                    {
-                        "template_id": template_id,
-                        "template_topic_id": template_question.topic.id,
-                        "question_id": question.id,
-                        "question_text": question.question_text,
-                        "guidelines": question.guidelines,
-                        "reply_time": question.reply_time,
-                        "competency": question.competency,
-                        "difficulty": question.difficulty,
-                        "review": question.review,
-                        "created_at": question.created_at,
-                        "updated_at": question.updated_at,
-                    }
-                )
+                # Create a list of dictionaries containing information about each TemplateQuestion
+                template_question_list = []
+                for template_question in template_questions:
+                    question = template_question.question  # Fetch the question details
+                    template_question_list.append(
+                        {
+                            "template_id": template_id,
+                            "template_topic_id": template_question.topic.id,
+                            "question_id": question.id,
+                            "question_text": question.question_text,
+                            "guidelines": question.guidelines,
+                            "reply_time": question.reply_time,
+                            "competency": question.competency,
+                            "difficulty": question.difficulty,
+                            "review": question.review,
+                            "created_at": question.created_at,
+                            "updated_at": question.updated_at,
+                        }
+                    )
 
-            return JsonResponse(template_question_list, status=200, safe=False)
+                return JsonResponse(template_question_list, status=200, safe=False)
+            except Template.DoesNotExist:
+                error_response = {"error": "Template not found"}
+                return JsonResponse(error_response, status=404)
         else:
             error_response = {"error": "Invalid request method"}
             return JsonResponse(error_response, status=405)

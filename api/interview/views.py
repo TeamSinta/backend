@@ -3,6 +3,7 @@ import json
 import boto3
 from django.conf import settings
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -10,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from interview_templates.models import TemplateQuestion
+from user.models import UserCompanies
 from user.serializers import CustomUserSerializer
 
 from .models import Candidate, InterviewRound, InterviewRoundQuestion
@@ -17,13 +19,27 @@ from .serializers import CandidateSerializer, InterviewRoundQuestionSerializer, 
 
 
 class InterviewRoundList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = InterviewRoundSerializer
-    queryset = InterviewRound.objects.all()
+
+    def get_queryset(self):
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        queryset = InterviewRound.objects.filter(company_id=company_id)
+        return queryset
 
 
 class InterviewRoundDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = InterviewRoundSerializer
-    queryset = InterviewRound.objects.all()
+
+    def get_queryset(self):
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        queryset = InterviewRound.objects.filter(company_id=company_id)
+        return queryset
 
 
 class CandidateList(generics.ListCreateAPIView):
@@ -43,9 +59,9 @@ class InterviewRoundQuestionList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = InterviewRoundQuestion.objects.all()
-        interviewRound = self.request.query_params.get("interviewRound")  # Correct query parameter
-        if interviewRound is not None:
-            queryset = queryset.filter(interview_round_id=interviewRound)
+        interview_round = self.request.query_params.get("interviewRound")  # Correct query parameter
+        if interview_round is not None:
+            queryset = queryset.filter(interview_round_id=interview_round)
         return queryset
 
 
@@ -55,9 +71,9 @@ class InterviewRoundVideo(generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = InterviewRoundQuestion.objects.all()
-        interviewRound = self.request.query_params.get("interviewRound")  # Correct query parameter
-        if interviewRound is not None:
-            queryset = queryset.filter(interview_round_id=interviewRound)
+        interview_round = self.request.query_params.get("interviewRound")  # Correct query parameter
+        if interview_round is not None:
+            queryset = queryset.filter(interview_round_id=interview_round)
         return queryset
 
 
@@ -107,7 +123,10 @@ class InterviewRoundGet(APIView):
 
     def get(self, request, interview_round_id):
         try:
-            interview_round = InterviewRound.objects.get(id=interview_round_id)
+            user_company = get_object_or_404(UserCompanies, user=self.request.user)
+            company_id = user_company.company_id
+
+            interview_round = InterviewRound.objects.get(id=interview_round_id, company_id=company_id)
             candidate_name = interview_round.candidate.name if interview_round.candidate else None
             interviewer = CustomUserSerializer(interview_round.interviewer).data
             formatted_date = interview_round.created_at.strftime("%B %d, %Y")
@@ -134,7 +153,9 @@ class InterviewRoundGet(APIView):
 class InterviewRoundByRoomID(APIView):
     def get(self, request, room_id):
         try:
-            interview_round = InterviewRound.objects.get(meeting_room_id=room_id)
+            user_company = get_object_or_404(UserCompanies, user=self.request.user)
+            company_id = user_company.company_id
+            interview_round = InterviewRound.objects.get(meeting_room_id=room_id, company_id=company_id)
             response = {
                 "id": interview_round.id,
                 "title": interview_round.title,
@@ -154,7 +175,9 @@ class InterviewRoundListAll(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        interview_rounds = InterviewRound.objects.all()
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+        interview_rounds = InterviewRound.objects.filter(company_id=company_id)
         response = []
 
         for interview_round in interview_rounds:
