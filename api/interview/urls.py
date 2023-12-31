@@ -1,11 +1,14 @@
 from django.urls import path
 
 from . import views
-from .views import CreateInterviewRound, RateInterviewRoundQuestion
+from .views import (
+    CreateInterviewRound, InterviewRoundByRoomID, InterviewRoundGet, InterviewRoundListAll,
+    InterviewRoundQuestionDetailGet, RateInterviewRoundQuestion
+)
 
 urlpatterns = [
     # Interview Round
-    path("", views.get_all_interview_rounds, name="get_all_interview_rounds"),
+    path("", InterviewRoundListAll.as_view(), name="get_all_interview_rounds"),
     path("create/", CreateInterviewRound.as_view(), name="create_interview_round"),
     path(
         "interviewroundquestions/",
@@ -14,17 +17,17 @@ urlpatterns = [
     ),
     path(
         "<int:interview_round_id>/<int:question_id>",
-        views.get_interview_round_question,
+        InterviewRoundQuestionDetailGet.as_view(),
         name="get_interview_round",
     ),
     path(
         "<int:interview_round_id>",
-        views.get_interview_round,
+        InterviewRoundGet.as_view(),
         name="get_interview_round",
     ),
     path(
         "<str:room_id>",
-        views.get_interview_round_by_room_id,
+        InterviewRoundByRoomID.as_view(),
         name="get_interview_round",
     ),
     path(
@@ -34,12 +37,12 @@ urlpatterns = [
     ),
     path(
         "interviewRoundVideo/<int:interview_round_id>/",
-        views.get_interview_round_video,
+        views.GetInterviewRoundVideo.as_view(),
         name="interview_round_video",
     ),
     path(
         "<int:interview_round_id>/update/",
-        views.update_interview_round,
+        views.UpdateInterviewRound.as_view(),
         name="update_interview_round",
     ),
     path(
