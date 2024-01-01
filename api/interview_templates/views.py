@@ -58,7 +58,7 @@ class TemplateTopicDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIV
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
-        queryset = TemplateTopic.objects.filter(company_id=company_id)
+        queryset = TemplateTopic.objects.filter(company_id=company_id, deleted_at__isnull=True)
         if topic_id is not None:
             queryset = queryset.filter(id=topic_id)
 
@@ -148,10 +148,10 @@ class TemplateQuestionsDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroy
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
-        templates = Template.objects.filter(company=company_id)
+        templates = Template.objects.filter(company=company_id, deleted_at__isnull=True)
         template_ids = templates.values_list("id", flat=True)
 
-        queryset = TemplateQuestion.objects.filter(template_id__in=template_ids)
+        queryset = TemplateQuestion.objects.filter(template_id__in=template_ids, deleted_at__isnull=True)
         return queryset
 
 
@@ -180,7 +180,7 @@ class TemplateDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
         company_id = user_company.company_id
 
         # Filter Template objects by the company ID
-        queryset = Template.objects.filter(company=company_id)
+        queryset = Template.objects.filter(company=company_id, deleted_at__isnull=True)
         if template_id is not None:
             queryset = queryset.filter(id=template_id)
 
@@ -324,7 +324,7 @@ class GetAllTemplates(APIView):
     def get(self, request):
         user_company = get_object_or_404(UserCompanies, user=request.user)
         company_id = user_company.company_id
-        templates = Template.objects.filter(company=company_id)
+        templates = Template.objects.filter(company=company_id, deleted_at__isnull=True)
         template_list = []
 
         for template in templates:
