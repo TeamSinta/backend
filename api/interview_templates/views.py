@@ -46,7 +46,7 @@ class TemplateTopicDetail(generics.RetrieveUpdateDestroyAPIView):
 
         queryset = TemplateTopic.objects.filter(company_id=company_id)
         if topic_id is not None:
-            queryset = queryset.filter(topic_id=topic_id)
+            queryset = queryset.filter(id=topic_id)
 
         return queryset
 
@@ -284,7 +284,7 @@ class ReadTemplate(APIView):
             user_company = get_object_or_404(UserCompanies, user=request.user)
             company_id = user_company.company_id
 
-            template = get_object_or_404(Template, pk=template_id, company_id=company_id)
+            template = get_object_or_404(Template, pk=template_id, company=company_id)
 
             response = {
                 "id": template.id,
@@ -414,15 +414,15 @@ class CreateTemplateTopic(APIView):
 class ReadTemplateTopic(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, template_topic_id):
+    def get(self, request, template_id, template_topic_id):
         if request.method == "GET":
             user_company = get_object_or_404(UserCompanies, user=request.user)
             company_id = user_company.company_id
 
-            template_topic = get_object_or_404(TemplateTopic, pk=template_topic_id, company_id=company_id)
+            template_topic = get_object_or_404(TemplateTopic, pk=template_topic_id,template_id=template_id, company_id=company_id)
 
             # Get the IDs of associated questions
-            question_ids = template_topic.questions.values_list("id", flat=True)
+            questions = template_topic.template_questions.all()
 
             response = {
                 "id": template_topic.id,
@@ -430,7 +430,13 @@ class ReadTemplateTopic(APIView):
                 "template_id": template_topic.template_id.id,
                 "company_id": template_topic.company_id.id,
                 "time": template_topic.time,
-                "questions": list(question_ids),
+                "questions": [
+                    {
+                        "id": question.id,
+                        "question_text": question.question.text
+                    }
+                    for question in questions
+                ]
             }
 
             return JsonResponse(response, status=200)
