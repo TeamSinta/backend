@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
@@ -5,6 +6,7 @@ from rest_framework.response import Response
 
 # Create your views here.
 from openai_helper.utils import get_embedding
+from user.models import UserCompanies
 
 from .models import Question, QuestionBank
 from .serializers import QuestionBankSerializer, QuestionBankUpdateSerializer, QuestionSerializer
@@ -29,7 +31,10 @@ class QuestionBankList(BaseDeleteInstance, generics.ListCreateAPIView):
     serializer_class = QuestionBankSerializer
 
     def get_queryset(self):
-        queryset = QuestionBank.objects.all()
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        queryset = QuestionBank.objects.filter(company=company_id)
         question = self.request.query_params.get("question")
         if question is not None:
             queryset = queryset.filter(question_id=question)
@@ -39,13 +44,23 @@ class QuestionBankList(BaseDeleteInstance, generics.ListCreateAPIView):
 class QuestionBankDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = QuestionBankSerializer
-    queryset = QuestionBank.objects.all()
+
+    def get_queryset(self):
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+        queryset = QuestionBank.objects.filter(company=company_id)
+        return queryset
 
 
 class QuestionList(BaseDeleteInstance, generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = QuestionSerializer
-    queryset = Question.objects.all()
+
+    def get_queryset(self):
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+        queryset = Question.objects.filter(company=company_id)
+        return queryset
 
     def perform_create(self, serializer):
         question_instance = serializer.save()
@@ -57,10 +72,21 @@ class QuestionList(BaseDeleteInstance, generics.ListCreateAPIView):
 class QuestionDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = QuestionSerializer
-    queryset = Question.objects.all()
+
+    def get_queryset(self):
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+        queryset = Question.objects.filter(company=company_id)
+        return queryset
 
 
 class QuestionBankUpdateView(BaseDeleteInstance, generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = QuestionBank.objects.all()
+
+    def get_queryset(self):
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+        queryset = QuestionBank.objects.filter(company=company_id)
+        return queryset
+
     serializer_class = QuestionBankUpdateSerializer
