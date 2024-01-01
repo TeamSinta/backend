@@ -419,7 +419,9 @@ class ReadTemplateTopic(APIView):
             user_company = get_object_or_404(UserCompanies, user=request.user)
             company_id = user_company.company_id
 
-            template_topic = get_object_or_404(TemplateTopic, pk=template_topic_id,template_id=template_id, company_id=company_id)
+            template_topic = get_object_or_404(
+                TemplateTopic, pk=template_topic_id, template_id=template_id, company_id=company_id
+            )
 
             # Get the IDs of associated questions
             questions = template_topic.template_questions.all()
@@ -430,13 +432,7 @@ class ReadTemplateTopic(APIView):
                 "template_id": template_topic.template_id.id,
                 "company_id": template_topic.company_id.id,
                 "time": template_topic.time,
-                "questions": [
-                    {
-                        "id": question.id,
-                        "question_text": question.question.text
-                    }
-                    for question in questions
-                ]
+                "questions": [{"id": question.id, "question_text": question.question.text} for question in questions],
             }
 
             return JsonResponse(response, status=200)
