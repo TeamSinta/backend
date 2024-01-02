@@ -52,11 +52,12 @@ class Competency(models.Model):
 class Comment(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, default=None)
     comment_text = models.CharField(max_length=200)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, default=None)
     user = models.ForeignKey(
         CustomUser, on_delete=models.SET_NULL, null=True, blank=True, default=None, related_name="person_commented"
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
     deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
