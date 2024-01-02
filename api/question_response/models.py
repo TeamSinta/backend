@@ -36,7 +36,7 @@ class InterviewerFeedback(models.Model):
         HEART = 4
         LAUGH = 5
 
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="interviewer_feedback")
     interview_round = models.ForeignKey(InterviewRound, on_delete=models.CASCADE)
     note = models.TextField(null=True)
     reaction = models.IntegerField(choices=EmojiChoice.choices, null=True)
