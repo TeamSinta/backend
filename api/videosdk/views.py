@@ -5,8 +5,8 @@ from pathlib import Path
 import requests
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from interview.models import InterviewRound
 
@@ -92,6 +92,7 @@ def get_interview_round(interview_round_id):
 
 class MeetingRoom(APIView):
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
         interview_round = get_interview_round(request.data.get("interview_round_id"))
 
@@ -146,6 +147,7 @@ class MeetingRoom(APIView):
 
 class Tokens(APIView):
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
         room_name = request.data.get("room_name")
         if not room_name:

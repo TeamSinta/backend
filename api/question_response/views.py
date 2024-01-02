@@ -6,9 +6,9 @@ from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from pgvector.django import CosineDistance
 from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 
 from interview.models import InterviewRound, InterviewRoundQuestion
 from openai_helper.utils import get_answer_notes_for_question, get_embedding
@@ -20,6 +20,7 @@ from .serializers import InterviewerFeedbackSerializer
 
 class QuestionSummarizedAnswerView(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request: HttpRequest, interview_round_id: int) -> Response:
         interview_round = get_object_or_404(InterviewRound, pk=interview_round_id)
         return self._serve_question_answers(interview_round)
