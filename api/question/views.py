@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 # Create your views here.
 from openai_helper.utils import get_embedding
@@ -13,6 +14,20 @@ from .serializers import QuestionBankSerializer, QuestionBankUpdateSerializer, Q
 class QuestionBankList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = QuestionBankSerializer
+
+    def post(self, request, *args, **kwargs):
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        # Associate the company from the logged-in user
+        request.data["company"] = company_id
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def get_queryset(self):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
@@ -41,9 +56,7 @@ class QuestionList(generics.ListCreateAPIView):
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
-        user_company = get_object_or_404(UserCompanies, user=self.request.user)
-        company_id = user_company.company_id
-        queryset = Question.objects.filter(questionbank__company_id=company_id, deleted_at__isnull=True)
+        queryset = Question.objects.filter(deleted_at__isnull=True)
         return queryset
 
     def perform_create(self, serializer):
