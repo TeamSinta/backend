@@ -1,4 +1,5 @@
 import json
+from datetime import timezone
 
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -12,6 +13,12 @@ from user.serializers import UserCompanySerializer, UserDepartmentSerializer
 
 from .models import Company, Department
 from .serializers import CompanySerializer, DepartmentSerializer
+
+
+def perform_destroy(self, instance):
+    instance.deleted_at = timezone.now()
+    instance.deleted_by = self.request.user
+    instance.save()
 
 
 def check_permissions_and_existence(user, **kwargs):
@@ -160,7 +167,8 @@ class CompanyMembers(viewsets.ModelViewSet):
 
         if company_id and UserCompanies.objects.filter(user=member, company=company).exists():
             user_company = UserCompanies.objects.filter(user=member, company=company)
-            user_company.delete()
+            perform_destroy(self, user_company)
+
             return Response({"detail": "User removed from company."}, status=status.HTTP_200_OK)
         else:
             return Response(
@@ -213,7 +221,7 @@ class CompanyDepartments(viewsets.ModelViewSet):
 
         check_permissions_and_existence(user_from_jwt, company_id=company_id)
 
-        return Department.objects.filter(company=company_id)
+        return Department.objects.filter(company=company_id, deleted_at__isnull=True)
 
     def create(self, request, *args, **kwargs):
         data = json.loads(request.body)
@@ -273,9 +281,10 @@ class CompanyDepartments(viewsets.ModelViewSet):
             )
 
         # Destroy
-        if department_id and Department.objects.filter(id=department_id).exists():
+        if department_id and Department.objects.filter(id=department_id, deleted_at__isnull=True).exists():
             department = Department.objects.filter(id=department_id)
-            department.delete()
+            perform_destroy(self, department)
+
             return Response({"detail": "Department removed."}, status=status.HTTP_200_OK)
         else:
             return Response({"detail": "Department doesnt exist."}, status=status.HTTP_404_NOT_FOUND)
@@ -387,9 +396,13 @@ class CompanyDepartmentMembers(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        if department_id and UserDepartments.objects.filter(user=member, department=department).exists():
+        if (
+            department_id
+            and UserDepartments.objects.filter(user=member, department=department, deleted_at__isnull=True).exists()
+        ):
             user_department = UserDepartments.objects.filter(user=member, department=department)
-            user_department.delete()
+            perform_destroy(self, user_department)
+
             return Response({"detail": "User removed from department."}, status=status.HTTP_200_OK)
         else:
             return Response(
