@@ -56,7 +56,9 @@ class QuestionList(generics.ListCreateAPIView):
     serializer_class = QuestionSerializer
 
     def get_queryset(self):
-        queryset = Question.objects.filter(deleted_at__isnull=True)
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+        queryset = Question.objects.filter(company=company_id, deleted_at__isnull=True)
         return queryset
 
     def perform_create(self, serializer):
@@ -73,7 +75,7 @@ class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
-        queryset = Question.objects.filter(questionbank__company_id=company_id, deleted_at__isnull=True)
+        queryset = Question.objects.filter(company=company_id, deleted_at__isnull=True)
         return queryset
 
 

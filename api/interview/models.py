@@ -43,7 +43,7 @@ class InterviewRound(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
     deleted_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, default=None)
-    company_id = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, default=None)
 
 
 class InterviewRoundQuestion(models.Model):

@@ -26,7 +26,7 @@ class TemplateTopicList(generics.ListCreateAPIView):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
-        queryset = TemplateTopic.objects.filter(company_id=company_id, deleted_at__isnull=True)
+        queryset = TemplateTopic.objects.filter(company=company_id, deleted_at__isnull=True)
 
         template = self.request.query_params.get("template")
         if template is not None:
@@ -44,7 +44,7 @@ class TemplateTopicDetail(generics.RetrieveUpdateDestroyAPIView):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
-        queryset = TemplateTopic.objects.filter(company_id=company_id)
+        queryset = TemplateTopic.objects.filter(company=company_id, deleted_at__isnull=True)
         if topic_id is not None:
             queryset = queryset.filter(id=topic_id)
 
@@ -77,10 +77,10 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
-        templates = Template.objects.filter(company=company_id)
+        templates = Template.objects.filter(company=company_id, deleted_at__isnull=True)
         template_ids = templates.values_list("id", flat=True)
 
-        queryset = TemplateQuestion.objects.filter(template_id__in=template_ids)
+        queryset = TemplateQuestion.objects.filter(template_id__in=template_ids, deleted_at__isnull=True)
 
         template = self.request.query_params.get("template")
         template_topic = self.request.query_params.get("topic")
@@ -144,10 +144,10 @@ class TemplateQuestionsDetail(generics.RetrieveUpdateDestroyAPIView):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
-        templates = Template.objects.filter(company=company_id)
+        templates = Template.objects.filter(company=company_id, deleted_at__isnull=True)
         template_ids = templates.values_list("id", flat=True)
 
-        queryset = TemplateQuestion.objects.filter(template_id__in=template_ids)
+        queryset = TemplateQuestion.objects.filter(template_id__in=template_ids, deleted_at__isnull=True)
         return queryset
 
 
@@ -161,7 +161,7 @@ class TemplatesList(generics.ListCreateAPIView):
         company_id = user_company.company_id
 
         # Filter Template objects by the company ID associated with the logged-in user
-        queryset = Template.objects.filter(company=company_id)
+        queryset = Template.objects.filter(company=company_id, deleted_at__isnull=True)
         return queryset
 
 
@@ -176,7 +176,7 @@ class TemplateDetail(generics.RetrieveUpdateDestroyAPIView):
         company_id = user_company.company_id
 
         # Filter Template objects by the company ID
-        queryset = Template.objects.filter(company=company_id)
+        queryset = Template.objects.filter(company=company_id, deleted_at__isnull=True)
         if template_id is not None:
             queryset = queryset.filter(id=template_id)
 
@@ -216,7 +216,7 @@ class CreateTemplate(APIView):
                 "role_title": template.role_title,
                 "location": template.location,
                 "interviewer_ids": user_ids,
-                "company_id": company_id,
+                "company": company_id,
                 "department_id": department_id,  # Include department ID in the response
             }
 
@@ -264,7 +264,7 @@ class UpdateTemplate(APIView):
                 "id": template.id,
                 "role_title": template.role_title,
                 "location": template.location,
-                "company_id": template.company.id if template.company else None,
+                "company": template.company.id if template.company else None,
                 "interviewers": [interviewer.id for interviewer in template.interviewers.all()],
                 "department_title": template.department.title if template.department else None,
             }
@@ -290,7 +290,7 @@ class ReadTemplate(APIView):
                 "id": template.id,
                 "role_title": template.role_title,
                 "location": template.location,
-                "company_id": template.company.id,
+                "company": template.company.id,
                 "interviewers": [
                     {
                         "id": interviewer.id,
@@ -357,7 +357,7 @@ class DeleteTemplate(APIView):
         if request.method == "DELETE":
             user_company = get_object_or_404(UserCompanies, user=request.user)
             company_id = user_company.company_id
-            template = get_object_or_404(Template, pk=template_id, company_id=company_id)
+            template = get_object_or_404(Template, pk=template_id, company=company_id)
             template.delete()
 
             return JsonResponse({"message": "Template deleted successfully"}, status=204)
@@ -384,7 +384,7 @@ class CreateTemplateTopic(APIView):
                 template_topic = TemplateTopic.objects.create(
                     topics_text=topics_text,
                     template_id=template,
-                    company_id=company,
+                    company=company,
                     time=time,
                 )
 
@@ -420,7 +420,7 @@ class ReadTemplateTopic(APIView):
             company_id = user_company.company_id
 
             template_topic = get_object_or_404(
-                TemplateTopic, pk=template_topic_id, template_id=template_id, company_id=company_id
+                TemplateTopic, pk=template_topic_id, template_id=template_id, company=company_id
             )
 
             # Get the IDs of associated questions
@@ -516,10 +516,12 @@ class GetAllTemplateTopics(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, template_id):
+        print("get here")
         user_company = get_object_or_404(UserCompanies, user=request.user)
         company_id = user_company.company_id
         if request.method == "GET":
-            template_topics = TemplateTopic.objects.filter(template_id=template_id, company_id=company_id)
+            print("GetAllTemplateTopics here", template_id, company_id)
+            template_topics = TemplateTopic.objects.filter(template_id=template_id, company=company_id)
 
             template_topic_list = []
 
@@ -652,7 +654,7 @@ class GetAllTemplateQuestions(APIView):
             try:
                 user_company = get_object_or_404(UserCompanies, user=request.user)
                 company_id = user_company.company_id
-                template = get_object_or_404(Template, pk=template_id, company_id=company_id)
+                template = get_object_or_404(Template, pk=template_id, company=company_id)
                 template_questions = TemplateQuestion.objects.filter(template_id=template.id).select_related(
                     "question", "topic"
                 )
@@ -699,7 +701,7 @@ class GetAllQuestions(APIView):
             try:
                 user_company = get_object_or_404(UserCompanies, user=request.user)
                 company_id = user_company.company_id
-                template = get_object_or_404(Template, pk=template_id, company_id=company_id)
+                template = get_object_or_404(Template, pk=template_id, company=company_id)
                 template_questions = TemplateQuestion.objects.filter(template_id=template.id)
 
                 # Create a list of dictionaries containing information about each TemplateQuestion

@@ -27,7 +27,7 @@ class TemplateTopic(models.Model):
     TIME_CHOICES = [(i, str(i)) for i in range(1, 61)]
     topics_text = models.CharField(max_length=200)
     template_id = models.ForeignKey(Template, on_delete=models.CASCADE)
-    company_id = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     time = models.PositiveSmallIntegerField(choices=TIME_CHOICES, default=1)
     user = models.ForeignKey(
         CustomUser,
