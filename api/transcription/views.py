@@ -106,6 +106,8 @@ class GenerateTranscript(APIView):
 
 
 class AnnounceTranscriptResult(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request: HttpRequest, *args, **kwargs):
         # Retrieve the interview_round_id from the request body
         interview_round_id = request.POST.get("interview_round_id")
