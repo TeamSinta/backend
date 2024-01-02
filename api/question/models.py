@@ -27,6 +27,7 @@ class Question(models.Model):
     difficulty = models.IntegerField(choices=DifficultyChoices.choices, default=None)
     competency = models.CharField(max_length=200)
     review = models.IntegerField(choices=ReviewChoices.choices, null=True, blank=True, default=None)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, default=None)
     user = models.ForeignKey(
         CustomUser, on_delete=models.SET_NULL, null=True, blank=True, default=None, related_name="question_creator"
     )
