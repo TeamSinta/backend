@@ -1,89 +1,146 @@
 import json
+from datetime import timezone
 
 import boto3
 from django.conf import settings
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from company.models import Company
 from interview_templates.models import TemplateQuestion
+from user.models import UserCompanies
+from user.serializers import CustomUserSerializer
 
 from .models import Candidate, InterviewRound, InterviewRoundQuestion
 from .serializers import CandidateSerializer, InterviewRoundQuestionSerializer, InterviewRoundSerializer
 
+DELETE_SUCCESS = {"detail": "Successfully deleted"}
+
+
+class BaseDeleteInstance(generics.DestroyAPIView):
+    def perform_destroy(self, instance):
+        instance.deleted_at = timezone.now()
+        instance.deleted_by = self.request.user
+        instance.save()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(DELETE_SUCCESS, status=status.HTTP_204_NO_CONTENT)
+
 
 class InterviewRoundList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = InterviewRoundSerializer
-    queryset = InterviewRound.objects.all()
+
+    def get_queryset(self):
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        queryset = InterviewRound.objects.filter(company_id=company_id)
+        return queryset
 
 
 class InterviewRoundDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = InterviewRoundSerializer
-    queryset = InterviewRound.objects.all()
-
-
-class CandidateList(generics.ListCreateAPIView):
-    serializer_class = CandidateSerializer
-    queryset = Candidate.objects.all()
-
-
-class CandidateDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = CandidateSerializer
-    queryset = Candidate.objects.all()
-
-
-class InterviewRoundQuestionList(generics.ListCreateAPIView):
-    serializer_class = InterviewRoundQuestionSerializer
 
     def get_queryset(self):
-        queryset = InterviewRoundQuestion.objects.all()
-        interviewRound = self.request.query_params.get("interviewRound")  # Correct query parameter
-        if interviewRound is not None:
-            queryset = queryset.filter(interview_round_id=interviewRound)
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+
+        queryset = InterviewRound.objects.filter(company_id=company_id)
         return queryset
 
 
-class InterviewRoundVideo(generics.ListCreateAPIView):
-    serializer_class = InterviewRoundQuestionSerializer
+class CandidateList(BaseDeleteInstance, generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CandidateSerializer
+    queryset = Candidate.objects.all()
 
     def get_queryset(self):
-        queryset = InterviewRoundQuestion.objects.all()
-        interviewRound = self.request.query_params.get("interviewRound")  # Correct query parameter
-        if interviewRound is not None:
-            queryset = queryset.filter(interview_round_id=interviewRound)
+        queryset = Candidate.objects.filter(deleted_at__isnull=True)
         return queryset
 
 
-class InterviewRoundQuestionDetail(generics.RetrieveUpdateDestroyAPIView):
+class CandidateDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = CandidateSerializer
+
+    def get_queryset(self):
+        queryset = Candidate.objects.filter(deleted_at__isnull=True)
+        return queryset
+
+
+class InterviewRoundQuestionList(BaseDeleteInstance, generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = InterviewRoundQuestionSerializer
-    queryset = InterviewRoundQuestion.objects.all()
+
+    def get_queryset(self):
+        queryset = InterviewRoundQuestion.objects.filter(deleted_at__isnull=True)
+        interview_round = self.request.query_params.get("interviewRound")  # Correct query parameter
+        if interview_round is not None:
+            queryset = queryset.filter(interview_round_id=interview_round)
+        return queryset
+
+
+class InterviewRoundVideo(BaseDeleteInstance, generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = InterviewRoundQuestionSerializer
+
+    def get_queryset(self):
+        queryset = InterviewRoundQuestion.objects.filter(deleted_at__isnull=True)
+        interview_round = self.request.query_params.get("interviewRound")  # Correct query parameter
+        if interview_round is not None:
+            queryset = queryset.filter(interview_round_id=interview_round)
+        return queryset
+
+
+class InterviewRoundQuestionDetail(BaseDeleteInstance, generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = InterviewRoundQuestionSerializer
+
+    def get_queryset(self):
+        queryset = InterviewRoundQuestion.objects.filter(deleted_at__isnull=True)
+        return queryset
 
 
 class CreateInterviewRound(CreateAPIView):
-    # permission_classes = [IsAuthenticated, isAdminRole, isInterviewerRole]
+    permission_classes = [IsAuthenticated]
+    serializer_class = InterviewRound
+
     def create(self, request, *args, **kwargs):
         try:
             interviewer_id = request.user.id
             data = request.data
             title = data.get("title")
-
+            candidate_id = data.get("candidate_id")
             template_id = data.get("template_id")
             room_id = data.get("room_id")
-            print(room_id, title, template_id)
+            user_id = data.get("user_id")
+            company_id = data.get("company_id")
+
+            company = Company.objects.get(id=company_id)
+
             if title:
                 interview_round = InterviewRound.objects.create(
                     title=title,
                     template_id=template_id,
                     interviewer_id=interviewer_id,
                     meeting_room_id=room_id,
+                    candidate_id=candidate_id,
+                    user_id=user_id,
+                    company_id=company,
                 )
                 response = {
                     "id": interview_round.id,
                     "title": interview_round.title,
                     "template_id": interview_round.template_id,
+                    "candidate_id": interview_round.candidate_id,
                     "interviewer_id": interview_round.interviewer_id,
                     "meeting_room_id": interview_round.meeting_room_id,
                 }
@@ -94,116 +151,150 @@ class CreateInterviewRound(CreateAPIView):
 
 
 # Read Interview Round(:id)
-@csrf_exempt
-def get_interview_round(request, interview_round_id):
-    try:
-        interview_round = InterviewRound.objects.get(id=interview_round_id)
-        response = {
-            "id": interview_round.id,
-            "title": interview_round.title,
-            "candidate_id": interview_round.candidate_id,
-            "template_id": interview_round.template_id,
-            # "description": interview_round.description,
-            "room_id": interview_round.meeting_room_id,
-            # "video_uri": interview_round.video_uri, ## placehodler, this needs to be updated later.
-        }
-        return JsonResponse(response)
-    except InterviewRound.DoesNotExist:
-        error_response = {"error": "InterviewRound not found"}
-        return JsonResponse(error_response, status=404)
+class InterviewRoundGet(APIView):
+    permission_classes = [IsAuthenticated]
 
-
-@csrf_exempt
-def get_interview_round_by_room_id(request, room_id):
-    try:
-        interview_round = InterviewRound.objects.get(meeting_room_id=room_id)
-        response = {
-            "id": interview_round.id,
-            "title": interview_round.title,
-            "candidate_id": interview_round.candidate_id,
-            # "description": interview_round.description,
-            "room_id": interview_round.meeting_room_id,
-            # "video_uri": interview_round.video_uri, ## placehodler, this needs to be updated later.
-        }
-        return JsonResponse(response)
-    except InterviewRound.DoesNotExist:
-        error_response = {"error": "InterviewRound not found"}
-        return JsonResponse(error_response, status=404)
-
-
-# Read All Interview Rounds
-def get_all_interview_rounds(request):
-    interview_rounds = InterviewRound.objects.all()
-    response = []
-
-    for interview_round in interview_rounds:
-        response.append(
-            {
-                "id": interview_round.id,
-                "title": interview_round.title,
-                "candidate_id": interview_round.candidate_id,
-                # "description": interview_round.description,
-            }
-        )
-
-    return JsonResponse(response, safe=False)
-
-
-def get_interview_round_question(request, interview_round_id, question_id):
-    try:
-        interview_round_question = InterviewRoundQuestion.objects.get(
-            interview_round_id=interview_round_id, question_id=question_id
-        )
-        response_data = {
-            "id": interview_round_question.id,
-            "interview_round_id": interview_round_question.interview_round_id,
-            "question_id": interview_round_question.question_id,
-            "rating": interview_round_question.rating,
-            "created_at": interview_round_question.created_at,
-            "updated_at": interview_round_question.updated_at,
-        }
-        return JsonResponse(response_data, status=200)
-    except InterviewRoundQuestion.DoesNotExist:
-        return JsonResponse({"error": "Interview round question not found"}, status=404)
-
-
-# Update Interview Round
-@csrf_exempt
-def update_interview_round(request, interview_round_id):
-    try:
-        interview_round = InterviewRound.objects.get(id=interview_round_id)
-    except InterviewRound.DoesNotExist:
-        error_response = {"error": "InterviewRound not found"}
-        return JsonResponse(error_response, status=404)
-
-    if request.method == "PUT":
+    def get(self, request, interview_round_id):
         try:
-            data = json.loads(request.body)
-            title = data.get("title", interview_round.title)
-            candidate_id = data.get("candidate_id", interview_round.candidate_id)
-            description = data.get("description", interview_round.description)
+            user_company = get_object_or_404(UserCompanies, user=self.request.user)
+            company_id = user_company.company_id
 
-            interview_round.title = title
-            interview_round.candidate_id = candidate_id
-            interview_round.description = description
-            interview_round.save()
+            interview_round = InterviewRound.objects.get(
+                id=interview_round_id, company_id=company_id, deleted_at__isnull=True
+            )
+            candidate_name = interview_round.candidate.name if interview_round.candidate else None
+            interviewer = CustomUserSerializer(interview_round.interviewer).data
+            formatted_date = interview_round.created_at.strftime("%B %d, %Y")
 
             response = {
                 "id": interview_round.id,
                 "title": interview_round.title,
                 "candidate_id": interview_round.candidate_id,
-                "description": interview_round.description,
+                "candidate_name": candidate_name,  # Include candidate's name
+                "interviewer": interviewer,  # Include candidate's name
+                "template_id": interview_round.template_id,
+                "created_at": formatted_date,
+                # "description": interview_round.description,
+                "room_id": interview_round.meeting_room_id,
+                "video_uri": interview_round.video_uri,
+            }
+
+            return JsonResponse(response)
+        except InterviewRound.DoesNotExist:
+            error_response = {"error": "InterviewRound not found"}
+            return JsonResponse(error_response, status=404)
+
+
+class InterviewRoundByRoomID(APIView):
+    def get(self, request, room_id):
+        try:
+            user_company = get_object_or_404(UserCompanies, user=self.request.user)
+            company_id = user_company.company_id
+            interview_round = InterviewRound.objects.get(
+                meeting_room_id=room_id, company_id=company_id, deleted_at__isnull=True
+            )
+            response = {
+                "id": interview_round.id,
+                "title": interview_round.title,
+                "candidate_id": interview_round.candidate_id,
+                # "description": interview_round.description,
+                "room_id": interview_round.meeting_room_id,
+                # "video_uri": interview_round.video_uri, ## placehodler, this needs to be updated later.
             }
             return JsonResponse(response)
-        except json.JSONDecodeError:
-            error_response = {"error": "Invalid JSON data."}
-            return JsonResponse(error_response, status=400)
-        except Exception as e:
-            error_response = {"error": str(e)}
-            return JsonResponse(error_response, status=400)
-    else:
-        error_response = {"error": "Invalid request method"}
-        return JsonResponse(error_response, status=405)
+        except InterviewRound.DoesNotExist:
+            error_response = {"error": "InterviewRound not found"}
+            return JsonResponse(error_response, status=404)
+
+
+# Read All Interview Rounds
+class InterviewRoundListAll(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+        interview_rounds = InterviewRound.objects.filter(company_id=company_id)
+        response = []
+
+        for interview_round in interview_rounds:
+            response.append(
+                {
+                    "id": interview_round.id,
+                    "title": interview_round.title,
+                    "candidate_id": interview_round.candidate_id,
+                    # "description": interview_round.description,
+                }
+            )
+
+        return JsonResponse(response, safe=False)
+
+
+class InterviewRoundQuestionDetailGet(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, interview_round_id, question_id):
+        try:
+            interview_round_question = InterviewRoundQuestion.objects.get(
+                interview_round_id=interview_round_id, question_id=question_id, deleted_at__isnull=True
+            )
+            response_data = {
+                "id": interview_round_question.id,
+                "interview_round_id": interview_round_question.interview_round_id,
+                "question_id": interview_round_question.question_id,
+                "rating": interview_round_question.rating,
+                "created_at": interview_round_question.created_at,
+                "updated_at": interview_round_question.updated_at,
+            }
+            return JsonResponse(response_data, status=200)
+        except InterviewRoundQuestion.DoesNotExist:
+            return JsonResponse({"error": "Interview round question not found"}, status=404)
+
+
+# Update Interview Round
+class UpdateInterviewRound(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, interview_round_id):
+        try:
+            return InterviewRound.objects.get(id=interview_round_id, deleted_at__isnull=True)
+        except InterviewRound.DoesNotExist:
+            return None
+
+    def put(self, request, interview_round_id):
+        interview_round = self.get_object(interview_round_id)
+        if not interview_round:
+            error_response = {"error": "InterviewRound not found"}
+            return JsonResponse(error_response, status=404)
+
+        if request.method == "PUT":
+            try:
+                data = json.loads(request.body)
+                title = data.get("title", interview_round.title)
+                candidate_id = data.get("candidate_id", interview_round.candidate_id)
+                description = data.get("description", interview_round.description)
+
+                interview_round.title = title
+                interview_round.candidate_id = candidate_id
+                interview_round.description = description
+                interview_round.save()
+
+                response = {
+                    "id": interview_round.id,
+                    "title": interview_round.title,
+                    "candidate_id": interview_round.candidate_id,
+                    "description": interview_round.description,
+                }
+                return JsonResponse(response)
+            except json.JSONDecodeError:
+                error_response = {"error": "Invalid JSON data."}
+                return JsonResponse(error_response, status=400)
+            except Exception as e:
+                error_response = {"error": str(e)}
+                return JsonResponse(error_response, status=400)
+        else:
+            error_response = {"error": "Invalid request method"}
+            return JsonResponse(error_response, status=405)
 
 
 def get_video_duration(file_name, bucket_name):
@@ -231,40 +322,43 @@ def get_video_duration(file_name, bucket_name):
     return duration_string
 
 
-def get_interview_round_video(request, interview_round_id):
-    try:
-        interview_round = InterviewRound.objects.get(id=interview_round_id)
-        s3 = boto3.client(
-            "s3",
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        )
+class GetInterviewRoundVideo(APIView):
+    permission_classes = [IsAuthenticated]
 
-        directory_path = f"teamsinta/{interview_round.meeting_room_id}/"
-        bucket_name = "team-sinta"
-
-        # List objects in the directory
-        response = s3.list_objects_v2(Bucket=bucket_name, Prefix=directory_path)
-
-        if "Contents" in response:
-            # Get the file name (assuming there's only one file in the directory)
-            file_name = response["Contents"][0]["Key"]
-
-            # Generate signed URL for the file
-            url = s3.generate_presigned_url(
-                ClientMethod="get_object",
-                Params={
-                    "Bucket": bucket_name,
-                    "Key": file_name,
-                },
+    def get(self, request, interview_round_id):
+        try:
+            interview_round = InterviewRound.objects.get(id=interview_round_id, deleted_at__isnull=True)
+            s3 = boto3.client(
+                "s3",
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
             )
 
-            return JsonResponse({"url": url}, status=status.HTTP_200_OK)
-        else:
-            return JsonResponse({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
-    except InterviewRound.DoesNotExist:
-        error_response = {"error": "InterviewRound not found"}
-        return JsonResponse(error_response, status=404)
+            directory_path = f"teamsinta/{interview_round.meeting_room_id}/"
+            bucket_name = "team-sinta"
+
+            # List objects in the directory
+            response = s3.list_objects_v2(Bucket=bucket_name, Prefix=directory_path)
+
+            if "Contents" in response:
+                # Get the file name (assuming there's only one file in the directory)
+                file_name = response["Contents"][0]["Key"]
+
+                # Generate signed URL for the file
+
+                url = s3.generate_presigned_url(
+                    ClientMethod="get_object",
+                    Params={
+                        "Bucket": bucket_name,
+                        "Key": file_name,
+                    },
+                )
+                return JsonResponse({"url": url}, status=status.HTTP_200_OK)
+            else:
+                return JsonResponse({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
+        except InterviewRound.DoesNotExist:
+            error_response = {"error": "InterviewRound not found"}
+            return JsonResponse(error_response, status=status.HTTP_404_NOT_FOUND)
 
 
 class RateInterviewRoundQuestion(CreateAPIView):
@@ -276,8 +370,8 @@ class RateInterviewRoundQuestion(CreateAPIView):
             question_id = request.data.get("question_id")
             rating = request.data.get("rating")
 
-            interview_round = InterviewRound.objects.get(pk=interview_round_id)
-            template_question = TemplateQuestion.objects.get(question_id=question_id)
+            interview_round = InterviewRound.objects.get(pk=interview_round_id, deleted_at__isnull=True)
+            template_question = TemplateQuestion.objects.get(question_id=question_id, deleted_at__isnull=True)
 
             (
                 interview_round_question,
@@ -310,13 +404,17 @@ class RateInterviewRoundQuestion(CreateAPIView):
 
 
 # Delete Interview Round
-@csrf_exempt
-def delete_interview_round(request, interview_round_id):
-    try:
-        interview_round = InterviewRound.objects.get(id=interview_round_id)
-        interview_round.delete()
-        response = {"message": "InterviewRound deleted successfully"}
-        return JsonResponse(response)
-    except InterviewRound.DoesNotExist:
-        error_response = {"error": "InterviewRound not found"}
-        return JsonResponse(error_response, status=404)
+class DeleteInterviewRound(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, interview_round_id):
+        try:
+            interview_round = InterviewRound.objects.get(id=interview_round_id, deleted_at__isnull=True)
+            interview_round.deleted_at = timezone.now()
+            interview_round.deleted_by = request.user
+            interview_round.save()
+            response = {"message": "InterviewRound deleted successfully"}
+            return JsonResponse(response)
+        except InterviewRound.DoesNotExist:
+            error_response = {"error": "InterviewRound not found"}
+            return JsonResponse(error_response, status=404)

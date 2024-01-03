@@ -1,4 +1,5 @@
 import json
+from datetime import timezone
 
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -12,6 +13,12 @@ from user.serializers import UserCompanySerializer, UserDepartmentSerializer
 
 from .models import Company, Department
 from .serializers import CompanySerializer, DepartmentSerializer
+
+
+def perform_destroy(self, instance):
+    instance.deleted_at = timezone.now()
+    instance.deleted_by = self.request.user
+    instance.save()
 
 
 def check_permissions_and_existence(user, **kwargs):
@@ -32,8 +39,6 @@ def check_permissions_and_existence(user, **kwargs):
 
 
 def check_role_permission(view_instance, request):
-    print(view_instance)
-    print(view_instance.permission_classes)
     for permission_class in view_instance.permission_classes:
         if not permission_class().has_permission(request, view_instance):
             raise PermissionDenied
@@ -162,7 +167,8 @@ class CompanyMembers(viewsets.ModelViewSet):
 
         if company_id and UserCompanies.objects.filter(user=member, company=company).exists():
             user_company = UserCompanies.objects.filter(user=member, company=company)
-            user_company.delete()
+            perform_destroy(self, user_company)
+
             return Response({"detail": "User removed from company."}, status=status.HTTP_200_OK)
         else:
             return Response(
@@ -215,7 +221,7 @@ class CompanyDepartments(viewsets.ModelViewSet):
 
         check_permissions_and_existence(user_from_jwt, company_id=company_id)
 
-        return Department.objects.filter(company__id=company_id)
+        return Department.objects.filter(company__id=company_id, deleted_at__isnull=True)
 
     def create(self, request, *args, **kwargs):
         data = json.loads(request.body)
@@ -275,9 +281,10 @@ class CompanyDepartments(viewsets.ModelViewSet):
             )
 
         # Destroy
-        if department_id and Department.objects.filter(id=department_id).exists():
+        if department_id and Department.objects.filter(id=department_id, deleted_at__isnull=True).exists():
             department = Department.objects.filter(id=department_id)
-            department.delete()
+            perform_destroy(self, department)
+
             return Response({"detail": "Department removed."}, status=status.HTTP_200_OK)
         else:
             return Response({"detail": "Department doesnt exist."}, status=status.HTTP_404_NOT_FOUND)
@@ -328,35 +335,48 @@ class CompanyDepartmentMembers(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
-        company_id = self.request.GET.get("company", None)
         department_id = self.request.GET.get("department", None)
-        inviter = self.request.user
-        inviteeId = self.request.GET.get("invitee", None)
+        invitee_id = self.request.GET.get("invitee", None)
+        data = json.loads(request.body)
 
         # Check Role & Permission
         check_role_permission(self, request)
 
         # User & Company Exists
-        invitee = get_object_or_404(CustomUser, id=inviteeId)
-        department = get_object_or_404(Department, id=department_id)
+        invitee = get_object_or_404(CustomUser, id=invitee_id)
 
-        # Invitee is a member of the company check
-        if not check_permissions_and_existence(invitee, company_id=department.company.id):
-            return Response(
-                {"detail": "Invitee is not a member of the requested company"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
-        # Check that user is not already a member, and if not, try adding.
-        if UserDepartments.objects.filter(user=invitee, department__id=department_id).exists():
-            return Response(
-                {"detail": "User is already a member of this department"},
-                status=status.HTTP_409_CONFLICT,
-            )
-        else:
-            invitee, created = UserDepartments.objects.get_or_create(user=invitee, department=department)
-            if not created:
+        # Check if data is present
+        if data:
+            UserDepartments.objects.filter(user=invitee).delete()
+            departments = Department.objects.filter(id__in=data)
+            try:
+                UserDepartments.objects.bulk_create(
+                    [UserDepartments(user=invitee, department=department) for department in departments]
+                )
+            except Exception as e:
                 return Response({"detail": "Failed to add user to department"})
+
+        else:
+            department = get_object_or_404(Department, id=department_id)
+
+            # Invitee is a member of the company check
+            if not check_permissions_and_existence(invitee, company_id=department.company.id):
+                return Response(
+                    {"detail": "Invitee is not a member of the requested company"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
+            # Check that user is not already a member, and if not, try adding.
+            if UserDepartments.objects.filter(user=invitee, department__id=department.id).exists():
+                return Response(
+                    {"detail": "User is already a member of this department"},
+                    status=status.HTTP_409_CONFLICT,
+                )
+            else:
+                invitee, created = UserDepartments.objects.get_or_create(user=invitee, department=department)
+                if not created:
+                    return Response({"detail": "Failed to add user to department"})
+
         return Response({"detail": "User added to department."}, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
@@ -376,9 +396,13 @@ class CompanyDepartmentMembers(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        if department_id and UserDepartments.objects.filter(user=member, department=department).exists():
+        if (
+            department_id
+            and UserDepartments.objects.filter(user=member, department=department, deleted_at__isnull=True).exists()
+        ):
             user_department = UserDepartments.objects.filter(user=member, department=department)
-            user_department.delete()
+            perform_destroy(self, user_department)
+
             return Response({"detail": "User removed from department."}, status=status.HTTP_200_OK)
         else:
             return Response(

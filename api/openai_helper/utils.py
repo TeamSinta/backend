@@ -16,10 +16,10 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 def get_embedding(text: str) -> List[float]:
     response = client.embeddings.create(input=[text], model=EMBEDDING_MODEL)
     print(response)
-    embedding_data = response.get("data", [])
+    embedding_data = response.data if response.data else []
     print(embedding_data)
     if embedding_data:
-        return embedding_data[0].get("embedding", [])
+        return embedding_data[0].embedding if hasattr(embedding_data[0], "embedding") else []
     return []
 
 
@@ -43,7 +43,10 @@ def get_answer_notes_for_question(context_text: str, question: str) -> str:
         top_p=1,
     )
 
-    return response["choices"][0]["message"]["content"]
+    if response.choices and response.choices[0].message:
+        return response.choices[0].message.content
+    else:
+        return ""
 
 
 def summarize_interview(qa_text: str) -> str:
@@ -96,9 +99,11 @@ def _summarized_interview_description_helper(q_text_list: List) -> str:
 
     response = client.chat.completions.create(model="gpt-3.5-turbo", messages=messages, temperature=0, top_p=1)
 
-    content_generated = response["choices"][0]["message"]["content"]
-
-    return content_generated
+    if response.choices and len(response.choices) > 0:
+        first_choice = response.choices[0]
+        if hasattr(first_choice, "message") and first_choice.message:
+            return first_choice.message.content
+    return ""
 
 
 def _summarized_interview_faq_helper(qa_text: str, retry: int = 0) -> str:
@@ -116,7 +121,7 @@ def _summarized_interview_faq_helper(qa_text: str, retry: int = 0) -> str:
         },
         {
             "role": "assistant",
-            "content": "You will be given all the information in the context. The following is a set of questions and answers. I want to generate a summarized version for these question-answer pairs. All questions start with 'Question:' and answer with 'Answer:'. Summarize all the questions into 3-4 distinct questions. And summarize the answers to respond to these questions. Show the data as question-answer pairs. Output the result as a list of JSON file where the keys are 'question' and 'answer'. Throw away any content not relevant to the summary. Ensure that the output can be parsed by the `json.loads` function in python. Ensure all the bullet points start with `-`.",
+            "content": "You will be given all the information in the context. The following is a set of questions and answers. I want to generate a summarized version for these question-answer pairs. All questions start with 'Question:' and answers with 'Answer:'. Summarize all the questions into 3-4 distinct questions. And summarize the answers to respond to these questions. Show the data as question-answer pairs. Output the result as a list of JSON file where the keys are 'question' and 'answer'. Throw away any content not relevant to the summary. Ensure that the output can be parsed by the `json.loads` function in python. Ensure all the bullet points start with `-`.",
         },
         {"role": "user", "content": context},
     ]
@@ -127,6 +132,8 @@ def _summarized_interview_faq_helper(qa_text: str, retry: int = 0) -> str:
 
     response = client.chat.completions.create(model="gpt-3.5-turbo", messages=messages, temperature=0, top_p=1)
 
-    content_generated = response["choices"][0]["message"]["content"]
-
-    return content_generated
+    if response.choices and len(response.choices) > 0:
+        first_choice = response.choices[0]
+        if hasattr(first_choice, "message") and first_choice.message:
+            return first_choice.message.content
+    return ""
