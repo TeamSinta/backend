@@ -36,6 +36,14 @@ class TemplateTopicList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = TemplateTopicSerializer
 
+    def create(self, request, *args, **kwargs):
+        request.data["company"] = request.data.get("company_id")
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     def get_queryset(self):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
@@ -107,6 +115,9 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
         difficulty_display = question_data.pop("difficulty", "")  # Remove "difficulty" from question_data
         difficulty = difficulty_mapping.get(difficulty_display, None)
         question_data["difficulty"] = difficulty  # Add the converted "difficulty" back to question_data
+        # Add the company of the logged-in user to question_data
+        user_company = get_object_or_404(UserCompanies, user=request.user)
+        question_data["company"] = user_company.company_id
         # Create a new Question object
         print(question_data)
         question_serializer = QuestionSerializer(data=question_data)
@@ -541,7 +552,7 @@ class GetAllTemplateTopics(APIView):
                     "id": topic.id,
                     "topics_text": topic.topics_text,
                     "template_id": topic.template_id.id,
-                    "company_id": topic.company_id.id,
+                    "company_id": topic.company_id,
                     "time": topic.time,
                 }
 
