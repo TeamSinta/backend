@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from company.models import Company
 from interview_templates.models import TemplateQuestion
 from user.models import UserCompanies
 from user.serializers import CustomUserSerializer
@@ -110,6 +111,7 @@ class InterviewRoundQuestionDetail(BaseDeleteInstance, generics.RetrieveUpdateDe
 
 class CreateInterviewRound(CreateAPIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = InterviewRound
 
     def create(self, request, *args, **kwargs):
         try:
@@ -119,7 +121,11 @@ class CreateInterviewRound(CreateAPIView):
             candidate_id = data.get("candidate_id")
             template_id = data.get("template_id")
             room_id = data.get("room_id")
-            print(room_id, title, template_id)
+            user_id = data.get("user_id")
+            company_id = data.get("company_id")
+
+            company = Company.objects.get(id=company_id)
+
             if title:
                 interview_round = InterviewRound.objects.create(
                     title=title,
@@ -127,6 +133,8 @@ class CreateInterviewRound(CreateAPIView):
                     interviewer_id=interviewer_id,
                     meeting_room_id=room_id,
                     candidate_id=candidate_id,
+                    user_id=user_id,
+                    company_id=company,
                 )
                 response = {
                     "id": interview_round.id,

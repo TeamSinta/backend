@@ -65,6 +65,7 @@ class Comment(models.Model):
 
 class QuestionBank(models.Model):
     title = models.CharField(max_length=255)
+    description = models.TextField()
     questions = models.ManyToManyField(Question)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, default=None)
     user = models.ForeignKey(
