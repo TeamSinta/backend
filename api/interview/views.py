@@ -111,6 +111,7 @@ class InterviewRoundQuestionDetail(BaseDeleteInstance, generics.RetrieveUpdateDe
 
 class CreateInterviewRound(CreateAPIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = InterviewRound
 
     def create(self, request, *args, **kwargs):
         try:
@@ -120,10 +121,12 @@ class CreateInterviewRound(CreateAPIView):
             candidate_id = data.get("candidate_id")
             template_id = data.get("template_id")
             room_id = data.get("room_id")
+
             # Set company_id from logged-in user
             user_company = get_object_or_404(UserCompanies, user=request.user)
             company_id = user_company.company_id
             company = get_object_or_404(Company, id=company_id)
+
 
             if title:
                 interview_round = InterviewRound.objects.create(
@@ -132,7 +135,8 @@ class CreateInterviewRound(CreateAPIView):
                     interviewer_id=interviewer_id,
                     meeting_room_id=room_id,
                     candidate_id=candidate_id,
-                    company=company,
+                    user=request.user,
+                    company_id=company,
                 )
                 response = {
                     "id": interview_round.id,
@@ -174,7 +178,7 @@ class InterviewRoundGet(APIView):
                 "created_at": formatted_date,
                 # "description": interview_round.description,
                 "room_id": interview_round.meeting_room_id,
-                # "video_uri": interview_round.video_uri, ## placehodler, this needs to be updated later.
+                "video_uri": interview_round.video_uri,
             }
 
             return JsonResponse(response)

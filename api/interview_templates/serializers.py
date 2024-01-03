@@ -11,8 +11,13 @@ from .models import Template, TemplateQuestion, TemplateTopic
 class TemplatesSerializer(serializers.ModelSerializer):
     department = serializers.StringRelatedField()
     department_id = serializers.PrimaryKeyRelatedField(
-        write_only=True, queryset=Department.objects.all(), source="department"
+        write_only=True,
+        queryset=Department.objects.all(),
+        source="department",
+        required=False,
+        allow_null=True,
     )
+
     company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all(), write_only=True)
     interviewers = serializers.PrimaryKeyRelatedField(
         many=True,

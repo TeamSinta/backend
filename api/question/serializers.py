@@ -1,9 +1,17 @@
 from rest_framework import serializers
 
-from .models import Question, QuestionBank
+from .models import DifficultyChoices, Question, QuestionBank
+
+
+class DifficultyField(serializers.ChoiceField):
+    def to_representation(self, obj):
+        # Convert the integer value to the string representation
+        return self.choices.get(obj, obj)
 
 
 class QuestionSerializer(serializers.ModelSerializer):
+    difficulty = DifficultyField(choices=DifficultyChoices.choices)
+
     class Meta:
         model = Question
         fields = "__all__"

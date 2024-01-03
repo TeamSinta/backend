@@ -74,6 +74,7 @@ class QuestionList(BaseDeleteInstance, generics.ListCreateAPIView):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
         queryset = Question.objects.filter(company=company_id, deleted_at__isnull=True)
+
         return queryset
 
     def perform_create(self, serializer):
