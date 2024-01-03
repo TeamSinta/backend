@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from company.models import Company
 from interview_templates.models import TemplateQuestion
 from user.models import UserCompanies
 from user.serializers import CustomUserSerializer
@@ -119,8 +120,11 @@ class CreateInterviewRound(CreateAPIView):
             candidate_id = data.get("candidate_id")
             template_id = data.get("template_id")
             room_id = data.get("room_id")
-            company_id = data.get("company_id")
-            print(room_id, title, template_id)
+            # Set company_id from logged-in user
+            user_company = get_object_or_404(UserCompanies, user=request.user)
+            company_id = user_company.company_id
+            company = get_object_or_404(Company, id=company_id)
+
             if title:
                 interview_round = InterviewRound.objects.create(
                     title=title,
@@ -128,7 +132,7 @@ class CreateInterviewRound(CreateAPIView):
                     interviewer_id=interviewer_id,
                     meeting_room_id=room_id,
                     candidate_id=candidate_id,
-                    company=company_id,
+                    company=company,
                 )
                 response = {
                     "id": interview_round.id,

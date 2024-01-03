@@ -6,9 +6,9 @@ from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from pgvector.django import CosineDistance
 from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 
 from interview.models import InterviewRound, InterviewRoundQuestion
 from openai_helper.utils import get_answer_notes_for_question, get_embedding
@@ -20,6 +20,7 @@ from .serializers import InterviewerFeedbackSerializer
 
 class QuestionSummarizedAnswerView(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request: HttpRequest, interview_round_id: int) -> Response:
         interview_round = get_object_or_404(InterviewRound, pk=interview_round_id)
         return self._serve_question_answers(interview_round)
@@ -37,7 +38,7 @@ class QuestionSummarizedAnswerView(APIView):
         else:
             return Response(
                 {"status": "error", "message": "No question answers found"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status=status.HTTP_404_NOT_FOUND,
             )
 
     def _save_answer_notes(self, answer: Answer, question_text: str):
@@ -114,7 +115,7 @@ class QuestionSummarizedAnswerView(APIView):
             template_question = interview_round_question.question
             question = template_question.question
 
-            answer = interview_round_question.answer.all()[0]
+            answer = interview_round_question.answer.all()
             tc = []
             for chunk in answer.transcript_chunks.all():
                 speaker_username = chunk.speaker.username if chunk.speaker is not None else "Unknown"
