@@ -221,7 +221,7 @@ class CompanyDepartments(viewsets.ModelViewSet):
 
         check_permissions_and_existence(user_from_jwt, company_id=company_id)
 
-        return Department.objects.filter(company__id=company_id, deleted_at__isnull=True)
+        return Department.objects.filter(company=company_id, deleted_at__isnull=True)
 
     def create(self, request, *args, **kwargs):
         data = json.loads(request.body)
@@ -315,7 +315,7 @@ class CompanyDepartments(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if Department.objects.filter(title=new_department_name, company__id=company_id).exists():
+        if Department.objects.filter(title=new_department_name, company=company_id).exists():
             return Response(
                 {"detail": "A department with this name already exists on this company."},
                 status=status.HTTP_409_CONFLICT,

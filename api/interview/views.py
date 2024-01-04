@@ -43,7 +43,7 @@ class InterviewRoundList(generics.ListCreateAPIView):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
-        queryset = InterviewRound.objects.filter(company_id=company_id)
+        queryset = InterviewRound.objects.filter(company=company_id)
         return queryset
 
 
@@ -55,7 +55,7 @@ class InterviewRoundDetail(generics.RetrieveUpdateDestroyAPIView):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
 
-        queryset = InterviewRound.objects.filter(company_id=company_id)
+        queryset = InterviewRound.objects.filter(company=company_id)
         return queryset
 
 
@@ -125,7 +125,7 @@ class CreateInterviewRound(CreateAPIView):
             user_id = data.get("user_id")
             company_id = data.get("company_id")
 
-            company = Company.objects.get(id=company_id)
+            company = get_object_or_404(Company, id=company_id)
 
             if title:
                 interview_round = InterviewRound.objects.create(
@@ -135,7 +135,7 @@ class CreateInterviewRound(CreateAPIView):
                     meeting_room_id=room_id,
                     candidate_id=candidate_id,
                     user_id=user_id,
-                    company_id=company,
+                    company=company,
                 )
                 response = {
                     "id": interview_round.id,
@@ -161,7 +161,7 @@ class InterviewRoundGet(APIView):
             company_id = user_company.company_id
 
             interview_round = InterviewRound.objects.get(
-                id=interview_round_id, company_id=company_id, deleted_at__isnull=True
+                id=interview_round_id, company=company_id, deleted_at__isnull=True
             )
             candidate_name = interview_round.candidate.name if interview_round.candidate else None
             interviewer = CustomUserSerializer(interview_round.interviewer).data
@@ -192,7 +192,7 @@ class InterviewRoundByRoomID(APIView):
             user_company = get_object_or_404(UserCompanies, user=self.request.user)
             company_id = user_company.company_id
             interview_round = InterviewRound.objects.get(
-                meeting_room_id=room_id, company_id=company_id, deleted_at__isnull=True
+                meeting_room_id=room_id, company=company_id, deleted_at__isnull=True
             )
             response = {
                 "id": interview_round.id,

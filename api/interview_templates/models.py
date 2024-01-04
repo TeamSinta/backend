@@ -27,7 +27,7 @@ class TemplateTopic(models.Model):
     TIME_CHOICES = [(i, str(i)) for i in range(1, 61)]
     topics_text = models.CharField(max_length=200)
     template_id = models.ForeignKey(Template, on_delete=models.CASCADE)
-    company_id = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
     time = models.PositiveSmallIntegerField(choices=TIME_CHOICES, default=1)
     user = models.ForeignKey(
         CustomUser,
@@ -50,10 +50,6 @@ class TemplateQuestion(models.Model):
     template_id = models.ForeignKey(Template, on_delete=models.CASCADE)
     topic = models.ForeignKey(TemplateTopic, on_delete=models.CASCADE, related_name="template_questions")
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="interview_round_questions")
-    user = models.ForeignKey(
-        CustomUser, on_delete=models.SET_NULL, null=True, related_name="template_question_creator"
-    )
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
