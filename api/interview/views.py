@@ -3,6 +3,7 @@ from datetime import timezone
 
 import boto3
 from django.conf import settings
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
@@ -214,16 +215,20 @@ class InterviewRoundListAll(APIView):
     def get(self, request):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
         company_id = user_company.company_id
-        interview_rounds = InterviewRound.objects.filter(company_id=company_id)
+        interview_rounds = InterviewRound.objects.filter(company=company_id)
         response = []
 
         for interview_round in interview_rounds:
+            candidate_name = interview_round.candidate.name  # Adjust based on your Candidate model
+            created_at_natural = naturaltime(interview_round.created_at)
+
             response.append(
                 {
                     "id": interview_round.id,
                     "title": interview_round.title,
                     "candidate_id": interview_round.candidate_id,
-                    # "description": interview_round.description,
+                    "candidate_name": candidate_name,
+                    "created_at": created_at_natural,
                 }
             )
 

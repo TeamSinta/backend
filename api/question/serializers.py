@@ -8,6 +8,19 @@ class DifficultyField(serializers.ChoiceField):
         # Convert the integer value to the string representation
         return self.choices.get(obj, obj)
 
+    def to_internal_value(self, data):
+        # If the data is already an integer, return it directly
+        if isinstance(data, int) and data in DifficultyChoices.values:
+            return data
+
+        # If the data is a string, convert it to the corresponding integer
+        if isinstance(data, str):
+            for key, value in DifficultyChoices.choices:
+                if value.lower() == data.lower():
+                    return key
+
+        raise serializers.ValidationError(f'"{data}" is not a valid choice.')
+
 
 class QuestionSerializer(serializers.ModelSerializer):
     difficulty = DifficultyField(choices=DifficultyChoices.choices)
