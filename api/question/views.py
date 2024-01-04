@@ -32,10 +32,10 @@ class QuestionBankList(BaseDeleteInstance, generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         user_company = get_object_or_404(UserCompanies, user=self.request.user)
-        company_id = user_company.company_id
 
         # Associate the company from the logged-in user
-        request.data["company"] = company_id
+        request.data["company"] = user_company.company_id
+        request.data["user"] = user_company.user_id
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

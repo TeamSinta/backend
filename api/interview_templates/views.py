@@ -37,7 +37,9 @@ class TemplateTopicList(generics.ListCreateAPIView):
     serializer_class = TemplateTopicSerializer
 
     def create(self, request, *args, **kwargs):
-        request.data["company"] = request.data.get("company_id")
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        request.data["user"] = user_company.user_id
+        request.data["company"] = user_company.company_id
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -118,6 +120,7 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
         # Add the company of the logged-in user to question_data
         user_company = get_object_or_404(UserCompanies, user=request.user)
         question_data["company"] = user_company.company_id
+        question_data["user"] = user_company.user_id
         # Create a new Question object
         print(question_data)
         question_serializer = QuestionSerializer(data=question_data)
