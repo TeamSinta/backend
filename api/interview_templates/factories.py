@@ -47,9 +47,9 @@ class TemplateTopicFactory(factory.django.DjangoModelFactory):
         except ObjectDoesNotExist:
             return TemplateFactory()
 
-    # company_id = factory.SelfAttribute("..template_id.company")
+    # company = factory.SelfAttribute("..template_id.company")
     @factory.lazy_attribute
-    def company_id(self):
+    def company(self):
         return self.template_id.company
 
     time = factory.Faker("random_int", min=1, max=60)

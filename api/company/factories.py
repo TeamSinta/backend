@@ -8,6 +8,8 @@ class CompanyFactory(factory.django.DjangoModelFactory):
         model = Company
 
     name = factory.Faker("company")
+    created_at = factory.Faker("date_time_this_year", before_now=True, after_now=False)
+    updated_at = factory.Faker("date_time_this_year", before_now=True, after_now=False)
 
 
 class DepartmentFactory(factory.django.DjangoModelFactory):
@@ -15,3 +17,5 @@ class DepartmentFactory(factory.django.DjangoModelFactory):
         model = Department
 
     name = factory.Faker("department")
+    created_at = factory.Faker("date_time_this_year", before_now=True, after_now=False)
+    updated_at = factory.Faker("date_time_this_year", before_now=True, after_now=False)
