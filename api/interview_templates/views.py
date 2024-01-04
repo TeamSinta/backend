@@ -677,10 +677,8 @@ class GetAllTemplateQuestions(APIView):
     def get(self, request, template_id):
         if request.method == "GET":
             try:
-                user_company = get_object_or_404(UserCompanies, user=request.user)
-                company_id = user_company.company_id
                 template_questions = TemplateQuestion.objects.filter(
-                    template_id=template_id, company=company_id, deleted_at__isnull=True
+                    template_id=template_id, deleted_at__isnull=True
                 ).select_related("question", "topic")
                 # Using a dictionary to group by topics
                 stages = {}
@@ -723,11 +721,7 @@ class GetAllQuestions(APIView):
     def get(self, request, template_id):
         if request.method == "GET":
             try:
-                user_company = get_object_or_404(UserCompanies, user=request.user)
-                company_id = user_company.company_id
-                template_questions = TemplateQuestion.objects.filter(
-                    template_id=template_id, company=company_id, deleted_at__isnull=True
-                )
+                template_questions = TemplateQuestion.objects.filter(template_id=template_id, deleted_at__isnull=True)
 
                 # Create a list of dictionaries containing information about each TemplateQuestion
                 template_question_list = []
