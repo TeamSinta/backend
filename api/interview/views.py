@@ -189,10 +189,10 @@ class InterviewRoundGet(APIView):
 class InterviewRoundByRoomID(APIView):
     def get(self, request, room_id):
         try:
-            user_company = get_object_or_404(UserCompanies, user=self.request.user)
-            company_id = user_company.company_id
+            # user_company = get_object_or_404(UserCompanies, user=self.request.user)
+            # company_id = user_company.company_id
             interview_round = InterviewRound.objects.get(
-                meeting_room_id=room_id, company=company_id, deleted_at__isnull=True
+                meeting_room_id=room_id, deleted_at__isnull=True
             )
             response = {
                 "id": interview_round.id,
