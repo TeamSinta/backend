@@ -19,6 +19,8 @@ from user.serializers import CustomUserSerializer
 
 from .models import Candidate, InterviewRound, InterviewRoundQuestion
 from .serializers import CandidateSerializer, InterviewRoundQuestionSerializer, InterviewRoundSerializer
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+
 
 DELETE_SUCCESS = {"detail": "Successfully deleted"}
 
@@ -186,27 +188,24 @@ class InterviewRoundGet(APIView):
             return JsonResponse(error_response, status=404)
 
 
-class InterviewRoundByRoomID(APIView):
-    def get(self, request, room_id):
-        try:
-            # user_company = get_object_or_404(UserCompanies, user=self.request.user)
-            # company_id = user_company.company_id
-            interview_round = InterviewRound.objects.get(
-                meeting_room_id=room_id, deleted_at__isnull=True
-            )
-            response = {
-                "id": interview_round.id,
-                "title": interview_round.title,
-                "candidate_id": interview_round.candidate_id,
-                # "description": interview_round.description,
-                "room_id": interview_round.meeting_room_id,
-                # "video_uri": interview_round.video_uri, ## placehodler, this needs to be updated later.
-            }
-            return JsonResponse(response)
-        except InterviewRound.DoesNotExist:
-            error_response = {"error": "InterviewRound not found"}
-            return JsonResponse(error_response, status=404)
-
+@api_view(['GET'])
+@authentication_classes([])
+@permission_classes([])
+def interview_round_by_room_id(request, room_id):
+    try:
+        interview_round = InterviewRound.objects.get(
+            meeting_room_id=room_id, deleted_at__isnull=True
+        )
+        response = {
+            "id": interview_round.id,
+            "title": interview_round.title,
+            "candidate_id": interview_round.candidate_id,
+            "room_id": interview_round.meeting_room_id,
+        }
+        return JsonResponse(response)
+    except InterviewRound.DoesNotExist:
+        error_response = {"error": "InterviewRound not found"}
+        return JsonResponse(error_response, status=404)
 
 # Read All Interview Rounds
 class InterviewRoundListAll(APIView):
