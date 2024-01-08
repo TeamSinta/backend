@@ -72,7 +72,7 @@ class QuestionTranscriptView(APIView):
 
 
 class GenerateTranscript(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request: HttpRequest, interview_round_id: int) -> Response:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -106,7 +106,7 @@ class GenerateTranscript(APIView):
 
 
 class AnnounceTranscriptResult(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def post(self, request: HttpRequest, *args, **kwargs):
         # Retrieve the interview_round_id from the request body
