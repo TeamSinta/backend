@@ -34,7 +34,7 @@ def summarize_qa_pairs(qa_pairs):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class GenerateSummaryView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def _generate_response(self, interview_round_id, summary):
         response_data = {
