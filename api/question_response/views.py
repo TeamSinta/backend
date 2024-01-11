@@ -19,7 +19,7 @@ from .serializers import InterviewerFeedbackSerializer
 
 
 class QuestionSummarizedAnswerView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request: HttpRequest, interview_round_id: int) -> Response:
         interview_round = get_object_or_404(InterviewRound, pk=interview_round_id)
