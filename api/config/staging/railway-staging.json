@@ -5,7 +5,8 @@
     "nixpacksPlan": {
       "phases": {
         "setup": {
-          "aptPkgs": ["ffmpeg"]
+          "nixPkgs": ["...", "ffmpeg"],
+          "cmds": ["...", "sudo apt-get install -y ffmpeg"]
         }
       }
     },
