@@ -6,7 +6,10 @@
       "phases": {
         "setup": {
           "nixPkgs": ["...", "ffmpeg"],
-          "cmds": ["...", "sudo apt-get update && sudo apt-get install ffmpeg"]
+          "cmds": [
+            "...",
+            "sudo apt-get -y update && sudo apt-get install -y ffmpeg"
+          ]
         }
       }
     },
