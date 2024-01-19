@@ -25,7 +25,7 @@ class Question(models.Model):
     guidelines = models.TextField()
     reply_time = models.IntegerField()
     difficulty = models.IntegerField(choices=DifficultyChoices.choices, default=None)
-    competency = models.CharField(max_length=200)
+    competency = models.CharField(max_length=200, blank=True, default=None, null=True)
     review = models.IntegerField(choices=ReviewChoices.choices, null=True, blank=True, default=None)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, default=None)
     user = models.ForeignKey(

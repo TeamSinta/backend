@@ -80,7 +80,11 @@ class QuestionList(BaseDeleteInstance, generics.ListCreateAPIView):
     def perform_create(self, serializer):
         question_instance = serializer.save()
         embedding = get_embedding(question_instance.question_text)
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
         question_instance.embedding = embedding
+        question_instance.company_id = company_id
+        question_instance.user_id = self.request.user.id
         question_instance.save()
 
 
