@@ -1,12 +1,23 @@
 {
-	"$schema": "https://railway.app/railway.schema.json",
-	"build": {
-		"builder": "NIXPACKS",
-		"buildCommand": "poetry install"
-	},
-	"deploy": {
-		"startCommand": "python manage.py makemigrations company && python manage.py makemigrations user && python manage.py makemigrations && python manage.py migrate && python manage.py initsite && python manage.py initsocial_app && python manage.py collectstatic --noinput && daphne -p $PORT -b 0.0.0.0 app.asgi:application",
-		"restartPolicyType": "NEVER",
-		"restartPolicyMaxRetries": 10
-	}
+  "$schema": "https://schema.up.railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "nixpacksPlan": {
+      "phases": {
+        "setup": {
+          "nixPkgs": ["...", "ffmpeg"],
+          "cmds": [
+            "...",
+            "sudo apt-get -y update && sudo apt-get install -y ffmpeg"
+          ]
+        }
+      }
+    },
+    "buildCommand": "poetry install"
+  },
+  "deploy": {
+    "startCommand": "python manage.py makemigrations company && python manage.py makemigrations user && python manage.py makemigrations && python manage.py migrate && python manage.py initsite && python manage.py initsocial_app && python manage.py collectstatic --noinput && daphne -p $PORT -b 0.0.0.0 app.asgi:application",
+    "restartPolicyType": "NEVER",
+    "restartPolicyMaxRetries": 10
+  }
 }

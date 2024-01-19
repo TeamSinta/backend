@@ -19,7 +19,7 @@ from .serializers import InterviewerFeedbackSerializer
 
 
 class QuestionSummarizedAnswerView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request: HttpRequest, interview_round_id: int) -> Response:
         interview_round = get_object_or_404(InterviewRound, pk=interview_round_id)
@@ -108,38 +108,34 @@ class QuestionSummarizedAnswerView(APIView):
         question_answers = []
 
         for interview_round_question in interview_round_questions:
-            # TODO: Add speaker image url
-            # TODO: Support showing competency and score
-            # TODO: Show speaker first name and last name
-            # TODO: UPdate competency and score
             template_question = interview_round_question.question
             question = template_question.question
 
-            answer = interview_round_question.answer.all()
-            tc = []
-            for chunk in answer.transcript_chunks.all():
-                speaker_username = chunk.speaker.username if chunk.speaker is not None else "Unknown"
-                tc.append(
+            answers = interview_round_question.answer.all()
+            for answer in answers:
+                tc = []
+                for chunk in answer.transcript_chunks.all():
+                    speaker_username = chunk.speaker.username if chunk.speaker is not None else "Unknown"
+                    tc.append(
+                        {
+                            "chunk_text": chunk.chunk_text,
+                            "start_time": chunk.start_time,
+                            "end_time": chunk.end_time,
+                            "speaker": speaker_username,
+                        }
+                    )
+
+                question_answers.append(
                     {
-                        "chunk_text": chunk.chunk_text,
-                        "start_time": chunk.start_time,
-                        "end_time": chunk.end_time,
-                        "speaker": speaker_username,
+                        "question": question.question_text,
+                        "answer": answer.answer_text,
+                        "transcript_chunks": tc,
+                        "competency": question.competency,
+                        "score": interview_round_question.rating,
                     }
                 )
 
-            question_answers.append(
-                {
-                    "question": question.question_text,
-                    "answer": answer.answer_text,
-                    "transcript_chunks": tc,
-                    "competency": question.competency,
-                    "score": interview_round_question.rating,
-                }
-            )
-
         return question_answers
-
 
 class InterviewerFeedbackListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
