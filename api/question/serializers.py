@@ -50,6 +50,7 @@ class QuestionBankUpdateSerializer(serializers.ModelSerializer):
         instance = super(QuestionBankUpdateSerializer, self).update(instance, validated_data)
 
         if questions_data is not None:
-            instance.questions.set(questions_data)
+            for question in questions_data:
+                instance.questions.add(question)
 
         return instance
