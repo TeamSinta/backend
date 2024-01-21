@@ -137,6 +137,7 @@ class QuestionSummarizedAnswerView(APIView):
 
         return question_answers
 
+
 class InterviewerFeedbackListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = InterviewerFeedback.objects.all()

@@ -1,3 +1,6 @@
+import os
+
+from june import analytics
 from rest_framework import serializers
 
 from company.models import Company, Department
@@ -6,6 +9,8 @@ from question.serializers import QuestionSerializer
 from user.serializers import CustomUser, CustomUserSerializer
 
 from .models import Template, TemplateQuestion, TemplateTopic
+
+analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
 
 
 class TemplatesSerializer(serializers.ModelSerializer):
@@ -37,6 +42,11 @@ class TemplatesSerializer(serializers.ModelSerializer):
         company_data = validated_data.pop("company", None)
         template = Template.objects.create(**validated_data, company=company_data)
         template.interviewers.set(interviewers_data)
+        # Add June analytics tracking here
+        user_id = self.context["request"].user.id  # Assuming user ID is available in the request context
+        analytics.identify(user_id=str(user_id), traits={"email": self.context["request"].user.email})
+        analytics.track(user_id=str(user_id), event="templates-created")
+
         return template
 
     def update(self, instance, validated_data):
