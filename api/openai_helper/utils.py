@@ -15,7 +15,6 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(6))
 def get_embedding(text: str) -> List[float]:
     response = client.embeddings.create(input=[text], model=EMBEDDING_MODEL)
-    print(response)
     embedding_data = response.data if response.data else []
     print(embedding_data)
     if embedding_data:

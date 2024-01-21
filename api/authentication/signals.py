@@ -1,12 +1,16 @@
+import os
 import random
 import string
 
 from allauth.account.signals import user_signed_up
 from allauth.socialaccount.models import SocialAccount
 from django.dispatch import receiver
+from june import analytics
 
 from company.models import Company
 from user.models import Role, UserCompanies
+
+analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY")
 
 
 @receiver(user_signed_up)
@@ -21,6 +25,8 @@ def assign_profile_picture(request, user, **kwargs):
             user.profile_picture = picture_url
 
         user.save()
+    analytics.identify(user_id=str(user.id), traits={"email": user.email})
+    analytics.track(user_id=str(user.id), event="user-signed-up")
 
 
 @receiver(user_signed_up)
