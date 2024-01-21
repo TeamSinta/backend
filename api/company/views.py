@@ -217,11 +217,24 @@ class CompanyDepartments(viewsets.ModelViewSet):
 
     def get_queryset(self):
         company_id = self.request.GET.get("company", None)
+        sort_by = self.request.GET.get("sort_by", None)
         user_from_jwt = self.request.user
 
         check_permissions_and_existence(user_from_jwt, company_id=company_id)
 
-        return Department.objects.filter(company=company_id, deleted_at__isnull=True)
+        result = []
+
+        result = Department.objects.filter(company=company_id, deleted_at__isnull=True)
+
+        if sort_by == "1":
+            return result.order_by("title")
+        elif sort_by == "2":
+            return result.order_by("-title")
+        elif sort_by == "3":
+            return result.order_by("role")
+        else:
+            return result
+
 
     def create(self, request, *args, **kwargs):
         data = json.loads(request.body)
