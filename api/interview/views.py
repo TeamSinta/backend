@@ -278,8 +278,6 @@ class UpdateInterviewRound(APIView):
                 data = json.loads(request.body)
                 for key, value in data.items():
                     if hasattr(interview_round, key):
-                        print("key", key)
-                        print("value", value)
                         setattr(interview_round, key, value)
 
                 interview_round.save()
