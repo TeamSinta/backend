@@ -4,7 +4,6 @@ from datetime import timezone
 
 import boto3
 from django.conf import settings
-from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from june import analytics
@@ -85,7 +84,9 @@ class InterviewRoundQuestionList(BaseDeleteInstance, generics.ListCreateAPIView)
     serializer_class = InterviewRoundQuestionSerializer
 
     def get_queryset(self):
-        queryset = InterviewRoundQuestion.objects.filter(deleted_at__isnull=True)
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+        queryset = InterviewRoundQuestion.objects.filter(company_id=company_id, deleted_at__isnull=True)
         interview_round = self.request.query_params.get("interviewRound")  # Correct query parameter
         if interview_round is not None:
             queryset = queryset.filter(interview_round_id=interview_round)
@@ -109,7 +110,9 @@ class InterviewRoundQuestionDetail(BaseDeleteInstance, generics.RetrieveUpdateDe
     serializer_class = InterviewRoundQuestionSerializer
 
     def get_queryset(self):
-        queryset = InterviewRoundQuestion.objects.filter(deleted_at__isnull=True)
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+        queryset = InterviewRoundQuestion.objects.filter(company_id=company_id, deleted_at__isnull=True)
         return queryset
 
 
@@ -189,7 +192,7 @@ class InterviewRoundGet(APIView):
 
             return JsonResponse(response)
         except InterviewRound.DoesNotExist:
-            error_response = {"error": "InterviewRound not found"}
+            error_response = {"error": "Interview round not found"}
             return JsonResponse(error_response, status=404)
 
 
@@ -225,15 +228,15 @@ class InterviewRoundListAll(APIView):
 
         for interview_round in interview_rounds:
             candidate_name = interview_round.candidate.name  # Adjust based on your Candidate model
-            created_at_natural = naturaltime(interview_round.created_at)
-
+            # created_at_natural = naturaltime(interview_round.created_at)
             response.append(
                 {
                     "id": interview_round.id,
                     "title": interview_round.title,
                     "candidate_id": interview_round.candidate_id,
                     "candidate_name": candidate_name,
-                    "created_at": created_at_natural,
+                    "created_at": interview_round.created_at,
+                    "video_uri": interview_round.video_uri,
                 }
             )
 
@@ -280,20 +283,16 @@ class UpdateInterviewRound(APIView):
         if request.method == "PUT":
             try:
                 data = json.loads(request.body)
-                title = data.get("title", interview_round.title)
-                candidate_id = data.get("candidate_id", interview_round.candidate_id)
-                description = data.get("description", interview_round.description)
+                for key, value in data.items():
+                    if hasattr(interview_round, key):
+                        setattr(interview_round, key, value)
 
-                interview_round.title = title
-                interview_round.candidate_id = candidate_id
-                interview_round.description = description
                 interview_round.save()
 
                 response = {
                     "id": interview_round.id,
                     "title": interview_round.title,
                     "candidate_id": interview_round.candidate_id,
-                    "description": interview_round.description,
                 }
                 return JsonResponse(response)
             except json.JSONDecodeError:
