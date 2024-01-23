@@ -1,8 +1,8 @@
 import json
-from datetime import timezone
 
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -15,10 +15,11 @@ from .models import Company, Department
 from .serializers import CompanySerializer, DepartmentSerializer
 
 
-def perform_destroy(self, instance):
-    instance.deleted_at = timezone.now()
-    instance.deleted_by = self.request.user
-    instance.save()
+def perform_destroy(self, queryset):
+    for instance in queryset:
+        instance.deleted_at = timezone.now()
+        instance.deleted_by = self.request.user
+        instance.save()
 
 
 def check_permissions_and_existence(user, **kwargs):
@@ -235,7 +236,6 @@ class CompanyDepartments(viewsets.ModelViewSet):
         else:
             return result
 
-
     def create(self, request, *args, **kwargs):
         data = json.loads(request.body)
         company_id = data.get("company_id", None)
@@ -280,9 +280,11 @@ class CompanyDepartments(viewsets.ModelViewSet):
         return False
 
     def destroy(self, request, *args, **kwargs):
-        self.permission_classes = [isAdminRole]
+        # self.permission_classes = [isAdminRole]
         company_id = request.GET.get("company", None)
+        print("Company ID: ", company_id)
         department_id = request.GET.get("department", None)
+        print("Department ID: ", department_id)
         user_from_jwt = request.user
 
         # Check Role & Permission
