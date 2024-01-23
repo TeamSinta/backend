@@ -7,7 +7,7 @@ license = "MIT"
 
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "3.11"
 django = "4.2.4"
 psycopg2 = "2.9.9"
 djangorestframework="3.14.0"
@@ -24,8 +24,8 @@ pandas="2.0.3"
 django-storages = { version = "1.14.2", extras = ["boto3"] }
 boto3 = "^1.33.5"
 ffmpeg-python = "^0.2.0"
-daphne = "^3.0.2"
-channels = "^3.0.0"
+daphne = "3.0.2"
+channels = "3.0.0"
 
 
 
