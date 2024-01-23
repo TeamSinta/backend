@@ -237,6 +237,7 @@ class InterviewRoundListAll(APIView):
         for interview_round in interview_rounds:
             candidate_name = interview_round.candidate.name  # Adjust based on your Candidate model
             created_at_natural = naturaltime(interview_round.created_at)
+            video_uri = interview_round.video_uri  # Get the video URI
 
             response.append(
                 {
@@ -245,6 +246,7 @@ class InterviewRoundListAll(APIView):
                     "candidate_id": interview_round.candidate_id,
                     "candidate_name": candidate_name,
                     "created_at": created_at_natural,
+                    "video_uri": video_uri,  # Include the video URI in the response
                 }
             )
 
