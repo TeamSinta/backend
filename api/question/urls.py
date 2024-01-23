@@ -22,4 +22,9 @@ urlpatterns = [
         views.QuestionBankUpdateView.as_view(),
         name="get_question_bank_questions",
     ),
+    path(
+        "question-banks/<int:pk>/delete/",
+        views.QuestionBankQuestionDeleteView.as_view(),
+        name="delete_question_bank_questions",
+    ),
 ]

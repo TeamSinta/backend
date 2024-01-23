@@ -109,3 +109,22 @@ class QuestionBankUpdateView(BaseDeleteInstance, generics.RetrieveUpdateAPIView)
         return queryset
 
     serializer_class = QuestionBankUpdateSerializer
+
+
+class QuestionBankQuestionDeleteView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        question_bank_id = self.kwargs["pk"]
+        question_ids = request.data.get("question_ids", [])
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+        queryset = QuestionBank.objects.filter(id=question_bank_id, company=company_id, deleted_at__isnull=True)
+
+        if queryset.exists():
+            question_bank = queryset.first()
+            question_bank.questions.remove(*question_ids)
+            question_bank.save()
+            return Response({"detail": "Successfully deleted"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": "Question bank not found"}, status=status.HTTP_404_NOT_FOUND)
