@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from company.models import Company
-from interview_templates.models import TemplateQuestion
+from interview_templates.models import Template, TemplateQuestion
 from user.models import UserCompanies
 from user.serializers import CustomUserSerializer
 
@@ -140,6 +140,15 @@ class CreateInterviewRound(CreateAPIView):
                     user_id=user_id,
                     company=company,
                 )
+
+                template = get_object_or_404(Template, id=template_id)
+                department_name = template.department.name if template.department else "General"
+                description = (
+                    template.description
+                    if template.description
+                    else "Use emoji’s 🚀 👍 ❤ 😂 as timestamps for key moments. "
+                    "Meetings will also be summarised for you automatically."
+                )
                 response = {
                     "id": interview_round.id,
                     "title": interview_round.title,
@@ -147,6 +156,8 @@ class CreateInterviewRound(CreateAPIView):
                     "candidate_id": interview_round.candidate_id,
                     "interviewer_id": interview_round.interviewer_id,
                     "meeting_room_id": interview_round.meeting_room_id,
+                    "department": department_name,  # Added department name
+                    "description": description,  # Added description
                 }
                 user_id = self.request.user.id  # Assuming user ID is available in the request context
                 analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
