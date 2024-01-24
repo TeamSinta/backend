@@ -167,11 +167,13 @@ class InterviewRoundGet(APIView):
 
     def get(self, request, interview_round_id):
         try:
-            user_company = get_object_or_404(UserCompanies, user=self.request.user)
-            company_id = user_company.company_id
+            # user_company = get_object_or_404(UserCompanies, user=self.request.user)
+            # company_id = user_company.company_id
 
             interview_round = InterviewRound.objects.get(
-                id=interview_round_id, company=company_id, deleted_at__isnull=True
+                id=interview_round_id, 
+                # company=company_id, 
+                deleted_at__isnull=True
             )
             candidate_name = interview_round.candidate.name if interview_round.candidate else None
             interviewer = CustomUserSerializer(interview_round.interviewer).data
