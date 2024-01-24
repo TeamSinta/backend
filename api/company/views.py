@@ -258,7 +258,7 @@ class CompanyDepartments(viewsets.ModelViewSet):
         department, created = Department.objects.get_or_create(**validated_data)
 
         if created:
-            return Response({"detail": "Department created."}, status=status.HTTP_201_CREATED)
+            return Response({"detail": "Department created.", "id": department.id}, status=status.HTTP_201_CREATED)
         else:
             return Response(
                 {"detail": "Department already exists."},
