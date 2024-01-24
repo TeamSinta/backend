@@ -349,7 +349,11 @@ class CompanyDepartmentMembers(viewsets.ModelViewSet):
     # The fetching of Department Members are included in the CompanyMembers list endpoint.
 
     def create(self, request, *args, **kwargs):
+        """
+        Endpoint to add members to a department.
+        Permissions not yet implemented.
         # self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
+        """
         department_id = self.request.GET.get("department", None)
         data = json.loads(request.body)
         invitee_ids = data.get("invitees", [])
@@ -365,17 +369,13 @@ class CompanyDepartmentMembers(viewsets.ModelViewSet):
         validated_data["department_id"] = department_id
         validated_data["invitee_ids"] = invitee_ids
 
-        print("Before fetching department")
         department = get_object_or_404(Department, id=department_id)
-        print("After fetching department")
 
         # List of instances to use during the bulk creation
         user_department_instances = []
 
         for invitee_id in invitee_ids:
-            print("Before finding user")
             invitee = get_object_or_404(CustomUser, id=invitee_id)
-            print("after fetching user")
             if not UserDepartments.objects.filter(user=invitee, department=department).exists():
                 if check_permissions_and_existence(invitee, company_id=department.company.id):
                     user_department_instances.append(UserDepartments(user=invitee, department=department))
