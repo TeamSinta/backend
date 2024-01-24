@@ -1,10 +1,12 @@
+import os
+
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from june import analytics
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-# Create your views here.
 from openai_helper.utils import get_embedding
 from user.models import UserCompanies
 
@@ -12,6 +14,8 @@ from .models import Question, QuestionBank
 from .serializers import QuestionBankSerializer, QuestionBankUpdateSerializer, QuestionSerializer
 
 DELETE_SUCCESS = {"detail": "Successfully deleted"}
+
+analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
 
 
 class BaseDeleteInstance(generics.DestroyAPIView):
@@ -85,6 +89,9 @@ class QuestionList(BaseDeleteInstance, generics.ListCreateAPIView):
         question_instance.embedding = embedding
         question_instance.company_id = company_id
         question_instance.user_id = self.request.user.id
+        user_id = self.request.user.id  # Assuming user ID is available in the request context
+        analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
+        analytics.track(user_id=str(user_id), event="new-question-created")
         question_instance.save()
 
 
