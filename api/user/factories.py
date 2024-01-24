@@ -14,7 +14,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     username = factory.Faker("user_name")
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
-    email = factory.Faker("email")
+    email = factory.LazyAttribute(lambda obj: f"{obj.first_name.lower()}_{obj.last_name.lower()}@example.com")
     password = factory.Faker("password")
 
     @factory.post_generation

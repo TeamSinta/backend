@@ -349,50 +349,43 @@ class CompanyDepartmentMembers(viewsets.ModelViewSet):
     # The fetching of Department Members are included in the CompanyMembers list endpoint.
 
     def create(self, request, *args, **kwargs):
-        self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
+        # self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
         department_id = self.request.GET.get("department", None)
-        invitee_id = self.request.GET.get("invitee", None)
         data = json.loads(request.body)
+        invitee_ids = data.get("invitees", [])
 
         # Check Role & Permission
         check_role_permission(self, request)
 
-        # User & Company Exists
-        invitee = get_object_or_404(CustomUser, id=invitee_id)
+        # Department exists?
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        # Check if data is present
-        if data:
-            UserDepartments.objects.filter(user=invitee).delete()
-            departments = Department.objects.filter(id__in=data)
-            try:
-                UserDepartments.objects.bulk_create(
-                    [UserDepartments(user=invitee, department=department) for department in departments]
-                )
-            except Exception as e:
-                return Response({"detail": "Failed to add user to department"})
+        validated_data = serializer.validated_data
+        validated_data["department_id"] = department_id
+        validated_data["invitee_ids"] = invitee_ids
 
-        else:
-            department = get_object_or_404(Department, id=department_id)
+        print("Before fetching department")
+        department = get_object_or_404(Department, id=department_id)
+        print("After fetching department")
 
-            # Invitee is a member of the company check
-            if not check_permissions_and_existence(invitee, company_id=department.company.id):
-                return Response(
-                    {"detail": "Invitee is not a member of the requested company"},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
+        # List of instances to use during the bulk creation
+        user_department_instances = []
 
-            # Check that user is not already a member, and if not, try adding.
-            if UserDepartments.objects.filter(user=invitee, department__id=department.id).exists():
-                return Response(
-                    {"detail": "User is already a member of this department"},
-                    status=status.HTTP_409_CONFLICT,
-                )
-            else:
-                invitee, created = UserDepartments.objects.get_or_create(user=invitee, department=department)
-                if not created:
-                    return Response({"detail": "Failed to add user to department"})
+        for invitee_id in invitee_ids:
+            print("Before finding user")
+            invitee = get_object_or_404(CustomUser, id=invitee_id)
+            print("after fetching user")
+            if not UserDepartments.objects.filter(user=invitee, department=department).exists():
+                if check_permissions_and_existence(invitee, company_id=department.company.id):
+                    user_department_instances.append(UserDepartments(user=invitee, department=department))
 
-        return Response({"detail": "User added to department."}, status=status.HTTP_200_OK)
+        try:
+            UserDepartments.objects.bulk_create(user_department_instances)
+        except Exception as e:
+            return Response({"detail": f"Failed to add users to department: {e}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"detail": "Users added to department."}, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
         self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
