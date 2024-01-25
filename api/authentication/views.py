@@ -1,11 +1,13 @@
 import os
 
+import workos
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from dj_rest_auth.views import LoginView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from workos import client
 
 from company.models import Company
 from user.models import CustomUser, Role, UserCompanies
@@ -47,3 +49,63 @@ class MockGoogleLogin(LoginView):
         refresh = RefreshToken.for_user(user)
 
         return Response({"access": str(refresh.access_token), "refresh": str(refresh)})
+
+
+class WorkOSAuthenticationView(LoginView):
+    def post(self, request, *args, **kwargs):
+        try:
+            code = request.data.get("code")
+            ip_address = request.META.get("REMOTE_ADDR")
+            user_agent = request.META.get("HTTP_USER_AGENT")
+            workos.api_key = os.environ.get("WORKOS_APIKEY")
+            workos.client_id = os.environ.get("WORKOS_CLIENT")
+            user_and_organization = client.user_management.authenticate_with_code(
+                code=code,
+                ip_address=ip_address,
+                user_agent=user_agent,
+            )
+            print("user_and_organization > ", user_and_organization)
+            workos_user = user_and_organization.get("user", {})
+            email = workos_user.get("email", "")
+            first_name = workos_user.get("first_name", "")
+            last_name = workos_user.get("last_name", "")
+            username = last_name
+            userId = workos_user.get("id", "")
+            getUser = CustomUser.objects.filter(email=email).first()
+            print("getUSerId  > ", getUser)
+            if getUser is None:
+                new_org = client.organizations.create_organization({"name": username, "domains": ["foo-corp.com"]})
+
+                print("new_orga  > ", new_org)
+                org_Id = new_org.get("id", "")
+                org_name = new_org.get("name", "")
+                organization_membership = client.user_management.create_organization_membership(
+                    user_id=userId,
+                    organization_id=org_Id,
+                )
+
+                print("organization_membership > ", organization_membership)
+                user, created = CustomUser.objects.get_or_create(
+                    username=username,
+                    defaults={
+                        "email": email,
+                        "is_active": True,
+                        "first_name": first_name,
+                        "last_name": last_name,
+                        "workos_id": userId,
+                        "profile_picture": "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
+                    },
+                )
+
+                company, created = Company.objects.get_or_create(name=org_name, workos_orgID=org_Id)
+                role = os.environ.get("MOCK_ROLE", "admin")
+                role, created = Role.objects.get_or_create(name=role)
+                UserCompanies.objects.get_or_create(user=user, company=company, defaults={"role": role})
+                user.save()
+                refresh = RefreshToken.for_user(user)
+                return Response({"access": str(refresh.access_token), "refresh": str(refresh)})
+            refresh = RefreshToken.for_user(getUser)
+            return Response({"access": str(refresh.access_token), "refresh": str(refresh)})
+
+        except Exception as e:
+            print("login error >> ", e)
