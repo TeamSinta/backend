@@ -1,8 +1,10 @@
 import json
+import os
 
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from june import analytics
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -13,6 +15,8 @@ from user.serializers import UserCompanySerializer, UserDepartmentSerializer
 
 from .models import Company, Department
 from .serializers import CompanySerializer, DepartmentSerializer
+
+analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
 
 
 def perform_destroy(self, queryset):
@@ -258,6 +262,9 @@ class CompanyDepartments(viewsets.ModelViewSet):
         department, created = Department.objects.get_or_create(**validated_data)
 
         if created:
+            user_id = self.request.user.id  # Assuming user ID is available in the request context
+            analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
+            analytics.track(user_id=str(user_id), event="new-Department-Created")
             return Response({"detail": "Department created.", "id": department.id}, status=status.HTTP_201_CREATED)
         else:
             return Response(
