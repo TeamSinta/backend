@@ -92,12 +92,12 @@ class WorkOSAuthenticationView(LoginView):
                         "is_active": True,
                         "first_name": first_name,
                         "last_name": last_name,
-                        "workos_id": userId,
+                        "id": userId,
                         "profile_picture": "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
                     },
                 )
 
-                company, created = Company.objects.get_or_create(name=org_name, workos_orgID=org_Id)
+                company, created = Company.objects.get_or_create(name=org_name, id=org_Id)
                 role = os.environ.get("MOCK_ROLE", "admin")
                 role, created = Role.objects.get_or_create(name=role)
                 UserCompanies.objects.get_or_create(user=user, company=company, defaults={"role": role})

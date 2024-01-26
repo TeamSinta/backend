@@ -7,7 +7,7 @@ from company.models import Company, Department
 class CustomUser(AbstractUser):
     companies = models.ManyToManyField(Company, through="UserCompanies")
     profile_picture = models.URLField(null=True, blank=True)
-    workos_id = models.CharField(max_length=150, null=True, blank=True)
+    id = models.CharField(max_length=200, primary_key=True, null=False)
 
     def __str__(self):
         return str(self.username)
