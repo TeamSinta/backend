@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from company.models import Company, Department
-from user.models import CustomUser  # Adjust the import according to your user model
+from user.models import UserDepartments  # Adjust the import according to your user model
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -19,16 +19,9 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 
 class CompanyDepartmentMembersSerializer(serializers.Serializer):
-    department_id = serializers.IntegerField()
-    invitee_ids = serializers.ListField(child=serializers.IntegerField())
+    username = serializers.CharField(source="user.username")
+    role = serializers.CharField(source="role.name")
 
-    def validate_department_id(self, value):
-        if not Department.objects.filter(id=value).exists():
-            raise serializers.ValidationError("Department not found.")
-        return value
-
-    def validate_invitee_ids(self, value):
-        for user_id in value:
-            if not CustomUser.objects.filter(id=user_id).exists():
-                raise serializers.ValidationError(f"User with id {user_id} not found.")
-        return value
+    class Meta:
+        model = UserDepartments
+        fields = ["username", "role"]

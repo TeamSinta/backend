@@ -1,5 +1,7 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 
+from company.models import Department
 from user.models import UserCompanies, UserDepartments
 
 
@@ -58,3 +60,20 @@ class isDepartmentManagerRole(permissions.BasePermission):
                 return False
         except UserDepartments.DoesNotExist:
             return False
+
+
+class IsMemberOfCompany(permissions.BasePermission):
+    """
+    Custom permission to only allow members of a specific company or department.
+    """
+
+    def has_permission(self, request, view):
+        department_id = request.query_params.get("department")
+
+        if not department_id:
+            return False
+
+        department = get_object_or_404(Department, id=department_id)
+        company_id = department.company.id
+
+        return UserCompanies.objects.filter(user=request.user, company=company_id).exists()

@@ -21,7 +21,7 @@ class Role(models.Model):
 
 class UserCompanies(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="members")
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
 
     class Meta:
@@ -33,7 +33,7 @@ class UserCompanies(models.Model):
 
 class UserDepartments(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name="members")
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
 
     class Meta:

@@ -9,12 +9,12 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from app.permissions import isAdminRole, isDepartmentManagerRole, isManagerRole
+from app.permissions import IsMemberOfCompany, isAdminRole, isDepartmentManagerRole, isManagerRole
 from user.models import CustomUser, Role, UserCompanies, UserDepartments
-from user.serializers import UserCompanySerializer, UserDepartmentSerializer
+from user.serializers import UserCompanySerializer
 
 from .models import Company, Department
-from .serializers import CompanySerializer, DepartmentSerializer
+from .serializers import CompanyDepartmentMembersSerializer, CompanySerializer, DepartmentSerializer
 
 analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
 
@@ -350,10 +350,20 @@ class CompanyDepartments(viewsets.ModelViewSet):
 
 
 class CompanyDepartmentMembers(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    serializer_class = UserDepartmentSerializer
+    permission_classes = [IsAuthenticated, IsMemberOfCompany]
+    serializer_class = CompanyDepartmentMembersSerializer
 
     # The fetching of Department Members are included in the CompanyMembers list endpoint.
+
+    def get_queryset(self):
+        user = self.request.user
+        department_id = self.request.GET.get("department", None)
+
+        if department_id:
+            department = get_object_or_404(Department, id=department_id)
+            return UserDepartments.objects.filter(department=department).select_related("user", "role")
+
+        return Response({"detail:", "No members found."})
 
     def create(self, request, *args, **kwargs):
         """
