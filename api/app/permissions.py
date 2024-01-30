@@ -77,3 +77,32 @@ class IsMemberOfCompany(permissions.BasePermission):
         company_id = department.company.id
 
         return UserCompanies.objects.filter(user=request.user, company=company_id).exists()
+
+
+class IsAdminOfCompanyOrDepartment(permissions.BasePermission):
+    """
+    Allows access only to admin users of a company or department.
+    """
+
+    def has_permission(self, request, view):
+        # Assuming 'admin' is the name of the admin role
+        admin_role_name = "admin"
+
+        department_id = request.query_params.get("department")
+        # company_id = request.query_params.get('company')
+
+        if department_id:
+            # Check if the user is an admin in the department
+            return UserDepartments.objects.filter(
+                user=request.user, department_id=department_id, role__name=admin_role_name
+            ).exists()
+
+        # if company_id:
+        #     # Check if the user is an admin in the company
+        #     return UserCompanies.objects.filter(
+        #         user=request.user,
+        #         company_id=company_id,
+        #         role__name=admin_role_name
+        #     ).exists()
+
+        return False  # Deny access if no relevant department or company ID is found

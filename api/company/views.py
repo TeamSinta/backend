@@ -9,12 +9,17 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from app.permissions import IsMemberOfCompany, isAdminRole, isDepartmentManagerRole, isManagerRole
+from app.permissions import isAdminRole, isDepartmentManagerRole, isManagerRole
 from user.models import CustomUser, Role, UserCompanies, UserDepartments
 from user.serializers import UserCompanySerializer
 
 from .models import Company, Department
-from .serializers import CompanyDepartmentMembersSerializer, CompanySerializer, DepartmentSerializer
+from .serializers import (
+    AddDepartmentMembersSerializer,
+    CompanySerializer,
+    DepartmentMembersSerializer,
+    DepartmentSerializer,
+)
 
 analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
 
@@ -57,12 +62,14 @@ class CompanyView(viewsets.ModelViewSet):
         company_id = self.request.GET.get("company", None)
         user_from_jwt = self.request.user
 
-        check_permissions_and_existence(user_from_jwt, company_id=company_id)
+        if not company_id:
+            return Company.objects.none()
+        # check_permissions_and_existence(user_from_jwt, company_id=company_id)
 
         return Company.objects.filter(id=company_id)
 
     def update(self, request, *args, **kwargs):
-        self.permission_classes = [isAdminRole]
+        # self.permission_classes = [isAdminRole] not working
         company_id = self.request.GET.get("company", None)
         user_from_jwt = request.user
         new_company_name = request.data.get("name", None)
@@ -83,7 +90,6 @@ class CompanyView(viewsets.ModelViewSet):
             )
 
         company = get_object_or_404(Company, id=company_id)
-
         company.name = new_company_name
         company.save()
         return Response({"detail": "Company name updated."}, status=status.HTTP_200_OK)
@@ -98,22 +104,19 @@ class CompanyMembers(viewsets.ModelViewSet):
         # The presence of the 'department' query param.
 
         company_id = self.request.GET.get("company", None)
-        department_id = self.request.GET.get("department", None)
         sort_by = self.request.GET.get("sort_by", None)
         user_from_jwt = self.request.user
 
-        if not check_permissions_and_existence(user_from_jwt, company_id=company_id):
-            return Response(
-                {"detail": "User is not a member of the requested company"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        # if not check_permissions_and_existence(user_from_jwt, company_id=company_id):
+        #     return Response(
+        #         {"detail": "User is not a member of the requested company"},
+        #         status=status.HTTP_403_FORBIDDEN,
+        #     )
+        # REMOVE THIS FOR NEW PERMISSON LOGIC
 
         result = []
 
-        if not department_id:
-            result = UserCompanies.objects.filter(company_id=company_id)
-        else:
-            result = UserDepartments.objects.filter(department_id=department_id)
+        result = UserCompanies.objects.filter(company_id=company_id)
 
         if sort_by == "1":
             return result.order_by("user__first_name")
@@ -124,14 +127,14 @@ class CompanyMembers(viewsets.ModelViewSet):
         else:
             return result
 
+        serializer = self.get_serializer(result, many=True)
+        return Response(serializer.data)
+
     def create(self, request, *args, **kwargs):
-        self.permission_classes = [isAdminRole | isManagerRole]
         company_id = self.request.GET.get("company", None)
         inviter = self.request.user
         inviteeId = self.request.GET.get("invitee", None)
 
-        # Check Role & Permission
-        check_role_permission(self, request)
         if not check_permissions_and_existence(inviter, company_id=company_id):
             return Response(
                 {"detail": "Inviter is not a member of the requested company"},
@@ -155,31 +158,33 @@ class CompanyMembers(viewsets.ModelViewSet):
         return Response({"detail": "User added to company."}, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
-        self.permission_classes = [isAdminRole | isManagerRole]
         company_id = request.GET.get("company", None)
         user = request.user
-        memberId = self.request.GET.get("member", None)
+        member_id = self.request.GET.get("member", None)
 
-        check_role_permission(self, request)
         if not check_permissions_and_existence(user, company_id=company_id):
             return Response(
                 {"detail": "User requesting change is not a member of the company"},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        member = get_object_or_404(CustomUser, id=memberId)
-        company = get_object_or_404(Company, id=company_id)
+        user_company_queryset = UserCompanies.objects.filter(user_id=member_id, company_id=company_id)
 
-        if company_id and UserCompanies.objects.filter(user=member, company=company).exists():
-            user_company = UserCompanies.objects.filter(user=member, company=company)
-            perform_destroy(self, user_company)
-
-            return Response({"detail": "User removed from company."}, status=status.HTTP_200_OK)
-        else:
+        if not user_company_queryset.exists():
             return Response(
                 {"detail": "User is not a member of this company."},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+        # -- cant use this method for now, as the usercompanies does not have any soft delete yet -- #
+        # perform_destroy(self, user_company_queryset)
+
+        try:
+            user_company_queryset.delete()
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({"detail": "User removed from the company successfully."}, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
         self.permission_classes = [isAdminRole]
@@ -216,7 +221,7 @@ class CompanyMembers(viewsets.ModelViewSet):
             )
 
 
-class CompanyDepartments(viewsets.ModelViewSet):
+class DepartmentView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = DepartmentSerializer
 
@@ -265,7 +270,10 @@ class CompanyDepartments(viewsets.ModelViewSet):
             user_id = self.request.user.id  # Assuming user ID is available in the request context
             analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
             analytics.track(user_id=str(user_id), event="new-Department-Created")
-            return Response({"detail": "Department created.", "id": department.id}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"detail": "Department created.", "id": department.id},
+                status=status.HTTP_201_CREATED,
+            )
         else:
             return Response(
                 {"detail": "Department already exists."},
@@ -287,7 +295,6 @@ class CompanyDepartments(viewsets.ModelViewSet):
         return False
 
     def destroy(self, request, *args, **kwargs):
-        # self.permission_classes = [isAdminRole]
         company_id = request.GET.get("company", None)
         print("Company ID: ", company_id)
         department_id = request.GET.get("department", None)
@@ -295,12 +302,12 @@ class CompanyDepartments(viewsets.ModelViewSet):
         user_from_jwt = request.user
 
         # Check Role & Permission
-        check_role_permission(self, request)
-        if not check_permissions_and_existence(user_from_jwt, company_id=company_id):
-            return Response(
-                {"detail": "User is not a member of the requested company"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        # check_role_permission(self, request)
+        # if not check_permissions_and_existence(user_from_jwt, company_id=company_id):
+        #     return Response(
+        #         {"detail": "User is not a member of the requested company"},
+        #         status=status.HTTP_403_FORBIDDEN,
+        #     )
 
         # Destroy
         if department_id and Department.objects.filter(id=department_id, deleted_at__isnull=True).exists():
@@ -312,18 +319,17 @@ class CompanyDepartments(viewsets.ModelViewSet):
             return Response({"detail": "Department doesnt exist."}, status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request, *args, **kwargs):
-        self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
         company_id = request.GET.get("company", None)
         department_id = request.GET.get("department", None)
         user_from_jwt = request.user
         new_department_name = request.data.get("title", None)
 
-        check_role_permission(self, request)
-        if not check_permissions_and_existence(user_from_jwt, company_id=company_id):
-            return Response(
-                {"detail": "User is not a member of the requested company"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        # check_role_permission(self, request)
+        # if not check_permissions_and_existence(user_from_jwt, company_id=company_id):
+        #     return Response(
+        #         {"detail": "User is not a member of the requested company"},
+        #         status=status.HTTP_403_FORBIDDEN,
+        #     )
 
         if not department_id:
             return Response(
@@ -349,60 +355,76 @@ class CompanyDepartments(viewsets.ModelViewSet):
         return Response({"detail": "Department name updated."}, status=status.HTTP_200_OK)
 
 
-class CompanyDepartmentMembers(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsMemberOfCompany]
-    serializer_class = CompanyDepartmentMembersSerializer
+class DepartmentMembers(viewsets.ModelViewSet):
+    serializer_class = DepartmentMembersSerializer
+
+    # def get_permissions(self):
+    #     """
+    #     Instantiates and returns the list of permissions that this view requires.
+    #     """
+    #     if self.action in ["list", "retrieve"]:  # Apply custom permission for these actions
+    #         permission_classes = [IsAuthenticated]
+    #     elif self.action in ["create"]:
+    #         permission_classes = [IsAuthenticated, IsAdminOfCompanyOrDepartment]
+    #     else:
+    #         permission_classes = [IsAuthenticated]  # Default permission for other actions
+    #     return [permission() for permission in permission_classes]
 
     # The fetching of Department Members are included in the CompanyMembers list endpoint.
 
     def get_queryset(self):
         user = self.request.user
         department_id = self.request.GET.get("department", None)
+        sort_by = self.request.GET.get("sort_by", None)
+
+        result = []
 
         if department_id:
             department = get_object_or_404(Department, id=department_id)
-            return UserDepartments.objects.filter(department=department).select_related("user", "role")
+            result = UserDepartments.objects.filter(department=department).select_related("user", "role")
+
+        if sort_by == "1":
+            return result.order_by("user__first_name")
+        elif sort_by == "2":
+            return result.order_by("-user__first_name")
+        elif sort_by == "3":
+            return result.order_by("user__role")
+        else:
+            return result
 
         return Response({"detail:", "No members found."})
 
     def create(self, request, *args, **kwargs):
         """
         Endpoint to add members to a department.
-        Permissions not yet implemented.
-        # self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
         """
         department_id = self.request.GET.get("department", None)
-        data = json.loads(request.body)
-        invitee_ids = data.get("invitees", [])
-
-        # Check Role & Permission
-        check_role_permission(self, request)
-
-        # Department exists?
-        serializer = self.get_serializer(data=request.data)
+        print("Request data: ", request.data)
+        serializer = AddDepartmentMembersSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        validated_data = serializer.validated_data
-        validated_data["department_id"] = department_id
-        validated_data["invitee_ids"] = invitee_ids
-
+        print("Serializer validated data ", serializer.validated_data)
         department = get_object_or_404(Department, id=department_id)
+        invitee_ids = serializer.validated_data.get("invitees")
+        print("Invitees: ", invitee_ids)
 
+        member_role = Role.objects.get(name="member")
         # List of instances to use during the bulk creation
         user_department_instances = []
-
         for invitee_id in invitee_ids:
             invitee = get_object_or_404(CustomUser, id=invitee_id)
             if not UserDepartments.objects.filter(user=invitee, department=department).exists():
-                if check_permissions_and_existence(invitee, company_id=department.company.id):
-                    user_department_instances.append(UserDepartments(user=invitee, department=department))
+                user_department_instances.append(
+                    UserDepartments(user=invitee, department=department, role=member_role)
+                )
 
         try:
             UserDepartments.objects.bulk_create(user_department_instances)
+            return Response({"detail": "Users added to department."}, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({"detail": f"Failed to add users to department: {e}"}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({"detail": "Users added to department."}, status=status.HTTP_200_OK)
+            return Response(
+                {"detail": f"Failed to add users to department: {e}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     def destroy(self, request, *args, **kwargs):
         self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
