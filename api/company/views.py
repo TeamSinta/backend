@@ -9,7 +9,7 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from app.permissions import isAdminRole, isDepartmentManagerRole, isManagerRole
+from app.permissions import isAdminRole
 from user.models import CustomUser, Role, UserCompanies, UserDepartments
 from user.serializers import UserCompanySerializer
 
@@ -456,7 +456,7 @@ class DepartmentMembers(viewsets.ModelViewSet):
         return Response({"detail": "User removed from department."}, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
-        self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
+        # self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
         department_id = request.GET.get("department", None)
         member_id = self.request.GET.get("member", None)
         role_id = request.data.get("role", None)
@@ -465,12 +465,12 @@ class DepartmentMembers(viewsets.ModelViewSet):
         department = get_object_or_404(Department, id=department_id)
         role = get_object_or_404(Role, id=role_id)
 
-        check_role_permission(self, request)
-        if not check_permissions_and_existence(member, department_id=department_id):
-            return Response(
-                {"detail": "Requested member is not a member of the department"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        # check_role_permission(self, request)
+        # if not check_permissions_and_existence(member, department_id=department_id):
+        #     return Response(
+        #         {"detail": "Requested member is not a member of the department"},
+        #         status=status.HTTP_403_FORBIDDEN,
+        #     )
 
         if not Role.objects.filter(name=role).exists():
             return Response(
@@ -478,12 +478,16 @@ class DepartmentMembers(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
+        # if not UserDepartments.objects.get(user=member, department=department).exists():
+        #     {"detail": "This department does not exist."},
+        #     status=status.HTTP_404_NOT_FOUND,
+
         try:
             user_department = UserDepartments.objects.get(user=member, department=department)
             user_department.role = role
             user_department.save()
             return Response({"detail": "User role updated."}, status=status.HTTP_200_OK)
-        except UserCompanies.DoesNotExist:
+        except UserDepartments.DoesNotExist:
             return Response(
                 {"detail": "User is not a member of this department."},
                 status=status.HTTP_404_NOT_FOUND,
