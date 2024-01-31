@@ -296,9 +296,7 @@ class DepartmentView(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         company_id = request.GET.get("company", None)
-        print("Company ID: ", company_id)
         department_id = request.GET.get("department", None)
-        print("Department ID: ", department_id)
         user_from_jwt = request.user
 
         # Check Role & Permission
@@ -399,13 +397,10 @@ class DepartmentMembers(viewsets.ModelViewSet):
         Endpoint to add members to a department.
         """
         department_id = self.request.GET.get("department", None)
-        print("Request data: ", request.data)
         serializer = AddDepartmentMembersSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        print("Serializer validated data ", serializer.validated_data)
         department = get_object_or_404(Department, id=department_id)
         invitee_ids = serializer.validated_data.get("invitees")
-        print("Invitees: ", invitee_ids)
 
         member_role = Role.objects.get(name="member")
         # List of instances to use during the bulk creation
@@ -427,8 +422,9 @@ class DepartmentMembers(viewsets.ModelViewSet):
             )
 
     def destroy(self, request, *args, **kwargs):
-        self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
-        company_id = self.request.GET.get("company", None)
+        """
+        Endpoint to remove members from department.
+        """
         department_id = request.GET.get("department", None)
         user = request.user
         memberId = self.request.GET.get("member", None)
@@ -436,26 +432,28 @@ class DepartmentMembers(viewsets.ModelViewSet):
         member = get_object_or_404(CustomUser, id=memberId)
         department = get_object_or_404(Department, id=department_id)
 
-        check_role_permission(self, request)
-        if not check_permissions_and_existence(user, company_id=department.company.id):
-            return Response(
-                {"detail": "User requesting change is not a member of the company"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        # check_role_permission(self, request)
+        # if not check_permissions_and_existence(user, company_id=department.company.id):
+        #     return Response(
+        #         {"detail": "User requesting change is not a member of the company"},
+        #         status=status.HTTP_403_FORBIDDEN,
+        #     )
+        user_department_queryset = UserDepartments.objects.filter(user=member, department=department)
 
-        if (
-            department_id
-            and UserDepartments.objects.filter(user=member, department=department, deleted_at__isnull=True).exists()
-        ):
-            user_department = UserDepartments.objects.filter(user=member, department=department)
-            perform_destroy(self, user_department)
-
-            return Response({"detail": "User removed from department."}, status=status.HTTP_200_OK)
-        else:
+        if not user_department_queryset.exists():
             return Response(
                 {"detail": "User is not a member of this department."},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+            # -- cant use this method for now, as the usercompanies does not have any soft delete yet -- #
+            # perform_destroy(self, user_department)
+        try:
+            user_department_queryset.delete()
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({"detail": "User removed from department."}, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
         self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]
