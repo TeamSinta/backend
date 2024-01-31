@@ -24,6 +24,7 @@ class UserCompanies(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
+    id = models.CharField(max_length=200, primary_key=True, null=False)
 
     class Meta:
         unique_together = (("user", "company"),)  # This ensures that the combination of user and company is unique
