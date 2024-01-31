@@ -11,6 +11,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CustomUser
 
+    id = factory.Sequence(lambda n: n)
     username = factory.Faker("user_name")
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")

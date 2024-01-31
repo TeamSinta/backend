@@ -2078,8 +2078,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-<<<<<<< Updated upstream
-content-hash = "1051ce36dda7defbbf23b0fedf8b89a5e74b56ef38dc2daca51403beb9d9f220"
-=======
 content-hash = "bd150d91be454fba9b13e7f17e580f20b181405300732a319c5efab67785a315"
->>>>>>> Stashed changes

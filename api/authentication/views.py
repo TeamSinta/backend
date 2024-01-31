@@ -70,36 +70,39 @@ class WorkOSAuthenticationView(LoginView):
             first_name = workos_user.get("first_name", "")
             last_name = workos_user.get("last_name", "")
             username = last_name
-            userId = workos_user.get("id", "")
+            user_id = workos_user.get("id", "")
             getUser = CustomUser.objects.filter(email=email).first()
             print("getUSerId  > ", getUser)
             if getUser is None:
-                new_org = client.organizations.create_organization({"name": username, "domains": ["foo-corp.com"]})
+                # User is new and yet not created company/organization
+                new_org = client.organizations.create_organization(
+                    {"name": username, "domains": [os.environ.get("DEFAULT_DOMAIN")]}
+                )
 
                 print("new_orga  > ", new_org)
-                org_Id = new_org.get("id", "")
+                org_id = new_org.get("id", "")
                 org_name = new_org.get("name", "")
                 organization_membership = client.user_management.create_organization_membership(
-                    user_id=userId,
-                    organization_id=org_Id,
+                    user_id=user_id,
+                    organization_id=org_id,
                 )
 
                 print("organization_membership > ", organization_membership)
-                user, created = CustomUser.objects.get_or_create(
+                user, _ = CustomUser.objects.get_or_create(
                     username=username,
                     defaults={
                         "email": email,
                         "is_active": True,
                         "first_name": first_name,
                         "last_name": last_name,
-                        "id": userId,
+                        "id": user_id,
                         "profile_picture": "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
                     },
                 )
 
-                company, created = Company.objects.get_or_create(name=org_name, id=org_Id)
+                company, _ = Company.objects.get_or_create(name=org_name, id=org_id)
                 role = os.environ.get("MOCK_ROLE", "admin")
-                role, created = Role.objects.get_or_create(name=role)
+                role, _ = Role.objects.get_or_create(name=role)
                 UserCompanies.objects.get_or_create(user=user, company=company, defaults={"role": role})
                 user.save()
                 refresh = RefreshToken.for_user(user)

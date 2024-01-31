@@ -72,6 +72,11 @@ migrate_db:
 	@echo "Migrating old DB to new DB..."
 	docker compose -f docker-compose-dev.yaml exec backend python manage.py migrate_db
 
+.PHONY: migrate_delete
+migrate_delete:
+	@echo "Migrating old DB to new DB..."
+	docker compose -f docker-compose-dev.yaml exec backend python manage.py migrate_delete
+
 # Setup Command
 .PHONY: setup
 setup:
