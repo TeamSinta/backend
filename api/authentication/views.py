@@ -59,6 +59,9 @@ class WorkOSAuthenticationView(LoginView):
             user_agent = request.META.get("HTTP_USER_AGENT")
             workos.api_key = os.environ.get("WORKOS_APIKEY")
             workos.client_id = os.environ.get("WORKOS_CLIENT")
+            print("code > ", code)
+            print("ip_address > ", ip_address)
+            print("user_agent > ", user_agent)
             user_and_organization = client.user_management.authenticate_with_code(
                 code=code,
                 ip_address=ip_address,
@@ -103,7 +106,9 @@ class WorkOSAuthenticationView(LoginView):
                 company, _ = Company.objects.get_or_create(name=org_name, id=org_id)
                 role = os.environ.get("MOCK_ROLE", "admin")
                 role, _ = Role.objects.get_or_create(name=role)
-                UserCompanies.objects.get_or_create(user=user, company=company, defaults={"role": role})
+                UserCompanies.objects.get_or_create(
+                    user=user, company=company, defaults={"role": role, "id": organization_membership.get("id")}
+                )
                 user.save()
                 refresh = RefreshToken.for_user(user)
                 return Response({"access": str(refresh.access_token), "refresh": str(refresh)})
