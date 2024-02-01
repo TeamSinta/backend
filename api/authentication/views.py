@@ -31,7 +31,7 @@ class MockGoogleLogin(LoginView):
         company_name = os.environ.get("MOCK_COMPANY_NAME", "Mock Company")
         role = os.environ.get("MOCK_ROLE", "admin")
 
-        user, created = CustomUser.objects.get_or_create(
+        user, _ = CustomUser.objects.get_or_create(
             username=username,
             defaults={
                 "email": email,
@@ -41,8 +41,8 @@ class MockGoogleLogin(LoginView):
                 "profile_picture": "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
             },
         )
-        company, created = Company.objects.get_or_create(name=company_name)
-        role, created = Role.objects.get_or_create(name=role)
+        company, _ = Company.objects.get_or_create(name=company_name)
+        role, _ = Role.objects.get_or_create(name=role)
         UserCompanies.objects.get_or_create(user=user, company=company, defaults={"role": role})
         user.save()
 
@@ -72,47 +72,59 @@ class WorkOSAuthenticationView(LoginView):
             email = workos_user.get("email", "")
             first_name = workos_user.get("first_name", "")
             last_name = workos_user.get("last_name", "")
-            username = last_name
-            user_id = workos_user.get("id", "")
-            getUser = CustomUser.objects.filter(email=email).first()
-            print("getUSerId  > ", getUser)
-            if getUser is None:
-                # User is new and yet not created company/organization
-                new_org = client.organizations.create_organization(
-                    {"name": username, "domains": [os.environ.get("DEFAULT_DOMAIN")]}
-                )
+            username = workos_user.get("username", last_name)
 
-                print("new_orga  > ", new_org)
-                org_id = new_org.get("id", "")
-                org_name = new_org.get("name", "")
-                organization_membership = client.user_management.create_organization_membership(
-                    user_id=user_id,
-                    organization_id=org_id,
-                )
+            workos_user_id = workos_user.get("id", "")
+            get_user = CustomUser.objects.filter(email=email).first()
+            print("get_uSerId  > ", get_user)
 
-                print("organization_membership > ", organization_membership)
-                user, _ = CustomUser.objects.get_or_create(
-                    username=username,
+            if get_user is None or get_user.id != workos_user_id:
+                new_user, _ = CustomUser.objects.get_or_create(
+                    id=workos_user_id,
                     defaults={
                         "email": email,
                         "is_active": True,
                         "first_name": first_name,
                         "last_name": last_name,
-                        "id": user_id,
-                        "profile_picture": "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
+                        "id": workos_user_id,
+                        "username": username + "_1",
+                        "profile_picture": getattr(
+                            get_user,
+                            "profile_picture",
+                            "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
+                        ),
                     },
                 )
 
-                company, _ = Company.objects.get_or_create(name=org_name, id=org_id)
-                role = os.environ.get("MOCK_ROLE", "admin")
+                # User is new and yet not created company/organization
+                new_org = client.organizations.create_organization(
+                    {"name": username, "domains": [os.environ.get("DEFAULT_DOMAIN")]}
+                )
+
+                print("new_org  > ", new_org)
+                org_id = new_org.get("id", "")
+                org_name = new_org.get("name", "")
+                organization_membership = client.user_management.create_organization_membership(
+                    user_id=workos_user_id,
+                    organization_id=org_id,
+                )
+
+                print("organization_membership > ", organization_membership)
+
+                new_company, _ = Company.objects.get_or_create(name=org_name, id=org_id)
+                role = os.environ.get("MOCK_ROLE", "member")
                 role, _ = Role.objects.get_or_create(name=role)
                 UserCompanies.objects.get_or_create(
-                    user=user, company=company, defaults={"role": role, "id": organization_membership.get("id")}
+                    user=new_user,
+                    company=new_company,
+                    defaults={"role": role, "id": organization_membership.get("id")},
                 )
-                user.save()
-                refresh = RefreshToken.for_user(user)
+
+                new_user.save()
+                refresh = RefreshToken.for_user(new_user)
                 return Response({"access": str(refresh.access_token), "refresh": str(refresh)})
-            refresh = RefreshToken.for_user(getUser)
+
+            refresh = RefreshToken.for_user(get_user)
             return Response({"access": str(refresh.access_token), "refresh": str(refresh)})
 
         except Exception as e:
