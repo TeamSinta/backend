@@ -4,14 +4,14 @@ import workos
 from django.core.management.base import BaseCommand
 from workos import client
 
-from company.models import Company
+from company.models import Company, Department
 from interview.models import Candidate, InterviewRound, InterviewRoundQuestion
 from interview_templates.models import Template, TemplateQuestion, TemplateTopic
 from question.models import Comment, Question, QuestionBank
 from question_response.models import Answer, InterviewerFeedback
 from summary.models import Summary
 from transcription.models import TranscriptChunk
-from user.models import CustomUser, UserCompanies
+from user.models import CustomUser, UserCompanies, UserDepartments
 
 workos.api_key = os.environ.get("WORKOS_APIKEY")
 workos.client_id = os.environ.get("WORKOS_CLIENT")
@@ -92,6 +92,8 @@ class Command(BaseCommand):
                 Answer.objects.filter(user=user.id).update(user=new_user)
                 Answer.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
 
+                UserDepartments.objects.filter(user=user.id).update(user=new_user)
+
                 user_companies = UserCompanies.objects.filter(user=user.id)
 
                 for company in user_companies:
@@ -141,6 +143,8 @@ class Command(BaseCommand):
                     Comment.objects.filter(company=old_company_id).update(company=new_company)
                     InterviewerFeedback.objects.filter(company=old_company_id).update(company=new_company)
                     Summary.objects.filter(company=old_company_id).update(company=new_company)
+
+                    Department.objects.filter(company=old_company_id).update(company=new_company)
 
                     company_to_delete = Company.objects.get(id=old_company_id)
 
