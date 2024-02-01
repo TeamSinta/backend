@@ -5,7 +5,12 @@ from django.core.management.base import BaseCommand
 from workos import client
 
 from company.models import Company
-from interview_templates.models import Template, TemplateTopic
+from interview.models import Candidate, InterviewRound, InterviewRoundQuestion
+from interview_templates.models import Template, TemplateQuestion, TemplateTopic
+from question.models import Comment, Question, QuestionBank
+from question_response.models import Answer, InterviewerFeedback
+from summary.models import Summary
+from transcription.models import TranscriptChunk
 from user.models import CustomUser, UserCompanies
 
 workos.api_key = os.environ.get("WORKOS_APIKEY")
@@ -47,16 +52,55 @@ class Command(BaseCommand):
                     },
                 )
                 # updating interview templates user id to new work os id
+                print("Created new user: ", new_user, _)
 
-                Template.objects.filter(user=user.id, deleted_by__isnull=True).update(user=new_user)
+                Template.objects.filter(user=user.id).update(user=new_user)
+                Template.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
 
-                TemplateTopic.objects.filter(user=user.id, deleted_by__isnull=True).update(user=new_user)
+                TemplateTopic.objects.filter(user=user.id).update(user=new_user)
+                TemplateTopic.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
+                TemplateQuestion.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
+                Candidate.objects.filter(user=user.id).update(user=new_user)
+                Candidate.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
+                InterviewRound.objects.filter(user=user.id).update(user=new_user)
+                InterviewRound.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
+                InterviewRoundQuestion.objects.filter(user=user.id).update(user=new_user)
+                InterviewRoundQuestion.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
+                Question.objects.filter(user=user.id).update(user=new_user)
+                Question.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
+                QuestionBank.objects.filter(user=user.id).update(user=new_user)
+                QuestionBank.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
+                Comment.objects.filter(user=user.id).update(user=new_user)
+                Comment.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
+                InterviewerFeedback.objects.filter(user=user.id).update(user=new_user)
+                InterviewerFeedback.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
+                TranscriptChunk.objects.filter(user=user.id).update(user=new_user)
+                TranscriptChunk.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
+                Summary.objects.filter(user=user.id).update(user=new_user)
+                Summary.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
+                Answer.objects.filter(user=user.id).update(user=new_user)
+                Answer.objects.filter(deleted_by=user.id).update(deleted_by=new_user)
+
                 user_companies = UserCompanies.objects.filter(user=user.id)
 
                 for company in user_companies:
-                    print("Migrating company: ", company.id)
+                    print("Migrating user company: ", company.id)
                     company_name = company.company.name
                     print("Company name: ", company_name)
+                    old_company_id = company.company.id
+                    print("old_company_id: ", old_company_id)
+
                     new_org = client.organizations.create_organization(
                         {"name": company_name, "domains": [os.environ.get("DEFAULT_DOMAIN")]}
                     )
@@ -70,133 +114,44 @@ class Command(BaseCommand):
                     )
 
                     print("Created organization membership: ", organization_membership)
-
-                    # TODO: if user found with user name then id is not updating
-                    print("Created new user: ", new_user, _)
+                    print("organization_membership.get(id): ", organization_membership.get("id"))
 
                     new_company, _ = Company.objects.get_or_create(
                         id=org_id, defaults={"id": org_id, "name": org_name}
                     )
                     print("Created new Company: ", new_company)
 
-                    user_company = UserCompanies.objects.get(user=user.id, company=company.id)
+                    user_company = UserCompanies.objects.get(user=user.id, company=old_company_id)
                     print("user comp", user_company.role)
                     UserCompanies.objects.get_or_create(
-                        user=new_user, company=new_company, defaults={"role": user_company.role, "id": org_id}
+                        user=new_user,
+                        company=new_company,
+                        defaults={"role": user_company.role, "id": organization_membership.get("id")},
                     )
                     print("New UserCompanies record created successfully.")
-
-                    # # TODO: if Company found with user name then id is not updating
-                    # if new_company.id is None and new_company.id == company.company.id:
-                    #     new_company.id = org_id
-                    #     new_company.save()
-                    # role, _ = Role.objects.get_or_create(name=company.role)
-                    # UserCompanies.objects.get_or_create(user=new_user, company=new_company, defaults={"role": role})
-
-                    # Update user and company for records where deleted_by is null
-
                     print("Created new user and associated with company.")
-                    Template.objects.filter(company=company.id, deleted_by__isnull=True).update(company=new_company)
-                    TemplateTopic.objects.filter(company=company.id, deleted_by__isnull=True).update(
-                        company=new_company
-                    )
-                    company_to_delete = Company.objects.get(id=company.id)
+
+                    Template.objects.filter(company=old_company_id).update(company=new_company)
+                    TemplateTopic.objects.filter(company=old_company_id).update(company=new_company)
+                    Candidate.objects.filter(company=old_company_id).update(company=new_company)
+                    InterviewRound.objects.filter(company=old_company_id).update(company=new_company)
+                    InterviewRoundQuestion.objects.filter(company=old_company_id).update(company=new_company)
+                    Question.objects.filter(company=old_company_id).update(company=new_company)
+                    QuestionBank.objects.filter(company=old_company_id).update(company=new_company)
+                    Comment.objects.filter(company=old_company_id).update(company=new_company)
+                    InterviewerFeedback.objects.filter(company=old_company_id).update(company=new_company)
+                    Summary.objects.filter(company=old_company_id).update(company=new_company)
+
+                    company_to_delete = Company.objects.get(id=old_company_id)
+
                     user_company.delete()
+                    print("Deleted old user company.")
                     company_to_delete.delete()
-                    # break
-                    # departments = Department.objects.filter(company=company.id)
-                    # for department in departments:
-                    #     department.company = new_company
-                    #     department.save()
-                    #     print("Updated department: ", department)
-                    #     UserDepartments.objects.filter(user=user.id, department=department.id).update(
-                    #         user=new_user, department=department
-                    #     )
+                    print("Deleted old company.")
 
-                    # Candidate.objects.filter(user=user.id, company=company.id, deleted_by__isnull=True).update(
-                    #     user=new_user, company=new_company
-                    # )
-                    # InterviewRound.objects.filter(user=user.id, company=company.id, deleted_by__isnull=True).update(
-                    #     user=new_user, company=new_company
-                    # )
-                    # InterviewRoundQuestion.objects.filter(
-                    #     user=user.id, company=company.id, deleted_by__isnull=True
-                    # ).update(user=new_user, company=new_company)
-                    # Template.objects.filter(user=user.id, company=company.id, deleted_by__isnull=True).update(
-                    #     user=new_user, company=new_company
-                    # )
-                    # TemplateTopic.objects.filter(user=user.id, company=company.id, deleted_by__isnull=True).update(
-                    #     user=new_user, company=new_company
-                    # )
-                    # Question.objects.filter(user=user.id, company=company.id, deleted_by__isnull=True).update(
-                    #     user=new_user, company=new_company
-                    # )
-                    # QuestionBank.objects.filter(user=user.id, company=company.id, deleted_by__isnull=True).update(
-                    #     user=new_user, company=new_company
-                    # )
-                    # Comment.objects.filter(user=user.id, company=company.id, deleted_by__isnull=True).update(
-                    #     user=new_user, company=new_company
-                    # )
-
-                    # InterviewerFeedback.objects.filter(
-                    #     user=user.id, company=company.id, deleted_by__isnull=True
-                    # ).update(user=new_user, company=new_company)
-                    # Answer.objects.filter(user=user.id, deleted_by__isnull=True).update(user=new_user)
-
-                    # Summary.objects.filter(user=user.id, company=company.id, deleted_by__isnull=True).update(
-                    #     user=new_user, company=new_company
-                    # )
-
-                    # TranscriptChunk.objects.filter(user=user.id, deleted_by__isnull=True).update(user=new_user)
-
-                    # # Update user, company and deleted_by for records where deleted_by is not null
-                    # Candidate.objects.filter(company=company.id, deleted_by=user.id).update(
-                    #     user=new_user, company=new_company, deleted_by=new_user
-                    # )
-                    # InterviewRound.objects.filter(company=company.id, deleted_by=user.id).update(
-                    #     user=new_user, company=new_company, deleted_by=new_user
-                    # )
-                    # InterviewRoundQuestion.objects.filter(company=company.id, deleted_by=user.id).update(
-                    #     user=new_user, company=new_company, deleted_by=new_user
-                    # )
-                    # Template.objects.filter(company=company.id, deleted_by=user.id).update(
-                    #     user=new_user, company=new_company, deleted_by=new_user
-                    # )
-                    # TemplateTopic.objects.filter(company=company.id, deleted_by=user.id).update(
-                    #     user=new_user, company=new_company, deleted_by=new_user
-                    # )
-                    # Question.objects.filter(company=company.id, deleted_by=user.id).update(
-                    #     user=new_user, company=new_company, deleted_by=new_user
-                    # )
-                    # QuestionBank.objects.filter(company=company.id, deleted_by=user.id).update(
-                    #     user=new_user, company=new_company, deleted_by=new_user
-                    # )
-                    # Comment.objects.filter(company=company.id, deleted_by=user.id).update(
-                    #     user=new_user, company=new_company, deleted_by=new_user
-                    # )
-
-                    # InterviewerFeedback.objects.filter(company=company.id, deleted_by=user.id).update(
-                    #     user=new_user, company=new_company, deleted_by=new_user
-                    # )
-                    # Answer.objects.filter(deleted_by=user.id).update(user=new_user, deleted_by=new_user)
-
-                    # Summary.objects.filter(company=company.id, deleted_by=user.id).update(
-                    #     user=new_user, company=new_company, deleted_by=new_user
-                    # )
-
-                    # TranscriptChunk.objects.filter(deleted_by=user.id).update(user=new_user, deleted_by=new_user)
-
-                    # # after creating all duplicate records delete user and company
-                    # print("Updated all records. Now deleting old user and company.")
-                    # print(user.id)
-                    # # TODO: Need to verify
-                    # if user.id is not None and user.id != new_user.id:
-                    #     user.delete()
-                    #     print("Deleted old user.")
-                    # if company.id is not None and company.id != new_company.id:
-                    #     company.delete()
-                    #     print("Deleted old company.")
+                print("Now Deleting old User.")
                 user.delete()
+                print("Deleted old User.")
             self.stdout.write("Migration completed.")
         except Exception as e:
             print("Error during migration: ", e)
