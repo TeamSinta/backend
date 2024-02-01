@@ -19,6 +19,7 @@ from .serializers import (
     CompanySerializer,
     DepartmentMembersSerializer,
     DepartmentSerializer,
+    RemoveDepartmentMembersSerializer,
 )
 
 analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
@@ -423,37 +424,28 @@ class DepartmentMembers(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         """
-        Endpoint to remove members from department.
+        Endpoint to remove members from a department.
         """
-        department_id = request.GET.get("department", None)
-        user = request.user
-        memberId = self.request.GET.get("member", None)
-
-        member = get_object_or_404(CustomUser, id=memberId)
+        department_id = self.request.GET.get("department", None)
+        serializer = RemoveDepartmentMembersSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         department = get_object_or_404(Department, id=department_id)
+        member_ids = serializer.validated_data.get("members")
+        print(member_ids)
 
-        # check_role_permission(self, request)
-        # if not check_permissions_and_existence(user, company_id=department.company.id):
-        #     return Response(
-        #         {"detail": "User requesting change is not a member of the company"},
-        #         status=status.HTTP_403_FORBIDDEN,
-        #     )
-        user_department_queryset = UserDepartments.objects.filter(user=member, department=department)
-
-        if not user_department_queryset.exists():
-            return Response(
-                {"detail": "User is not a member of this department."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-            # -- cant use this method for now, as the usercompanies does not have any soft delete yet -- #
-            # perform_destroy(self, user_department)
         try:
-            user_department_queryset.delete()
-        except Exception as e:
-            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # Retrieve the UserDepartment instances to be deleted
+            user_department_instances = UserDepartments.objects.filter(user_id__in=member_ids, department=department)
+            print("User Department Instances ", user_department_instances)
+            # Delete the instances
+            user_department_instances.delete()
 
-        return Response({"detail": "User removed from department."}, status=status.HTTP_200_OK)
+            return Response({"detail": "Users removed from department."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"detail": f"Failed to remove users from department: {e}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     def update(self, request, *args, **kwargs):
         # self.permission_classes = [isAdminRole | isManagerRole | isDepartmentManagerRole]

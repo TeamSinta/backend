@@ -60,3 +60,21 @@ class AddDepartmentMembersSerializer(serializers.Serializer):
             raise serializers.ValidationError("Duplicate user IDs found in invitees.")
 
         return value
+
+
+class RemoveDepartmentMembersSerializer(serializers.Serializer):
+    members = serializers.ListField(child=serializers.IntegerField(), allow_empty=False)
+
+    def validate_invitees(self, value):
+        """Checks invitee ID to see if they exist in the DB."""
+        for user_id in value:
+            try:
+                CustomUser.objects.get(id=user_id)
+            except ObjectDoesNotExist:
+                raise serializers.ValidationError(f"User with ID {user_id} does not exist.")
+
+        """ Checks for duplicates in the member ID list """
+        if len(value) != len(set(value)):
+            raise serializers.ValidationError("Duplicate user IDs found in invitees.")
+
+        return value
