@@ -151,6 +151,9 @@ class Command(BaseCommand):
 
                 print("Now Deleting old User.")
                 user.delete()
+                new_user.username = new_user.username.rstrip("_1")
+                print("updated user name", new_user.username)
+                CustomUser.objects.filter(id=new_user.id).update(username=new_user.username)
                 print("Deleted old User.")
             self.stdout.write("Migration completed.")
         except Exception as e:
