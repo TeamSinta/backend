@@ -78,7 +78,7 @@ class WorkOSAuthenticationView(LoginView):
             get_user = CustomUser.objects.filter(email=email).first()
             print("get_uSerId  > ", get_user)
 
-            if get_user is None or get_user.id != workos_user_id:
+            if get_user is None:
                 new_user, _ = CustomUser.objects.get_or_create(
                     id=workos_user_id,
                     defaults={
