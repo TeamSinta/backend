@@ -431,12 +431,10 @@ class DepartmentMembers(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         department = get_object_or_404(Department, id=department_id)
         member_ids = serializer.validated_data.get("members")
-        print(member_ids)
 
         try:
             # Retrieve the UserDepartment instances to be deleted
             user_department_instances = UserDepartments.objects.filter(user_id__in=member_ids, department=department)
-            print("User Department Instances ", user_department_instances)
             # Delete the instances
             user_department_instances.delete()
 
