@@ -5,12 +5,76 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from dj_rest_auth.views import LoginView
+from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from workos import client
 
 from company.models import Company
 from user.models import CustomUser, Role, UserCompanies
+
+workos.api_key = os.environ.get("WORKOS_APIKEY")
+workos.client_id = os.environ.get("WORKOS_CLIENT")
+
+
+def create_user_and_organization(user_and_organization):
+    workos_user = user_and_organization.get("user", {})
+    email = workos_user.get("email", "")
+    first_name = workos_user.get("first_name", "")
+    last_name = workos_user.get("last_name", "")
+    username = workos_user.get("username", "")
+
+    if not username:
+        username = email.split("@")[0] if email else last_name
+
+    workos_user_id = workos_user.get("id", "")
+    get_user = CustomUser.objects.filter(email=email).first()
+
+    if get_user is None:
+        new_user, _ = CustomUser.objects.get_or_create(
+            id=workos_user_id,
+            defaults={
+                "email": email,
+                "is_active": True,
+                "first_name": first_name,
+                "last_name": last_name,
+                "id": workos_user_id,
+                "username": username,
+                "profile_picture": getattr(
+                    get_user,
+                    "profile_picture",
+                    "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
+                ),
+            },
+        )
+
+        new_org = client.organizations.create_organization(
+            {"name": username, "domains": [os.environ.get("DEFAULT_DOMAIN")]}
+        )
+
+        org_id = new_org.get("id", "")
+        org_name = new_org.get("name", "")
+        organization_membership = client.user_management.create_organization_membership(
+            user_id=workos_user_id,
+            organization_id=org_id,
+        )
+
+        new_company, _ = Company.objects.get_or_create(name=org_name, id=org_id)
+        role = os.environ.get("MOCK_ROLE", "member")
+        role, _ = Role.objects.get_or_create(name=role)
+        UserCompanies.objects.get_or_create(
+            user=new_user,
+            company=new_company,
+            defaults={"role": role, "id": organization_membership.get("id")},
+        )
+
+        new_user.save()
+        print("all done new refresh token creating")
+        refresh = RefreshToken.for_user(new_user)
+        return {"access": str(refresh.access_token), "refresh": str(refresh)}
+
+    refresh = RefreshToken.for_user(get_user)
+    return {"access": str(refresh.access_token), "refresh": str(refresh)}
 
 
 class GoogleLogin(SocialLoginView):
@@ -55,77 +119,43 @@ class WorkOSAuthenticationView(LoginView):
     def post(self, request, *args, **kwargs):
         try:
             code = request.data.get("code")
-            ip_address = request.META.get("REMOTE_ADDR")
             user_agent = request.META.get("HTTP_USER_AGENT")
-            workos.api_key = os.environ.get("WORKOS_APIKEY")
-            workos.client_id = os.environ.get("WORKOS_CLIENT")
             print("code > ", code)
-            print("ip_address > ", ip_address)
             print("user_agent > ", user_agent)
             user_and_organization = client.user_management.authenticate_with_code(
                 code=code,
-                ip_address=ip_address,
                 user_agent=user_agent,
             )
-            print("user_and_organization > ", user_and_organization)
-            workos_user = user_and_organization.get("user", {})
-            email = workos_user.get("email", "")
-            first_name = workos_user.get("first_name", "")
-            last_name = workos_user.get("last_name", "")
-            username = workos_user.get("username", last_name)
 
-            workos_user_id = workos_user.get("id", "")
-            get_user = CustomUser.objects.filter(email=email).first()
-            print("get_uSerId  > ", get_user)
-
-            if get_user is None:
-                new_user, _ = CustomUser.objects.get_or_create(
-                    id=workos_user_id,
-                    defaults={
-                        "email": email,
-                        "is_active": True,
-                        "first_name": first_name,
-                        "last_name": last_name,
-                        "id": workos_user_id,
-                        "username": username + "_1",
-                        "profile_picture": getattr(
-                            get_user,
-                            "profile_picture",
-                            "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
-                        ),
-                    },
-                )
-
-                # User is new and yet not created company/organization
-                new_org = client.organizations.create_organization(
-                    {"name": username, "domains": [os.environ.get("DEFAULT_DOMAIN")]}
-                )
-
-                print("new_org  > ", new_org)
-                org_id = new_org.get("id", "")
-                org_name = new_org.get("name", "")
-                organization_membership = client.user_management.create_organization_membership(
-                    user_id=workos_user_id,
-                    organization_id=org_id,
-                )
-
-                print("organization_membership > ", organization_membership)
-
-                new_company, _ = Company.objects.get_or_create(name=org_name, id=org_id)
-                role = os.environ.get("MOCK_ROLE", "member")
-                role, _ = Role.objects.get_or_create(name=role)
-                UserCompanies.objects.get_or_create(
-                    user=new_user,
-                    company=new_company,
-                    defaults={"role": role, "id": organization_membership.get("id")},
-                )
-
-                new_user.save()
-                refresh = RefreshToken.for_user(new_user)
-                return Response({"access": str(refresh.access_token), "refresh": str(refresh)})
-
-            refresh = RefreshToken.for_user(get_user)
-            return Response({"access": str(refresh.access_token), "refresh": str(refresh)})
+            response = create_user_and_organization(user_and_organization)
+            return Response(response)
 
         except Exception as e:
             print("login error >> ", e)
+            return JsonResponse({"message": e.message, "code": e.code}, status=406)
+
+
+class WorkOSAuthKitView(LoginView):
+    def post(self, request, *args, **kwargs):
+        try:
+            email = request.data.get("email")
+            code = request.data.get("code")
+
+            if code:
+                user_and_organization = client.user_management.authenticate_with_magic_auth(
+                    email=email,
+                    code=code,
+                )
+                response = create_user_and_organization(user_and_organization)
+                return Response(response)
+
+            client.user_management.send_magic_auth_code(
+                email=email,
+            )
+            return Response(True)
+
+        except Exception as e:
+            print("WorkOSAuthKitView error >> ", e)
+            if e.code == "invalid_one_time_code":
+                return JsonResponse({"message": "Code already used or expired", "code": e.code}, status=406)
+            return JsonResponse({"message": e.message, "code": e.code}, status=400)
