@@ -67,6 +67,16 @@ seed-dev:
 	@echo "Seeding the backend database..."
 	make seed-users seed-questions seed-templates seed-interviews
 
+.PHONY: migrate_db
+migrate_db:
+	@echo "Migrating old DB to new DB..."
+	docker compose -f docker-compose-dev.yaml exec backend python manage.py migrate_db
+
+.PHONY: migrate_delete
+migrate_delete:
+	@echo "Migrating old DB to new DB..."
+	docker compose -f docker-compose-dev.yaml exec backend python manage.py migrate_delete
+
 # Setup Command
 .PHONY: setup
 setup:
