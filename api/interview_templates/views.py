@@ -1,8 +1,10 @@
 import json
+import os
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from june import analytics
 from rest_framework import generics, status
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
@@ -18,6 +20,8 @@ from .models import Template, TemplateQuestion, TemplateTopic
 from .serializers import TemplateQuestionSerializer, TemplatesSerializer, TemplateTopicSerializer
 
 DELETE_SUCCESS = {"detail": "Successfully deleted"}
+
+analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
 
 
 class BaseDeleteInstance(generics.DestroyAPIView):
@@ -122,9 +126,9 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
         question_data["company"] = user_company.company_id
         question_data["user"] = user_company.user_id
         # Create a new Question object
-        print(question_data)
+
         question_serializer = QuestionSerializer(data=question_data)
-        print(question_serializer)
+
         if question_serializer.is_valid():
             question = question_serializer.save()
         else:
@@ -142,10 +146,13 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
             "topic": request.data.get("topic"),
             "question": question.id,
         }
-        print(template_question_data)
         template_question_serializer = TemplateQuestionSerializer(
             data=template_question_data, context={"request": request}
         )
+        user_id = self.request.user.id  # Assuming user ID is available in the request context
+        analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
+        analytics.track(user_id=str(user_id), event="new-question-created")
+        print("here")
         if template_question_serializer.is_valid():
             template_question_serializer.save()
             return JsonResponse(template_question_serializer.data, status=status.HTTP_201_CREATED)

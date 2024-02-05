@@ -1,10 +1,12 @@
 import json
+import os
 from datetime import timezone
 
 import boto3
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from june import analytics
 from rest_framework import generics, status
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -20,6 +22,7 @@ from .models import Candidate, InterviewRound, InterviewRoundQuestion
 from .serializers import CandidateSerializer, InterviewRoundQuestionSerializer, InterviewRoundSerializer
 
 DELETE_SUCCESS = {"detail": "Successfully deleted"}
+analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
 
 
 class BaseDeleteInstance(generics.DestroyAPIView):
@@ -148,6 +151,10 @@ class CreateInterviewRound(CreateAPIView):
                     "interviewer_id": interview_round.interviewer_id,
                     "meeting_room_id": interview_round.meeting_room_id,
                 }
+                user_id = self.request.user.id  # Assuming user ID is available in the request context
+                analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
+                analytics.track(user_id=str(user_id), event="new-interviewRound-started")
+                print("here")
                 return Response(response, status=status.HTTP_201_CREATED)
             return Response({}, status=status.HTTP_200_OK)
         except Exception as e:
@@ -160,11 +167,13 @@ class InterviewRoundGet(APIView):
 
     def get(self, request, interview_round_id):
         try:
-            user_company = get_object_or_404(UserCompanies, user=self.request.user)
-            company_id = user_company.company_id
+            # user_company = get_object_or_404(UserCompanies, user=self.request.user)
+            # company_id = user_company.company_id
 
             interview_round = InterviewRound.objects.get(
-                id=interview_round_id, company=company_id, deleted_at__isnull=True
+                id=interview_round_id, 
+                # company=company_id, 
+                deleted_at__isnull=True
             )
             candidate_name = interview_round.candidate.name if interview_round.candidate else None
             interviewer = CustomUserSerializer(interview_round.interviewer).data
