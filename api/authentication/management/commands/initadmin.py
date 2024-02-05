@@ -20,6 +20,7 @@ class Command(BaseCommand):
             password = os.environ.get("SUPERUSER_PASSWORD")
             company, _ = Company.objects.get_or_create(name="Sinta")
             admin, created = User.objects.get_or_create(
+                id=100238,
                 username=username,
                 email=email,
                 is_staff=True,

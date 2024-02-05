@@ -7,6 +7,7 @@ from company.models import Company, Department
 class CustomUser(AbstractUser):
     companies = models.ManyToManyField(Company, through="UserCompanies")
     profile_picture = models.URLField(null=True, blank=True)
+    id = models.CharField(max_length=200, primary_key=True, null=False)
 
     def __str__(self):
         return str(self.username)
@@ -20,6 +21,7 @@ class Role(models.Model):
 
 
 class UserCompanies(models.Model):
+    id = models.CharField(max_length=200, primary_key=True, null=False)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.SET_NULL, null=True)
