@@ -26,8 +26,8 @@ boto3 = "^1.33.5"
 ffmpeg-python = "^0.2.0"
 daphne = "3.0.2"
 channels = "^3.0.0"
+workos = "^2.1.0"
 june-analytics-python = "^2.3.0"
-
 
 
 

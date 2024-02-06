@@ -1,4 +1,5 @@
 import random
+import secrets
 
 import factory
 
@@ -11,6 +12,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CustomUser
 
+    id = factory.Sequence(lambda n: n)
     username = factory.Faker("user_name")
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
@@ -26,9 +28,11 @@ class UserFactory(factory.django.DjangoModelFactory):
 
         if extracted:
             for company in extracted:
-                UserCompanies.objects.create(user=self, company=company, role=role)
+                pk = secrets.token_hex(10)
+                UserCompanies.objects.create(id=pk, user=self, company=company, role=role)
         else:
-            UserCompanies.objects.create(user=self, company=CompanyFactory(), role=role)
+            pk = secrets.token_hex(10)
+            UserCompanies.objects.create(id=pk, user=self, company=CompanyFactory(), role=role)
 
     @classmethod
     def create_member(cls, n=1, **kwargs):
@@ -36,7 +40,8 @@ class UserFactory(factory.django.DjangoModelFactory):
         for _ in range(n):
             user = cls.create()
             company = CompanyFactory()
-            UserCompanies.objects.create(user=user, company=company, role=role_member)
+            pk = secrets.token_hex(10)
+            UserCompanies.objects.create(id=pk, user=user, company=company, role=role_member)
 
 
 class RoleFactory(factory.django.DjangoModelFactory):
