@@ -4,8 +4,23 @@ print("DEV ENVIRONMENT SETTINGS LOADED")
 DEBUG = True
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# Default Admin Account
-ADMINS = [(os.environ.get("SUPERUSER"), os.environ.get("SUPERUSER_EMAIL"))]
+INSTALLED_APPS += ["drf_spectacular"]
+
+rest_framework_settings = REST_FRAMEWORK.copy()
+rest_framework_settings.update(
+    {
+        "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    }
+)
+REST_FRAMEWORK = rest_framework_settings
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Sinta API",
+    "DESCRIPTION": "Your project description",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # OTHER SETTINGS
+}
 
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
