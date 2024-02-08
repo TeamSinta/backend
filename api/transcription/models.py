@@ -16,7 +16,7 @@ class TranscriptChunk(models.Model):
 
     # Content type and object ID fields for the speaker
     speaker_content_type = models.ForeignKey(ContentType, on_delete=models.SET_NULL, null=True)
-    speaker_object_id = models.PositiveIntegerField(null=True)
+    speaker_object_id = models.CharField(null=True)
     speaker = GenericForeignKey("speaker_content_type", "speaker_object_id")
     user = models.ForeignKey(
         CustomUser,
