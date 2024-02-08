@@ -17,8 +17,21 @@ workos.api_key = os.environ.get("WORKOS_APIKEY")
 workos.client_id = os.environ.get("WORKOS_CLIENT")
 
 
+def get_or_create_company(org_name, org_id, user, org_member_id):
+    new_company, _ = Company.objects.get_or_create(id=org_id, defaults={"id": org_id, "name": org_name})
+    role = os.environ.get("MOCK_ROLE", "member")
+    role, _ = Role.objects.get_or_create(name=role)
+    UserCompanies.objects.get_or_create(
+        user=user,
+        company=new_company,
+        defaults={"role": role, "id": org_member_id},
+    )
+    return new_company
+
+
 def create_user_and_organization(user_and_organization):
     workos_user = user_and_organization.get("user", {})
+    workos_org_id = user_and_organization.get("organization_id", None)
     email = workos_user.get("email", "")
     first_name = workos_user.get("first_name", "")
     last_name = workos_user.get("last_name", "")
@@ -48,25 +61,35 @@ def create_user_and_organization(user_and_organization):
             },
         )
 
-        new_org = client.organizations.create_organization(
-            {"name": username, "domains": [os.environ.get("DEFAULT_DOMAIN")]}
-        )
+        if workos_org_id is None:
+            new_org = client.organizations.create_organization(
+                {"name": username, "domains": [os.environ.get("DEFAULT_DOMAIN")]}
+            )
 
-        org_id = new_org.get("id", "")
-        org_name = new_org.get("name", "")
-        organization_membership = client.user_management.create_organization_membership(
-            user_id=workos_user_id,
-            organization_id=org_id,
-        )
+            org_id = new_org.get("id", "")
+            org_name = new_org.get("name", "")
+            organization_membership = client.user_management.create_organization_membership(
+                user_id=workos_user_id,
+                organization_id=org_id,
+            )
+            get_or_create_company(org_name, org_id, new_user, organization_membership.get("id"))
 
-        new_company, _ = Company.objects.get_or_create(name=org_name, id=org_id)
-        role = os.environ.get("MOCK_ROLE", "member")
-        role, _ = Role.objects.get_or_create(name=role)
-        UserCompanies.objects.get_or_create(
-            user=new_user,
-            company=new_company,
-            defaults={"role": role, "id": organization_membership.get("id")},
-        )
+        else:
+            workos_org = client.organizations.get_organization(organization_id=workos_org_id)
+            print("workos_org", workos_org)
+            organization_membership = client.user_management.list_organization_memberships(
+                user_id=workos_user_id,
+                organization_id=workos_org.id,
+            )
+            if organization_membership:
+                organization_membership = organization_membership[0]
+                get_or_create_company(workos_org.name, workos_org_id, new_user, organization_membership.get("id"))
+            else:
+                organization_membership = client.user_management.create_organization_membership(
+                    user_id=workos_user_id,
+                    organization_id=workos_org_id,
+                )
+                get_or_create_company(workos_org.name, workos_org_id, new_user, organization_membership.get("id"))
 
         new_user.save()
         print("all done new refresh token creating")
@@ -120,8 +143,6 @@ class WorkOSAuthenticationView(LoginView):
         try:
             code = request.data.get("code")
             user_agent = request.META.get("HTTP_USER_AGENT")
-            print("code > ", code)
-            print("user_agent > ", user_agent)
             user_and_organization = client.user_management.authenticate_with_code(
                 code=code,
                 user_agent=user_agent,
