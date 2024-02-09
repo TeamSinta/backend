@@ -88,12 +88,8 @@ class InterviewRoundQuestionList(BaseDeleteInstance, generics.ListCreateAPIView)
     serializer_class = InterviewRoundQuestionSerializer
 
     def get_queryset(self):
-        user_company = get_object_or_404(UserCompanies, user=self.request.user)
-        company_id = user_company.company_id
-        queryset = InterviewRoundQuestion.objects.filter(company_id=company_id, deleted_at__isnull=True)
         interview_round = self.request.query_params.get("interviewRound")  # Correct query parameter
-        if interview_round is not None:
-            queryset = queryset.filter(interview_round_id=interview_round)
+        queryset = InterviewRoundQuestion.objects.filter(interview_round_id=interview_round, deleted_at__isnull=True)
         return queryset
 
 
