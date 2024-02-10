@@ -378,11 +378,16 @@ class RateInterviewRoundQuestion(CreateAPIView):
     def create(self, request, *args, **kwargs):
         try:
             interview_round_id = request.data.get("interview_round_id")
+            template_id = request.data.get("template_id")
             question_id = request.data.get("question_id")
             rating = request.data.get("rating")
 
-            interview_round = InterviewRound.objects.get(pk=interview_round_id, deleted_at__isnull=True)
-            template_question = TemplateQuestion.objects.get(question_id=question_id, deleted_at__isnull=True)
+            interview_round = InterviewRound.objects.get(
+                pk=interview_round_id, template_id=template_id, deleted_at__isnull=True
+            )
+            template_question = TemplateQuestion.objects.get(
+                question_id=question_id, template_id=template_id, deleted_at__isnull=True
+            )
 
             (
                 interview_round_question,
