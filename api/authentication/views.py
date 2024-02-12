@@ -6,6 +6,7 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from dj_rest_auth.views import LoginView
 from django.http import JsonResponse
+from june import analytics
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from workos import client
@@ -15,6 +16,7 @@ from user.models import CustomUser, Role, UserCompanies
 
 workos.api_key = os.environ.get("WORKOS_APIKEY")
 workos.client_id = os.environ.get("WORKOS_CLIENT")
+analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
 
 
 def get_or_create_company(org_name, org_id, user, org_member_id):
@@ -42,7 +44,8 @@ def create_user_and_organization(user_and_organization):
 
     workos_user_id = workos_user.get("id", "")
     get_user = CustomUser.objects.filter(email=email).first()
-
+    analytics.identify(user_id=str(get_user), traits={"email": get_user.email})
+    analytics.track(user_id=str(get_user), event="user_logged_in")
     if get_user is None:
         new_user, _ = CustomUser.objects.get_or_create(
             id=workos_user_id,
@@ -59,6 +62,14 @@ def create_user_and_organization(user_and_organization):
                     "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
                 ),
             },
+        )
+        analytics.identify(
+            user_id=str(new_user.id),
+            traits={"email": new_user.email, "first_name": new_user.first_name, "last_name": new_user.last_name},
+        )
+        analytics.track(user_id=str(new_user.id), event="user_signed_up")
+        new_org = client.organizations.create_organization(
+            {"name": username, "domains": [os.environ.get("DEFAULT_DOMAIN")]}
         )
 
         if workos_org_id is None:

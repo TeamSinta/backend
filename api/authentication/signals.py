@@ -26,7 +26,7 @@ def assign_profile_picture(request, user, **kwargs):
 
         user.save()
     analytics.identify(user_id=str(user.id), traits={"email": user.email})
-    analytics.track(user_id=str(user.id), event="user-signed-up")
+    analytics.track(user_id=str(user.id), event="user_signed_up")
 
 
 @receiver(user_signed_up)

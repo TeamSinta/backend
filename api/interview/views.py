@@ -88,8 +88,12 @@ class InterviewRoundQuestionList(BaseDeleteInstance, generics.ListCreateAPIView)
     serializer_class = InterviewRoundQuestionSerializer
 
     def get_queryset(self):
+        user_company = get_object_or_404(UserCompanies, user=self.request.user)
+        company_id = user_company.company_id
+        queryset = InterviewRoundQuestion.objects.filter(company_id=company_id, deleted_at__isnull=True)
         interview_round = self.request.query_params.get("interviewRound")  # Correct query parameter
-        queryset = InterviewRoundQuestion.objects.filter(interview_round_id=interview_round, deleted_at__isnull=True)
+        if interview_round is not None:
+            queryset = queryset.filter(interview_round_id=interview_round)
         return queryset
 
 
@@ -153,8 +157,7 @@ class CreateInterviewRound(CreateAPIView):
                 }
                 user_id = self.request.user.id  # Assuming user ID is available in the request context
                 analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
-                analytics.track(user_id=str(user_id), event="new-interviewRound-started")
-                print("here")
+                analytics.track(user_id=str(user_id), event="interview_started")
                 return Response(response, status=status.HTTP_201_CREATED)
             return Response({}, status=status.HTTP_200_OK)
         except Exception as e:
@@ -378,16 +381,11 @@ class RateInterviewRoundQuestion(CreateAPIView):
     def create(self, request, *args, **kwargs):
         try:
             interview_round_id = request.data.get("interview_round_id")
-            template_id = request.data.get("template_id")
             question_id = request.data.get("question_id")
             rating = request.data.get("rating")
 
-            interview_round = InterviewRound.objects.get(
-                pk=interview_round_id, template_id=template_id, deleted_at__isnull=True
-            )
-            template_question = TemplateQuestion.objects.get(
-                question_id=question_id, template_id=template_id, deleted_at__isnull=True
-            )
+            interview_round = InterviewRound.objects.get(pk=interview_round_id, deleted_at__isnull=True)
+            template_question = TemplateQuestion.objects.get(question_id=question_id, deleted_at__isnull=True)
 
             (
                 interview_round_question,
