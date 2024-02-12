@@ -23,6 +23,13 @@ class DeleteUser(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = DeactivateCustomUserSerializer
 
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(description="User account deactivated"),
+            404: OpenApiResponse(description="User not found or is not active"),
+        },
+        request=None,
+    )
     def delete(self, request):
         user = request.user
 
@@ -32,15 +39,6 @@ class DeleteUser(APIView):
         serializer.update(user, {})
 
         return Response({"message": "User account deactivated"}, status=status.HTTP_200_OK)
-
-
-extend_schema(
-    responses={
-        200: OpenApiResponse(description="User account deactivated"),
-        404: OpenApiResponse(description="User not found or is not active"),
-    },
-    request=None,
-)(DeleteUser.delete)
 
 
 class CustomUserDetailsView(UserDetailsView):
