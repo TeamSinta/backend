@@ -270,7 +270,7 @@ class DepartmentView(viewsets.ModelViewSet):
         if created:
             user_id = self.request.user.id  # Assuming user ID is available in the request context
             analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
-            analytics.track(user_id=str(user_id), event="new-Department-Created")
+            analytics.track(user_id=str(user_id), event="Department_created")
             return Response(
                 {"detail": "Department created.", "id": department.id},
                 status=status.HTTP_201_CREATED,

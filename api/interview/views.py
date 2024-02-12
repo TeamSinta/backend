@@ -157,8 +157,7 @@ class CreateInterviewRound(CreateAPIView):
                 }
                 user_id = self.request.user.id  # Assuming user ID is available in the request context
                 analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
-                analytics.track(user_id=str(user_id), event="new-interviewRound-started")
-                print("here")
+                analytics.track(user_id=str(user_id), event="interview_started")
                 return Response(response, status=status.HTTP_201_CREATED)
             return Response({}, status=status.HTTP_200_OK)
         except Exception as e:
