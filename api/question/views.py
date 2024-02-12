@@ -11,7 +11,11 @@ from openai_helper.utils import get_embedding
 from user.models import UserCompanies
 
 from .models import Question, QuestionBank
-from .serializers import QuestionBankSerializer, QuestionBankUpdateSerializer, QuestionSerializer
+from .serializers import (
+    QuestionBankSerializer,
+    QuestionBankUpdateSerializer,
+    QuestionSerializer,
+)
 
 DELETE_SUCCESS = {"detail": "Successfully deleted"}
 
@@ -91,7 +95,7 @@ class QuestionList(BaseDeleteInstance, generics.ListCreateAPIView):
         question_instance.user_id = self.request.user.id
         user_id = self.request.user.id  # Assuming user ID is available in the request context
         analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
-        analytics.track(user_id=str(user_id), event="new-question-created")
+        analytics.track(user_id=str(user_id), event="question_created")
         question_instance.save()
 
 

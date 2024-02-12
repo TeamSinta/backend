@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import CompanyDepartmentMembers, CompanyDepartments, CompanyMembers, CompanyView
+from .views import CompanyMembers, CompanyView, DepartmentMembers, DepartmentView
 
 urlpatterns = [
     path("", CompanyView.as_view({"get": "list", "put": "update"}), name="company"),
@@ -11,12 +11,12 @@ urlpatterns = [
     ),
     path(
         "departments",
-        CompanyDepartments.as_view({"get": "list", "post": "create", "put": "update", "delete": "destroy"}),
+        DepartmentView.as_view({"get": "list", "post": "create", "put": "update", "delete": "destroy"}),
         name="company-departments",
     ),
     path(
         "department/members",
-        CompanyDepartmentMembers.as_view({"get": "list", "post": "create", "put": "update", "delete": "destroy"}),
+        DepartmentMembers.as_view({"get": "list", "post": "create", "put": "update", "delete": "destroy"}),
         name="company-departments",
     ),
 ]

@@ -2,8 +2,12 @@ from django.urls import path
 
 from . import views
 from .views import (
-    CreateInterviewRound, InterviewRoundByRoomID, InterviewRoundGet, InterviewRoundListAll,
-    InterviewRoundQuestionDetailGet, RateInterviewRoundQuestion
+    CreateInterviewRound,
+    InterviewRoundByRoomID,
+    InterviewRoundGet,
+    InterviewRoundListAll,
+    InterviewRoundQuestionDetailGet,
+    RateInterviewRoundQuestion,
 )
 
 urlpatterns = [

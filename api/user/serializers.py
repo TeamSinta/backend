@@ -1,7 +1,7 @@
 from dj_rest_auth.serializers import UserDetailsSerializer
 from rest_framework import serializers
 
-from user.models import CustomUser, Role, UserCompanies
+from user.models import CustomUser, Role, UserCompanies, UserDepartments
 
 
 class CustomUserDetailsSerializer(UserDetailsSerializer):
@@ -62,7 +62,7 @@ class UserDepartmentSerializer(serializers.ModelSerializer):
     profile_picture = serializers.ReadOnlyField(source="user.profile_picture")
 
     class Meta:
-        model = UserCompanies
+        model = UserDepartments
         fields = [
             "id",
             "username",

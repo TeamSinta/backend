@@ -19,7 +19,11 @@ from user.models import UserCompanies
 from user.serializers import CustomUserSerializer
 
 from .models import Candidate, InterviewRound, InterviewRoundQuestion
-from .serializers import CandidateSerializer, InterviewRoundQuestionSerializer, InterviewRoundSerializer
+from .serializers import (
+    CandidateSerializer,
+    InterviewRoundQuestionSerializer,
+    InterviewRoundSerializer,
+)
 
 DELETE_SUCCESS = {"detail": "Successfully deleted"}
 analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
@@ -153,8 +157,7 @@ class CreateInterviewRound(CreateAPIView):
                 }
                 user_id = self.request.user.id  # Assuming user ID is available in the request context
                 analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
-                analytics.track(user_id=str(user_id), event="new-interviewRound-started")
-                print("here")
+                analytics.track(user_id=str(user_id), event="interview_started")
                 return Response(response, status=status.HTTP_201_CREATED)
             return Response({}, status=status.HTTP_200_OK)
         except Exception as e:
@@ -171,9 +174,9 @@ class InterviewRoundGet(APIView):
             # company_id = user_company.company_id
 
             interview_round = InterviewRound.objects.get(
-                id=interview_round_id, 
-                # company=company_id, 
-                deleted_at__isnull=True
+                id=interview_round_id,
+                # company=company_id,
+                deleted_at__isnull=True,
             )
             candidate_name = interview_round.candidate.name if interview_round.candidate else None
             interviewer = CustomUserSerializer(interview_round.interviewer).data
