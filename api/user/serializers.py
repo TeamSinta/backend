@@ -29,6 +29,17 @@ class CustomUserSerializer(serializers.ModelSerializer):
         ]
 
 
+class DeactivateCustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        modal = CustomUser
+        fields = []
+
+    def update(self, instance, validated_data):
+        instance.is_active = False
+        instance.save()
+        return instance
+
+
 """
 This is worth checking out if refactoring can be made to stay DRY since the above CustomUserDetails
 is very similar.

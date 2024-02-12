@@ -1,6 +1,6 @@
-from allauth.socialaccount.models import SocialAccount
 from dj_rest_auth.views import UserDetailsView
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -12,21 +12,35 @@ from company.serializers import DepartmentSerializer
 from user.models import UserCompanies, UserDepartments
 
 from .models import CustomUser
-from .serializers import CustomUserSerializer
+from .serializers import CustomUserSerializer, DeactivateCustomUserSerializer
 
 
-# API for deactivating user account, hence "deleting it".
 class DeleteUser(APIView):
+    """
+    Class for deactivating the user's account.
+    """
+
     permission_classes = [IsAuthenticated]
+    serializer_class = DeactivateCustomUserSerializer
 
     def delete(self, request):
-        social_account = get_object_or_404(SocialAccount, user=request.user)
+        user = request.user
 
-        user = social_account.user
-        user.is_active = False
-        user.save()
+        if not user or not user.is_active:
+            return Response({"error": "User not found or is not active"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = self.serializer_class(user)
+        serializer.update(user, {})
 
-        return Response({"message": "User account deactivated"})
+        return Response({"message": "User account deactivated"}, status=status.HTTP_200_OK)
+
+
+extend_schema(
+    responses={
+        200: OpenApiResponse(description="User account deactivated"),
+        404: OpenApiResponse(description="User not found or is not active"),
+    },
+    request=None,
+)(DeleteUser.delete)
 
 
 class CustomUserDetailsView(UserDetailsView):
