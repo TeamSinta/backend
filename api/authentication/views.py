@@ -41,12 +41,22 @@ def create_user_and_organization(user_and_organization):
     print("workos_user", workos_user)
     print("workos_org_id", workos_org_id)
     print("email", email)
+    print("first_name", first_name)
+    print("last_name", last_name)
+
+    if not first_name:
+        first_name = email.split("@")[0]
+        last_name = email.split("@")[0]
 
     if not username:
         username = email.split("@")[0] if email else last_name
 
+    print("first_name", first_name)
+    print("username", username)
+
     workos_user_id = workos_user.get("id", "")
     get_user = CustomUser.objects.filter(email=email).first()
+    print("get_user", get_user)
     if get_user is None:
         new_user, _ = CustomUser.objects.get_or_create(
             id=workos_user_id,
@@ -164,8 +174,8 @@ class WorkOSAuthenticationView(LoginView):
 
         except Exception as e:
             print("login error >> ", e)
-            # if("message" in e):
-            #     return JsonResponse({"message": e.message, "code": e.code}, status=406)
+            if hasattr(e, "message") and e.message is not None:
+                return JsonResponse({"message": e.message, "code": e.code}, status=406)
             return JsonResponse({"message": e}, status=406)
 
 
@@ -189,9 +199,12 @@ class WorkOSAuthKitView(LoginView):
             return Response(True)
 
         except Exception as e:
-            print("WorkOSAuthKitView error >> ", e)
-            if e.code == "invalid_one_time_code":
-                return JsonResponse({"message": "Code already used or expired", "code": e.code}, status=406)
-            if "message" in e:
-                return JsonResponse({"message": e.message, "code": e.code}, status=406)
+            print("WorkOSAuthKitView code >> ", e)
+            if hasattr(e, "code"):
+                if e.code == "invalid_one_time_code":
+                    return JsonResponse({"message": "Code already used or expired", "code": e.code}, status=406)
+                if e.code == "invalid_request_parameters":
+                    return JsonResponse({"message": e.errors[0].message, "code": e.code}, status=406)
+            if hasattr(e, "message") and e.message is not None:
+                return JsonResponse({"message": e.message, "code": "e.code"}, status=406)
             return JsonResponse({"message": e}, status=400)
