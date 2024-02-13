@@ -68,9 +68,7 @@ class CompanyView(viewsets.ModelViewSet):
     serializer_class = CompanySerializer
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-
-        return queryset
+        return Company.objects.filter(deleted_at__isnull=True)
 
     @extend_schema(
         responses={status.HTTP_200_OK: CompanySerializer},
@@ -108,6 +106,12 @@ class CompanyView(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        company = self.get_object()
+        company.deleted_at = timezone.now()
+        company.save()
+        return Response({"detail": "Company deleted."}, status=status.HTTP_200_OK)
 
 
 class CompanyMembers(viewsets.ModelViewSet):
