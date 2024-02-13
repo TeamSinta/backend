@@ -56,43 +56,25 @@ def check_role_permission(view_instance, request):
 
 
 class CompanyView(viewsets.ModelViewSet):
+    queryset = Company.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = CompanySerializer
 
     def get_queryset(self):
-        company_id = self.request.GET.get("company", None)
-        user_from_jwt = self.request.user
+        queryset = super().get_queryset()
 
-        if not company_id:
-            return Company.objects.none()
-        # check_permissions_and_existence(user_from_jwt, company_id=company_id)
+        return queryset
 
-        return Company.objects.filter(id=company_id)
+    def retrieve(self, request, *args, **kwargs):
+        company = self.get_object()
+        serializer = self.get_serializer(company)
+        return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
-        # self.permission_classes = [isAdminRole] not working
-        company_id = self.request.GET.get("company", None)
-        user_from_jwt = request.user
-        new_company_name = request.data.get("name", None)
-
-        check_role_permission(self, request)
-        check_permissions_and_existence(user_from_jwt, company_id=company_id)
-
-        if not new_company_name:
-            return Response(
-                {"detail": "New company name required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if Company.objects.filter(name=new_company_name).exists():
-            return Response(
-                {"detail": "A company with this name already exists."},
-                status=status.HTTP_409_CONFLICT,
-            )
-
-        company = get_object_or_404(Company, id=company_id)
-        company.name = new_company_name
-        company.save()
+        company = self.get_object()
+        serializer = self.get_serializer(company, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response({"detail": "Company name updated."}, status=status.HTTP_200_OK)
 
 

@@ -11,7 +11,12 @@ from user.models import (  # Adjust the import according to your user model
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ["id", "name"]
+        fields = ["id", "name", "created_at", "updated_at", "deleted_at"]
+
+    def validate_name(self, value):
+        if len(value) < 3:
+            raise serializers.ValidationError("Company name must be longer than 3 characters")
+        return value
 
 
 class DepartmentSerializer(serializers.ModelSerializer):

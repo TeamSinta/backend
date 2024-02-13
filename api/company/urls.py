@@ -1,9 +1,13 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
 from .views import CompanyMembers, CompanyView, DepartmentMembers, DepartmentView
 
+router = DefaultRouter()
+router.register(r"companies", CompanyView)
+
 urlpatterns = [
-    path("", CompanyView.as_view({"get": "list", "put": "update"}), name="company"),
+    path("", include(router.urls)),
     path(
         "members",
         CompanyMembers.as_view({"get": "list", "post": "create", "put": "update", "delete": "destroy"}),
