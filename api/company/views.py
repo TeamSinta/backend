@@ -4,6 +4,7 @@ import os
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from drf_spectacular.utils import OpenApiExample, extend_schema
 from june import analytics
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -56,6 +57,12 @@ def check_role_permission(view_instance, request):
 
 
 class CompanyView(viewsets.ModelViewSet):
+    """
+    Manages company CRUD actions.
+    Utilizes CompanySerializer for data validation and serialization.
+    Requires user authentication
+    """
+
     queryset = Company.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = CompanySerializer
@@ -65,17 +72,42 @@ class CompanyView(viewsets.ModelViewSet):
 
         return queryset
 
+    @extend_schema(
+        responses={status.HTTP_200_OK: CompanySerializer},
+        examples=[
+            OpenApiExample(
+                "Retrieve Company",
+                summary="Retrieve a specific company",
+                value={"id": "example_id", "name": "Example Company"},
+                response_only=True,
+                description="Response for successfully retrieving a company's details.",
+            )
+        ],
+    )
     def retrieve(self, request, *args, **kwargs):
         company = self.get_object()
         serializer = self.get_serializer(company)
         return Response(serializer.data)
 
+    @extend_schema(
+        request=CompanySerializer,
+        responses={status.HTTP_200_OK: CompanySerializer},
+        examples=[
+            OpenApiExample(
+                "Update Company",
+                summary="Update a company's information",
+                value={"id": "Company Unique id", "name": "Updated Company Name"},
+                request_only=True,
+                description="Request to update a company's name.",
+            )
+        ],
+    )
     def update(self, request, *args, **kwargs):
         company = self.get_object()
         serializer = self.get_serializer(company, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"detail": "Company name updated."}, status=status.HTTP_200_OK)
+        return Response(serializer.data)
 
 
 class CompanyMembers(viewsets.ModelViewSet):

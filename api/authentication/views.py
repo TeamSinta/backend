@@ -176,7 +176,8 @@ class MockGoogleLogin(LoginView):
                 "profile_picture": "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
             },
         )
-        company, _ = Company.objects.get_or_create(name=company_name, defaults={"id": str(uuid.uuid4())})
+        company_unique_id = os.environ.get("MOCK_COMPANY_UNIQUE_ID", "mock-company-1")
+        company, created = Company.objects.get_or_create(id=company_unique_id, defaults={"name": company_name})
         role, _ = Role.objects.get_or_create(name=role)
         UserCompanies.objects.get_or_create(user=user, company=company, defaults={"role": role})
         user.save()
