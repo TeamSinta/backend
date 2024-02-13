@@ -6,7 +6,9 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from dj_rest_auth.views import LoginView
 from django.http import JsonResponse
+from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema
 from june import analytics
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from workos import client
@@ -120,6 +122,38 @@ class GoogleLogin(SocialLoginView):
 
 
 class MockGoogleLogin(LoginView):
+    """
+    Class for handling Mock-login. Does not require any params, and can be
+    executed with an empty json.
+    """
+
+    @extend_schema(
+        examples=[
+            OpenApiExample(
+                "Mock Login",
+                summary="Default Empty Request",
+                value={},
+                request_only=True,
+                response_only=False,
+                description="Empty request does not require any values, defaults"
+                " to creating or logging in as Mock-user",
+            )
+        ],
+        responses=OpenApiResponse(
+            status.HTTP_200_OK,
+            description="Login Successful",
+            examples=[
+                OpenApiExample(
+                    "login",
+                    summary={"Successful login response"},
+                    value={
+                        "access": "eyJhbGciOiJIUzI1Ni..CJ9",
+                        "refresh": "eyJhbGciOiJIUzI1Ni...v_E",
+                    },
+                )
+            ],
+        ),
+    )
     def post(self, request, *args, **kwargs):
         # Create a mock user or retrieve an existing one
         username = os.environ.get("MOCK_USERNAME", "mockuser")

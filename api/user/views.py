@@ -17,7 +17,7 @@ from .serializers import CustomUserSerializer, DeactivateCustomUserSerializer
 
 class DeleteUser(APIView):
     """
-    Class for deactivating the user's account.
+    Endpoint for deactivating the user's account.
     """
 
     permission_classes = [IsAuthenticated]
@@ -42,6 +42,8 @@ class DeleteUser(APIView):
 
 
 class CustomUserDetailsView(UserDetailsView):
+    """ """
+
     permission_classes = [IsAuthenticated]
 
     def put(self, request, *args, **kwargs):

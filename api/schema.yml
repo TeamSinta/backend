@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Sinta API
   version: 1.0.0
-  description: Your project description
+  description: Endpoint documentation for Sinta running Django DRF.
 paths:
   /api/auth/login/:
     post:
@@ -101,13 +101,8 @@ paths:
     post:
       operationId: auth_mocklogin_create
       description: |-
-        Check the credentials and return the REST Token
-        if the credentials are valid and authenticated.
-        Calls Django Auth login method to register User ID
-        in Django session framework
-
-        Accept the following POST parameters: username, password
-        Return the REST Framework Token Object's key.
+        Class for handling Mock-login. Does not require any params, and can be
+        executed with an empty json.
       tags:
       - auth
       requestBody:
@@ -245,23 +240,24 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UserDepartment'
+                  $ref: '#/components/schemas/DepartmentMembers'
           description: ''
     post:
       operationId: company_department_members_create
+      description: Endpoint to add members to a department.
       tags:
       - company
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserDepartment'
+              $ref: '#/components/schemas/DepartmentMembers'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/UserDepartment'
+              $ref: '#/components/schemas/DepartmentMembers'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UserDepartment'
+              $ref: '#/components/schemas/DepartmentMembers'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -270,7 +266,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDepartment'
+                $ref: '#/components/schemas/DepartmentMembers'
           description: ''
     put:
       operationId: company_department_members_update
@@ -280,13 +276,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserDepartment'
+              $ref: '#/components/schemas/DepartmentMembers'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/UserDepartment'
+              $ref: '#/components/schemas/DepartmentMembers'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UserDepartment'
+              $ref: '#/components/schemas/DepartmentMembers'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -295,10 +291,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDepartment'
+                $ref: '#/components/schemas/DepartmentMembers'
           description: ''
     delete:
       operationId: company_department_members_destroy
+      description: Endpoint to remove members from a department.
       tags:
       - company
       security:
@@ -1435,23 +1432,6 @@ paths:
       responses:
         '200':
           description: No response body
-  /api/templates/{template_id}/edit/:
-    put:
-      operationId: templates_edit_update
-      parameters:
-      - in: path
-        name: template_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - templates
-      security:
-      - jwtHeaderAuth: []
-      - jwtCookieAuth: []
-      responses:
-        '200':
-          description: No response body
   /api/templates/{template_id}/questions/:
     get:
       operationId: templates_questions_retrieve
@@ -2190,27 +2170,20 @@ paths:
   /api/user/delete/:
     delete:
       operationId: user_delete_destroy
-      description: Class for deactivating the user's account.
+      description: Endpoint for deactivating the user's account.
       tags:
       - user
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '204':
-          description: No response body
+        '200':
+          description: User account deactivated
+        '404':
+          description: User not found or is not active
   /api/user/userdetails/:
     get:
       operationId: user_userdetails_retrieve
-      description: |-
-        Reads and updates UserModel fields
-        Accepts GET, PUT, PATCH methods.
-
-        Default accepted fields: username, first_name, last_name
-        Default display fields: pk, username, email, first_name, last_name
-        Read-only fields: pk, email
-
-        Returns UserModel fields.
       tags:
       - user
       security:
@@ -2225,15 +2198,6 @@ paths:
           description: ''
     put:
       operationId: user_userdetails_update
-      description: |-
-        Reads and updates UserModel fields
-        Accepts GET, PUT, PATCH methods.
-
-        Default accepted fields: username, first_name, last_name
-        Default display fields: pk, username, email, first_name, last_name
-        Read-only fields: pk, email
-
-        Returns UserModel fields.
       tags:
       - user
       requestBody:
@@ -2260,15 +2224,6 @@ paths:
           description: ''
     patch:
       operationId: user_userdetails_partial_update
-      description: |-
-        Reads and updates UserModel fields
-        Accepts GET, PUT, PATCH methods.
-
-        Default accepted fields: username, first_name, last_name
-        Default display fields: pk, username, email, first_name, last_name
-        Read-only fields: pk, email
-
-        Returns UserModel fields.
       tags:
       - user
       requestBody:
@@ -2593,6 +2548,44 @@ components:
       required:
       - id
       - title
+    DepartmentMembers:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        first_name:
+          type: string
+          readOnly: true
+        last_name:
+          type: string
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          readOnly: true
+        role:
+          type: string
+          readOnly: true
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+      required:
+      - email
+      - first_name
+      - id
+      - last_name
+      - profile_picture
+      - role
+      - username
     DifficultyEnum:
       enum:
       - 1
@@ -3462,44 +3455,6 @@ components:
       required:
       - token
     UserCompany:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          readOnly: true
-        first_name:
-          type: string
-          readOnly: true
-        last_name:
-          type: string
-          readOnly: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          readOnly: true
-        profile_picture:
-          type: string
-          format: uri
-          nullable: true
-          readOnly: true
-        role:
-          type: string
-          readOnly: true
-      required:
-      - email
-      - first_name
-      - id
-      - last_name
-      - profile_picture
-      - role
-      - username
-    UserDepartment:
       type: object
       properties:
         id:

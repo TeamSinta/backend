@@ -16,10 +16,9 @@ REST_FRAMEWORK = rest_framework_settings
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Sinta API",
-    "DESCRIPTION": "Your project description",
+    "DESCRIPTION": "Endpoint documentation for Sinta running Django DRF.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
-    # OTHER SETTINGS
 }
 
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
