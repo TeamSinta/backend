@@ -84,7 +84,7 @@ def create_user_and_organization(user_and_organization):
             DEFAULT_DOMAIN = os.environ.get("DEFAULT_DOMAIN")
             print("DEFAULT_DOMAIN", DEFAULT_DOMAIN)
             new_org = client.organizations.create_organization(
-                {"name": username, "domains": [DEFAULT_DOMAIN or "https://app.teamsinta.com/"]}
+                {"name": username, "domains": [DEFAULT_DOMAIN or "app.teamsinta.com"]}
             )
 
             org_id = new_org.get("id", "")
