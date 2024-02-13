@@ -17,7 +17,11 @@ from question.serializers import QuestionSerializer
 from user.models import CustomUser, UserCompanies
 
 from .models import Template, TemplateQuestion, TemplateTopic
-from .serializers import TemplateQuestionSerializer, TemplatesSerializer, TemplateTopicSerializer
+from .serializers import (
+    TemplateQuestionSerializer,
+    TemplatesSerializer,
+    TemplateTopicSerializer,
+)
 
 DELETE_SUCCESS = {"detail": "Successfully deleted"}
 
@@ -151,8 +155,7 @@ class TemplateQuestionsList(generics.ListCreateAPIView):
         )
         user_id = self.request.user.id  # Assuming user ID is available in the request context
         analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
-        analytics.track(user_id=str(user_id), event="new-question-created")
-        print("here")
+        analytics.track(user_id=str(user_id), event="question_created")
         if template_question_serializer.is_valid():
             template_question_serializer.save()
             return JsonResponse(template_question_serializer.data, status=status.HTTP_201_CREATED)
@@ -251,55 +254,6 @@ class CreateTemplate(APIView):
             return JsonResponse(error_response, status=405)
 
 
-# Update a Template
-class UpdateTemplate(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def put(self, request, template_id):
-        if request.method == "PUT":
-            template = get_object_or_404(Template, pk=template_id)
-            data = json.loads(request.body)
-
-            role_title = data.get("role_title")
-            location = data.get("location")
-            company_id = data.get("company_id")
-            interviewers_ids = data.get("interviewers")
-            department_id = data.get("department_id")  # Include department field
-
-            if role_title:
-                template.role_title = role_title
-
-            if location:
-                template.location = location
-
-            if company_id:
-                company = get_object_or_404(Company, id=company_id)
-                template.company = company
-
-            if department_id is not None:  # Set department if provided
-                template.department_id = department_id
-
-            if interviewers_ids:
-                interviewers = CustomUser.objects.filter(id__in=interviewers_ids)
-                template.interviewers.set(interviewers)
-
-            template.save()
-
-            response = {
-                "id": template.id,
-                "role_title": template.role_title,
-                "location": template.location,
-                "company": template.company.id if template.company else None,
-                "interviewers": [interviewer.id for interviewer in template.interviewers.all()],
-                "department_title": template.department.title if template.department else None,
-            }
-
-            return JsonResponse(response, status=200)
-        else:
-            error_response = {"error": "Invalid request method"}
-            return JsonResponse(error_response, status=405)
-
-
 # Read a Template
 class ReadTemplate(APIView):
     permission_classes = [IsAuthenticated]
@@ -386,6 +340,16 @@ class DeleteTemplate(APIView):
             template.deleted_at = timezone.now()
             template.deleted_by = request.user
             template.save()
+            analytics.track(
+                user_id=str(request.user.id),
+                event="template_deleted",
+                properties={
+                    "template_id": str(template_id),
+                    "company_id": str(company_id),
+                    "deleted_by": str(request.user.id),
+                    "deleted_at": str(template.deleted_at),
+                },
+            )
 
             return JsonResponse({"message": "Template deleted successfully"}, status=204)
         else:

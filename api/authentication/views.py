@@ -6,6 +6,7 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from dj_rest_auth.views import LoginView
 from django.http import JsonResponse
+from june import analytics
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from workos import client
@@ -15,6 +16,7 @@ from user.models import CustomUser, Role, UserCompanies
 
 workos.api_key = os.environ.get("WORKOS_APIKEY")
 workos.client_id = os.environ.get("WORKOS_CLIENT")
+analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
 
 
 def get_or_create_company(org_name, org_id, user, org_member_id):
@@ -36,13 +38,15 @@ def create_user_and_organization(user_and_organization):
     first_name = workos_user.get("first_name", "")
     last_name = workos_user.get("last_name", "")
     username = workos_user.get("username", "")
+    print("workos_user", workos_user)
+    print("workos_org_id", workos_org_id)
+    print("email", email)
 
     if not username:
         username = email.split("@")[0] if email else last_name
 
     workos_user_id = workos_user.get("id", "")
     get_user = CustomUser.objects.filter(email=email).first()
-
     if get_user is None:
         new_user, _ = CustomUser.objects.get_or_create(
             id=workos_user_id,
@@ -60,6 +64,11 @@ def create_user_and_organization(user_and_organization):
                 ),
             },
         )
+        analytics.identify(
+            user_id=str(new_user.id),
+            traits={"email": new_user.email, "first_name": new_user.first_name, "last_name": new_user.last_name},
+        )
+        analytics.track(user_id=str(new_user.id), event="user_signed_up")
 
         if workos_org_id is None:
             new_org = client.organizations.create_organization(
@@ -75,7 +84,7 @@ def create_user_and_organization(user_and_organization):
             get_or_create_company(org_name, org_id, new_user, organization_membership.get("id"))
 
         else:
-            workos_org = client.organizations.get_organization(organization_id=workos_org_id)
+            workos_org = client.organizations.get_organization(organization=workos_org_id)
             print("workos_org", workos_org)
             organization_membership = client.user_management.list_organization_memberships(
                 user_id=workos_user_id,
@@ -96,6 +105,8 @@ def create_user_and_organization(user_and_organization):
         refresh = RefreshToken.for_user(new_user)
         return {"access": str(refresh.access_token), "refresh": str(refresh)}
 
+    analytics.identify(user_id=str(get_user), traits={"email": get_user.email})
+    analytics.track(user_id=str(get_user), event="user_logged_in")
     refresh = RefreshToken.for_user(get_user)
     return {"access": str(refresh.access_token), "refresh": str(refresh)}
 
@@ -153,7 +164,9 @@ class WorkOSAuthenticationView(LoginView):
 
         except Exception as e:
             print("login error >> ", e)
-            return JsonResponse({"message": e.message, "code": e.code}, status=406)
+            # if("message" in e):
+            #     return JsonResponse({"message": e.message, "code": e.code}, status=406)
+            return JsonResponse({"message": e}, status=406)
 
 
 class WorkOSAuthKitView(LoginView):
@@ -179,4 +192,6 @@ class WorkOSAuthKitView(LoginView):
             print("WorkOSAuthKitView error >> ", e)
             if e.code == "invalid_one_time_code":
                 return JsonResponse({"message": "Code already used or expired", "code": e.code}, status=406)
-            return JsonResponse({"message": e.message, "code": e.code}, status=400)
+            if "message" in e:
+                return JsonResponse({"message": e.message, "code": e.code}, status=406)
+            return JsonResponse({"message": e}, status=400)

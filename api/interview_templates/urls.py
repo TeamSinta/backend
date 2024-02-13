@@ -13,7 +13,6 @@ urlpatterns = [
     path("", views.GetAllTemplates.as_view(), name="get_all_templates"),
     path("add/", views.CreateTemplate.as_view(), name="create_template"),
     path("<int:template_id>/", views.ReadTemplate.as_view(), name="get_template"),
-    path("<int:template_id>/edit/", views.UpdateTemplate.as_view(), name="update_template"),
     path("<int:template_id>/remove/", views.DeleteTemplate.as_view(), name="delete_template"),
     # Template Topics
     path(

@@ -45,7 +45,7 @@ class TemplatesSerializer(serializers.ModelSerializer):
         # Add June analytics tracking here
         user_id = self.context["request"].user.id  # Assuming user ID is available in the request context
         analytics.identify(user_id=str(user_id), traits={"email": self.context["request"].user.email})
-        analytics.track(user_id=str(user_id), event="templates-created")
+        analytics.track(user_id=str(user_id), event="template_created")
 
         return template
 
@@ -59,7 +59,15 @@ class TemplatesSerializer(serializers.ModelSerializer):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
-
+        user_id = self.context["request"].user.id
+        analytics.track(
+            user_id=str(user_id),
+            event="template_updated",
+            properties={
+                "template_id": str(instance.id),
+                "updates": list(validated_data.keys()),  # Optionally, list the fields that were updated
+            },
+        )
         if interviewers_data is not None:
             instance.interviewers.set(interviewers_data)
         if company_data is not None:
