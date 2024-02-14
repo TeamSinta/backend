@@ -1,5 +1,6 @@
 import json
 import os
+import uuid
 
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -11,6 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from app.permissions import isAdminRole
+from app.serializers import ErrorSerializer
 from user.models import CustomUser, Role, UserCompanies, UserDepartments
 from user.serializers import UserCompanySerializer
 
@@ -71,44 +73,86 @@ class CompanyView(viewsets.ModelViewSet):
         return Company.objects.filter(deleted_at__isnull=True)
 
     @extend_schema(
-        responses={status.HTTP_200_OK: CompanySerializer},
+        request=CompanySerializer,
+        examples=[
+            OpenApiExample(
+                "Create Company",
+                summary="Create a new company",
+                value={"name": "Example Company"},
+                response_only=True,
+                description="Response for successfully creating a company",
+            ),
+        ],
+        responses={status.HTTP_201_CREATED: CompanySerializer, status.HTTP_400_BAD_REQUEST: ErrorSerializer},
+    )
+    def create(self, request, *args, **kwargs):
+        # Generates a unique id for the company creation. Not sure what the
+        # better way of doing this is, since when creating an organization
+        # we want to generate it on WorkOS too.
+        # the UserCompanies id is currently also set as a UUID, but I don't
+        # think this is necessary later. We can use normal ids there? need to
+        # update model for that.
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        company = serializer.save()
+
+        user = request.user
+        role = get_object_or_404(Role, id="1")
+        user_company_uuid = str(uuid.uuid4())
+        UserCompanies.objects.create(id=user_company_uuid, user=user, company=company, role=role)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @extend_schema(
+        request=CompanySerializer,
         examples=[
             OpenApiExample(
                 "Retrieve Company",
                 summary="Retrieve a specific company",
-                value={"id": "example_id", "name": "Example Company"},
+                value={
+                    "id": "Example_id",
+                    "name": "Example Company",
+                    "created_at": "2024-01-01T01:12:13.123456Z",
+                    "updated_at": "2024-01-01T01:12:13.123456Z",
+                    "deleted_at": None,
+                },
                 response_only=True,
                 description="Response for successfully retrieving a company's details.",
-            )
+            ),
         ],
+        responses={status.HTTP_200_OK: CompanySerializer, status.HTTP_404_NOT_FOUND: ErrorSerializer},
     )
     def retrieve(self, request, *args, **kwargs):
-        company = self.get_object()
+        company = get_object_or_404(Company, id=kwargs.get("pk"))
         serializer = self.get_serializer(company)
         return Response(serializer.data)
 
     @extend_schema(
         request=CompanySerializer,
-        responses={status.HTTP_200_OK: CompanySerializer},
         examples=[
             OpenApiExample(
                 "Update Company",
                 summary="Update a company's information",
-                value={"id": "Company Unique id", "name": "Updated Company Name"},
+                value={"name": "Updated Company Name"},
                 request_only=True,
                 description="Request to update a company's name.",
             )
         ],
+        responses={status.HTTP_200_OK: CompanySerializer, status.HTTP_404_NOT_FOUND: ErrorSerializer},
     )
     def update(self, request, *args, **kwargs):
-        company = self.get_object()
-        serializer = self.get_serializer(company, data=request.data)
+        company = get_object_or_404(Company, id=kwargs.get("pk"))
+        serializer = self.get_serializer(company, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
+    @extend_schema(
+        request=CompanySerializer,
+        examples=[],
+        responses={status.HTTP_200_OK: CompanySerializer, status.HTTP_404_NOT_FOUND: ErrorSerializer},
+    )
     def destroy(self, request, *args, **kwargs):
-        company = self.get_object()
+        company = get_object_or_404(Company, id=kwargs.get("pk"))
         company.deleted_at = timezone.now()
         company.save()
         return Response({"detail": "Company deleted."}, status=status.HTTP_200_OK)

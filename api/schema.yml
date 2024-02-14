@@ -110,6 +110,12 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Login'
+            examples:
+              MockLogin:
+                value: {}
+                summary: Default Empty Request
+                description: Empty request does not require any values, defaults to
+                  creating or logging in as Mock-user
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Login'
@@ -126,8 +132,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Login'
-          description: ''
+                type: object
+                additionalProperties: {}
+                description: Unspecified response body
+              examples:
+                Login:
+                  value:
+                    access: eyJhbGciOiJIUzI1Ni..CJ9
+                    refresh: eyJhbGciOiJIUzI1Ni...v_E
+                  summary: !!set
+                    Successful login response: null
+          description: Login Successful
   /api/auth/token/refresh/:
     post:
       operationId: auth_token_refresh_create
@@ -182,9 +197,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenVerify'
           description: ''
-  /api/company/:
+  /api/company/companies/:
     get:
-      operationId: company_list
+      operationId: company_companies_list
+      description: |-
+        Manages company CRUD actions.
+        Utilizes CompanySerializer for data validation and serialization.
+        Requires user authentication
       tags:
       - company
       security:
@@ -199,8 +218,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Company'
           description: ''
-    put:
-      operationId: company_update
+    post:
+      operationId: company_companies_create
+      description: |-
+        Manages company CRUD actions.
+        Utilizes CompanySerializer for data validation and serialization.
+        Requires user authentication
       tags:
       - company
       requestBody:
@@ -219,11 +242,181 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+              examples:
+                CreateCompany:
+                  value:
+                    name: Example Company
+                  summary: Create a new company
+                  description: Response for successfully creating a company
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+  /api/company/companies/{id}/:
+    get:
+      operationId: company_companies_retrieve
+      description: |-
+        Manages company CRUD actions.
+        Utilizes CompanySerializer for data validation and serialization.
+        Requires user authentication
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this company.
+        required: true
+      tags:
+      - company
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
         '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Company'
+              examples:
+                RetrieveCompany:
+                  value:
+                    id: Example_id
+                    name: Example Company
+                    created_at: '2024-01-01T01:12:13.123456Z'
+                    updated_at: '2024-01-01T01:12:13.123456Z'
+                    deleted_at: null
+                  summary: Retrieve a specific company
+                  description: Response for successfully retrieving a company's details.
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+    put:
+      operationId: company_companies_update
+      description: |-
+        Manages company CRUD actions.
+        Utilizes CompanySerializer for data validation and serialization.
+        Requires user authentication
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this company.
+        required: true
+      tags:
+      - company
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+            examples:
+              UpdateCompany:
+                value:
+                  name: Updated Company Name
+                summary: Update a company's information
+                description: Request to update a company's name.
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Company'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Company'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+    patch:
+      operationId: company_companies_partial_update
+      description: |-
+        Manages company CRUD actions.
+        Utilizes CompanySerializer for data validation and serialization.
+        Requires user authentication
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this company.
+        required: true
+      tags:
+      - company
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCompany'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCompany'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCompany'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+          description: ''
+    delete:
+      operationId: company_companies_destroy
+      description: |-
+        Manages company CRUD actions.
+        Utilizes CompanySerializer for data validation and serialization.
+        Requires user authentication
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this company.
+        required: true
+      tags:
+      - company
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: ''
   /api/company/department/members:
     get:
@@ -2492,13 +2685,29 @@ components:
       properties:
         id:
           type: string
-          maxLength: 200
+          readOnly: true
         name:
           type: string
           maxLength: 200
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
       required:
+      - created_at
+      - deleted_at
       - id
       - name
+      - updated_at
     CustomUserDetails:
       type: object
       description: User model w/o password
@@ -2596,6 +2805,13 @@ components:
         * `1` - Low
         * `2` - Medium
         * `3` - High
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
     File:
       type: object
       properties:
@@ -2735,6 +2951,28 @@ components:
     NullEnum:
       enum:
       - null
+    PatchedCompany:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        deleted_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
     PatchedCustomUserDetails:
       type: object
       description: User model w/o password
