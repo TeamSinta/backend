@@ -8,5 +8,5 @@ admin.site.register(Department)
 
 @admin.register(Company)
 class Company(admin.ModelAdmin):
-    list_display = ("id", "name")
+    list_display = ("id", "name", "deleted_at")
     ordering = ("name",)

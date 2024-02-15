@@ -166,11 +166,12 @@ class CompanyView(viewsets.ModelViewSet):
         # Update WorkOS Org
         try:
             org_id = serializer.validated_data.get("id", company.id)
-            org_new_name = serializer.validated_data.get("name", company.name)  # Corrected this line
+            org_new_name = serializer.validated_data.get("name", company.name)
             client.organizations.update_organization(organization=org_id, name=org_new_name)
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Save changes in local DB
         serializer.save()
         return Response(serializer.data)
 
@@ -182,8 +183,17 @@ class CompanyView(viewsets.ModelViewSet):
         responses={status.HTTP_200_OK: CompanySerializer, status.HTTP_404_NOT_FOUND: ErrorSerializer},
     )
     def destroy(self, request, *args, **kwargs):
+        # TODO: We need to figure out what we want to do here. Do we want to
+        # Hard-delete it in WorkOS or not?
         company = get_object_or_404(Company, id=kwargs.get("pk"))
         company.deleted_at = timezone.now()
+
+        # WorkOS delete logic - working.
+        # try:
+        #     client.organizations.delete_organization(organization=company.id)
+        # except Exception as e:
+        #     return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         company.save()
         return Response({"detail": "Company deleted."}, status=status.HTTP_200_OK)
 
