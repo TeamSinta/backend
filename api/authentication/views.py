@@ -115,6 +115,12 @@ def create_user_and_organization(user_and_organization):
         refresh = RefreshToken.for_user(new_user)
         return {"access": str(refresh.access_token), "refresh": str(refresh)}
 
+    else:
+        profile_picture_url = workos_user.get("profile_picture_url", None)
+        if profile_picture_url is not None and get_user.profile_picture != profile_picture_url:
+            get_user.profile_picture = profile_picture_url
+            get_user.save()
+
     analytics.identify(user_id=str(get_user), traits={"email": get_user.email})
     analytics.track(user_id=str(get_user), event="user_logged_in")
     refresh = RefreshToken.for_user(get_user)
