@@ -36,13 +36,13 @@ def create_user_and_organization(user_and_organization):
     workos_user = user_and_organization.get("user", {})
     workos_org_id = user_and_organization.get("organization_id", None)
     email = workos_user.get("email", "")
+    last_name = workos_user.get("last_name", "")
     profile_picture_url = workos_user.get(
         "profile_picture_url", "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227"
     )
 
     email_split = email.split("@")[0]
     first_name = workos_user.get("first_name", email_split)
-    last_name = workos_user.get("last_name", email_split)
     username = workos_user.get("username", email_split)
 
     print("workos_user", workos_user)
@@ -57,17 +57,19 @@ def create_user_and_organization(user_and_organization):
     get_user = CustomUser.objects.filter(email=email).first()
     print("get_user", get_user)
     if get_user is None:
+        default_data = {
+            "email": email,
+            "is_active": True,
+            "first_name": first_name,
+            "id": workos_user_id,
+            "username": username,
+            "profile_picture": profile_picture_url,
+        }
+        if last_name != "":
+            default_data["last_name"] = last_name
         new_user, _ = CustomUser.objects.get_or_create(
             id=workos_user_id,
-            defaults={
-                "email": email,
-                "is_active": True,
-                "first_name": first_name,
-                "last_name": last_name,
-                "id": workos_user_id,
-                "username": username,
-                "profile_picture": profile_picture_url,
-            },
+            defaults=default_data,
         )
         analytics.identify(
             user_id=str(new_user.id),
@@ -118,8 +120,7 @@ def create_user_and_organization(user_and_organization):
     else:
         profile_picture_url = workos_user.get("profile_picture_url", None)
         if profile_picture_url is not None and get_user.profile_picture != profile_picture_url:
-            get_user.profile_picture = profile_picture_url
-            get_user.save()
+            CustomUser.objects.filter(id=workos_user_id).update(profile_picture=profile_picture_url)
 
     analytics.identify(user_id=str(get_user), traits={"email": get_user.email})
     analytics.track(user_id=str(get_user), event="user_logged_in")
