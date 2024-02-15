@@ -38,11 +38,15 @@ def create_user_and_organization(user_and_organization):
     first_name = workos_user.get("first_name", "")
     last_name = workos_user.get("last_name", "")
     username = workos_user.get("username", "")
+    profile_picture_url = workos_user.get(
+        "profile_picture_url", "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227"
+    )
     print("workos_user", workos_user)
     print("workos_org_id", workos_org_id)
     print("email", email)
     print("first_name", first_name)
     print("last_name", last_name)
+    print("profile_picture_url", profile_picture_url)
     print(workos_user)
 
     if not first_name:
@@ -68,11 +72,7 @@ def create_user_and_organization(user_and_organization):
                 "last_name": last_name,
                 "id": workos_user_id,
                 "username": username,
-                "profile_picture": getattr(
-                    get_user,
-                    "profile_picture",
-                    "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
-                ),
+                "profile_picture": profile_picture_url,
             },
         )
         analytics.identify(
@@ -106,8 +106,7 @@ def create_user_and_organization(user_and_organization):
                 organization_id=workos_org_id,
             )
             if organization_membership:
-                if len(organization_membership) > 1:
-                    organization_membership = organization_membership[0]
+                organization_membership = organization_membership[0]
                 get_or_create_company(workos_org_name, workos_org_id, new_user, organization_membership.get("id"))
             else:
                 organization_membership = client.user_management.create_organization_membership(
@@ -174,7 +173,7 @@ class WorkOSAuthenticationView(LoginView):
                 code=code,
                 user_agent=user_agent,
             )
-
+            print("user_and_organization", user_and_organization)
             response = create_user_and_organization(user_and_organization)
             return Response(response)
 
