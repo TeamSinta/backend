@@ -43,6 +43,7 @@ def create_user_and_organization(user_and_organization):
     print("email", email)
     print("first_name", first_name)
     print("last_name", last_name)
+    print(workos_user)
 
     if not first_name:
         first_name = email.split("@")[0]
@@ -98,19 +99,22 @@ def create_user_and_organization(user_and_organization):
         else:
             workos_org = client.organizations.get_organization(organization=workos_org_id)
             print("workos_org", workos_org)
+            workos_org_id = workos_org.get("id", "")
+            workos_org_name = workos_org.get("name", "")
             organization_membership = client.user_management.list_organization_memberships(
                 user_id=workos_user_id,
-                organization_id=workos_org.id,
+                organization_id=workos_org_id,
             )
             if organization_membership:
-                organization_membership = organization_membership[0]
-                get_or_create_company(workos_org.name, workos_org_id, new_user, organization_membership.get("id"))
+                if len(organization_membership) > 1:
+                    organization_membership = organization_membership[0]
+                get_or_create_company(workos_org_name, workos_org_id, new_user, organization_membership.get("id"))
             else:
                 organization_membership = client.user_management.create_organization_membership(
                     user_id=workos_user_id,
                     organization_id=workos_org_id,
                 )
-                get_or_create_company(workos_org.name, workos_org_id, new_user, organization_membership.get("id"))
+                get_or_create_company(workos_org_name, workos_org_id, new_user, organization_membership.get("id"))
 
         new_user.save()
         print("all done new refresh token creating")
