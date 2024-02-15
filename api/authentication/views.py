@@ -23,6 +23,7 @@ analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if
 
 
 def get_or_create_company(org_name, org_id, user, org_member_id):
+    print("org_member_id", org_member_id)
     new_company, _ = Company.objects.get_or_create(id=org_id, defaults={"id": org_id, "name": org_name})
     role = os.environ.get("MOCK_ROLE", "member")
     role, _ = Role.objects.get_or_create(name=role)
@@ -38,24 +39,22 @@ def create_user_and_organization(user_and_organization):
     workos_user = user_and_organization.get("user", {})
     workos_org_id = user_and_organization.get("organization_id", None)
     email = workos_user.get("email", "")
-    first_name = workos_user.get("first_name", "")
-    last_name = workos_user.get("last_name", "")
-    username = workos_user.get("username", "")
+    profile_picture_url = workos_user.get(
+        "profile_picture_url", "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227"
+    )
+
+    email_split = email.split("@")[0]
+    first_name = workos_user.get("first_name", email_split)
+    last_name = workos_user.get("last_name", email_split)
+    username = workos_user.get("username", email_split)
+
     print("workos_user", workos_user)
     print("workos_org_id", workos_org_id)
     print("email", email)
     print("first_name", first_name)
     print("last_name", last_name)
-
-    if not first_name:
-        first_name = email.split("@")[0]
-        last_name = email.split("@")[0]
-
-    if not username:
-        username = email.split("@")[0] if email else last_name
-
-    print("first_name", first_name)
-    print("username", username)
+    print("profile_picture_url", profile_picture_url)
+    print(workos_user)
 
     workos_user_id = workos_user.get("id", "")
     get_user = CustomUser.objects.filter(email=email).first()
@@ -70,11 +69,7 @@ def create_user_and_organization(user_and_organization):
                 "last_name": last_name,
                 "id": workos_user_id,
                 "username": username,
-                "profile_picture": getattr(
-                    get_user,
-                    "profile_picture",
-                    "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
-                ),
+                "profile_picture": profile_picture_url,
             },
         )
         analytics.identify(
@@ -85,7 +80,6 @@ def create_user_and_organization(user_and_organization):
 
         if workos_org_id is None:
             DEFAULT_DOMAIN = os.environ.get("DEFAULT_DOMAIN")
-            print("DEFAULT_DOMAIN", DEFAULT_DOMAIN)
             new_org = client.organizations.create_organization(
                 {"name": username, "domains": [DEFAULT_DOMAIN or "app.teamsinta.com"]}
             )
@@ -101,19 +95,23 @@ def create_user_and_organization(user_and_organization):
         else:
             workos_org = client.organizations.get_organization(organization=workos_org_id)
             print("workos_org", workos_org)
+            workos_org_id = workos_org.get("id", "")
+            workos_org_name = workos_org.get("name", "")
             organization_membership = client.user_management.list_organization_memberships(
                 user_id=workos_user_id,
-                organization_id=workos_org.id,
+                organization_id=workos_org_id,
             )
-            if organization_membership:
-                organization_membership = organization_membership[0]
-                get_or_create_company(workos_org.name, workos_org_id, new_user, organization_membership.get("id"))
+            print("organization_membership", (vars(organization_membership)))
+            om_data = organization_membership.data
+            if om_data:
+                om_data = om_data[0]
+                get_or_create_company(workos_org_name, workos_org_id, new_user, om_data.get("id"))
             else:
                 organization_membership = client.user_management.create_organization_membership(
                     user_id=workos_user_id,
                     organization_id=workos_org_id,
                 )
-                get_or_create_company(workos_org.name, workos_org_id, new_user, organization_membership.get("id"))
+                get_or_create_company(workos_org_name, workos_org_id, new_user, organization_membership.get("id"))
 
         new_user.save()
         print("all done new refresh token creating")
@@ -208,7 +206,7 @@ class WorkOSAuthenticationView(LoginView):
                 code=code,
                 user_agent=user_agent,
             )
-
+            print("user_and_organization", user_and_organization)
             response = create_user_and_organization(user_and_organization)
             return Response(response)
 
