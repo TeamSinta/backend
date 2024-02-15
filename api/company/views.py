@@ -10,6 +10,7 @@ from june import analytics
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from workos import client
 
 from app.permissions import isAdminRole
 from app.serializers import ErrorSerializer
@@ -72,6 +73,8 @@ class CompanyView(viewsets.ModelViewSet):
     def get_queryset(self):
         return Company.objects.filter(deleted_at__isnull=True)
 
+    """ API Docs for Create"""
+
     @extend_schema(
         request=CompanySerializer,
         examples=[
@@ -86,21 +89,35 @@ class CompanyView(viewsets.ModelViewSet):
         responses={status.HTTP_201_CREATED: CompanySerializer, status.HTTP_400_BAD_REQUEST: ErrorSerializer},
     )
     def create(self, request, *args, **kwargs):
-        # Generates a unique id for the company creation. Not sure what the
-        # better way of doing this is, since when creating an organization
-        # we want to generate it on WorkOS too.
-        # the UserCompanies id is currently also set as a UUID, but I don't
-        # think this is necessary later. We can use normal ids there? need to
-        # update model for that.
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        company = serializer.save()
+        user = self.request.user
+        org_name = serializer.validated_data["name"]
 
-        user = request.user
-        role = get_object_or_404(Role, id="1")
-        user_company_uuid = str(uuid.uuid4())
-        UserCompanies.objects.create(id=user_company_uuid, user=user, company=company, role=role)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        try:
+            # Create organization in WorkOS
+            organization = client.organizations.create_organization({"name": org_name, "domains": ["example.com"]})
+            # Create company in local db with same id and name
+            if not organization["id"]:
+                raise ValueError("Organization creation failed in WorkOS")
+
+            # Adds user as Org member
+            client.user_management.create_organization_membership(user_id=user.id, organization_id=organization["id"])
+
+            # WorkOS completed, creating company in local db
+            company = Company.objects.create(id=organization["id"], name=org_name)
+            role = get_object_or_404(Role, id="1")
+            user_company_uuid = str(uuid.uuid4)
+            UserCompanies.objects.create(id=user_company_uuid, user=user, company=company, role=role)
+
+        except ValueError as ve:
+            return Response({"detail": str(ve)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(CompanySerializer(company).data, status=status.HTTP_201_CREATED)
+
+    """ API Docs for Retrieve"""
 
     @extend_schema(
         request=CompanySerializer,
@@ -126,6 +143,8 @@ class CompanyView(viewsets.ModelViewSet):
         serializer = self.get_serializer(company)
         return Response(serializer.data)
 
+    """ API Docs for Update"""
+
     @extend_schema(
         request=CompanySerializer,
         examples=[
@@ -143,8 +162,19 @@ class CompanyView(viewsets.ModelViewSet):
         company = get_object_or_404(Company, id=kwargs.get("pk"))
         serializer = self.get_serializer(company, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
+
+        # Update WorkOS Org
+        try:
+            org_id = serializer.validated_data.get("id", company.id)
+            org_new_name = serializer.validated_data.get("name", company.name)  # Corrected this line
+            client.organizations.update_organization(organization=org_id, name=org_new_name)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer.save()
         return Response(serializer.data)
+
+    """ API Docs for Destroy"""
 
     @extend_schema(
         request=CompanySerializer,

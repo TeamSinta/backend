@@ -1,5 +1,3 @@
-import uuid
-
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
@@ -14,23 +12,12 @@ class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = ["id", "name", "created_at", "updated_at", "deleted_at"]
-        extra_kwargs = {
-            "id": {"read_only": True},
-            "created_at": {"read_only": True},
-            "updated_at": {"read_only": True},
-            "deleted_at": {"read_only": True},
-        }
+        read_only_fields = ["id", "created_at", "updated_at", "deleted_at"]
 
     def validate_name(self, value):
-        if len(value) < 3:
-            raise serializers.ValidationError("Company name must be longer than 3 characters")
+        if len(value) < 2:
+            raise serializers.ValidationError("Company name must be at least 2 characters long.")
         return value
-
-    # as we use custom UUIDs the validation of the id needs to be overwritten
-    # within the serializer, to not require an id in the request.
-    def create(self, validated_data):
-        validated_data["id"] = str(uuid.uuid4())  # Generate UUID for the new Company
-        return super().create(validated_data)
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
