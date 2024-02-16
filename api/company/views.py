@@ -1,15 +1,19 @@
 import json
 import os
+import uuid
 
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from drf_spectacular.utils import OpenApiExample, extend_schema
 from june import analytics
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from workos import client
 
 from app.permissions import isAdminRole
+from app.serializers import ErrorSerializer
 from user.models import CustomUser, Role, UserCompanies, UserDepartments
 from user.serializers import UserCompanySerializer
 
@@ -56,44 +60,142 @@ def check_role_permission(view_instance, request):
 
 
 class CompanyView(viewsets.ModelViewSet):
+    """
+    Manages company CRUD actions.
+    Utilizes CompanySerializer for data validation and serialization.
+    Requires user authentication
+    """
+
+    queryset = Company.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = CompanySerializer
 
     def get_queryset(self):
-        company_id = self.request.GET.get("company", None)
-        user_from_jwt = self.request.user
+        return Company.objects.filter(deleted_at__isnull=True)
 
-        if not company_id:
-            return Company.objects.none()
-        # check_permissions_and_existence(user_from_jwt, company_id=company_id)
+    """ API Docs for Create"""
 
-        return Company.objects.filter(id=company_id)
+    @extend_schema(
+        request=CompanySerializer,
+        examples=[
+            OpenApiExample(
+                "Create Company",
+                summary="Create a new company",
+                value={"name": "Example Company"},
+                response_only=True,
+                description="Response for successfully creating a company",
+            ),
+        ],
+        responses={status.HTTP_201_CREATED: CompanySerializer, status.HTTP_400_BAD_REQUEST: ErrorSerializer},
+    )
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = self.request.user
+        org_name = serializer.validated_data["name"]
 
+        try:
+            # Create organization in WorkOS
+            organization = client.organizations.create_organization({"name": org_name, "domains": ["example.com"]})
+            # Create company in local db with same id and name
+            if not organization["id"]:
+                raise ValueError("Organization creation failed in WorkOS")
+
+            # Adds user as Org member
+            client.user_management.create_organization_membership(user_id=user.id, organization_id=organization["id"])
+
+            # WorkOS completed, creating company in local db
+            company = Company.objects.create(id=organization["id"], name=org_name)
+            role = get_object_or_404(Role, id="1")
+            user_company_uuid = str(uuid.uuid4())
+            UserCompanies.objects.create(id=user_company_uuid, user=user, company=company, role=role)
+
+        except ValueError as ve:
+            return Response({"detail": str(ve)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(CompanySerializer(company).data, status=status.HTTP_201_CREATED)
+
+    """ API Docs for Retrieve"""
+
+    @extend_schema(
+        request=CompanySerializer,
+        examples=[
+            OpenApiExample(
+                "Retrieve Company",
+                summary="Retrieve a specific company",
+                value={
+                    "id": "Example_id",
+                    "name": "Example Company",
+                    "created_at": "2024-01-01T01:12:13.123456Z",
+                    "updated_at": "2024-01-01T01:12:13.123456Z",
+                    "deleted_at": None,
+                },
+                response_only=True,
+                description="Response for successfully retrieving a company's details.",
+            ),
+        ],
+        responses={status.HTTP_200_OK: CompanySerializer, status.HTTP_404_NOT_FOUND: ErrorSerializer},
+    )
+    def retrieve(self, request, *args, **kwargs):
+        company = get_object_or_404(Company, id=kwargs.get("pk"))
+        serializer = self.get_serializer(company)
+        return Response(serializer.data)
+
+    """ API Docs for Update"""
+
+    @extend_schema(
+        request=CompanySerializer,
+        examples=[
+            OpenApiExample(
+                "Update Company",
+                summary="Update a company's information",
+                value={"name": "Updated Company Name"},
+                request_only=True,
+                description="Request to update a company's name.",
+            )
+        ],
+        responses={status.HTTP_200_OK: CompanySerializer, status.HTTP_404_NOT_FOUND: ErrorSerializer},
+    )
     def update(self, request, *args, **kwargs):
-        # self.permission_classes = [isAdminRole] not working
-        company_id = self.request.GET.get("company", None)
-        user_from_jwt = request.user
-        new_company_name = request.data.get("name", None)
+        company = get_object_or_404(Company, id=kwargs.get("pk"))
+        serializer = self.get_serializer(company, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
 
-        check_role_permission(self, request)
-        check_permissions_and_existence(user_from_jwt, company_id=company_id)
+        # Update WorkOS Org
+        try:
+            org_id = serializer.validated_data.get("id", company.id)
+            org_new_name = serializer.validated_data.get("name", company.name)
+            client.organizations.update_organization(organization=org_id, name=org_new_name)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not new_company_name:
-            return Response(
-                {"detail": "New company name required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        # Save changes in local DB
+        serializer.save()
+        return Response(serializer.data)
 
-        if Company.objects.filter(name=new_company_name).exists():
-            return Response(
-                {"detail": "A company with this name already exists."},
-                status=status.HTTP_409_CONFLICT,
-            )
+    """ API Docs for Destroy"""
 
-        company = get_object_or_404(Company, id=company_id)
-        company.name = new_company_name
+    @extend_schema(
+        request=CompanySerializer,
+        examples=[],
+        responses={status.HTTP_200_OK: CompanySerializer, status.HTTP_404_NOT_FOUND: ErrorSerializer},
+    )
+    def destroy(self, request, *args, **kwargs):
+        # TODO: We need to figure out what we want to do here. Do we want to
+        # Hard-delete it in WorkOS or not?
+        company = get_object_or_404(Company, id=kwargs.get("pk"))
+        company.deleted_at = timezone.now()
+
+        # WorkOS delete logic - working.
+        # try:
+        #     client.organizations.delete_organization(organization=company.id)
+        # except Exception as e:
+        #     return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         company.save()
-        return Response({"detail": "Company name updated."}, status=status.HTTP_200_OK)
+        return Response({"detail": "Company deleted."}, status=status.HTTP_200_OK)
 
 
 class CompanyMembers(viewsets.ModelViewSet):
@@ -223,6 +325,12 @@ class CompanyMembers(viewsets.ModelViewSet):
 
 
 class DepartmentView(viewsets.ModelViewSet):
+    """
+    Manages company CRUD actions.
+    Utilizes CompanySerializer for data validation and serialization.
+    Requires user authentication
+    """
+
     permission_classes = [IsAuthenticated]
     serializer_class = DepartmentSerializer
 
@@ -322,13 +430,6 @@ class DepartmentView(viewsets.ModelViewSet):
         department_id = request.GET.get("department", None)
         user_from_jwt = request.user
         new_department_name = request.data.get("title", None)
-
-        # check_role_permission(self, request)
-        # if not check_permissions_and_existence(user_from_jwt, company_id=company_id):
-        #     return Response(
-        #         {"detail": "User is not a member of the requested company"},
-        #         status=status.HTTP_403_FORBIDDEN,
-        #     )
 
         if not department_id:
             return Response(

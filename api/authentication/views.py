@@ -1,4 +1,5 @@
 import os
+import uuid
 
 import workos
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
@@ -6,7 +7,9 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from dj_rest_auth.views import LoginView
 from django.http import JsonResponse
+from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema
 from june import analytics
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from workos import client
@@ -137,8 +140,41 @@ class GoogleLogin(SocialLoginView):
 
 
 class MockGoogleLogin(LoginView):
+    """
+    Class for handling Mock-login. Does not require any params, and can be
+    executed with an empty json.
+    """
+
+    @extend_schema(
+        examples=[
+            OpenApiExample(
+                "Mock Login",
+                summary="Default Empty Request",
+                value={},
+                request_only=True,
+                response_only=False,
+                description="Empty request does not require any values, defaults"
+                " to creating or logging in as Mock-user",
+            )
+        ],
+        responses=OpenApiResponse(
+            status.HTTP_200_OK,
+            description="Login Successful",
+            examples=[
+                OpenApiExample(
+                    "login",
+                    summary={"Successful login response"},
+                    value={
+                        "access": "eyJhbGciOiJIUzI1Ni..CJ9",
+                        "refresh": "eyJhbGciOiJIUzI1Ni...v_E",
+                    },
+                )
+            ],
+        ),
+    )
     def post(self, request, *args, **kwargs):
         # Create a mock user or retrieve an existing one
+        user_id = str(uuid.uuid4())
         username = os.environ.get("MOCK_USERNAME", "mockuser")
         email = os.environ.get("MOCK_EMAIL", "mockuser@example.com")
         first_name = os.environ.get("MOCK_FIRST_NAME", "Mock")
@@ -149,6 +185,7 @@ class MockGoogleLogin(LoginView):
         user, _ = CustomUser.objects.get_or_create(
             username=username,
             defaults={
+                "id": user_id,
                 "email": email,
                 "is_active": True,
                 "first_name": first_name,
@@ -156,7 +193,8 @@ class MockGoogleLogin(LoginView):
                 "profile_picture": "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
             },
         )
-        company, _ = Company.objects.get_or_create(name=company_name)
+        company_unique_id = os.environ.get("MOCK_COMPANY_UNIQUE_ID", "mock-company-1")
+        company, created = Company.objects.get_or_create(id=company_unique_id, defaults={"name": company_name})
         role, _ = Role.objects.get_or_create(name=role)
         UserCompanies.objects.get_or_create(user=user, company=company, defaults={"role": role})
         user.save()
