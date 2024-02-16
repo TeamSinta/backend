@@ -107,7 +107,7 @@ class CompanyView(viewsets.ModelViewSet):
             # WorkOS completed, creating company in local db
             company = Company.objects.create(id=organization["id"], name=org_name)
             role = get_object_or_404(Role, id="1")
-            user_company_uuid = str(uuid.uuid4)
+            user_company_uuid = str(uuid.uuid4())
             UserCompanies.objects.create(id=user_company_uuid, user=user, company=company, role=role)
 
         except ValueError as ve:
