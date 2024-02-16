@@ -325,6 +325,12 @@ class CompanyMembers(viewsets.ModelViewSet):
 
 
 class DepartmentView(viewsets.ModelViewSet):
+    """
+    Manages company CRUD actions.
+    Utilizes CompanySerializer for data validation and serialization.
+    Requires user authentication
+    """
+
     permission_classes = [IsAuthenticated]
     serializer_class = DepartmentSerializer
 
@@ -424,13 +430,6 @@ class DepartmentView(viewsets.ModelViewSet):
         department_id = request.GET.get("department", None)
         user_from_jwt = request.user
         new_department_name = request.data.get("title", None)
-
-        # check_role_permission(self, request)
-        # if not check_permissions_and_existence(user_from_jwt, company_id=company_id):
-        #     return Response(
-        #         {"detail": "User is not a member of the requested company"},
-        #         status=status.HTTP_403_FORBIDDEN,
-        #     )
 
         if not department_id:
             return Response(
