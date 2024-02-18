@@ -1,7 +1,7 @@
 from django.db import models
 
 from company.models import Company
-from interview_templates.models import TemplateQuestion
+from interview_templates.models import Template, TemplateQuestion
 from user.models import CustomUser
 
 
@@ -28,8 +28,9 @@ class InterviewRound(models.Model):
         on_delete=models.CASCADE,
     )
     video_uri = models.TextField()
+    thumbnail = models.ImageField(blank=True, null=True, default=None, upload_to="interview-thumbnails/")
     transcription_file_uri = models.TextField()
-    template_id = models.IntegerField(default=55)
+    template_id = models.ForeignKey(Template, on_delete=models.CASCADE, null=True, blank=True, default=None)
     meeting_room_id = models.CharField(blank=True, null=True)
     user = models.ForeignKey(
         CustomUser,

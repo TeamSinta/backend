@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
+from moviepy.editor import VideoFileClip
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -11,7 +12,10 @@ from rest_framework.views import APIView
 
 from app.utils import seconds_to_minutes
 from interview.models import InterviewRound
-from transcription.jobs.get_transcripts import generate_transcriptions_from_assembly
+from transcription.jobs.get_transcripts import (
+    generate_transcriptions_from_assembly,
+    upload_to_s3,
+)
 from user.models import CustomUser
 
 
@@ -80,6 +84,7 @@ class GenerateTranscript(APIView):
     def post(self, request: HttpRequest, *args, **kwargs):
         # Retrieve the interview_round_id from the request body
         interview_round_id = request.POST.get("interview_round_id")
+        interview_round = get_object_or_404(InterviewRound, pk=interview_round_id)
 
         # Get the file from the request
         video_file = request.FILES.get("video_file")
@@ -94,9 +99,17 @@ class GenerateTranscript(APIView):
             for chunk in video_file.chunks():
                 f.write(chunk)
 
+            # Create a thumbnail
+            clip = VideoFileClip(video_path)
+            thumbnail = f"interview_thumbnail_{interview_round.meeting_room_id}.jpg"
+            thumbnail_path = f"/tmp/{thumbnail}"
+            clip.save_frame(thumbnail_path, t=clip.duration / 2)  # Save frame at half the video's duration
+
         # Set the video_uri in the InterviewRound model
-        interview_round = get_object_or_404(InterviewRound, pk=interview_round_id)
+        s3_thumbnail_path = f"interview-thumbnails/{thumbnail}"
+        upload_to_s3(thumbnail_path, "sinta-media", s3_thumbnail_path)
         interview_round.video_uri = video_path
+        interview_round.thumbnail = thumbnail
         interview_round.save()
 
         # Generate transcriptions
