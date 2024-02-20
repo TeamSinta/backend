@@ -105,11 +105,10 @@ class GenerateTranscript(APIView):
             thumbnail_path = f"/tmp/{thumbnail}"
             clip.save_frame(thumbnail_path, t=clip.duration / 2)  # Save frame at half the video's duration
 
-        # Set the video_uri in the InterviewRound model
         s3_thumbnail_path = f"interview-thumbnails/{thumbnail}"
         upload_to_s3(thumbnail_path, "sinta-media", s3_thumbnail_path)
         interview_round.video_uri = video_path
-        interview_round.thumbnail = thumbnail
+        interview_round.thumbnail = s3_thumbnail_path
         interview_round.save()
 
         # Generate transcriptions
