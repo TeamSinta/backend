@@ -29,6 +29,7 @@ channels = "^3.0.0"
 workos = "^2.2.0"
 june-analytics-python = "^2.3.0"
 drf-spectacular = "^0.27.1"
+reportlab = "^4.1.0"
 
 
 
