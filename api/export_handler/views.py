@@ -1,27 +1,54 @@
-import io
-
-from django.http import FileResponse
+from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from rest_framework.views import APIView
 
+from user.models import CustomUser
 
-class Converter(APIView):
+
+class ExportToPdf(APIView):
     def get(self, request):
-        # Create a file-like buffer to receive PDF data.
-        buffer = io.BytesIO()
+        response = HttpResponse(content_type="application/pdf")
+        response["Content-Disposition"] = 'attachment; filename="mydata.pdf"'
+
+        # TODO:
+        # - Title: Conclusion
+        # - Time
+        # - Name of position
+        # - Name of Organization
+        # - Name of interviewers
+        # - Candidate Information
+        # - Analytics
+        # - Notes
+        # - Comments
+        # - Questions answered
+        # # Create a file-like buffer to receive PDF data.
+        # buffer = io.BytesIO)
 
         # Create the PDF object, using the buffer as its "file."
-        p = canvas.Canvas(buffer)
+        p = canvas.Canvas(response)
+        row_height = 20
+        column_width = 400
 
-        # Draw things on the PDF. Here's where the PDF generation happens.
-        # See the ReportLab documentation for the full list of functionality.
-        p.drawString(100, 100, "Sinta PDF Export Test")
+        data = [
+            ["ID", "Username", "Email"],
+        ]
+
+        p.drawString(260, 800, "Sinta Export To Pdf")
+
+        for obj in CustomUser.objects.all():
+            data.append([obj.id, obj.username, obj.email])
+        # Draw the table
+        x = 50
+        y = 750
+        for row in data:
+            for item in row:
+                p.drawString(x, y, str(item))
+                x += column_width
+            x = 50
+            y -= row_height
 
         # Close the PDF object cleanly, and we're done.
         p.showPage()
         p.save()
 
-        # FileResponse sets the Content-Disposition header so that browsers
-        # present the option to save the file.
-        buffer.seek(0)
-        return FileResponse(buffer, as_attachment=True, filename="sinta_test.pdf")
+        return response

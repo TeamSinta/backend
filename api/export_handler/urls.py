@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .views import Converter
+from .views import ExportToPdf
 
 urlpatterns = [
-    path("convert_to_pdf", Converter.as_view(), name="convert_to_pdf"),
+    path("export_to_pdf", ExportToPdf.as_view(), name="export_to_pdf"),
 ]
