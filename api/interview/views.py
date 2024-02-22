@@ -189,6 +189,7 @@ class InterviewRoundGet(APIView):
                 "candidate_name": candidate_name,  # Include candidate's name
                 "interviewer": interviewer,  # Include candidate's name
                 "template_id": interview_round.template_id,
+                "thumbnail_uri": interview_round.thumbnail.url if interview_round.thumbnail else None,
                 "created_at": formatted_date,
                 # "description": interview_round.description,
                 "room_id": interview_round.meeting_room_id,
@@ -242,6 +243,7 @@ class InterviewRoundListAll(APIView):
                     "candidate_name": candidate_name,
                     "created_at": interview_round.created_at,
                     "video_uri": interview_round.video_uri,
+                    "thumbnail_uri": interview_round.thumbnail.url if interview_round.thumbnail else None,
                 }
             )
 
