@@ -11,10 +11,11 @@ class ExportToPdf(APIView):
         # TODO:
         # - Title: Conclusion
         # - Time
-        # - Name of position
-        # - Name of Organization
-        # - Name of interviewers
-        # - Candidate Information
+        # - Candidate Information (username, name, company, user, email)
+        # - InterviewRound(title, candidate, interviewer, company)
+        # - InterviewRoundQuestion(question, rating)
+        # - Template(department, role_title, location, interviewers)
+        # - TemplateTopic(topics text, time)
         # - Analytics
         # - Notes
         # - Comments
@@ -22,13 +23,14 @@ class ExportToPdf(APIView):
         # # Create a file-like buffer to receive PDF data.
         # buffer = io.BytesIO)
 
+        # company name: 176d826c-9e8e-4d97-b286-823c29acc3db
+
         # Create the PDF object, using the buffer as its "file."
         p = canvas.Canvas(buffer)
         row_height = 20
         column_width = 140
 
-        # Dummy Data
-
+        """ DUMMY DATA START"""
         dummy_interviewers = [
             {"first_name": "Pablo", "last_name": "Escabar", "email": "LetsRead50ShadesOfGrey@slimy.now"},
             {"first_name": "Mo", "last_name": "Swag", "email": "IcanTrustThisGuy@letsgo.com"},
@@ -36,6 +38,7 @@ class ExportToPdf(APIView):
         ]
         interviewer_data_list = []
 
+        """ DUMMY DATA END"""
         for interviewer in dummy_interviewers:
             interviewer_data = [interviewer["first_name"], interviewer["last_name"], interviewer["email"]]
             interviewer_data_list.append(interviewer_data)
