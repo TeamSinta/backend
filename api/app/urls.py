@@ -1,6 +1,10 @@
 from django.contrib import admin
 from django.urls import include, path
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -19,4 +23,5 @@ urlpatterns = [
     path("api/videosdk/", include("videosdk.urls")),
     # path('sse_endpoint/', YourViewClassName.as_view(), name='sse_endpoint'),
     path("api/summary/", include("summary.urls")),  # Add this line for the "summary" app
+    path("api/", include("export_handler.urls")),
 ]
