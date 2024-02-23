@@ -28,6 +28,7 @@ class InterviewRound(models.Model):
         on_delete=models.CASCADE,
     )
     video_uri = models.TextField()
+    thumbnail = models.ImageField(blank=True, null=True, default=None, upload_to="interview-thumbnails/")
     transcription_file_uri = models.TextField()
     template_id = models.IntegerField(default=55)
     meeting_room_id = models.CharField(blank=True, null=True)
