@@ -9,9 +9,12 @@ class ExportToPdf(APIView):
     def get(self, request):
         buffer = io.BytesIO()
         # TODO:
+
+        # You have the interview template setup now. So now I can pull from the created template, to get a dummy data.
         # - Title: Conclusion
         # - Time
         # - Candidate Information (username, name, company, user, email)
+        # - TOP: Template ID.
         # - InterviewRound(title, candidate, interviewer, company)
         # - InterviewRoundQuestion(question, rating)
         # - Template(department, role_title, location, interviewers)
@@ -36,9 +39,9 @@ class ExportToPdf(APIView):
             {"first_name": "Mo", "last_name": "Swag", "email": "IcanTrustThisGuy@letsgo.com"},
             {"first_name": "Henock", "last_name": "Yolo", "email": "IcanTrustThisGuy@letsgo.com"},
         ]
-        interviewer_data_list = []
 
         """ DUMMY DATA END"""
+        interviewer_data_list = []
         for interviewer in dummy_interviewers:
             interviewer_data = [interviewer["first_name"], interviewer["last_name"], interviewer["email"]]
             interviewer_data_list.append(interviewer_data)
