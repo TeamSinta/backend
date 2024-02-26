@@ -8,29 +8,26 @@ from xhtml2pdf import pisa
 
 from interview.models import InterviewRound, InterviewRoundQuestion
 from interview_templates.models import Template
+from question_response.models import Answer, InterviewerFeedback
 from summary.models import Summary
 
-# TODO Priority
-# 1. Details
-# 2. Summary and Questions
-
-# - TOP: Template (username, name, company, user, email)
-# - InterviewRound(title, candidate, interviewer, company)
-# - InterviewRoundQuestion(question, rating)
-# - Template(department, role_title, location, interviewers)
-# - TemplateTopic(topics text, time)
-# notes = Interviwer Feedback /question_response model (can be filtered by interview_round AND template_question id)
-
 # TODO Secondary
+# - Fix DOC version
+# - Fix Style
 # - Time
 # - Analytics
 # - Notes
 # - Comments
 
+# TODO Priority
+# - Fix Emojis
+# - Fix Timestamp
+
 
 class ExportToPdf(APIView):
     def get(self, request, *args, **kwargs):
         # Fetch your data here
+
         dummy_request = {"interviewRound": 3}
         interview_round_id = dummy_request["interviewRound"]
         interview_round = get_object_or_404(InterviewRound, id=interview_round_id)
@@ -38,16 +35,41 @@ class ExportToPdf(APIView):
         template = get_object_or_404(Template, id=interview_round.template_id)
         candidate = interview_round.candidate
         interviewer = interview_round.interviewer
+        interviewer_feedback = get_object_or_404(InterviewerFeedback, interview_round=interview_round)
         summary = get_object_or_404(Summary, interview_round=interview_round)
+
+        # Temp Test
+        reaction = interviewer_feedback.reaction
+        if reaction == InterviewerFeedback.EmojiChoice.FIRE:
+            feedback_reaction_emoji = "🔥"
+        elif reaction == InterviewerFeedback.EmojiChoice.THUMBS_UP:
+            feedback_reaction_emoji = "👍"
+        elif reaction == InterviewerFeedback.EmojiChoice.THUMBS_DOWN:
+            feedback_reaction_emoji = "👎"
+        elif reaction == InterviewerFeedback.EmojiChoice.HEART:
+            feedback_reaction_emoji = "❤️"
+        elif reaction == InterviewerFeedback.EmojiChoice.LAUGH:
+            feedback_reaction_emoji = "😂"
+        else:
+            feedback_reaction_emoji = ""
+
+        questions_and_answers = []
+        for question in interview_questions:
+            answer = get_object_or_404(Answer, question=question)
+            questions_and_answers.append({"question": question, "answer": answer})
 
         context_data = {
             "interview_round": interview_round,
-            "interview_questions": interview_questions,
+            "questions_and_answers": questions_and_answers,
             "template": template,
             "interviewer": interviewer,
+            "interviewer_feedback": interviewer_feedback,
+            "interviewer_reaction": feedback_reaction_emoji,
             "candidate": candidate,
             "summary": summary,
         }
+
+        print(context_data)
 
         # Render the HTML template with context data
         template = get_template("pdf_template.html")
@@ -55,7 +77,7 @@ class ExportToPdf(APIView):
 
         # Create a PDF buffer
         buffer = io.BytesIO()
-        pdf_status = pisa.CreatePDF(html, dest=buffer)
+        pdf_status = pisa.CreatePDF(html, dest=buffer, encoding="utf-8")
 
         # Check for errors
         if pdf_status.err:

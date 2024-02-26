@@ -2,9 +2,16 @@
 <html>
 	<head>
 		<title>Conclusion PDF Export</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta charset="UTF-8" />
+
 		<style>
+			@font-face {
+				font-family: Noto Color Emoji;
+				src: url('/vol/web/static/NotoColorEmoji-Regular.ttf') format('truetype');
+			}
 			body {
-				font-family: Arial, sans-serif;
+				font-family: 'Batang';
 				color: #333;
 			}
 			h1,
@@ -33,6 +40,7 @@
 	<body>
 		<div class="section">
 			<h1>Conclusion PDF Export</h1>
+      <p>Test: 🔥👍👎❤️😂</p>
 		</div>
 		<div class="section">
 			<h2>Company Details</h2>
@@ -47,9 +55,22 @@
 		<div class="section">
 			<h2>Interview Details</h2>
 			<p>Title: {{ interview_round.title }}</p>
+			<div>
+				<h3>Questions and Answers:</h3>
+				{% for qa in questions_and_answers %}
+				<div>
+					<h4>{{forloop.counter}}. {{qa.question.question.question}}</h4>
+					<p>Answer: {{ qa.answer.answer_text }}</p>
+				</div>
+				{% empty %}
+				<p>No questions available.</p>
+				{% endfor %}
+			</div>
 			<p>
 				Interviewer: {{ interviewer.first_name }} {{ interviewer.last_name }}
 			</p>
+			<h4>Interviewer Feedback:</h4>
+			<p>{{interviewer_feedback.note}} {{interviewer_reaction}}</p>
 		</div>
 		<div class="section">
 			<h2>Summary Details</h2>
