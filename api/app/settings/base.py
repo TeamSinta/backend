@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "summary.apps.SummaryConfig",
     "storages",
+    "export_handler",
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Conclusion PDF Export</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				color: #333;
+			}
+			h1,
+			h2 {
+				color: #4a7c59;
+			}
+			h1 {
+				font-size: 24px;
+				margin-bottom: 0.5em;
+			}
+			h2 {
+				font-size: 18px;
+				margin-top: 1em;
+				margin-bottom: 0.3em;
+			}
+			p {
+				font-size: 14px;
+				margin: 0.1em 0;
+			}
+			.section {
+				margin-bottom: 1em;
+				padding-bottom: 1em;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="section">
+			<h1>Conclusion PDF Export</h1>
+		</div>
+		<div class="section">
+			<h2>Company Details</h2>
+			<p>Name: {{ interview_round.company.name }}</p>
+			<p>Department: {{ template.department }}</p>
+		</div>
+		<div class="section">
+			<h2>Candidate Details</h2>
+			<p>Name: {{ candidate.name }}</p>
+			<p>Email: hardcoded_email@gmail.com</p>
+		</div>
+		<div class="section">
+			<h2>Interview Details</h2>
+			<p>Title: {{ interview_round.title }}</p>
+			<p>
+				Interviewer: {{ interviewer.first_name }} {{ interviewer.last_name }}
+			</p>
+		</div>
+		<div class="section">
+			<h2>Summary Details</h2>
+			<p>Description: {{ summary.description }}</p>
+		</div>
+	</body>
+</html>
