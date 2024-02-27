@@ -34,6 +34,7 @@ RUN mkdir -p /vol/web/media
 RUN mkdir -p /vol/web/static
 
 COPY ./static /vol/web/static
+COPY ./media /vol/web/media
 
 # Creates a new user called 'user' instead of running everything as root.
 RUN adduser --disabled-password --gecos "" user
