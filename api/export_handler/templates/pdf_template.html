@@ -2,79 +2,63 @@
 <html>
 	<head>
 		<title>Conclusion PDF Export</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta charset="UTF-8" />
 
 		<style>
-			@font-face {
-				font-family: Noto Color Emoji;
-				src: url('/vol/web/static/NotoColorEmoji-Regular.ttf') format('truetype');
-			}
-			body {
-				font-family: 'Batang';
-				color: #333;
-			}
-			h1,
-			h2 {
-				color: #4a7c59;
-			}
-			h1 {
-				font-size: 24px;
-				margin-bottom: 0.5em;
-			}
-			h2 {
-				font-size: 18px;
-				margin-top: 1em;
-				margin-bottom: 0.3em;
-			}
-			p {
-				font-size: 14px;
-				margin: 0.1em 0;
-			}
-			.section {
-				margin-bottom: 1em;
-				padding-bottom: 1em;
-			}
+      @page {
+        size: letter;
+        margin: 14px 24px 14px 24px;
+      }
+      .wrapper {
+        background-color:  #F796FC
+      }
+      .header-container {
+         background-color: #F7F6FC;
+         border-radius: 75px;
+      }
 		</style>
 	</head>
 	<body>
-		<div class="section">
-			<h1>Conclusion PDF Export</h1>
-      <p>Test: 🔥👍👎❤️😂</p>
-		</div>
-		<div class="section">
-			<h2>Company Details</h2>
-			<p>Name: {{ interview_round.company.name }}</p>
-			<p>Department: {{ template.department }}</p>
-		</div>
-		<div class="section">
-			<h2>Candidate Details</h2>
-			<p>Name: {{ candidate.name }}</p>
-			<p>Email: hardcoded_email@gmail.com</p>
-		</div>
-		<div class="section">
-			<h2>Interview Details</h2>
-			<p>Title: {{ interview_round.title }}</p>
-			<div>
-				<h3>Questions and Answers:</h3>
-				{% for qa in questions_and_answers %}
-				<div>
-					<h4>{{forloop.counter}}. {{qa.question.question.question}}</h4>
-					<p>Answer: {{ qa.answer.answer_text }}</p>
-				</div>
-				{% empty %}
-				<p>No questions available.</p>
-				{% endfor %}
-			</div>
-			<p>
-				Interviewer: {{ interviewer.first_name }} {{ interviewer.last_name }}
-			</p>
-			<h4>Interviewer Feedback:</h4>
-			<p>{{interviewer_feedback.note}} {{interviewer_reaction}}</p>
-		</div>
-		<div class="section">
-			<h2>Summary Details</h2>
-			<p>Description: {{ summary.description }}</p>
-		</div>
+    <div class="wrapper">
+      <div class="header-container">
+        <h1>Conclusion PDF Export</h1>
+
+      </div>
+      <div class="section">
+        <h2>Company Details</h2>
+        <p>Name: {{ interview_round.company.name }}</p>
+        <p>Department: {{ template.department }}</p>
+      </div>
+      <div class="section">
+        <h2>Candidate Details</h2>
+        <p>Name: {{ candidate.name }}</p>
+        <p>Email: hardcoded_email@gmail.com</p>
+      </div>
+      <div class="section">
+        <h2>Interview Details</h2>
+        <p>Title: {{ interview_round.title }}</p>
+        <div>
+          <h3>Questions and Answers:</h3>
+          {% for qa in questions_and_answers %}
+          <div>
+            <h4>{{forloop.counter}}. {{qa.question.question.question}}</h4>
+            <p>Answer: {{ qa.answer.answer_text }}</p>
+          </div>
+          {% empty %}
+          <p>No questions available.</p>
+          {% endfor %}
+        </div>
+        <p>
+          Interviewer: {{ interviewer.first_name }} {{ interviewer.last_name }}
+        </p>
+        <h4>Interviewer Feedback:</h4>
+        <p>{{interviewer_feedback.note}} {{interviewer_reaction}}</p>
+      </div>
+      <div class="section">
+        <h2>Summary Details</h2>
+        <p>Description: {{ summary.description }}</p>
+      </div>
+    <div>
 	</body>
 </html>

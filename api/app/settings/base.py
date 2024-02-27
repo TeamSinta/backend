@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "wkhtmltopdf",
     # Apps
     "company",
     "user",

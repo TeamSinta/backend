@@ -31,6 +31,7 @@ june-analytics-python = "^2.3.0"
 drf-spectacular = "^0.27.1"
 reportlab = "^4.0.4"
 xhtml2pdf = "^0.2.15"
+django-wkhtmltopdf = "^3.4.0"
 
 
 

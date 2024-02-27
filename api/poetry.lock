@@ -725,6 +725,20 @@ s3 = ["boto3 (>=1.4.4)"]
 sftp = ["paramiko (>=1.15)"]
 
 [[package]]
+name = "django-wkhtmltopdf"
+version = "3.4.0"
+description = "Converts HTML to PDF using wkhtmltopdf."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-wkhtmltopdf-3.4.0.tar.gz", hash = "sha256:b12222a6c588c645d62d971a2a34e3802ac76023cf94c557068f39f478b2b984"},
+    {file = "django_wkhtmltopdf-3.4.0-py2.py3-none-any.whl", hash = "sha256:c954d016b84b195bb52d8a22a1ed1c5e4eb499c9aa8f6aed89dac57247fc8fc1"},
+]
+
+[package.dependencies]
+six = "*"
+
+[[package]]
 name = "djangorestframework"
 version = "3.14.0"
 description = "Web APIs for Django, made easy."
@@ -2748,4 +2762,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "bef2c0b2db0dc5d0ebcc27c6df3a96fc49c3f81f6a02732635b7bb3f25f53101"
+content-hash = "a220a926fbc462cfaaebe7c1c8cb6e5fd1a19153fd65ad3eb6ebd1e5fd1aa1e6"

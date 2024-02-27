@@ -4,6 +4,9 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from rest_framework.views import APIView
+from wkhtmltopdf.views import (
+    PDFTemplateView,  # Assuming you're using PDFTemplateResponse
+)
 from xhtml2pdf import pisa
 
 from interview.models import InterviewRound, InterviewRoundQuestion
@@ -88,3 +91,15 @@ class ExportToPdf(APIView):
 
         # Return the response
         return HttpResponse(buffer, content_type="application/pdf")
+
+
+class ExportToPdfNew(PDFTemplateView):
+    template_name = "pdf_template.html"
+    filename = "test_pdf.pdf"
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context["some_data"] = "This is some data that I want to pass"
+        return context
