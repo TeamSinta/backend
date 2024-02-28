@@ -4,181 +4,217 @@
 		<title>Conclusion PDF Export</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta charset="UTF-8" />
-
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+			rel="stylesheet" />
 		<style>
 			@page {
 				size: letter;
 			}
 			body {
-				font-family: 'Arial';
+				font-family: 'Inter', sans-serif;
 			}
 			.wrapper {
 				margin: 14px 24px 14px 24px;
 			}
 			.header-container {
+				position: relative;
 				background-color: #f7f6fc;
 				border-radius: 8px;
 				width: 100%;
 				height: 102px;
-				display: flex;
-				flex-direction: row;
-				align-items: center;
-
-				.header-box {
-					width: 100%;
-					display: flex;
-					flex-direction: row;
-					justify-content: space-between;
-					align-items: center;
-				}
-
-				.logo {
-					margin-left: 24px;
-					height: 42px;
-					width: 106px;
-				}
-
-				.decision-wrapper {
-					display: flex;
-					flex-direction: column;
-					justify-content: center;
-					align-items: center;
-					margin-right: 24px;
-					font-size: 12px;
-					font-weight: 600;
-				}
-
-				.decision-box {
-					margin-top: 4px;
-					padding: 8px 18px;
-					border-radius: 8px;
-					background-color: #6462f1;
-					color: white;
-					text-align: center;
-				}
 			}
-
+			.logo {
+				position: absolute;
+				transform: translate(-50%, -50%);
+				top: 50%;
+				left: 8%;
+				height: 42px;
+				width: 106px;
+			}
+			.header-box {
+				width: 100%;
+			}
+			.decision-wrapper {
+				position: absolute;
+				top: 50%;
+				right: 4%;
+				transform: translateY(-50%);
+				font-size: 12px;
+				font-weight: 600;
+				text-align: center;
+			}
+			.decision-box {
+				margin-top: 4px;
+				padding: 8px 18px;
+				border-radius: 8px;
+				background-color: #6462f1;
+				color: white;
+				text-align: center;
+			}
 			.details-container {
+				position: relative;
 				margin-top: 3rem;
 				background-color: #f7f6fc;
 				border-radius: 8px;
 				width: 100%;
-				height: 100%;
-
-				.details-box {
-					padding: 14px 24px 14px 24px;
-					display: flex;
-					flex-direction: row;
-					gap: 6rem;
-				}
-
-				.candidate-box {
-					background-color: white;
-					padding: 0px 8px;
-					border-radius: 8px;
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-					gap: 0.5rem;
-
-					.profile-picture-wrapper {
-						width: 64px;
-						height: 64px;
-
-						img {
-							border-radius: 50%;
-						}
-					}
-
-					.candidate-details {
-						width: 100%;
-					}
-				}
-
-				.left-container {
-				}
-
-				.right-container {
-				}
+				height: 1247px; /* hardcoded for now */
+			}
+			.left-container {
+				position: absolute;
+				top: 0;
+				left: 0;
+				padding: 1.5rem;
+			}
+			.right-container {
+				position: absolute;
+				top: 0;
+				right: 0;
+				width: 60%;
+				padding: 1.5rem;
+			}
+			.details-box {
+				padding: 14px 24px 14px 24px;
+			}
+			.candidate-box {
+				position: relative;
+				display: block;
+				height: 90px;
+				width: 100%;
+				background-color: white;
+				border-radius: 8px;
+				padding: 0px 8px;
+				border: 1px solid #ccc;
+				margin-bottom: 1rem;
+			}
+			.profile-picture-wrapper {
+				position: absolute;
+				top: 50%;
+				left: 4%;
+				transform: translateY(-50%);
+				overflow: hidden;
+				width: 64px;
+				height: 64px;
+				border-radius: 50%;
+				background-image: url('https://mockupfree.co/wp-content/uploads/free-cool-profile-picture-psd-mockup-for-instagram-t.jpg');
+				background-size: cover;
+				background-position: center;
+			}
+			.candidate-details {
+				position: absolute;
+				top: 50%;
+				left: 35%;
+				transform: translateY(-50%);
+			}
+			.role-title {
+				color: #60646c;
+			}
+			.candidate-name {
+				font-weight: 600;
+				margin-bottom: 8px;
+			}
+			.role-title,
+			.candidate-name {
+				font-size: 14px;
+				margin: 0;
+			}
+			.section {
+				display: inline-block;
+				margin-right: 10px;
+			}
+			.inline-header {
+				font-weight: bold;
+				margin: 0px;
+				margin-bottom: 8px;
+			}
+			#inline-detail {
+				font-weight: normal;
+			}
+			.section-title {
+				margin: 0px;
+				font-size: 20px;
+				font-weight: 600;
 			}
 		</style>
 	</head>
 	<body>
 		<div class="wrapper">
 			<div class="header-container">
-				<div class="header-box">
-					<img
-						class="logo"
-						src="https://i.ibb.co/ZH3zNcy/sinta-logo.png"
-						width="59"
-						height="24"
-						alt="sinta-logo" />
-					<div class="decision-wrapper">
-						{{ Decision }}
-						<div class="decision-box">
-							<div>
-								<img
-									class="logo2"
-									src="https://i.ibb.co/N6pd6NW/Mini-7-1.png"
-									alt="Mini-7-1" />
-							</div>
-							{{ Hire }}
-							<div></div>
+				<img
+					class="logo"
+					src="https://i.ibb.co/ZH3zNcy/sinta-logo.png"
+					width="59"
+					height="24"
+					alt="sinta-logo" />
+				<div class="decision-wrapper">
+					"Decision"
+					<div class="decision-box">
+						<div>
+							<img
+								class="logo2"
+								src="https://i.ibb.co/N6pd6NW/Mini-7-1.png"
+								alt="Mini-7-1" />
 						</div>
+						"Hire"
 					</div>
 				</div>
 			</div>
 			<div class="details-container">
-				<div class="details-box">
-					<div class="left-container">
-						<div class="candidate-box">
-							<div class="profile-picture-wrapper">
-								<img
-									src="https://mockupfree.co/wp-content/uploads/free-cool-profile-picture-psd-mockup-for-instagram-t.jpg"
-									width="64"
-									height="64"
-									alt="" />
-							</div>
-							<div class="candidate-details">
-								<p>{{candidate.name}}</p>
-								<p>{{role}}</p>
-							</div>
-						</div>
-						<div class="section">
-							<h5>Company</h5>
-							<p>Name: {{ interview_round.company.name }}</p>
-							<p>Department: {{ template.department }}</p>
+				<div class="left-container">
+					<div class="candidate-box">
+						<div class="profile-picture-wrapper"></div>
+						<div class="candidate-details">
+							<p class="candidate-name">Mattias Kent Baek</p>
+							<p class="role-title">Special Engineering</p>
 						</div>
 					</div>
-					<div class="right-container">
-						<div class="section">
-							<h2>Summary Details</h2>
-							<p>Description: {{ summary.description }}</p>
-						</div>
-						<div class="section">
-							<h2>Interview Details</h2>
-							<p>Title: {{ interview_round.title }}</p>
+					<div class="section">
+						<p class="inline-header">
+							Company:
+							<span id="inline-detail">{{ interview_round.company.name }}</span>
+						</p>
+						<p class="inline-header">
+							Round: <span id="inline-detail">{{ interview_round.title }}</span>
+						</p>
+						<p class="inline-header">
+							Department:
+							<span id="inline-detail">{{ template.department }}</span>
+						</p>
+						<p class="inline-header">
+							Interviewer:
+							<span id="inline-detail"
+								>{{interviewer.first_name}} {{interviewer.last_name}}</span
+							>
+						</p>
+						<p class="inline-header">
+							Interview Date: <span id="inline-detail">dd:hh:mm, timezone</span>
+						</p>
+						<p class="inline-header">
+							Total Time Spent: <span id="inline-detail">hh:mm</span>
+						</p>
+					</div>
+				</div>
+				<div class="right-container">
+					<div class="section">
+						<h1 class="section-title">Summary</h1>
+						<p>{{ summary.description }}</p>
+					</div>
+					<div class="section">
+						<div>
+							<h1 class="section-title">Questions and Answers:</h1>
+							{% for qa in questions_and_answers %}
 							<div>
-								<h3>Questions and Answers:</h3>
-								{% for qa in questions_and_answers %}
-								<div>
-									<h4>
-										{{forloop.counter}}. {{qa.question.question.question}}
-									</h4>
-									<p>Answer: {{ qa.answer.answer_text }}</p>
-								</div>
-								{% empty %}
-								<p>No questions available.</p>
-								{% endfor %}
+								<h4>{{forloop.counter}}. {{qa.question.question.question}}</h4>
+								<p>{{ qa.answer.answer_text }}</p>
 							</div>
-							<p>
-								Interviewer: {{ interviewer.first_name }} {{
-								interviewer.last_name }}
-							</p>
-							<h4>Interviewer Feedback:</h4>
-							<p>{{interviewer_feedback.note}} {{interviewer_reaction}}</p>
+							{% empty %}
+							<p>No questions available.</p>
+							{% endfor %}
 						</div>
+						<h1 class="section-title">Feedback:</h1>
+						<p>{{interviewer_feedback.note}}</p>
 					</div>
+					<div class="section">placeholder for reactions</div>
 				</div>
 			</div>
 		</div>
