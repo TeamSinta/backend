@@ -139,7 +139,7 @@
 
 			.reaction-container {
 				overflow: auto;
-				height: 100px;
+				height: 150px;
 			}
 
 			.reaction {
@@ -158,7 +158,7 @@
 			.reaction > span {
 				display: table-cell;
 				vertical-align: middle;
-				line-height: 20px;
+				line-height: 24px;
 				padding-right: 4px;
 			}
 		</style>
@@ -231,7 +231,29 @@
 							{% for qa in questions_and_answers %}
 							<div>
 								<h4>{{forloop.counter}}. {{qa.question.question.question}}</h4>
-								<p>{{ qa.answer.answer_text }}</p>
+								<p>{{ qa.answer.answer_text }}
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                  This is some extra added text to test the overflow.
+                </p>
 							</div>
 							{% empty %}
 							<p>No questions available.</p>
@@ -242,59 +264,50 @@
 					</div>
 					<div class="section">
 						<div class="reaction-container">
+							{% for competency in competency_and_reviews %}
 							<div class="reaction">
-								<span>Soft Skills</span>
-								<img
-									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
-									alt="SVG-to-PNG"
-									width="20"
-									height="20"
-									border="0" />
-							</div>
+								<span>{{ competency.competency }}</span>
+									<img
+										src="https://i.postimg.cc/x1k5hdYK/React-3.png"
+										alt=""
+										width="24"
+										height="24"
+										border="0" />
+								</div>
+                {%endfor%}
+							{% for competency in competency_and_reviews %}
 							<div class="reaction">
-								<span>Design</span>
-								<img
-									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
-									alt="SVG-to-PNG"
-									width="20"
-									height="20"
-									border="0" />
-							</div>
+								<span>{{ competency.competency }}</span>
+									<img
+										src="https://i.postimg.cc/x1k5hdYK/React-3.png"
+										alt=""
+										width="24"
+										height="24"
+										border="0" />
+								</div>
+                {%endfor%}
+							{% for competency in competency_and_reviews %}
 							<div class="reaction">
-								<span>React</span>
-								<img
-									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
-									alt="SVG-to-PNG"
-									width="20"
-									height="20"
-									border="0" />
-							</div>
+								<span>{{ competency.competency }}</span>
+									<img
+										src="https://i.postimg.cc/x1k5hdYK/React-3.png"
+										alt=""
+										width="24"
+										height="24"
+										border="0" />
+								</div>
+                {%endfor%}
+							{% for competency in competency_and_reviews %}
 							<div class="reaction">
-								<span>Culture Fit</span>
-								<img
-									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
-									alt="SVG-to-PNG"
-									width="20"
-									height="20"
-									border="0" />
-							</div>
-							<div class="reaction">
-								<span>Drive</span>
-								<img
-									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
-									alt="SVG-to-PNG"
-									width="20"
-									height="20"
-									border="0" />
-							</div>
-							<div class="reaction">
-								<span>Management Experience</span>
-								<img
-									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
-									alt="SVG-to-PNG"
-									width="20"
-									height="20"
-									border="0" />
+								<span>{{ competency.competency }}</span>
+									<img
+										src="https://i.postimg.cc/x1k5hdYK/React-3.png"
+										alt=""
+										width="24"
+										height="24"
+										border="0" />
+								</div>
+                {%endfor%}
 							</div>
 						</div>
 					</div>
