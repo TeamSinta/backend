@@ -136,6 +136,31 @@
 				font-size: 20px;
 				font-weight: 600;
 			}
+
+			.reaction-container {
+				overflow: auto;
+				height: 100px;
+			}
+
+			.reaction {
+				background-color: white;
+				width: auto;
+				display: table;
+				border-radius: 8px;
+				padding: 4px 8px;
+				float: left;
+				margin-right: 8px;
+				margin-bottom: 8px;
+				height: 20px;
+				border: 0.5px solid #eceff6;
+				box-shadow: 1px 1px 1px 0px #4b494940;
+			}
+			.reaction > span {
+				display: table-cell;
+				vertical-align: middle;
+				line-height: 20px;
+				padding-right: 4px;
+			}
 		</style>
 	</head>
 	<body>
@@ -215,7 +240,64 @@
 						<h1 class="section-title">Feedback:</h1>
 						<p>{{interviewer_feedback.note}}</p>
 					</div>
-					<div class="section">placeholder for reactions 👍</div>
+					<div class="section">
+						<div class="reaction-container">
+							<div class="reaction">
+								<span>Soft Skills</span>
+								<img
+									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
+									alt="SVG-to-PNG"
+									width="20"
+									height="20"
+									border="0" />
+							</div>
+							<div class="reaction">
+								<span>Design</span>
+								<img
+									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
+									alt="SVG-to-PNG"
+									width="20"
+									height="20"
+									border="0" />
+							</div>
+							<div class="reaction">
+								<span>React</span>
+								<img
+									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
+									alt="SVG-to-PNG"
+									width="20"
+									height="20"
+									border="0" />
+							</div>
+							<div class="reaction">
+								<span>Culture Fit</span>
+								<img
+									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
+									alt="SVG-to-PNG"
+									width="20"
+									height="20"
+									border="0" />
+							</div>
+							<div class="reaction">
+								<span>Drive</span>
+								<img
+									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
+									alt="SVG-to-PNG"
+									width="20"
+									height="20"
+									border="0" />
+							</div>
+							<div class="reaction">
+								<span>Management Experience</span>
+								<img
+									src="https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"
+									alt="SVG-to-PNG"
+									width="20"
+									height="20"
+									border="0" />
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -41,26 +41,16 @@ class ExportToPdf(PDFTemplateView):
         interviewer_feedback = get_object_or_404(InterviewerFeedback, interview_round=interview_round)
         summary = get_object_or_404(Summary, interview_round=interview_round)
 
-        # Temp Test
-        reaction = interviewer_feedback.reaction
-        if reaction == InterviewerFeedback.EmojiChoice.FIRE:
-            feedback_reaction_emoji = "🔥"
-        elif reaction == InterviewerFeedback.EmojiChoice.THUMBS_UP:
-            feedback_reaction_emoji = "👍"
-        elif reaction == InterviewerFeedback.EmojiChoice.THUMBS_DOWN:
-            feedback_reaction_emoji = "👎"
-        elif reaction == InterviewerFeedback.EmojiChoice.HEART:
-            feedback_reaction_emoji = "❤️"
-        elif reaction == InterviewerFeedback.EmojiChoice.LAUGH:
-            feedback_reaction_emoji = "😂"
-        else:
-            feedback_reaction_emoji = ""
-
         questions_and_answers = []
         for question in interview_questions:
             answer = get_object_or_404(Answer, question=question)
             questions_and_answers.append({"question": question, "answer": answer})
 
+        reactions = {
+            {"feedback_text": "Soft Skills", "image_url": "https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"},
+            {"feedback_text": "Design", "image_url": "https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"},
+            {"feedback_text": "React", "image_url": "https://i.ibb.co/Gx8k2Hc/SVG-to-PNG.png"},
+        }
         context = super().get_context_data(**kwargs)
 
         context = {
@@ -69,11 +59,10 @@ class ExportToPdf(PDFTemplateView):
             "template": template,
             "interviewer": interviewer,
             "interviewer_feedback": interviewer_feedback,
-            "interviewer_reaction": feedback_reaction_emoji,
             "candidate": candidate,
             "summary": summary,
         }
-
+        context["reactions"] = reactions
         # Call the base implementation first to get a context
         # Add in a QuerySet of all the books
 
