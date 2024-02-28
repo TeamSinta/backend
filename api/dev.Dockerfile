@@ -11,8 +11,7 @@ RUN set -xe \
     && apt-get install -y --no-install-recommends build-essential \
     && pip install virtualenvwrapper poetry==1.6.1 \
     && apt-get install -y ffmpeg \
-    && apt-get install -y python3-pip libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0 \
-    && pip install weasyprint \
+    && apt-get install -y wkhtmltopdf libfontconfig\
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
