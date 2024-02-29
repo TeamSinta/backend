@@ -21,8 +21,9 @@ class ExportToPdf(APIView):
     }
 
     hire_decision_icon = {
-        1: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/thumbs_up_white96x96.png",
-        2: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/thumbs_down_white96x96.png",
+        1: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/4_competency_score.png",
+        2: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/2_competency_score.png",
+        3: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/5_competency_score.png",
     }
 
     def get(self, request, *args, **kwargs):
@@ -43,7 +44,7 @@ class ExportToPdf(APIView):
 
         competency_and_reviews = []
         questions_and_answers = []
-        interviewer_hire_choice = 2
+        interviewer_hire_choice = 3
 
         for question in interview_questions:
             review_value = question.question.question.review
@@ -56,7 +57,13 @@ class ExportToPdf(APIView):
             answer = get_object_or_404(Answer, question=question)
             questions_and_answers.append({"question": question, "answer": answer})
 
-        decision_text = "Hire" if interviewer_hire_choice == 1 else "Don't Hire"
+        if interviewer_hire_choice == 1:
+            decision_text = "Hire"
+        elif interviewer_hire_choice == 3:
+            decision_text = "Strong Hire"
+        else:
+            decision_text = "Don't Hire"
+
         decision_icon = self.hire_decision_icon[interviewer_hire_choice]
 
         hire_decision = {"text": decision_text, "icon_url": decision_icon}
