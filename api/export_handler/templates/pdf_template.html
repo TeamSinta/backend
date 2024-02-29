@@ -173,15 +173,17 @@
 					height="24"
 					alt="sinta-logo" />
 				<div class="decision-wrapper">
-					"Decision"
+					Decision
 					<div class="decision-box">
 						<div>
 							<img
-								class="logo2"
-								src="https://i.ibb.co/N6pd6NW/Mini-7-1.png"
-								alt="Mini-7-1" />
+								class="hire-decision-icon"
+								src="{{ hire_decision.icon_url }}"
+								width="24"
+								height="24"
+								alt="" />
 						</div>
-						"Hire"
+						{{ hire_decision.text }}
 					</div>
 				</div>
 			</div>
@@ -231,29 +233,7 @@
 							{% for qa in questions_and_answers %}
 							<div>
 								<h4>{{forloop.counter}}. {{qa.question.question.question}}</h4>
-								<p>{{ qa.answer.answer_text }}
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                  This is some extra added text to test the overflow.
-                </p>
+								<p>{{ qa.answer.answer_text }}</p>
 							</div>
 							{% empty %}
 							<p>No questions available.</p>
@@ -267,48 +247,14 @@
 							{% for competency in competency_and_reviews %}
 							<div class="reaction">
 								<span>{{ competency.competency }}</span>
-									<img
-										src="https://i.postimg.cc/x1k5hdYK/React-3.png"
-										alt=""
-										width="24"
-										height="24"
-										border="0" />
-								</div>
-                {%endfor%}
-							{% for competency in competency_and_reviews %}
-							<div class="reaction">
-								<span>{{ competency.competency }}</span>
-									<img
-										src="https://i.postimg.cc/x1k5hdYK/React-3.png"
-										alt=""
-										width="24"
-										height="24"
-										border="0" />
-								</div>
-                {%endfor%}
-							{% for competency in competency_and_reviews %}
-							<div class="reaction">
-								<span>{{ competency.competency }}</span>
-									<img
-										src="https://i.postimg.cc/x1k5hdYK/React-3.png"
-										alt=""
-										width="24"
-										height="24"
-										border="0" />
-								</div>
-                {%endfor%}
-							{% for competency in competency_and_reviews %}
-							<div class="reaction">
-								<span>{{ competency.competency }}</span>
-									<img
-										src="https://i.postimg.cc/x1k5hdYK/React-3.png"
-										alt=""
-										width="24"
-										height="24"
-										border="0" />
-								</div>
-                {%endfor%}
+								<img
+									src="{{ competency.icon_url }}"
+									alt=""
+									width="24"
+									height="24"
+									border="0" />
 							</div>
+							{%endfor%}
 						</div>
 					</div>
 				</div>
