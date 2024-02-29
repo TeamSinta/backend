@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from wkhtmltopdf.views import PDFTemplateResponse
@@ -10,7 +12,6 @@ from summary.models import Summary
 
 class ExportToPdf(APIView):
     template_name = "pdf_template.html"
-    filename = "test_pdf.pdf"
 
     review_icon_mapping = {
         1: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/1_competency_score.png",  # Superbad
@@ -25,6 +26,11 @@ class ExportToPdf(APIView):
         2: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/2_competency_score.png",
         3: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/5_competency_score.png",
     }
+
+    def get_unique_file_name(self, interview_round_title):
+        timestamp = datetime.now().strftime("%Y%m%d")
+        filename = f"{interview_round_title.replace(' ', '_').lower()}_{timestamp}.pdf"
+        return filename
 
     def get(self, request, *args, **kwargs):
         print("Interview Round: ", request.data.get("interview_round_id"))
@@ -42,6 +48,7 @@ class ExportToPdf(APIView):
         summary = get_object_or_404(Summary, interview_round=interview_round)
         print(summary)
 
+        unique_filename = self.get_unique_file_name(interview_round.title)
         competency_and_reviews = []
         questions_and_answers = []
         interviewer_hire_choice = 3
@@ -83,7 +90,7 @@ class ExportToPdf(APIView):
         response = PDFTemplateResponse(
             request=request,
             template=self.template_name,
-            filename=self.filename,
+            filename=unique_filename,
             context=context,
             cmd_options={
                 "quiet": True,
