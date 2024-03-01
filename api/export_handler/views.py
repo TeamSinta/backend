@@ -40,7 +40,8 @@ class ExportToPdf(APIView):
         filename = f"{interview_round_title.replace(' ', '_').lower()}_{timestamp}.pdf"
         return filename
 
-    def get_candidate_initials(self, interview_round):
+    def get_candidate_and_initials(self, interview_round):
+        candidate = interview_round.candidate
         candidate_name = interview_round.candidate.name
         candidate_initials = ""
         if " " in candidate_name:
@@ -53,7 +54,9 @@ class ExportToPdf(APIView):
             first_initial = candidate_name[0].upper()
             last_initial = candidate_name[1].upper()
             candidate_initials = f"{first_initial}{last_initial}"
-        return candidate_initials
+
+        candidate_with_initials = {**candidate.__dict__, "initials": candidate_initials}
+        return candidate_with_initials
 
     def get_questions_and_answers(self, interview_round):
         questions_and_answers = []
@@ -87,9 +90,11 @@ class ExportToPdf(APIView):
             competency_and_reviews = self.get_competency_and_review(interview_round)
             template = get_object_or_404(Template, id=interview_round.template_id)
             summary = get_object_or_404(Summary, interview_round=interview_round)
+            candidate = self.get_candidate_and_initials(interview_round)
             interviewer_feedback = get_object_or_404(InterviewerFeedback, interview_round=interview_round)
             interviewer_hire_choice = 3
             decision_text, decision_icon = self.get_hiring_decision(interviewer_hire_choice)
+
         except Http404:
             return Response({"error": "Required interview round data not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -101,7 +106,7 @@ class ExportToPdf(APIView):
             "interviewer": interview_round.interviewer,
             "interviewer_feedback": interviewer_feedback,
             "hire_decision": {"text": decision_text, "icon_url": decision_icon},
-            "candidate": interview_round.candidate,
+            "candidate": candidate,
             "summary": summary,
         }
 
@@ -114,8 +119,6 @@ class ExportToPdf(APIView):
 
         try:
             interview_round = get_object_or_404(InterviewRound, id=interview_round_id)
-            name = self.get_candidate_initials(interview_round)
-            print(name)
             context = self.build_context(interview_round)
 
             # Check if context has any errors, and stop the request if it does.
@@ -137,6 +140,11 @@ class ExportToPdf(APIView):
         except Http404:
             return Response({"error": "Interview round not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {
+                    "error": f"An unexpected error occurred. {e}",
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
         return response
