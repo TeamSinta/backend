@@ -40,6 +40,21 @@ class ExportToPdf(APIView):
         filename = f"{interview_round_title.replace(' ', '_').lower()}_{timestamp}.pdf"
         return filename
 
+    def get_candidate_initials(self, interview_round):
+        candidate_name = interview_round.candidate.name
+        candidate_initials = ""
+        if " " in candidate_name:
+            if candidate_name.count(" ") >= 1:
+                candidate_name = candidate_name.split(" ")
+                first_initial = candidate_name[0][0].upper()
+                last_initial = candidate_name[-1][0].upper()
+                candidate_initials = f"{first_initial}{last_initial}"
+        else:
+            first_initial = candidate_name[0].upper()
+            last_initial = candidate_name[1].upper()
+            candidate_initials = f"{first_initial}{last_initial}"
+        return candidate_initials
+
     def get_questions_and_answers(self, interview_round):
         questions_and_answers = []
         interview_questions = InterviewRoundQuestion.objects.filter(interview_round=interview_round)
@@ -99,6 +114,8 @@ class ExportToPdf(APIView):
 
         try:
             interview_round = get_object_or_404(InterviewRound, id=interview_round_id)
+            name = self.get_candidate_initials(interview_round)
+            print(name)
             context = self.build_context(interview_round)
 
             # Check if context has any errors, and stop the request if it does.
