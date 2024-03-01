@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from company.models import Company
-from interview_templates.models import TemplateQuestion
+from interview_templates.models import Template, TemplateQuestion
 from user.models import UserCompanies
 from user.serializers import CustomUserSerializer
 
@@ -155,7 +155,7 @@ class CreateInterviewRound(CreateAPIView):
                     "interviewer_id": interview_round.interviewer_id,
                     "meeting_room_id": interview_round.meeting_room_id,
                 }
-                user_id = self.request.user.id  # Assuming user ID is available in the request context
+                user_id = self.request.user.id
                 analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
                 analytics.track(user_id=str(user_id), event="interview_started")
                 return Response(response, status=status.HTTP_201_CREATED)
@@ -170,32 +170,34 @@ class InterviewRoundGet(APIView):
 
     def get(self, request, interview_round_id):
         try:
-            # user_company = get_object_or_404(UserCompanies, user=self.request.user)
-            # company_id = user_company.company_id
-
             interview_round = InterviewRound.objects.get(
                 id=interview_round_id,
-                # company=company_id,
                 deleted_at__isnull=True,
             )
             candidate_name = interview_round.candidate.name if interview_round.candidate else None
             interviewer = CustomUserSerializer(interview_round.interviewer).data
             formatted_date = interview_round.created_at.strftime("%B %d, %Y")
 
+            template = Template.objects.filter(id=interview_round.template_id).first()
+            department_name = template.department.name if template and template.department else None
+            template_title = template.role_title if template else None
+
             response = {
                 "id": interview_round.id,
                 "title": interview_round.title,
                 "candidate_id": interview_round.candidate_id,
-                "candidate_name": candidate_name,  # Include candidate's name
-                "interviewer": interviewer,  # Include candidate's name
+                "candidate_name": candidate_name,
+                "interviewer": interviewer,
                 "template_id": interview_round.template_id,
+                "template_title": template_title,  # Include template's title
+                "department_name": department_name,  # Include department's name
                 "thumbnail_uri": interview_round.thumbnail.url if interview_round.thumbnail else None,
                 "created_at": formatted_date,
-                # "description": interview_round.description,
+                "decision": interview_round.decision_hire,
                 "room_id": interview_round.meeting_room_id,
                 "video_uri": interview_round.video_uri,
+                "icon": interview_round.icon,
             }
-
             return JsonResponse(response)
         except InterviewRound.DoesNotExist:
             error_response = {"error": "Interview round not found"}
@@ -244,6 +246,7 @@ class InterviewRoundListAll(APIView):
                     "created_at": interview_round.created_at,
                     "video_uri": interview_round.video_uri,
                     "thumbnail_uri": interview_round.thumbnail.url if interview_round.thumbnail else None,
+                    "icon": interview_round.icon,
                 }
             )
 

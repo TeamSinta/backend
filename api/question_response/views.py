@@ -1,6 +1,7 @@
 import json
 from typing import Dict, List
 
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
@@ -40,6 +41,22 @@ class QuestionSummarizedAnswerView(APIView):
                 {"status": "error", "message": "No question answers found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+    def patch(self, request, answer_id: int) -> Response:
+        answer = get_object_or_404(Answer, pk=answer_id)
+
+        # Optional: Check if the user has permission to update this answer
+        if request.user != answer.user:
+            raise PermissionDenied("You do not have permission to edit this answer.")
+
+        answer_text = request.data.get("answer_text")
+        if answer_text is not None:
+            answer.answer_text = answer_text
+
+        # Add any other fields you expect to update
+
+        answer.save()
+        return Response({"status": "success", "message": "Answer updated successfully."}, status=status.HTTP_200_OK)
 
     def _save_answer_notes(self, answer: Answer, question_text: str):
         answer_text = " ".join(TranscriptChunk.objects.filter(answer=answer).values_list("chunk_text", flat=True))
@@ -131,6 +148,7 @@ class QuestionSummarizedAnswerView(APIView):
                     {
                         "question": question.question_text,
                         "answer": answer.answer_text,
+                        "answer_id": answer.id,
                         "transcript_chunks": tc,
                         "competency": question.competency,
                         "score": interview_round_question.rating,
@@ -167,6 +185,4 @@ class InterviewerFeedbackDetailView(generics.ListCreateAPIView):
         round_id = self.kwargs.get("pk")
         queryset = InterviewerFeedback.objects.all()
         queryset = queryset.filter(interview_round_id=round_id)
-        print(round_id)
-        print(queryset)
         return queryset

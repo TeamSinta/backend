@@ -4,6 +4,12 @@ from company.models import Company
 from interview_templates.models import TemplateQuestion
 from user.models import CustomUser
 
+HIRE_CHOICES = (
+    (1, "Hire"),
+    (2, "Dont Hire"),
+    (3, "Strong Hire"),
+)
+
 
 class Candidate(models.Model):
     username = models.CharField(max_length=200)
@@ -12,6 +18,7 @@ class Candidate(models.Model):
     user = models.ForeignKey(
         CustomUser, on_delete=models.SET_NULL, null=True, blank=True, default=None, related_name="candidate_creator"
     )
+    email = models.CharField(max_length=200, null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)
@@ -21,6 +28,7 @@ class Candidate(models.Model):
 # Create your models here.
 class InterviewRound(models.Model):
     title = models.CharField(max_length=200)
+    icon = models.TextField(max_length=10, blank=True, null=True, default=None)
     candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE, null=True, blank=True)
     interviewer = models.ForeignKey(
         CustomUser,
@@ -40,6 +48,7 @@ class InterviewRound(models.Model):
         default=None,
         related_name="interview_round_creator",
     )
+    decision_hire = models.IntegerField(choices=HIRE_CHOICES, null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(auto_now=False, null=True, blank=True)

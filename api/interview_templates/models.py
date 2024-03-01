@@ -10,7 +10,6 @@ class Template(models.Model):
     id = models.AutoField(primary_key=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     role_title = models.CharField(max_length=255)
-    location = models.CharField(max_length=255, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     interviewers = models.ManyToManyField(CustomUser, related_name="template_interviewers")
     description = models.TextField(null=True, blank=True)

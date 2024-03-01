@@ -69,7 +69,7 @@ def summarize_interview(qa_text: str) -> str:
             content_json = json.loads(content_generated)
         except json.decoder.JSONDecodeError:
             retry += 1
-            content_generated = json.loads(_summarized_interview_faq_helper(qa_text, retry=retry))
+            content_generated = _summarized_interview_faq_helper(qa_text, retry=retry)
         finally:
             if len(content_json) > 1:
                 break
