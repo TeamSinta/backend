@@ -110,6 +110,19 @@
 				transform: translateY(-50%);
 			}
 
+			.role-title {
+				color: #60646c;
+			}
+			.candidate-name {
+				font-weight: 600;
+				margin-bottom: 8px;
+			}
+			.role-title,
+			.candidate-name {
+				font-size: 14px;
+				margin: 0;
+			}
+
 			.candidate-profile-picture {
 				position: absolute;
 				top: 50%;
@@ -119,9 +132,18 @@
 				width: 64px;
 				height: 64px;
 				border-radius: 50%;
-				background-image: url('https://mockupfree.co/wp-content/uploads/free-cool-profile-picture-psd-mockup-for-instagram-t.jpg');
-				background-size: cover;
 				background-position: center;
+				background-color: #f6f5fb;
+				border: 1px solid #ccc;
+				text-align: center;
+			}
+
+			.candidate-profile-picture span {
+				position: relative;
+				font-weight: 900;
+				top: 25%;
+				font-size: 28px; /* Adjust font size as needed */
+				color: black; /* Text color */
 			}
 
 			/* Inline Details */
@@ -164,7 +186,7 @@
 				margin-bottom: 8px;
 				height: 20px;
 				border: 0.5px solid #eceff6;
-				box-shadow: 1px 1px 1px 0px #4b494940;
+				border: 1px solid #ccc;
 			}
 
 			.reaction-item > span {
@@ -204,12 +226,12 @@
 			<div class="details-section">
 				<div class="details-left">
 					<div class="candidate-box">
-						<div class="candidate-profile-picture"></div>
+						<div class="candidate-profile-picture">
+							<span>{{candidate.initials}}</span>
+						</div>
 						<div class="candidate-info">
-							<p class="candidate-name">
-								Mattias Kent Baek {{candidate.initials}}
-							</p>
-							<p class="role-title">Special Engineering</p>
+							<p class="candidate-name">{{candidate.name}}</p>
+							<p class="role-title">{{template.role_title}}</p>
 						</div>
 					</div>
 					<div class="inline-details-section">
@@ -231,7 +253,7 @@
 							>
 						</p>
 						<p class="inline-header">
-							Interview Date: <span id="inline-detail">dd:hh:mm, timezone</span>
+							Interview Date: <span id="inline-detail">dd:hh:mm</span>
 						</p>
 						<p class="inline-header">
 							Total Time Spent: <span id="inline-detail">hh:mm</span>
