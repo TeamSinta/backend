@@ -18,14 +18,16 @@
 				margin: 14px 24px 14px 24px;
 			}
 
-			.header-container {
+			/* Header Section */
+			.header-section {
 				position: relative;
 				background-color: #f7f6fc;
 				border-radius: 8px;
 				width: 100%;
 				height: 118px;
 			}
-			.logo {
+
+			.header-logo {
 				position: absolute;
 				transform: translate(-50%, -50%);
 				top: 50%;
@@ -33,10 +35,9 @@
 				height: 42px;
 				width: 106px;
 			}
-			.header-box {
-				width: 100%;
-			}
-			.decision-wrapper {
+
+			/* Decision Section */
+			.decision-section {
 				position: absolute;
 				top: 50%;
 				right: 4%;
@@ -46,10 +47,7 @@
 				text-align: center;
 			}
 
-			.decision-wrapper > p {
-				margin: 0;
-			}
-			.decision-box {
+			.decision-container {
 				margin-bottom: 4px;
 				margin-top: 4px;
 				padding-top: 4px;
@@ -62,7 +60,9 @@
 				text-align: center;
 				box-shadow: 1px 1px 1px 0px #4b494940;
 			}
-			.details-container {
+
+			/* Details Section */
+			.details-section {
 				position: relative;
 				margin-top: 3rem;
 				background-color: #f7f6fc;
@@ -70,22 +70,27 @@
 				width: 100%;
 				height: 1230px; /* hardcoded for now */
 			}
-			.left-container {
+
+			.details-left {
 				position: absolute;
 				top: 0;
 				left: 0;
 				padding: 1.5rem;
 			}
-			.right-container {
+
+			.details-right {
 				position: absolute;
 				top: 0;
 				right: 0;
 				width: 60%;
 				padding: 1.5rem;
 			}
-			.details-box {
+
+			.details-content {
 				padding: 14px 24px 14px 24px;
 			}
+
+			/* Candidate Section */
 			.candidate-box {
 				position: relative;
 				display: block;
@@ -97,7 +102,15 @@
 				border: 1px solid #ccc;
 				margin-bottom: 1rem;
 			}
-			.profile-picture-wrapper {
+
+			.candidate-info {
+				position: absolute;
+				top: 50%;
+				left: 35%;
+				transform: translateY(-50%);
+			}
+
+			.candidate-profile-picture {
 				position: absolute;
 				top: 50%;
 				left: 4%;
@@ -110,48 +123,37 @@
 				background-size: cover;
 				background-position: center;
 			}
-			.candidate-details {
-				position: absolute;
-				top: 50%;
-				left: 35%;
-				transform: translateY(-50%);
-			}
-			.role-title {
-				color: #60646c;
-			}
-			.candidate-name {
-				font-weight: 600;
-				margin-bottom: 8px;
-			}
-			.role-title,
-			.candidate-name {
-				font-size: 14px;
-				margin: 0;
-			}
-			.section {
+
+			/* Inline Details */
+			.inline-details-section {
 				display: inline-block;
 				margin-right: 10px;
 			}
+
 			.inline-header {
 				font-weight: bold;
 				margin: 0px;
 				margin-bottom: 8px;
 			}
+
 			#inline-detail {
 				font-weight: normal;
 			}
-			.section-title {
+
+			/* Section Titles */
+			.section-heading {
 				margin: 0px;
 				font-size: 20px;
 				font-weight: 600;
 			}
 
+			/* Reaction Section */
 			.reaction-container {
 				overflow: auto;
 				height: 150px;
 			}
 
-			.reaction {
+			.reaction-item {
 				background-color: white;
 				width: auto;
 				display: table;
@@ -164,7 +166,8 @@
 				border: 0.5px solid #eceff6;
 				box-shadow: 1px 1px 1px 0px #4b494940;
 			}
-			.reaction > span {
+
+			.reaction-item > span {
 				display: table-cell;
 				vertical-align: middle;
 				line-height: 24px;
@@ -174,17 +177,17 @@
 	</head>
 	<body>
 		<div class="wrapper">
-			<div class="header-container">
+			<div class="header-section">
 				<img
-					class="logo"
+					class="header-logo"
 					src="https://sinta-media.s3.eu-west-1.amazonaws.com/icons/sinta-logo192x77.png"
 					width="59"
 					height="24"
 					alt="sinta-logo" />
-				<div class="decision-wrapper">
+				<div class="decision-section">
 					Decision
 					<div
-						class="decision-box"
+						class="decision-container"
 						style="{% if hire_decision.text != 'Hire' and hire_decision.text != 'Strong Hire' %}border: 1px solid #FF93A0;{% endif %}">
 						<div>
 							<img
@@ -198,16 +201,16 @@
 					</div>
 				</div>
 			</div>
-			<div class="details-container">
-				<div class="left-container">
+			<div class="details-section">
+				<div class="details-left">
 					<div class="candidate-box">
-						<div class="profile-picture-wrapper"></div>
-						<div class="candidate-details">
+						<div class="candidate-profile-picture"></div>
+						<div class="candidate-info">
 							<p class="candidate-name">Mattias Kent Baek</p>
 							<p class="role-title">Special Engineering</p>
 						</div>
 					</div>
-					<div class="section">
+					<div class="inline-details-section">
 						<p class="inline-header">
 							Company:
 							<span id="inline-detail">{{ interview_round.company.name }}</span>
@@ -233,14 +236,14 @@
 						</p>
 					</div>
 				</div>
-				<div class="right-container">
-					<div class="section">
-						<h1 class="section-title">Summary</h1>
+				<div class="details-right">
+					<div class="inline-details-section">
+						<h1 class="section-heading">Summary</h1>
 						<p>{{ summary.description }}</p>
 					</div>
-					<div class="section">
+					<div class="inline-details-section">
 						<div>
-							<h1 class="section-title">Questions and Answers:</h1>
+							<h1 class="section-heading">Questions and Answers:</h1>
 							{% for qa in questions_and_answers %}
 							<div>
 								<h4>{{forloop.counter}}. {{qa.question.question.question}}</h4>
@@ -250,13 +253,13 @@
 							<p>No questions available.</p>
 							{% endfor %}
 						</div>
-						<h1 class="section-title">Feedback:</h1>
+						<h1 class="section-heading">Feedback:</h1>
 						<p>{{interviewer_feedback.note}}</p>
 					</div>
-					<div class="section">
+					<div class="inline-details-section">
 						<div class="reaction-container">
 							{% for competency in competency_and_reviews %}
-							<div class="reaction">
+							<div class="reaction-item">
 								<span>{{ competency.text }}</span>
 								<img
 									src="{{ competency.icon_url }}"

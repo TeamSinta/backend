@@ -1,7 +1,9 @@
 from datetime import datetime
 
+from django.http import Http404
 from django.shortcuts import get_object_or_404
-from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.views import APIView, status
 from wkhtmltopdf.views import PDFTemplateResponse
 
 from interview.models import InterviewRound, InterviewRoundQuestion
@@ -22,9 +24,9 @@ class ExportToPdf(APIView):
     }
 
     hire_decision_icon = {
-        1: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/4_competency_score.png",
-        2: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/2_competency_score.png",
-        3: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/5_competency_score.png",
+        1: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/4_competency_score.png",  # Thumbs up
+        2: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/2_competency_score.png",  # Thumbs Down
+        3: "https://sinta-media.s3.eu-west-1.amazonaws.com/icons/5_competency_score.png",  # Star
     }
 
     def get_icon_url(self, score, mapping_type="competency"):
@@ -56,50 +58,68 @@ class ExportToPdf(APIView):
             competency_and_reviews.append({"text": competency, "icon_url": icon_url})
         return competency_and_reviews
 
-    def get(self, request, *args, **kwargs):
-        interview_round_id = request.data.get("interview_round_id")
-        interview_round = get_object_or_404(InterviewRound, id=interview_round_id)
-        template = get_object_or_404(Template, id=interview_round.template_id)
-        candidate = interview_round.candidate
-        interviewer = interview_round.interviewer
-        interviewer_feedback = get_object_or_404(InterviewerFeedback, interview_round=interview_round)
-        summary = get_object_or_404(Summary, interview_round=interview_round)
-
-        unique_filename = self.get_unique_file_name(interview_round.title)
-        interviewer_hire_choice = 3
-
-        if interviewer_hire_choice == 1:
-            decision_text = "Hire"
-        elif interviewer_hire_choice == 3:
-            decision_text = "Strong Hire"
+    def get_hiring_decision(self, choice):
+        if choice == 1:
+            return "Hire", self.get_icon_url(choice, "hire_decision")
+        elif choice == 3:
+            return "Strong Hire", self.get_icon_url(choice, "hire_decision")
         else:
-            decision_text = "Don't Hire"
+            return "Don't Hire", self.get_icon_url(choice, "hire_decision")
 
-        decision_icon = self.hire_decision_icon[interviewer_hire_choice]
-
-        hire_decision = {"text": decision_text, "icon_url": decision_icon}
+    def build_context(self, interview_round):
+        try:
+            questions_and_answers = self.get_questions_and_answers(interview_round)
+            competency_and_reviews = self.get_competency_and_review(interview_round)
+            template = get_object_or_404(Template, id=interview_round.template_id)
+            summary = get_object_or_404(Summary, interview_round=interview_round)
+            interviewer_feedback = get_object_or_404(InterviewerFeedback, interview_round=interview_round)
+            interviewer_hire_choice = 3
+            decision_text, decision_icon = self.get_hiring_decision(interviewer_hire_choice)
+        except Http404:
+            return Response({"error": "Required interview round data not found"}, status=status.HTTP_404_NOT_FOUND)
 
         context = {
             "interview_round": interview_round,
-            "questions_and_answers": self.get_questions_and_answers(interview_round),
-            "competency_and_reviews": self.get_competency_and_review(interview_round),
+            "questions_and_answers": questions_and_answers,
+            "competency_and_reviews": competency_and_reviews,
             "template": template,
-            "interviewer": interviewer,
+            "interviewer": interview_round.interviewer,
             "interviewer_feedback": interviewer_feedback,
-            "hire_decision": hire_decision,
-            "candidate": candidate,
+            "hire_decision": {"text": decision_text, "icon_url": decision_icon},
+            "candidate": interview_round.candidate,
             "summary": summary,
         }
 
-        response = PDFTemplateResponse(
-            request=request,
-            template=self.template_name,
-            filename=unique_filename,
-            context=context,
-            cmd_options={
-                "quiet": True,
-                "enable-local-file-access": True,
-            },
-        )
+        return context
+
+    def get(self, request, *args, **kwargs):
+        interview_round_id = request.data.get("interview_round_id")
+        if not interview_round_id:
+            return Response({"error": "Valid Interview round ID not provided"}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            interview_round = get_object_or_404(InterviewRound, id=interview_round_id)
+            context = self.build_context(interview_round)
+
+            # Check if context has any errors, and stop the request if it does.
+            if isinstance(context, Response):
+                return context
+
+            unique_filename = self.get_unique_file_name(interview_round.title)
+            response = PDFTemplateResponse(
+                request=request,
+                template=self.template_name,
+                filename=unique_filename,
+                context=context,
+                cmd_options={
+                    "quiet": True,
+                    "enable-local-file-access": True,
+                },
+            )
+
+        except Http404:
+            return Response({"error": "Interview round not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return response
