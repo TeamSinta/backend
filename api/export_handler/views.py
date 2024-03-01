@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView, status
 from wkhtmltopdf.views import PDFTemplateResponse
@@ -13,6 +14,7 @@ from summary.models import Summary
 
 
 class ExportToPdf(APIView):
+    permission_classes = [IsAuthenticated]
     template_name = "pdf_template.html"
 
     review_icon_mapping = {
@@ -117,10 +119,14 @@ class ExportToPdf(APIView):
         if not interview_round_id:
             return Response({"error": "Valid Interview round ID not provided"}, status=status.HTTP_404_NOT_FOUND)
 
-        try:
-            interview_round = get_object_or_404(InterviewRound, id=interview_round_id)
-            context = self.build_context(interview_round)
+        interview_round = get_object_or_404(InterviewRound, id=interview_round_id)
+        print("Interviewer:", interview_round.interviewer)
+        print("Requester", self.request.user)
+        if interview_round.interviewer != self.request.user:
+            return Response({"error": "You do not have access to this file"}, status=status.HTTP_403_FORBIDDEN)
 
+        try:
+            context = self.build_context(interview_round)
             # Check if context has any errors, and stop the request if it does.
             if isinstance(context, Response):
                 return context
