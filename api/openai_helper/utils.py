@@ -76,7 +76,6 @@ def summarize_interview(qa_text: str) -> str:
 
     for qa_pair in content_json:
         q_text_list.append(qa_pair["question"])
-
     description = _summarized_interview_description_helper(q_text_list)
 
     return description, content_json

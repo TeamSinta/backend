@@ -11,6 +11,7 @@ RUN set -xe \
     && apt-get install -y --no-install-recommends build-essential \
     && pip install virtualenvwrapper poetry==1.6.1 \
     && apt-get install -y ffmpeg \
+    && apt-get install -y wkhtmltopdf libfontconfig\
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -31,6 +32,9 @@ RUN chmod +x /scripts/*
 # Folders for static files such as js, css etc(static)
 RUN mkdir -p /vol/web/media
 RUN mkdir -p /vol/web/static
+
+COPY ./static /vol/web/static
+COPY ./media /vol/web/media
 
 # Creates a new user called 'user' instead of running everything as root.
 RUN adduser --disabled-password --gecos "" user

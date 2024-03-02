@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "wkhtmltopdf",
     # Apps
     "company",
     "user",
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "summary.apps.SummaryConfig",
     "storages",
+    "export_handler",
 ]
 
 MIDDLEWARE = [
