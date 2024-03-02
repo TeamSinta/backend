@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Conclusion PDF Export</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta charset="UTF-8" />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+			rel="stylesheet" />
+		<style>
+			@page {
+				size: letter;
+			}
+			body {
+				font-family: 'Inter', sans-serif;
+			}
+			.wrapper {
+				margin: 14px 24px 14px 24px;
+			}
+
+			/* Header Section */
+			.header-section {
+				position: relative;
+				background-color: #f7f6fc;
+				border-radius: 8px;
+				width: 100%;
+				height: 118px;
+			}
+
+			.header-logo {
+				position: absolute;
+				transform: translate(-50%, -50%);
+				top: 50%;
+				left: 8%;
+				height: 42px;
+				width: 106px;
+			}
+
+			/* Decision Section */
+			.decision-section {
+				position: absolute;
+				top: 50%;
+				right: 4%;
+				transform: translateY(-50%);
+				font-size: 12px;
+				font-weight: 600;
+				text-align: center;
+			}
+
+			.decision-container {
+				margin-bottom: 4px;
+				margin-top: 4px;
+				padding-top: 4px;
+				height: 62px;
+				width: 78px;
+				border-radius: 8px;
+				background-color: white;
+				color: black;
+				border: 1px solid #00c32b;
+				text-align: center;
+				box-shadow: 1px 1px 1px 0px #4b494940;
+			}
+
+			/* Details Section */
+			.details-section {
+				position: relative;
+				margin-top: 3rem;
+				background-color: #f7f6fc;
+				border-radius: 8px;
+				width: 100%;
+				height: 1230px; /* hardcoded for now */
+			}
+
+			.details-left {
+				position: absolute;
+				top: 0;
+				left: 0;
+				padding: 1.5rem;
+			}
+
+			.details-right {
+				position: absolute;
+				top: 0;
+				right: 0;
+				width: 60%;
+				padding: 1.5rem;
+			}
+
+			.details-content {
+				padding: 14px 24px 14px 24px;
+			}
+
+			/* Candidate Section */
+			.candidate-box {
+				position: relative;
+				display: block;
+				height: 90px;
+				width: 100%;
+				background-color: white;
+				border-radius: 8px;
+				padding: 0px 8px;
+				border: 1px solid #ccc;
+				margin-bottom: 1rem;
+			}
+
+			.candidate-info {
+				position: absolute;
+				top: 50%;
+				left: 35%;
+				transform: translateY(-50%);
+			}
+
+			.role-title {
+				color: #60646c;
+			}
+			.candidate-name {
+				font-weight: 600;
+				margin-bottom: 8px;
+			}
+			.role-title,
+			.candidate-name {
+				font-size: 14px;
+				margin: 0;
+			}
+
+			.candidate-profile-picture {
+				position: absolute;
+				top: 50%;
+				left: 4%;
+				transform: translateY(-50%);
+				overflow: hidden;
+				width: 64px;
+				height: 64px;
+				border-radius: 50%;
+				background-position: center;
+				background-color: #f6f5fb;
+				border: 1px solid #ccc;
+				text-align: center;
+			}
+
+			.candidate-profile-picture span {
+				position: relative;
+				font-weight: 900;
+				top: 25%;
+				font-size: 28px; /* Adjust font size as needed */
+				color: black; /* Text color */
+			}
+
+			/* Inline Details */
+			.inline-details-section {
+				display: inline-block;
+				margin-right: 10px;
+			}
+
+			.inline-header {
+				font-weight: bold;
+				margin: 0px;
+				margin-bottom: 8px;
+			}
+
+			#inline-detail {
+				font-weight: normal;
+			}
+
+			/* Section Titles */
+			.section-heading {
+				margin: 0px;
+				font-size: 20px;
+				font-weight: 600;
+			}
+
+			/* Reaction Section */
+			.reaction-container {
+				overflow: auto;
+				height: 150px;
+			}
+
+			.reaction-item {
+				background-color: white;
+				width: auto;
+				display: table;
+				border-radius: 8px;
+				padding: 4px 8px;
+				float: left;
+				margin-right: 8px;
+				margin-bottom: 8px;
+				height: 20px;
+				border: 0.5px solid #eceff6;
+				border: 1px solid #ccc;
+			}
+
+			.reaction-item > span {
+				display: table-cell;
+				vertical-align: middle;
+				line-height: 24px;
+				padding-right: 4px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="header-section">
+				<img
+					class="header-logo"
+					src="https://sinta-media.s3.eu-west-1.amazonaws.com/icons/sinta-logo192x77.png"
+					width="59"
+					height="24"
+					alt="sinta-logo" />
+				<div class="decision-section">
+					Decision
+					<div
+						class="decision-container"
+						style="{% if hire_decision.text != 'Hire' and hire_decision.text != 'Strong Hire' %}border: 1px solid #FF93A0;{% endif %}">
+						<div>
+							<img
+								class="hire-decision-icon"
+								src="{{ hire_decision.icon_url }}"
+								width="32"
+								height="32"
+								alt="" />
+						</div>
+						{{ hire_decision.text }}
+					</div>
+				</div>
+			</div>
+			<div class="details-section">
+				<div class="details-left">
+					<div class="candidate-box">
+						<div class="candidate-profile-picture">
+							<span>{{candidate.initials}}</span>
+						</div>
+						<div class="candidate-info">
+							<p class="candidate-name">{{candidate.name}}</p>
+							<p class="role-title">{{template.role_title}}</p>
+						</div>
+					</div>
+					<div class="inline-details-section">
+						<p class="inline-header">
+							Company:
+							<span id="inline-detail">{{ interview_round.company.name }}</span>
+						</p>
+						<p class="inline-header">
+							Round: <span id="inline-detail">{{ interview_round.title }}</span>
+						</p>
+						<p class="inline-header">
+							Department:
+							<span id="inline-detail">{{ template.department }}</span>
+						</p>
+						<p class="inline-header">
+							Interviewer:
+							<span id="inline-detail"
+								>{{interviewer.first_name}} {{interviewer.last_name}}</span
+							>
+						</p>
+						<p class="inline-header">
+							Interview Date: <span id="inline-detail">dd:hh:mm</span>
+						</p>
+						<p class="inline-header">
+							Total Time Spent: <span id="inline-detail">hh:mm</span>
+						</p>
+					</div>
+				</div>
+				<div class="details-right">
+					<div class="inline-details-section">
+						<h1 class="section-heading">Summary</h1>
+						<p>{{ summary.description }}</p>
+					</div>
+					<div class="inline-details-section">
+						<div>
+							<h1 class="section-heading">Questions and Answers:</h1>
+							{% for qa in questions_and_answers %}
+							<div>
+								<h4>{{forloop.counter}}. {{qa.question.question.question}}</h4>
+								<p>{{ qa.answer.answer_text }}</p>
+							</div>
+							{% empty %}
+							<p>No questions available.</p>
+							{% endfor %}
+						</div>
+						<h1 class="section-heading">Feedback:</h1>
+						<p>{{interviewer_feedback.note}}</p>
+					</div>
+					<div class="inline-details-section">
+						<div class="reaction-container">
+							{% for competency in competency_and_reviews %}
+							<div class="reaction-item">
+								<span>{{ competency.text }}</span>
+								<img
+									src="{{ competency.icon_url }}"
+									alt=""
+									width="24"
+									height="24"
+									border="0" />
+							</div>
+							{%endfor%}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

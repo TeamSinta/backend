@@ -500,6 +500,10 @@ paths:
   /api/company/departments:
     get:
       operationId: company_departments_list
+      description: |-
+        Manages company CRUD actions.
+        Utilizes CompanySerializer for data validation and serialization.
+        Requires user authentication
       tags:
       - company
       security:
@@ -516,6 +520,10 @@ paths:
           description: ''
     post:
       operationId: company_departments_create
+      description: |-
+        Manages company CRUD actions.
+        Utilizes CompanySerializer for data validation and serialization.
+        Requires user authentication
       tags:
       - company
       requestBody:
@@ -542,6 +550,10 @@ paths:
           description: ''
     put:
       operationId: company_departments_update
+      description: |-
+        Manages company CRUD actions.
+        Utilizes CompanySerializer for data validation and serialization.
+        Requires user authentication
       tags:
       - company
       requestBody:
@@ -568,6 +580,10 @@ paths:
           description: ''
     delete:
       operationId: company_departments_destroy
+      description: |-
+        Manages company CRUD actions.
+        Utilizes CompanySerializer for data validation and serialization.
+        Requires user authentication
       tags:
       - company
       security:
@@ -2732,6 +2748,7 @@ components:
           maxLength: 150
         last_name:
           type: string
+          nullable: true
           maxLength: 150
         profile_picture:
           type: string
@@ -2773,6 +2790,7 @@ components:
           readOnly: true
         last_name:
           type: string
+          nullable: true
           readOnly: true
         email:
           type: string
@@ -2997,6 +3015,7 @@ components:
           maxLength: 150
         last_name:
           type: string
+          nullable: true
           maxLength: 150
         profile_picture:
           type: string
@@ -3708,6 +3727,7 @@ components:
           readOnly: true
         last_name:
           type: string
+          nullable: true
           readOnly: true
         email:
           type: string

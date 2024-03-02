@@ -52,6 +52,6 @@ DATABASES = {
 }
 
 # Static and Media
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATIC_URL = "/staticfiles/static/"
-MEDIA_URL = "/staticfiles/media/"
+STATIC_ROOT = "vol/web/static"
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
