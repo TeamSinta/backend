@@ -1,11 +1,12 @@
 import json
 import os
-from datetime import timezone
+from datetime import *
 
 import boto3
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from june import analytics
 from rest_framework import generics, status
 from rest_framework.generics import CreateAPIView
@@ -15,6 +16,7 @@ from rest_framework.views import APIView
 
 from company.models import Company
 from interview_templates.models import Template, TemplateQuestion
+from question_response.models import InterviewerFeedback
 from user.models import UserCompanies
 from user.serializers import CustomUserSerializer
 
@@ -437,3 +439,27 @@ class DeleteInterviewRound(APIView):
         except InterviewRound.DoesNotExist:
             error_response = {"error": "InterviewRound not found"}
             return JsonResponse(error_response, status=404)
+
+
+class CheckInterviewRoundContentView(APIView):
+    """
+    Check if an interview round has recordings, notes, or ratings, and delete it if empty.
+    """
+
+    def get_object(self, pk):
+        try:
+            return InterviewRound.objects.get(pk=pk)
+        except InterviewRound.DoesNotExist:
+            error_response = {"error": "InterviewRound not found"}
+            return JsonResponse(error_response, status=404)
+
+    def get(self, request, round_id):
+        interview_round = self.get_object(round_id)
+        has_notes = InterviewerFeedback.objects.filter(interview_round_id=round_id).exists()
+        has_ratings = InterviewRoundQuestion.objects.filter(interview_round_id=round_id).exists()
+
+        if not (has_notes or has_ratings):
+            interview_round.delete()
+            return Response({"message": "Interview round deleted due to lack of content."})
+
+        return Response({"hasContent": True})

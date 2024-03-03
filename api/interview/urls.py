@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 from .views import (
+    CheckInterviewRoundContentView,
     CreateInterviewRound,
     InterviewRoundByRoomID,
     InterviewRoundGet,
@@ -53,5 +54,8 @@ urlpatterns = [
         "candidate/",
         views.CandidateList.as_view(),
         name="update_interview_round",
+    ),
+    path(
+        "check-content/<int:round_id>/", CheckInterviewRoundContentView.as_view(), name="check-interview-round-content"
     ),
 ]
