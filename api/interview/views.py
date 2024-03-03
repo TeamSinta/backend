@@ -434,3 +434,47 @@ class DeleteInterviewRound(APIView):
         except InterviewRound.DoesNotExist:
             error_response = {"error": "InterviewRound not found"}
             return JsonResponse(error_response, status=404)
+
+
+class GetTranscriptFromS3(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, interview_round_id):
+        try:
+            interview_round = InterviewRound.objects.get(id=interview_round_id, deleted_at__isnull=True)
+            s3 = boto3.client(
+                "s3",
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            )
+
+            directory_path = f"teamsinta/{interview_round.meeting_room_id}/"
+            bucket_name = "team-sinta"
+
+            # List objects in the directory
+            response = s3.list_objects_v2(Bucket=bucket_name, Prefix=directory_path)
+
+            if "Contents" in response:
+                transcript_file = None
+                # Loop through the files in the directory to find the transcript JSON file
+                for file in response["Contents"]:
+                    if file["Key"].endswith(".json"):
+                        transcript_file = file["Key"]
+                        break
+
+                if transcript_file:
+                    # Instead of generating a signed URL, download the file content
+                    obj = s3.get_object(Bucket=bucket_name, Key=transcript_file)
+                    # Read the file's content and parse it as JSON
+                    transcript_content = json.loads(obj["Body"].read())
+                    return JsonResponse(transcript_content, status=status.HTTP_200_OK, safe=False)
+                else:
+                    return JsonResponse({"error": "Transcript file not found"}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                return JsonResponse({"error": "No files found in the directory"}, status=status.HTTP_404_NOT_FOUND)
+        except InterviewRound.DoesNotExist:
+            return JsonResponse({"error": "InterviewRound not found"}, status=status.HTTP_404_NOT_FOUND)
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"error": "Error decoding the transcript file"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

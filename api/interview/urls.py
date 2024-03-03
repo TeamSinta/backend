@@ -54,4 +54,9 @@ urlpatterns = [
         views.CandidateList.as_view(),
         name="update_interview_round",
     ),
+    path(
+        "GetTranscriptFromS3/<int:interview_round_id>/",
+        views.GetTranscriptFromS3.as_view(),
+        name="TranscriptFromS3",
+    ),
 ]
