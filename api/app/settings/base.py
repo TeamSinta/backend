@@ -151,4 +151,6 @@ APPEND_SLASH = False
 
 # CORS
 CORS_ALLOW_CREDENTIALS = True
-CORS_EXPOSE_HEADERS = ["Content-Disposition"]
+CORS_EXPOSE_HEADERS = [
+    "Content-Disposition",
+]
