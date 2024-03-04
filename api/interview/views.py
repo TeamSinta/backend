@@ -1,11 +1,12 @@
 import json
 import os
-from datetime import timezone
+from datetime import *
 
 import boto3
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from june import analytics
 from rest_framework import generics, status
 from rest_framework.generics import CreateAPIView
@@ -14,7 +15,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from company.models import Company
-from interview_templates.models import TemplateQuestion
+from interview_templates.models import Template, TemplateQuestion
+from question_response.models import InterviewerFeedback
 from user.models import UserCompanies
 from user.serializers import CustomUserSerializer
 
@@ -155,7 +157,7 @@ class CreateInterviewRound(CreateAPIView):
                     "interviewer_id": interview_round.interviewer_id,
                     "meeting_room_id": interview_round.meeting_room_id,
                 }
-                user_id = self.request.user.id  # Assuming user ID is available in the request context
+                user_id = self.request.user.id
                 analytics.identify(user_id=str(user_id), traits={"email": self.request.user.email})
                 analytics.track(user_id=str(user_id), event="interview_started")
                 return Response(response, status=status.HTTP_201_CREATED)
@@ -170,32 +172,34 @@ class InterviewRoundGet(APIView):
 
     def get(self, request, interview_round_id):
         try:
-            # user_company = get_object_or_404(UserCompanies, user=self.request.user)
-            # company_id = user_company.company_id
-
             interview_round = InterviewRound.objects.get(
                 id=interview_round_id,
-                # company=company_id,
                 deleted_at__isnull=True,
             )
             candidate_name = interview_round.candidate.name if interview_round.candidate else None
             interviewer = CustomUserSerializer(interview_round.interviewer).data
             formatted_date = interview_round.created_at.strftime("%B %d, %Y")
 
+            template = Template.objects.filter(id=interview_round.template_id).first()
+            department_name = template.department.name if template and template.department else None
+            template_title = template.role_title if template else None
+
             response = {
                 "id": interview_round.id,
                 "title": interview_round.title,
                 "candidate_id": interview_round.candidate_id,
-                "candidate_name": candidate_name,  # Include candidate's name
-                "interviewer": interviewer,  # Include candidate's name
+                "candidate_name": candidate_name,
+                "interviewer": interviewer,
                 "template_id": interview_round.template_id,
+                "template_title": template_title,  # Include template's title
+                "department_name": department_name,  # Include department's name
                 "thumbnail_uri": interview_round.thumbnail.url if interview_round.thumbnail else None,
                 "created_at": formatted_date,
-                # "description": interview_round.description,
+                "decision": interview_round.decision_hire,
                 "room_id": interview_round.meeting_room_id,
                 "video_uri": interview_round.video_uri,
+                "icon": interview_round.icon,
             }
-
             return JsonResponse(response)
         except InterviewRound.DoesNotExist:
             error_response = {"error": "Interview round not found"}
@@ -244,6 +248,7 @@ class InterviewRoundListAll(APIView):
                     "created_at": interview_round.created_at,
                     "video_uri": interview_round.video_uri,
                     "thumbnail_uri": interview_round.thumbnail.url if interview_round.thumbnail else None,
+                    "icon": interview_round.icon,
                 }
             )
 
@@ -478,3 +483,27 @@ class GetTranscriptFromS3(APIView):
             return JsonResponse(
                 {"error": "Error decoding the transcript file"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class CheckInterviewRoundContentView(APIView):
+    """
+    Check if an interview round has recordings, notes, or ratings, and delete it if empty.
+    """
+
+    def get_object(self, pk):
+        try:
+            return InterviewRound.objects.get(pk=pk)
+        except InterviewRound.DoesNotExist:
+            error_response = {"error": "InterviewRound not found"}
+            return JsonResponse(error_response, status=404)
+
+    def get(self, request, round_id):
+        interview_round = self.get_object(round_id)
+        has_notes = InterviewerFeedback.objects.filter(interview_round_id=round_id).exists()
+        has_ratings = InterviewRoundQuestion.objects.filter(interview_round_id=round_id).exists()
+
+        if not (has_notes or has_ratings):
+            interview_round.delete()
+            return Response({"message": "Interview round deleted due to lack of content."})
+
+        return Response({"hasContent": True})

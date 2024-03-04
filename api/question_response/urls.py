@@ -1,6 +1,10 @@
 from django.urls import path
 
-from .views import InterviewerFeedbackDetailView, InterviewerFeedbackListCreateView, QuestionSummarizedAnswerView
+from .views import (
+    InterviewerFeedbackDetailView,
+    InterviewerFeedbackListCreateView,
+    QuestionSummarizedAnswerView,
+)
 
 urlpatterns = [
     # General Topics
@@ -18,5 +22,10 @@ urlpatterns = [
         "interviewer-feedback/<int:pk>/",
         InterviewerFeedbackDetailView.as_view(),
         name="interviewer-feedback-detail",
+    ),
+    path(
+        "interviewer-feedback/<int:answer_id>/update-answers",
+        QuestionSummarizedAnswerView.as_view(),
+        name="interviewer-feedback-answers",
     ),
 ]
