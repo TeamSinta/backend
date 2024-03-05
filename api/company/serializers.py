@@ -51,7 +51,7 @@ class DepartmentMembersSerializer(serializers.Serializer):
 
 
 class AddDepartmentMembersSerializer(serializers.Serializer):
-    invitees = serializers.ListField(child=serializers.IntegerField(), allow_empty=False)
+    invitees = serializers.ListField(child=serializers.CharField(), allow_empty=False)
 
     def validate_invitees(self, value):
         """Checks invitee ID to see if they exist in the DB."""
