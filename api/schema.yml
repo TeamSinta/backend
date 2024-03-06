@@ -21,13 +21,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/LoginRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/LoginRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/LoginRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -57,13 +57,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/LoginRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/LoginRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/LoginRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -109,7 +109,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/LoginRequest'
             examples:
               MockLogin:
                 value: {}
@@ -118,10 +118,10 @@ paths:
                   creating or logging in as Mock-user
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/LoginRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Login'
+              $ref: '#/components/schemas/LoginRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -155,13 +155,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/TokenRefreshRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/TokenRefreshRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenRefresh'
+              $ref: '#/components/schemas/TokenRefreshRequest'
         required: true
       responses:
         '200':
@@ -182,21 +182,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenVerify'
+              $ref: '#/components/schemas/TokenVerifyRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenVerify'
+              $ref: '#/components/schemas/TokenVerifyRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TokenVerify'
+              $ref: '#/components/schemas/TokenVerifyRequest'
         required: true
       responses:
         '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TokenVerify'
-          description: ''
+          description: No response body
   /api/company/companies/:
     get:
       operationId: company_companies_list
@@ -230,13 +226,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Company'
+              $ref: '#/components/schemas/CompanyRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Company'
+              $ref: '#/components/schemas/CompanyRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Company'
+              $ref: '#/components/schemas/CompanyRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -321,7 +317,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Company'
+              $ref: '#/components/schemas/CompanyRequest'
             examples:
               UpdateCompany:
                 value:
@@ -330,10 +326,10 @@ paths:
                 description: Request to update a company's name.
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Company'
+              $ref: '#/components/schemas/CompanyRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Company'
+              $ref: '#/components/schemas/CompanyRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -370,13 +366,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedCompany'
+              $ref: '#/components/schemas/PatchedCompanyRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedCompany'
+              $ref: '#/components/schemas/PatchedCompanyRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedCompany'
+              $ref: '#/components/schemas/PatchedCompanyRequest'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -440,17 +436,6 @@ paths:
       description: Endpoint to add members to a department.
       tags:
       - company
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DepartmentMembers'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DepartmentMembers'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DepartmentMembers'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -465,17 +450,6 @@ paths:
       operationId: company_department_members_update
       tags:
       - company
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DepartmentMembers'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/DepartmentMembers'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/DepartmentMembers'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -530,13 +504,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Department'
+              $ref: '#/components/schemas/DepartmentRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Department'
+              $ref: '#/components/schemas/DepartmentRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Department'
+              $ref: '#/components/schemas/DepartmentRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -560,13 +534,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Department'
+              $ref: '#/components/schemas/DepartmentRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Department'
+              $ref: '#/components/schemas/DepartmentRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Department'
+              $ref: '#/components/schemas/DepartmentRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -613,17 +587,6 @@ paths:
       operationId: company_members_create
       tags:
       - company
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserCompany'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserCompany'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserCompany'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -638,17 +601,6 @@ paths:
       operationId: company_members_update
       tags:
       - company
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserCompany'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserCompany'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserCompany'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -669,6 +621,44 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/export_to_pdf:
+    get:
+      operationId: export_to_pdf_retrieve
+      description: |-
+        Endpoint for exporting interview round to PDF
+        Requires authentication
+      parameters:
+      - in: query
+        name: interview_round_id
+        schema:
+          type: integer
+        description: ID of the interview round to export
+      tags:
+      - export_to_pdf
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: PDF file
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: ''
   /api/files/:
     get:
       operationId: files_list
@@ -694,13 +684,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/File'
+              $ref: '#/components/schemas/FileRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/File'
+              $ref: '#/components/schemas/FileRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/File'
+              $ref: '#/components/schemas/FileRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -858,13 +848,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Candidate'
+              $ref: '#/components/schemas/CandidateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Candidate'
+              $ref: '#/components/schemas/CandidateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Candidate'
+              $ref: '#/components/schemas/CandidateRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -939,13 +929,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InterviewRoundQuestion'
+              $ref: '#/components/schemas/InterviewRoundQuestionRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/InterviewRoundQuestion'
+              $ref: '#/components/schemas/InterviewRoundQuestionRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/InterviewRoundQuestion'
+              $ref: '#/components/schemas/InterviewRoundQuestionRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -1003,13 +993,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Question'
+              $ref: '#/components/schemas/QuestionRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Question'
+              $ref: '#/components/schemas/QuestionRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Question'
+              $ref: '#/components/schemas/QuestionRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -1066,13 +1056,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Question'
+              $ref: '#/components/schemas/QuestionRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Question'
+              $ref: '#/components/schemas/QuestionRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Question'
+              $ref: '#/components/schemas/QuestionRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -1098,13 +1088,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedQuestion'
+              $ref: '#/components/schemas/PatchedQuestionRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedQuestion'
+              $ref: '#/components/schemas/PatchedQuestionRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedQuestion'
+              $ref: '#/components/schemas/PatchedQuestionRequest'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1156,13 +1146,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/QuestionBank'
+              $ref: '#/components/schemas/QuestionBankRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/QuestionBank'
+              $ref: '#/components/schemas/QuestionBankRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/QuestionBank'
+              $ref: '#/components/schemas/QuestionBankRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -1219,13 +1209,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/QuestionBank'
+              $ref: '#/components/schemas/QuestionBankRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/QuestionBank'
+              $ref: '#/components/schemas/QuestionBankRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/QuestionBank'
+              $ref: '#/components/schemas/QuestionBankRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -1251,13 +1241,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedQuestionBank'
+              $ref: '#/components/schemas/PatchedQuestionBankRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedQuestionBank'
+              $ref: '#/components/schemas/PatchedQuestionBankRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedQuestionBank'
+              $ref: '#/components/schemas/PatchedQuestionBankRequest'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1384,13 +1374,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/QuestionBankUpdate'
+              $ref: '#/components/schemas/QuestionBankUpdateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/QuestionBankUpdate'
+              $ref: '#/components/schemas/QuestionBankUpdateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/QuestionBankUpdate'
+              $ref: '#/components/schemas/QuestionBankUpdateRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -1416,13 +1406,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedQuestionBankUpdate'
+              $ref: '#/components/schemas/PatchedQuestionBankUpdateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedQuestionBankUpdate'
+              $ref: '#/components/schemas/PatchedQuestionBankUpdateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedQuestionBankUpdate'
+              $ref: '#/components/schemas/PatchedQuestionBankUpdateRequest'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -1474,13 +1464,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InterviewerFeedback'
+              $ref: '#/components/schemas/InterviewerFeedbackRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/InterviewerFeedback'
+              $ref: '#/components/schemas/InterviewerFeedbackRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/InterviewerFeedback'
+              $ref: '#/components/schemas/InterviewerFeedbackRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -1529,13 +1519,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InterviewerFeedback'
+              $ref: '#/components/schemas/InterviewerFeedbackRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/InterviewerFeedback'
+              $ref: '#/components/schemas/InterviewerFeedbackRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/InterviewerFeedback'
+              $ref: '#/components/schemas/InterviewerFeedbackRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -1879,13 +1869,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TemplateQuestion'
+              $ref: '#/components/schemas/TemplateQuestionRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TemplateQuestion'
+              $ref: '#/components/schemas/TemplateQuestionRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TemplateQuestion'
+              $ref: '#/components/schemas/TemplateQuestionRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -1932,13 +1922,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TemplateQuestion'
+              $ref: '#/components/schemas/TemplateQuestionRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TemplateQuestion'
+              $ref: '#/components/schemas/TemplateQuestionRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TemplateQuestion'
+              $ref: '#/components/schemas/TemplateQuestionRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -1964,13 +1954,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedTemplateQuestion'
+              $ref: '#/components/schemas/PatchedTemplateQuestionRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedTemplateQuestion'
+              $ref: '#/components/schemas/PatchedTemplateQuestionRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedTemplateQuestion'
+              $ref: '#/components/schemas/PatchedTemplateQuestionRequest'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -2022,13 +2012,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Templates'
+              $ref: '#/components/schemas/TemplatesRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Templates'
+              $ref: '#/components/schemas/TemplatesRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Templates'
+              $ref: '#/components/schemas/TemplatesRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -2075,13 +2065,13 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Templates'
+              $ref: '#/components/schemas/TemplatesRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/Templates'
+              $ref: '#/components/schemas/TemplatesRequest'
           application/json:
             schema:
-              $ref: '#/components/schemas/Templates'
+              $ref: '#/components/schemas/TemplatesRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -2107,13 +2097,13 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedTemplates'
+              $ref: '#/components/schemas/PatchedTemplatesRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedTemplates'
+              $ref: '#/components/schemas/PatchedTemplatesRequest'
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedTemplates'
+              $ref: '#/components/schemas/PatchedTemplatesRequest'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -2165,13 +2155,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TemplateTopic'
+              $ref: '#/components/schemas/TemplateTopicRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TemplateTopic'
+              $ref: '#/components/schemas/TemplateTopicRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TemplateTopic'
+              $ref: '#/components/schemas/TemplateTopicRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -2218,13 +2208,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TemplateTopic'
+              $ref: '#/components/schemas/TemplateTopicRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TemplateTopic'
+              $ref: '#/components/schemas/TemplateTopicRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/TemplateTopic'
+              $ref: '#/components/schemas/TemplateTopicRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -2250,13 +2240,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedTemplateTopic'
+              $ref: '#/components/schemas/PatchedTemplateTopicRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedTemplateTopic'
+              $ref: '#/components/schemas/PatchedTemplateTopicRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedTemplateTopic'
+              $ref: '#/components/schemas/PatchedTemplateTopicRequest'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -2413,13 +2403,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomUserDetails'
+              $ref: '#/components/schemas/CustomUserDetailsRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/CustomUserDetails'
+              $ref: '#/components/schemas/CustomUserDetailsRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CustomUserDetails'
+              $ref: '#/components/schemas/CustomUserDetailsRequest'
         required: true
       security:
       - jwtHeaderAuth: []
@@ -2439,13 +2429,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedCustomUserDetails'
+              $ref: '#/components/schemas/PatchedCustomUserDetailsRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedCustomUserDetails'
+              $ref: '#/components/schemas/PatchedCustomUserDetailsRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedCustomUserDetails'
+              $ref: '#/components/schemas/PatchedCustomUserDetailsRequest'
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -2696,6 +2686,36 @@ components:
       - name
       - updated_at
       - username
+    CandidateRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 200
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        company:
+          type: string
+          minLength: 1
+          nullable: true
+        user:
+          type: string
+          minLength: 1
+          nullable: true
+        deleted_by:
+          type: string
+          minLength: 1
+          nullable: true
+      required:
+      - name
+      - username
     Company:
       type: object
       properties:
@@ -2724,6 +2744,15 @@ components:
       - id
       - name
       - updated_at
+    CompanyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+      required:
+      - name
     CustomUserDetails:
       type: object
       description: User model w/o password
@@ -2761,6 +2790,37 @@ components:
       required:
       - companies
       - email
+      - pk
+      - username
+    CustomUserDetailsRequest:
+      type: object
+      description: User model w/o password
+      properties:
+        pk:
+          type: string
+          minLength: 1
+          title: Id
+          maxLength: 200
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          nullable: true
+          maxLength: 150
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+      required:
       - pk
       - username
     Department:
@@ -2813,6 +2873,14 @@ components:
       - profile_picture
       - role
       - username
+    DepartmentRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+      required:
+      - title
     DifficultyEnum:
       enum:
       - 1
@@ -2824,6 +2892,13 @@ components:
         * `2` - Medium
         * `3` - High
     Error:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    ErrorResponse:
       type: object
       properties:
         detail:
@@ -2861,6 +2936,18 @@ components:
       - id
       - updated_at
       - uploaded_at
+    FileRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - file
     InterviewRoundQuestion:
       type: object
       properties:
@@ -2902,6 +2989,36 @@ components:
       - interview_round
       - question
       - updated_at
+    InterviewRoundQuestionRequest:
+      type: object
+      properties:
+        rating:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        interview_round:
+          type: integer
+        question:
+          type: integer
+        company:
+          type: string
+          minLength: 1
+          nullable: true
+        user:
+          type: string
+          minLength: 1
+          nullable: true
+        deleted_by:
+          type: string
+          minLength: 1
+          nullable: true
+      required:
+      - interview_round
+      - question
     InterviewerFeedback:
       type: object
       properties:
@@ -2954,6 +3071,49 @@ components:
       - question_text
       - updated_at
       - user
+    InterviewerFeedbackRequest:
+      type: object
+      properties:
+        note:
+          type: string
+          nullable: true
+          minLength: 1
+        reaction:
+          nullable: true
+          minimum: -2147483648
+          maximum: 2147483647
+          oneOf:
+          - $ref: '#/components/schemas/ReactionEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        time:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        user:
+          type: string
+          minLength: 1
+        interview_round:
+          type: integer
+        template_question:
+          type: integer
+          nullable: true
+        company:
+          type: string
+          minLength: 1
+          nullable: true
+        deleted_by:
+          type: string
+          minLength: 1
+          nullable: true
+      required:
+      - interview_round
+      - user
     Login:
       type: object
       properties:
@@ -2966,50 +3126,45 @@ components:
           type: string
       required:
       - password
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 1
+      required:
+      - password
     NullEnum:
       enum:
       - null
-    PatchedCompany:
+    PatchedCompanyRequest:
       type: object
       properties:
-        id:
-          type: string
-          readOnly: true
         name:
           type: string
+          minLength: 1
           maxLength: 200
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        deleted_at:
-          type: string
-          format: date-time
-          readOnly: true
-          nullable: true
-    PatchedCustomUserDetails:
+    PatchedCustomUserDetailsRequest:
       type: object
       description: User model w/o password
       properties:
         pk:
           type: string
+          minLength: 1
           title: Id
           maxLength: 200
         username:
           type: string
+          minLength: 1
           description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
             only.
           pattern: ^[\w.@+-]+$
           maxLength: 150
-        email:
-          type: string
-          format: email
-          readOnly: true
-          title: Email address
         first_name:
           type: string
           maxLength: 150
@@ -3022,25 +3177,77 @@ components:
           format: uri
           nullable: true
           maxLength: 200
-        companies:
-          type: string
-          readOnly: true
-    PatchedQuestion:
+    PatchedQuestionBankRequest:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 1
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        company:
+          type: string
+          minLength: 1
+          nullable: true
+        user:
+          type: string
+          minLength: 1
+          nullable: true
+        deleted_by:
+          type: string
+          minLength: 1
+          nullable: true
+    PatchedQuestionBankUpdateRequest:
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            type: integer
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 1
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        company:
+          type: string
+          minLength: 1
+          nullable: true
+        user:
+          type: string
+          minLength: 1
+          nullable: true
+        deleted_by:
+          type: string
+          minLength: 1
+          nullable: true
+    PatchedQuestionRequest:
+      type: object
+      properties:
         difficulty:
           $ref: '#/components/schemas/DifficultyEnum'
         question_text:
           type: string
+          minLength: 1
           maxLength: 200
         embedding:
           type: string
           nullable: true
         guidelines:
           type: string
+          minLength: 1
         reply_time:
           type: integer
           maximum: 2147483647
@@ -3056,114 +3263,25 @@ components:
           oneOf:
           - $ref: '#/components/schemas/ReviewEnum'
           - $ref: '#/components/schemas/NullEnum'
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
         deleted_at:
           type: string
           format: date-time
           nullable: true
         company:
           type: string
+          minLength: 1
           nullable: true
         user:
           type: string
+          minLength: 1
           nullable: true
         deleted_by:
           type: string
+          minLength: 1
           nullable: true
-    PatchedQuestionBank:
+    PatchedTemplateQuestionRequest:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
-        questions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Question'
-          readOnly: true
-        title:
-          type: string
-          maxLength: 255
-        description:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        deleted_at:
-          type: string
-          format: date-time
-          nullable: true
-        company:
-          type: string
-          nullable: true
-        user:
-          type: string
-          nullable: true
-        deleted_by:
-          type: string
-          nullable: true
-    PatchedQuestionBankUpdate:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        questions:
-          type: array
-          items:
-            type: integer
-        title:
-          type: string
-          maxLength: 255
-        description:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        deleted_at:
-          type: string
-          format: date-time
-          nullable: true
-        company:
-          type: string
-          nullable: true
-        user:
-          type: string
-          nullable: true
-        deleted_by:
-          type: string
-          nullable: true
-    PatchedTemplateQuestion:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
         deleted_at:
           type: string
           format: date-time
@@ -3176,15 +3294,14 @@ components:
           type: integer
         deleted_by:
           type: string
+          minLength: 1
           nullable: true
-    PatchedTemplateTopic:
+    PatchedTemplateTopicRequest:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
         topics_text:
           type: string
+          minLength: 1
           maxLength: 200
         time:
           allOf:
@@ -3194,10 +3311,6 @@ components:
         created_at:
           type: string
           format: date-time
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
         deleted_at:
           type: string
           format: date-time
@@ -3206,47 +3319,48 @@ components:
           type: integer
         company:
           type: string
+          minLength: 1
         user:
           type: string
+          minLength: 1
           nullable: true
         deleted_by:
           type: string
+          minLength: 1
           nullable: true
-    PatchedTemplates:
+    PatchedTemplatesRequest:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
-        department:
-          type: string
-          readOnly: true
         department_id:
           type: integer
           writeOnly: true
           nullable: true
         company:
           type: string
+          minLength: 1
           writeOnly: true
         interviewers:
           type: array
           items:
             type: string
+            minLength: 1
             writeOnly: true
           writeOnly: true
         role_title:
           type: string
+          minLength: 1
           maxLength: 255
         location:
           type: string
           nullable: true
+          minLength: 1
           maxLength: 255
         description:
           type: string
           nullable: true
         image:
           type: string
-          format: uri
+          format: binary
           nullable: true
         deleted_at:
           type: string
@@ -3254,9 +3368,11 @@ components:
           nullable: true
         user:
           type: string
+          minLength: 1
           nullable: true
         deleted_by:
           type: string
+          minLength: 1
           nullable: true
     Question:
       type: object
@@ -3362,6 +3478,35 @@ components:
       - questions
       - title
       - updated_at
+    QuestionBankRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 1
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        company:
+          type: string
+          minLength: 1
+          nullable: true
+        user:
+          type: string
+          minLength: 1
+          nullable: true
+        deleted_by:
+          type: string
+          minLength: 1
+          nullable: true
+      required:
+      - description
+      - title
     QuestionBankUpdate:
       type: object
       properties:
@@ -3404,6 +3549,90 @@ components:
       - id
       - title
       - updated_at
+    QuestionBankUpdateRequest:
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            type: integer
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 1
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        company:
+          type: string
+          minLength: 1
+          nullable: true
+        user:
+          type: string
+          minLength: 1
+          nullable: true
+        deleted_by:
+          type: string
+          minLength: 1
+          nullable: true
+      required:
+      - description
+      - title
+    QuestionRequest:
+      type: object
+      properties:
+        difficulty:
+          $ref: '#/components/schemas/DifficultyEnum'
+        question_text:
+          type: string
+          minLength: 1
+          maxLength: 200
+        embedding:
+          type: string
+          nullable: true
+        guidelines:
+          type: string
+          minLength: 1
+        reply_time:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        competency:
+          type: string
+          nullable: true
+          maxLength: 200
+        review:
+          nullable: true
+          minimum: -2147483648
+          maximum: 2147483647
+          oneOf:
+          - $ref: '#/components/schemas/ReviewEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        company:
+          type: string
+          minLength: 1
+          nullable: true
+        user:
+          type: string
+          minLength: 1
+          nullable: true
+        deleted_by:
+          type: string
+          minLength: 1
+          nullable: true
+      required:
+      - difficulty
+      - guidelines
+      - question_text
+      - reply_time
     ReactionEnum:
       enum:
       - 1
@@ -3474,6 +3703,27 @@ components:
       - template_id
       - topic
       - updated_at
+    TemplateQuestionRequest:
+      type: object
+      properties:
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        template_id:
+          type: integer
+        topic:
+          type: integer
+        question:
+          type: integer
+        deleted_by:
+          type: string
+          minLength: 1
+          nullable: true
+      required:
+      - question
+      - template_id
+      - topic
     TemplateTopic:
       type: object
       properties:
@@ -3515,6 +3765,42 @@ components:
       - template_id
       - topics_text
       - updated_at
+    TemplateTopicRequest:
+      type: object
+      properties:
+        topics_text:
+          type: string
+          minLength: 1
+          maxLength: 200
+        time:
+          allOf:
+          - $ref: '#/components/schemas/TimeEnum'
+          minimum: 0
+          maximum: 32767
+        created_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        template_id:
+          type: integer
+        company:
+          type: string
+          minLength: 1
+        user:
+          type: string
+          minLength: 1
+          nullable: true
+        deleted_by:
+          type: string
+          minLength: 1
+          nullable: true
+      required:
+      - company
+      - template_id
+      - topics_text
     Templates:
       type: object
       properties:
@@ -3524,19 +3810,6 @@ components:
         department:
           type: string
           readOnly: true
-        department_id:
-          type: integer
-          writeOnly: true
-          nullable: true
-        company:
-          type: string
-          writeOnly: true
-        interviewers:
-          type: array
-          items:
-            type: string
-            writeOnly: true
-          writeOnly: true
         role_title:
           type: string
           maxLength: 255
@@ -3562,9 +3835,57 @@ components:
           type: string
           nullable: true
       required:
-      - company
       - department
       - id
+      - role_title
+    TemplatesRequest:
+      type: object
+      properties:
+        department_id:
+          type: integer
+          writeOnly: true
+          nullable: true
+        company:
+          type: string
+          minLength: 1
+          writeOnly: true
+        interviewers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            writeOnly: true
+          writeOnly: true
+        role_title:
+          type: string
+          minLength: 1
+          maxLength: 255
+        location:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        image:
+          type: string
+          format: binary
+          nullable: true
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+        user:
+          type: string
+          minLength: 1
+          nullable: true
+        deleted_by:
+          type: string
+          minLength: 1
+          nullable: true
+      required:
+      - company
       - interviewers
       - role_title
     TimeEnum:
@@ -3697,18 +4018,24 @@ components:
         access:
           type: string
           readOnly: true
+      required:
+      - access
+    TokenRefreshRequest:
+      type: object
+      properties:
         refresh:
           type: string
           writeOnly: true
+          minLength: 1
       required:
-      - access
       - refresh
-    TokenVerify:
+    TokenVerifyRequest:
       type: object
       properties:
         token:
           type: string
           writeOnly: true
+          minLength: 1
       required:
       - token
     UserCompany:
