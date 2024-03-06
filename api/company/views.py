@@ -394,14 +394,11 @@ class DepartmentView(viewsets.ModelViewSet):
         print("Checking user permissions for: ", user)
         if company_id:
             company = get_object_or_404(Company, id=company_id)
-            print("Found company: ", company)
             # Check if the user is a member of the requested company
             user_company = UserCompanies.objects.filter(user=user, company=company).first()
             if user_company:
-                print("User is a member of company.. checking role")
                 # Check if the user's role is either "admin", "manager" or "member"
                 role_name = user_company.role.name
-                print("Role: ", role_name)
                 return role_name in ["admin", "manager", "member"]
 
         return False
