@@ -10,6 +10,7 @@ from interview.models import InterviewRound, InterviewRoundQuestion
 from openai_helper.utils import summarize_interview
 
 from .models import Summary
+from .serializers import SummaryDescriptionSerializer
 
 
 def get_qa_pairs(interview_round_id):
@@ -42,6 +43,7 @@ class GenerateSummaryView(APIView):
             "description": summary.description,
             "faq": summary.qa_pairs,
             "interview_round_id": interview_round_id,
+            "summary_id": summary.id,
         }
 
         return Response({"data": response_data}, status=status.HTTP_200_OK)
@@ -73,3 +75,15 @@ class GenerateSummaryView(APIView):
         summary = Summary.objects.filter(interview_round=interview).latest("id")
 
         return self._generate_response(interview_round_id, summary)
+
+
+class UpdateSummaryDescriptionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, summary_id):
+        summary = get_object_or_404(Summary, pk=summary_id)
+        serializer = SummaryDescriptionSerializer(summary, data=request.data, partial=True)  # Assuming partial update
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_BAD_REQUEST)

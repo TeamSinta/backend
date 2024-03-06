@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 from .views import (
+    CheckInterviewRoundContentView,
     CreateInterviewRound,
     InterviewRoundByRoomID,
     InterviewRoundGet,
@@ -53,5 +54,13 @@ urlpatterns = [
         "candidate/",
         views.CandidateList.as_view(),
         name="update_interview_round",
+    ),
+    path(
+        "GetTranscriptFromS3/<int:interview_round_id>/",
+        views.GetTranscriptFromS3.as_view(),
+        name="TranscriptFromS3",
+    ),
+    path(
+        "check-content/<int:round_id>/", CheckInterviewRoundContentView.as_view(), name="check-interview-round-content"
     ),
 ]
