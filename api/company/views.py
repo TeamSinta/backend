@@ -15,11 +15,12 @@ from workos import client
 from app.permissions import isAdminRole
 from app.serializers import ErrorSerializer
 from user.models import CustomUser, Role, UserCompanies, UserDepartments
-from user.serializers import UserCompanySerializer
 
 from .models import Company, Department
 from .serializers import (
+    AddCompanyMemberActionSerializer,
     AddDepartmentMembersSerializer,
+    CompanyMemberSerializer,
     CompanySerializer,
     DepartmentMembersSerializer,
     DepartmentSerializer,
@@ -70,6 +71,7 @@ class CompanyView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = CompanySerializer
 
+    # Only return companies that are not soft-deleted.
     def get_queryset(self):
         return Company.objects.filter(deleted_at__isnull=True)
 
@@ -188,7 +190,7 @@ class CompanyView(viewsets.ModelViewSet):
         company = get_object_or_404(Company, id=kwargs.get("pk"))
         company.deleted_at = timezone.now()
 
-        # WorkOS delete logic - working.
+        # WorkOS delete logic - works, but not used yet.
         # try:
         #     client.organizations.delete_organization(organization=company.id)
         # except Exception as e:
@@ -200,22 +202,15 @@ class CompanyView(viewsets.ModelViewSet):
 
 class CompanyMembers(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    serializer_class = UserCompanySerializer
+
+    def get_serializer_class(self):
+        if self.action in ["create", "update", "partial_update", "destroy"]:
+            return AddCompanyMemberActionSerializer
+        return CompanyMemberSerializer
 
     def get_queryset(self):
-        # This endpoint fetches either company or department members depending on
-        # The presence of the 'department' query param.
-
         company_id = self.request.GET.get("company", None)
         sort_by = self.request.GET.get("sort_by", None)
-        user_from_jwt = self.request.user
-
-        # if not check_permissions_and_existence(user_from_jwt, company_id=company_id):
-        #     return Response(
-        #         {"detail": "User is not a member of the requested company"},
-        #         status=status.HTTP_403_FORBIDDEN,
-        #     )
-        # REMOVE THIS FOR NEW PERMISSON LOGIC
 
         result = []
 
@@ -230,13 +225,12 @@ class CompanyMembers(viewsets.ModelViewSet):
         else:
             return result
 
-        serializer = self.get_serializer(result, many=True)
-        return Response(serializer.data)
-
     def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        inviteeId = serializer.validated_data["invitee"]
         company_id = self.request.GET.get("company", None)
         inviter = self.request.user
-        inviteeId = self.request.GET.get("invitee", None)
 
         if not check_permissions_and_existence(inviter, company_id=company_id):
             return Response(
@@ -249,18 +243,13 @@ class CompanyMembers(viewsets.ModelViewSet):
         company = get_object_or_404(Company, id=company_id)
 
         # Check that user is not already a member, and if not, try adding.
-        if UserCompanies.objects.filter(user=invitee, company__id=company_id).exists():
-            return Response(
-                {"detail": "User is already a member of this company"},
-                status=status.HTTP_409_CONFLICT,
-            )
-        else:
-            invitee, created = UserCompanies.objects.get_or_create(user=invitee, company=company)
-            if not created:
-                return Response({"detail": "Failed to add user to company"})
+        invitee, created = UserCompanies.objects.get_or_create(user=invitee, company=company)
+        if not created:
+            return Response({"detail": "User is already a member of this company"}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"detail": "User added to company."}, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
+        # -- cant use this method for now, as the usercompanies does not have any soft delete yet -- #
         company_id = request.GET.get("company", None)
         user = request.user
         member_id = self.request.GET.get("member", None)
@@ -278,8 +267,6 @@ class CompanyMembers(viewsets.ModelViewSet):
                 {"detail": "User is not a member of this company."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-
-        # -- cant use this method for now, as the usercompanies does not have any soft delete yet -- #
         # perform_destroy(self, user_company_queryset)
 
         try:

@@ -120,8 +120,6 @@ class ExportToPdf(APIView):
             return Response({"error": "Valid Interview round ID not provided"}, status=status.HTTP_404_NOT_FOUND)
 
         interview_round = get_object_or_404(InterviewRound, id=interview_round_id)
-        print("Interviewer:", interview_round.interviewer)
-        print("Requester", self.request.user)
         if interview_round.interviewer != self.request.user:
             return Response({"error": "You do not have access to this file"}, status=status.HTTP_403_FORBIDDEN)
 

@@ -20,6 +20,42 @@ class CompanySerializer(serializers.ModelSerializer):
         return value
 
 
+class CompanyMemberSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField(source="user.id")
+    username = serializers.ReadOnlyField(source="user.username")
+    first_name = serializers.ReadOnlyField(source="user.first_name")
+    last_name = serializers.ReadOnlyField(source="user.last_name")
+    email = serializers.ReadOnlyField(source="user.email")
+    role = serializers.ReadOnlyField(source="role.name")
+    profile_picture = serializers.ReadOnlyField(source="user.profile_picture")
+
+    class Meta:
+        model = UserDepartments
+        fields = [
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "profile_picture",
+            "role",
+        ]
+
+
+class AddCompanyMemberActionSerializer(serializers.Serializer):
+    invitee = serializers.CharField()
+
+    def validate_invitee(self, value):
+        """Checks invitee ID to see if they exist in the DB."""
+        print(value)
+
+        try:
+            CustomUser.objects.get(id=value)
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError("A user with that ID does not exist.")
+        return value
+
+
 class DepartmentSerializer(serializers.ModelSerializer):
     title = serializers.CharField(required=True)
 
@@ -59,7 +95,7 @@ class AddDepartmentMembersSerializer(serializers.Serializer):
             try:
                 CustomUser.objects.get(id=user_id)
             except ObjectDoesNotExist:
-                raise serializers.ValidationError(f"User with ID {user_id} does not exist.")
+                raise serializers.ValidationError("User with that id does not exist.")
 
         """ Checks for duplicates in the invitee ID list """
         if len(value) != len(set(value)):
@@ -77,7 +113,7 @@ class RemoveDepartmentMembersSerializer(serializers.Serializer):
             try:
                 CustomUser.objects.get(id=user_id)
             except ObjectDoesNotExist:
-                raise serializers.ValidationError(f"User with ID {user_id} does not exist.")
+                raise serializers.ValidationError("User with that id does not exist.")
 
         """ Checks for duplicates in the member ID list """
         if len(value) != len(set(value)):

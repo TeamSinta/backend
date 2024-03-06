@@ -607,7 +607,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UserCompany'
+                  $ref: '#/components/schemas/CompanyMember'
           description: ''
     post:
       operationId: company_members_create
@@ -617,13 +617,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserCompany'
+              $ref: '#/components/schemas/AddCompanyMemberAction'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/UserCompany'
+              $ref: '#/components/schemas/AddCompanyMemberAction'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UserCompany'
+              $ref: '#/components/schemas/AddCompanyMemberAction'
+        required: true
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -632,7 +633,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserCompany'
+                $ref: '#/components/schemas/AddCompanyMemberAction'
           description: ''
     put:
       operationId: company_members_update
@@ -642,13 +643,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserCompany'
+              $ref: '#/components/schemas/AddCompanyMemberAction'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/UserCompany'
+              $ref: '#/components/schemas/AddCompanyMemberAction'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UserCompany'
+              $ref: '#/components/schemas/AddCompanyMemberAction'
+        required: true
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -657,7 +659,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserCompany'
+                $ref: '#/components/schemas/AddCompanyMemberAction'
           description: ''
     delete:
       operationId: company_members_destroy
@@ -668,6 +670,17 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+  /api/export_to_pdf:
+    get:
+      operationId: export_to_pdf_retrieve
+      tags:
+      - export_to_pdf
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
           description: No response body
   /api/files/:
     get:
@@ -833,6 +846,23 @@ paths:
       responses:
         '200':
           description: No response body
+  /api/interview-rounds/GetTranscriptFromS3/{interview_round_id}/:
+    get:
+      operationId: interview_rounds_GetTranscriptFromS3_retrieve
+      parameters:
+      - in: path
+        name: interview_round_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - interview-rounds
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
   /api/interview-rounds/candidate/:
     get:
       operationId: interview_rounds_candidate_list
@@ -885,6 +915,25 @@ paths:
       - jwtCookieAuth: []
       responses:
         '204':
+          description: No response body
+  /api/interview-rounds/check-content/{round_id}/:
+    get:
+      operationId: interview_rounds_check_content_retrieve
+      description: Check if an interview round has recordings, notes, or ratings,
+        and delete it if empty.
+      parameters:
+      - in: path
+        name: round_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - interview-rounds
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
           description: No response body
   /api/interview-rounds/create/:
     post:
@@ -1492,6 +1541,55 @@ paths:
               schema:
                 $ref: '#/components/schemas/InterviewerFeedback'
           description: ''
+  /api/question_response/interviewer-feedback/{answer_id}/update-answers:
+    get:
+      operationId: question_response_interviewer_feedback_update_answers_retrieve
+      parameters:
+      - in: path
+        name: answer_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question_response
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: question_response_interviewer_feedback_update_answers_create
+      parameters:
+      - in: path
+        name: answer_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question_response
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: question_response_interviewer_feedback_update_answers_partial_update
+      parameters:
+      - in: path
+        name: answer_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question_response
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
   /api/question_response/interviewer-feedback/{id}/:
     get:
       operationId: question_response_interviewer_feedback_list_2
@@ -1574,6 +1672,39 @@ paths:
         required: true
       tags:
       - question_response
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: question_response_question_summarized_answers_partial_update
+      parameters:
+      - in: path
+        name: interview_round_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question_response
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/summary/{summary_id}/update-description/:
+    patch:
+      operationId: summary_update_description_partial_update
+      parameters:
+      - in: path
+        name: summary_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - summary
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -2657,6 +2788,13 @@ paths:
           description: No response body
 components:
   schemas:
+    AddCompanyMemberAction:
+      type: object
+      properties:
+        invitee:
+          type: string
+      required:
+      - invitee
     Candidate:
       type: object
       properties:
@@ -2668,6 +2806,10 @@ components:
           maxLength: 200
         name:
           type: string
+          maxLength: 200
+        email:
+          type: string
+          nullable: true
           maxLength: 200
         created_at:
           type: string
@@ -2724,6 +2866,45 @@ components:
       - id
       - name
       - updated_at
+    CompanyMember:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        first_name:
+          type: string
+          readOnly: true
+        last_name:
+          type: string
+          nullable: true
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          readOnly: true
+        role:
+          type: string
+          readOnly: true
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+          readOnly: true
+      required:
+      - email
+      - first_name
+      - id
+      - last_name
+      - profile_picture
+      - role
+      - username
     CustomUserDetails:
       type: object
       description: User model w/o password
@@ -3237,10 +3418,6 @@ components:
         role_title:
           type: string
           maxLength: 255
-        location:
-          type: string
-          nullable: true
-          maxLength: 255
         description:
           type: string
           nullable: true
@@ -3540,10 +3717,6 @@ components:
         role_title:
           type: string
           maxLength: 255
-        location:
-          type: string
-          nullable: true
-          maxLength: 255
         description:
           type: string
           nullable: true
@@ -3711,45 +3884,6 @@ components:
           writeOnly: true
       required:
       - token
-    UserCompany:
-      type: object
-      properties:
-        id:
-          type: string
-          readOnly: true
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          readOnly: true
-        first_name:
-          type: string
-          readOnly: true
-        last_name:
-          type: string
-          nullable: true
-          readOnly: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          readOnly: true
-        profile_picture:
-          type: string
-          format: uri
-          nullable: true
-          readOnly: true
-        role:
-          type: string
-          readOnly: true
-      required:
-      - email
-      - first_name
-      - id
-      - last_name
-      - profile_picture
-      - role
-      - username
   securitySchemes:
     jwtCookieAuth:
       type: apiKey
