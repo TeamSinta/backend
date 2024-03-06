@@ -181,7 +181,7 @@ class InterviewRoundGet(APIView):
             formatted_date = interview_round.created_at.strftime("%B %d, %Y")
 
             template = Template.objects.filter(id=interview_round.template_id).first()
-            department_name = template.department.name if template and template.department else None
+            department_name = template.department.title if template and template.department else None
             template_title = template.role_title if template else None
 
             response = {
