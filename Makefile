@@ -80,9 +80,4 @@ migrate_delete:
 # Setup Command
 .PHONY: setup
 setup:
-	$(MAKE) install && \
-	$(MAKE) install-pre-commit && \
-	$(MAKE) build-dev && \
-	$(MAKE) run-dev && \
-	$(MAKE) makemigrations && \
-	$(MAKE) migrate
+	make install install-pre-commit build-dev run-dev makemigrations migrate

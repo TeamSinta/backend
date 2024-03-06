@@ -19,7 +19,6 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Endpoint documentation for Sinta running Django DRF.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
-    "COMPONENT_SPLIT_REQUEST": True,
 }
 
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
