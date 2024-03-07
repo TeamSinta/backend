@@ -105,24 +105,6 @@ paths:
         executed with an empty json.
       tags:
       - auth
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Login'
-            examples:
-              MockLogin:
-                value: {}
-                summary: Default Empty Request
-                description: Empty request does not require any values, defaults to
-                  creating or logging in as Mock-user
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Login'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Login'
-        required: true
       security:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
@@ -611,6 +593,12 @@ paths:
           description: ''
     post:
       operationId: company_members_create
+      parameters:
+      - in: query
+        name: company_id
+        schema:
+          type: string
+        description: ID of the company
       tags:
       - company
       requestBody:
@@ -629,11 +617,17 @@ paths:
       - jwtHeaderAuth: []
       - jwtCookieAuth: []
       responses:
-        '201':
+        '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AddCompanyMemberAction'
+                $ref: '#/components/schemas/CommonResponse'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
           description: ''
     put:
       operationId: company_members_update
@@ -2838,6 +2832,13 @@ components:
       - name
       - updated_at
       - username
+    CommonResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
     Company:
       type: object
       properties:

@@ -5,7 +5,7 @@ import uuid
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from drf_spectacular.utils import OpenApiExample, extend_schema
+from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema
 from june import analytics
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -13,13 +13,14 @@ from rest_framework.response import Response
 from workos import client
 
 from app.permissions import isAdminRole
-from app.serializers import ErrorSerializer
+from app.serializers import CommonResponseSerializer, ErrorSerializer
 from user.models import CustomUser, Role, UserCompanies, UserDepartments
 
 from .models import Company, Department
 from .serializers import (
     AddCompanyMemberActionSerializer,
     AddDepartmentMembersSerializer,
+    CompanyIdSerializer,
     CompanyMemberSerializer,
     CompanySerializer,
     DepartmentMembersSerializer,
@@ -208,6 +209,24 @@ class CompanyMembers(viewsets.ModelViewSet):
             return AddCompanyMemberActionSerializer
         return CompanyMemberSerializer
 
+    @extend_schema(
+        request=CompanyIdSerializer,
+        parameters=[
+            OpenApiParameter(
+                name="company_id",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="ID of the company",
+            ),
+            OpenApiParameter(
+                name="sort_by",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="Number 1..3 for sorting logic",
+            ),
+        ],
+        responses={status.HTTP_200_OK: CompanyMemberSerializer, status.HTTP_400_BAD_REQUEST: ErrorSerializer},
+    )
     def get_queryset(self):
         company_id = self.request.GET.get("company", None)
         sort_by = self.request.GET.get("sort_by", None)
@@ -225,6 +244,18 @@ class CompanyMembers(viewsets.ModelViewSet):
         else:
             return result
 
+    @extend_schema(
+        request=AddCompanyMemberActionSerializer,
+        parameters=[
+            OpenApiParameter(
+                name="company_id",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="ID of the company",
+            ),
+        ],
+        responses={status.HTTP_200_OK: CommonResponseSerializer, status.HTTP_400_BAD_REQUEST: ErrorSerializer},
+    )
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

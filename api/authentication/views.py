@@ -146,6 +146,7 @@ class MockGoogleLogin(LoginView):
     """
 
     @extend_schema(
+        request=None,
         examples=[
             OpenApiExample(
                 "Mock Login",

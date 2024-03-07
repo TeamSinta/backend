@@ -20,6 +20,12 @@ class CompanySerializer(serializers.ModelSerializer):
         return value
 
 
+class CompanyIdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = ["id"]
+
+
 class CompanyMemberSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField(source="user.id")
     username = serializers.ReadOnlyField(source="user.username")
