@@ -5,7 +5,12 @@ import uuid
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from drf_spectacular.utils import OpenApiExample, OpenApiParameter, extend_schema
+from drf_spectacular.utils import (
+    OpenApiExample,
+    OpenApiParameter,
+    extend_schema,
+    extend_schema_view,
+)
 from june import analytics
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -20,7 +25,6 @@ from .models import Company, Department
 from .serializers import (
     AddCompanyMemberActionSerializer,
     AddDepartmentMembersSerializer,
-    CompanyIdSerializer,
     CompanyMemberSerializer,
     CompanySerializer,
     DepartmentMembersSerializer,
@@ -43,12 +47,10 @@ def check_permissions_and_existence(user, **kwargs):
     department_id = kwargs.get("department_id")
 
     if department_id:
-        print("Checking department ID", department_id)
         get_object_or_404(Department, id=department_id)
         return UserDepartments.objects.filter(user=user, department_id=department_id).exists()
 
     elif company_id:
-        print("Checking company ID", company_id)
         get_object_or_404(Company, id=company_id)
         return UserCompanies.objects.filter(user=user, company_id=company_id).exists()
     else:
@@ -201,22 +203,18 @@ class CompanyView(viewsets.ModelViewSet):
         return Response({"detail": "Company deleted."}, status=status.HTTP_200_OK)
 
 
-class CompanyMembers(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+""" CompanyMember API Docs """
 
-    def get_serializer_class(self):
-        if self.action in ["create", "update", "partial_update", "destroy"]:
-            return AddCompanyMemberActionSerializer
-        return CompanyMemberSerializer
 
-    @extend_schema(
-        request=CompanyIdSerializer,
+@extend_schema_view(
+    list=extend_schema(
         parameters=[
             OpenApiParameter(
-                name="company_id",
+                name="company",
                 type=str,
                 location=OpenApiParameter.QUERY,
                 description="ID of the company",
+                required=True,
             ),
             OpenApiParameter(
                 name="sort_by",
@@ -225,8 +223,56 @@ class CompanyMembers(viewsets.ModelViewSet):
                 description="Number 1..3 for sorting logic",
             ),
         ],
-        responses={status.HTTP_200_OK: CompanyMemberSerializer, status.HTTP_400_BAD_REQUEST: ErrorSerializer},
-    )
+        responses={
+            status.HTTP_200_OK: CompanyMemberSerializer(many=True),
+            status.HTTP_400_BAD_REQUEST: ErrorSerializer,
+        },
+    ),
+    create=extend_schema(
+        request=AddCompanyMemberActionSerializer,
+        parameters=[
+            OpenApiParameter(
+                name="company_id",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="ID of the company",
+            ),
+        ],
+        responses={status.HTTP_200_OK: CommonResponseSerializer, status.HTTP_400_BAD_REQUEST: ErrorSerializer},
+    ),
+    update=extend_schema(
+        request=AddCompanyMemberActionSerializer,
+        parameters=[
+            OpenApiParameter(
+                name="company_id",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="ID of the company",
+            ),
+        ],
+        responses={status.HTTP_200_OK: CommonResponseSerializer, status.HTTP_400_BAD_REQUEST: ErrorSerializer},
+    ),
+    destroy=extend_schema(
+        request=AddCompanyMemberActionSerializer,
+        parameters=[
+            OpenApiParameter(
+                name="company_id",
+                type=str,
+                location=OpenApiParameter.QUERY,
+                description="ID of the company",
+            ),
+        ],
+        responses={status.HTTP_200_OK: CommonResponseSerializer, status.HTTP_400_BAD_REQUEST: ErrorSerializer},
+    ),
+)
+class CompanyMembers(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action in ["create", "update", "partial_update", "destroy"]:
+            return AddCompanyMemberActionSerializer
+        return CompanyMemberSerializer
+
     def get_queryset(self):
         company_id = self.request.GET.get("company", None)
         sort_by = self.request.GET.get("sort_by", None)
@@ -244,18 +290,6 @@ class CompanyMembers(viewsets.ModelViewSet):
         else:
             return result
 
-    @extend_schema(
-        request=AddCompanyMemberActionSerializer,
-        parameters=[
-            OpenApiParameter(
-                name="company_id",
-                type=str,
-                location=OpenApiParameter.QUERY,
-                description="ID of the company",
-            ),
-        ],
-        responses={status.HTTP_200_OK: CommonResponseSerializer, status.HTTP_400_BAD_REQUEST: ErrorSerializer},
-    )
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -263,6 +297,8 @@ class CompanyMembers(viewsets.ModelViewSet):
         company_id = self.request.GET.get("company", None)
         inviter = self.request.user
 
+        print(company_id)
+        print(inviter)
         if not check_permissions_and_existence(inviter, company_id=company_id):
             return Response(
                 {"detail": "Inviter is not a member of the requested company"},
