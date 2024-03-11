@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
@@ -50,13 +52,12 @@ class QuestionSummarizedAnswerView(APIView):
         # Optional: Check if the user has permission to update this answer
         # if request.user != answer.user:
         #     raise PermissionDenied("You do not have permission to edit this answer.")
-
         answer_text = request.data.get("answer_text")
         if answer_text is not None:
-            answer.answer_text = answer_text
+            json_string = json.dumps(answer_text)
+            answer.answer_text = json_string
 
         # Add any other fields you expect to update
-
         answer.save()
         return Response({"status": "success", "message": "Answer updated successfully."}, status=status.HTTP_200_OK)
 
