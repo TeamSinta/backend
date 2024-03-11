@@ -27,6 +27,22 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")  # "team-sin
 AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")  # "eu-west-1"
 AWS_S3_FILE_OVERWRITE = False
 AWS_QUERYSTRING_AUTH = False
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+
+DAILY_API_KEY = os.environ.get("DAILY_API_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+
+CSRF_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True # must be disabled for CORS
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3001",
+    "https://9fa0-212-78-174-2.ngrok-free.app ",
+    "http://localhost",
+    "http://127.0.0.1:3001",
+    "http://127.0.0.1",
+]
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
@@ -38,6 +54,24 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3001",
     "http://127.0.0.1",
 ]
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "": {  # This configures the root logger to direct to the console
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+    },
+}
+
 
 # Database Settings
 DATABASES = {

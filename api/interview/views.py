@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 
 from company.models import Company
 from interview_templates.models import Template, TemplateQuestion
+from new_transcription.utils import post_questions_to_interview_round
 from question_response.models import InterviewerFeedback
 from user.models import UserCompanies
 from user.serializers import CustomUserSerializer
@@ -507,3 +508,12 @@ class CheckInterviewRoundContentView(APIView):
             return Response({"message": "Interview round deleted due to lack of content."})
 
         return Response({"hasContent": True})
+
+
+def post_questions_to_interview_round_view(request, interview_round_id):
+    result = post_questions_to_interview_round(interview_round_id)
+    if result["status"] == "success":
+        return JsonResponse(result, status=200)
+    else:
+        error_status = 404 if result["message"] == "Interview round not found." else 500
+        return JsonResponse(result, status=error_status)

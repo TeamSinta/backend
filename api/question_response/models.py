@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from pgvector.django import VectorField
 
 from company.models import Company
 from interview.models import InterviewRound, InterviewRoundQuestion
@@ -12,7 +11,6 @@ from user.models import CustomUser
 class Answer(models.Model):
     question = models.ForeignKey(InterviewRoundQuestion, on_delete=models.CASCADE, related_name="answer")
     answer_text = models.TextField(null=True)
-    embedding = VectorField(dimensions=1536, null=True)
     transcript_chunks = models.ManyToManyField(TranscriptChunk, related_name="answer")
     user = models.ForeignKey(
         CustomUser,
