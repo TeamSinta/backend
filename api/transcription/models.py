@@ -1,7 +1,6 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from pgvector.django import VectorField
 
 from interview.models import InterviewRound
 from user.models import CustomUser
@@ -9,7 +8,6 @@ from user.models import CustomUser
 
 class TranscriptChunk(models.Model):
     chunk_text = models.TextField()
-    embedding = VectorField(dimensions=1536, null=True)
     interview_round = models.ForeignKey(InterviewRound, on_delete=models.CASCADE, related_name="transcript_chunks")
     start_time = models.IntegerField()
     end_time = models.IntegerField()

@@ -1,5 +1,4 @@
 from django.db import models
-from pgvector.django import VectorField
 
 from company.models import Company
 from user.models import CustomUser
@@ -21,7 +20,6 @@ class DifficultyChoices(models.IntegerChoices):
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
-    embedding = VectorField(dimensions=1536, null=True)
     guidelines = models.TextField()
     reply_time = models.IntegerField()
     difficulty = models.IntegerField(choices=DifficultyChoices.choices, default=None)

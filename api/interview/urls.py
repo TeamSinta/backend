@@ -63,4 +63,9 @@ urlpatterns = [
     path(
         "check-content/<int:round_id>/", CheckInterviewRoundContentView.as_view(), name="check-interview-round-content"
     ),
+    path(
+        "api/interview_round/<int:interview_round_id>/post_questions/",
+        views.post_questions_to_interview_round,
+        name="post_questions_to_interview_round",
+    ),
 ]
