@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView, status
@@ -12,8 +13,15 @@ from interview_templates.models import Template
 from question_response.models import Answer, InterviewerFeedback
 from summary.models import Summary
 
+from .serializers import ErrorResponseSerializer
+
 
 class ExportToPdf(APIView):
+    """
+    Endpoint for exporting interview round to PDF
+    Requires authentication
+    """
+
     permission_classes = [IsAuthenticated]
     template_name = "pdf_template.html"
 
@@ -114,16 +122,30 @@ class ExportToPdf(APIView):
 
         return context
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="interview_round_id",
+                type=int,
+                location=OpenApiParameter.QUERY,
+                description="ID of the interview round to export",
+            ),
+        ],
+        responses={
+            200: OpenApiResponse(description="PDF file"),
+            400: ErrorResponseSerializer,
+            403: ErrorResponseSerializer,
+            404: ErrorResponseSerializer,
+        },
+    )
     def get(self, request, *args, **kwargs):
-        interview_round_id = request.data.get("interview_round_id")
+        interview_round_id = request.query_params.get("interview_round_id")
         if not interview_round_id:
-            return Response({"error": "Valid Interview round ID not provided"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Valid Interview round ID not provided"}, status=status.HTTP_404_NOT_FOUND)
 
         interview_round = get_object_or_404(InterviewRound, id=interview_round_id)
-        print("Interviewer:", interview_round.interviewer)
-        print("Requester", self.request.user)
         if interview_round.interviewer != self.request.user:
-            return Response({"error": "You do not have access to this file"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"detail": "You do not have access to this file"}, status=status.HTTP_403_FORBIDDEN)
 
         try:
             context = self.build_context(interview_round)
