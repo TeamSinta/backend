@@ -263,7 +263,7 @@
 				<div class="details-right">
 					<div class="inline-details-section">
 						<h1 class="section-heading">Summary</h1>
-						<p>{{ summary.description }}</p>
+						{{ summary.description|safe }}
 					</div>
 					<div class="inline-details-section">
 						<div>
@@ -271,7 +271,7 @@
 							{% for qa in questions_and_answers %}
 							<div>
 								<h4>{{forloop.counter}}. {{qa.question.question.question}}</h4>
-								<p>{{ qa.answer.answer_text }}</p>
+								{{ qa.answer.answer_text|safe }}
 							</div>
 							{% empty %}
 							<p>No questions available.</p>
