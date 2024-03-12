@@ -261,4 +261,5 @@ def start_bot(meeting_url, interview_round_id):
         print("Finalizing bot operation, ensuring clean exit...")
         time.sleep(1)  # Ensure clean exit
         print("Bot operation finalized.")
-        bot.leave()
+        if bot is not None:  # Check if `bot` has been initialized
+            bot.leave()
