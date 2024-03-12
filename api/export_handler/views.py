@@ -93,7 +93,7 @@ class ExportToPdf(APIView):
             template = get_object_or_404(Template, id=interview_round.template_id)
             summary = get_object_or_404(Summary, interview_round=interview_round)
             candidate = self.get_candidate_and_initials(interview_round)
-            interviewer_feedback = get_object_or_404(InterviewerFeedback, interview_round=interview_round)
+            interviewer_feedbacks = InterviewerFeedback.objects.filter(interview_round=interview_round)
             interviewer_hire_choice = 3
             decision_text, decision_icon = self.get_hiring_decision(interviewer_hire_choice)
 
@@ -106,7 +106,7 @@ class ExportToPdf(APIView):
             "competency_and_reviews": competency_and_reviews,
             "template": template,
             "interviewer": interview_round.interviewer,
-            "interviewer_feedback": interviewer_feedback,
+            "interviewer_feedback": interviewer_feedbacks,
             "hire_decision": {"text": decision_text, "icon_url": decision_icon},
             "candidate": candidate,
             "summary": summary,
@@ -115,7 +115,7 @@ class ExportToPdf(APIView):
         return context
 
     def get(self, request, *args, **kwargs):
-        interview_round_id = request.data.get("interview_round_id")
+        interview_round_id = request.query_params.get("interview_round_id")
         if not interview_round_id:
             return Response({"error": "Valid Interview round ID not provided"}, status=status.HTTP_404_NOT_FOUND)
 

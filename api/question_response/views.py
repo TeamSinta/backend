@@ -1,7 +1,6 @@
-import json
-
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,6 +13,11 @@ from .serializers import InterviewerFeedbackSerializer
 
 
 class QuestionSummarizedAnswerView(APIView):
+    parser_classes = (
+        MultiPartParser,
+        FormParser,
+    )
+
     def post(self, request, interview_round_id):
         process_transcription_summary.delay(interview_round_id)
         return Response({"message": "Processing initiated"}, status=202)
@@ -48,18 +52,16 @@ class QuestionSummarizedAnswerView(APIView):
 
     def patch(self, request, answer_id: int) -> Response:
         answer = get_object_or_404(Answer, pk=answer_id)
+        html_content = request.data.get("html_content")
 
-        # Optional: Check if the user has permission to update this answer
-        # if request.user != answer.user:
-        #     raise PermissionDenied("You do not have permission to edit this answer.")
-        answer_text = request.data.get("answer_text")
-        if answer_text is not None:
-            json_string = json.dumps(answer_text)
-            answer.answer_text = json_string
-
-        # Add any other fields you expect to update
-        answer.save()
-        return Response({"status": "success", "message": "Answer updated successfully."}, status=status.HTTP_200_OK)
+        if html_content:
+            answer.answer_text = html_content
+            answer.save()
+            return Response(
+                {"status": "success", "message": "Answer updated successfully."}, status=status.HTTP_200_OK
+            )
+        else:
+            return Response({"error": "HTML content is missing."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class InterviewerFeedbackListCreateView(generics.ListCreateAPIView):
