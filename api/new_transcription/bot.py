@@ -188,49 +188,48 @@ class TranscriptionBot:
 
     import io
 
+    def transcribe_audio(self):
+        last_transcription_time = time.time()
+        transcriptions = []  # List to accumulate transcription texts
 
-def transcribe_audio(self):
-    last_transcription_time = time.time()
-    transcriptions = []  # List to accumulate transcription texts
+        while not self.__app_quit:
+            try:
+                buffer = self._audio_queue.get(timeout=1)
+                self.accumulated_buffer += buffer  # Add to transcription buffer
 
-    while not self.__app_quit:
-        try:
-            buffer = self._audio_queue.get(timeout=1)
-            self.accumulated_buffer += buffer  # Add to transcription buffer
+                if time.time() - last_transcription_time >= 60:
+                    if self.accumulated_buffer:
+                        print("Starting new transcription")
+                        # Create a BytesIO object for the WAV format
+                        audio_stream = io.BytesIO()
+                        with wave.open(audio_stream, "wb") as wf:
+                            wf.setnchannels(1)  # Assuming mono audio
+                            wf.setsampwidth(2)  # Assuming 16 bits per sample
+                            wf.setframerate(16000)  # Assuming a sample rate of 16000 Hz
+                            wf.writeframes(self.accumulated_buffer)
 
-            if time.time() - last_transcription_time >= 60:
-                if self.accumulated_buffer:
-                    print("Starting new transcription")
-                    # Create a BytesIO object for the WAV format
-                    audio_stream = io.BytesIO()
-                    with wave.open(audio_stream, "wb") as wf:
-                        wf.setnchannels(1)  # Assuming mono audio
-                        wf.setsampwidth(2)  # Assuming 16 bits per sample
-                        wf.setframerate(16000)  # Assuming a sample rate of 16000 Hz
-                        wf.writeframes(self.accumulated_buffer)
+                        # Seek to the beginning of the BytesIO object
+                        audio_stream.seek(0)
 
-                    # Seek to the beginning of the BytesIO object
-                    audio_stream.seek(0)
+                        # Directly use the stream for transcription
+                        transcript_text = get_openai_client().audio.transcriptions.create(
+                            model="whisper-1", language="en", file=audio_stream, response_format="text"
+                        )
+                        print(f"Transcription: {transcript_text}")
 
-                    # Directly use the stream for transcription
-                    transcript_text = get_openai_client().audio.transcriptions.create(
-                        model="whisper-1", language="en", file=audio_stream, response_format="text"
-                    )
-                    print(f"Transcription: {transcript_text}")
+                        transcriptions.append(transcript_text)
 
-                    transcriptions.append(transcript_text)
+                        self.accumulated_buffer = bytearray()
 
-                    self.accumulated_buffer = bytearray()
+                    last_transcription_time = time.time()
 
-                last_transcription_time = time.time()
+            except queue.Empty:
+                continue
 
-        except queue.Empty:
-            continue
-
-    if transcriptions:
-        # Package accumulated transcriptions as JSON for S3 upload
-        transcription_json = json.dumps({"transcriptions": transcriptions}).encode("utf-8")
-        self.upload_transcript_to_s3(transcription_json)
+        if transcriptions:
+            # Package accumulated transcriptions as JSON for S3 upload
+            transcription_json = json.dumps({"transcriptions": transcriptions}).encode("utf-8")
+            self.upload_transcript_to_s3(transcription_json)
 
 
 def start_bot(meeting_url, interview_round_id):
@@ -251,15 +250,15 @@ def start_bot(meeting_url, interview_round_id):
         print("TranscriptionBot run completed successfully.")
     except Exception as e:
         print(f"Bot run exception: {e}")
-        try:
-            print("Attempting to leave the call due to exception...")
-            bot.leave()
-            print("Left the call successfully after exception.")
-        except Exception as leave_exception:
-            print(f"Exception occurred while leaving the call: {leave_exception}")
+        if bot:  # Check if `bot` has been initialized and is not None
+            try:
+                print("Attempting to leave the call due to exception...")
+                bot.leave()
+                print("Left the call successfully after exception.")
+            except Exception as leave_exception:
+                print(f"Exception occurred while leaving the call: {leave_exception}")
     finally:
         print("Finalizing bot operation, ensuring clean exit...")
-        time.sleep(1)  # Ensure clean exit
-        print("Bot operation finalized.")
-        if bot is not None:  # Check if `bot` has been initialized
+        if bot:  # Again, check if `bot` is not None before calling `leave`
             bot.leave()
+        print("Bot operation finalized.")
