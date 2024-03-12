@@ -18,22 +18,24 @@ services:
 
   backend:
     container_name: sinta-staging-api
-    build:
-      context: ./api
-      dockerfile: dev.Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./api:/backend
-    ports:
-      - 8000:8000
-    depends_on:
-      - db
-    env_file:
-      - ./api/config/staging/.env.staging
-    environment:
-      - ENVIRONMENT=staging
-    networks:
-      - backend-network
+  build:
+    context: ./api
+    dockerfile: dev.Dockerfile
+  command: python manage.py runserver 0.0.0.0:8000
+  volumes:
+    - ./api:/backend
+  ports:
+    - 8000:8000
+  depends_on:
+    - db
+  env_file:
+    - ./api/config/staging/.env.staging
+  environment:
+    - ENVIRONMENT=staging
+    - CELERY_BROKER_URL=redis://default:yUmvoLfJKngsQigfMDPYdxpYPZJGiWQE@redis.railway.internal:6379
+    - CELERY_RESULT_BACKEND=redis://default:yUmvoLfJKngsQigfMDPYdxpYPZJGiWQE@redis.railway.internal:6379
+  networks:
+    - backend-network
 
 volumes:
   dbdata:

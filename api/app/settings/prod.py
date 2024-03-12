@@ -52,3 +52,6 @@ DATABASES = {
         "PORT": os.environ.get("DB_PORT"),
     }
 }
+
+DAILY_API_KEY = os.environ.get("DAILY_API_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
