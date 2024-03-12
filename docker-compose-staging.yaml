@@ -37,6 +37,27 @@ services:
   networks:
     - backend-network
 
+  celery_worker:
+    container_name: sinta-production-celery-worker
+    build:
+      context: ./api
+      dockerfile: Dockerfile  # Ensure this is production-ready
+    command: celery -A your_project_name worker --loglevel=info
+    volumes:
+      - ./api:/backend
+    env_file:
+      - ./api/config/production/.env.production  # Ensure you have a production env file
+    environment:
+      - CELERY_BROKER_URL=redis://default:<REDIS_PASSWORD>@<REDIS_HOST>:<REDIS_PORT>
+      - CELERY_RESULT_BACKEND=redis://default:<REDIS_PASSWORD>@<REDIS_HOST>:<REDIS_PORT>
+    depends_on:
+      - db
+      - redis  # Assuming `redis` is the service name in your docker-compose
+    networks:
+      - backend-network
+
+
+
 volumes:
   dbdata:
 
