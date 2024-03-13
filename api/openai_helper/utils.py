@@ -57,7 +57,7 @@ def get_transcript_summary(transcript_text):
                 },
                 {
                     "role": "assistant",
-                    "content": "You will be given all the information in the context. The following is a set of questions. I want to generate a summarized version for these questions to form a description of the overall interview. Generate a high-level description given these interview questions to understand what was discussed in the interview. Make sure the output of your response is written in HTML code, using <p> tags and <h> were needed. Throw away any content not relevant to the summary. Never ever make up stuff that isn't part of the context, only use the information provided.",
+                    "content": "You will be given all the information in the context. I want to generate a summarized version. Make sure the output of your response is written in HTML code, using <p> tags and <h> were needed. Throw away any content not relevant to the summary. Never ever make up stuff that isn't part of the context, only use the information provided.",
                 },
                 {"role": "user", "content": transcript_text},
             ],
