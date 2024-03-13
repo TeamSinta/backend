@@ -84,9 +84,8 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("monorail.proxy.rlwy.net", 25069)],
-            "password": "yUmvoLfJKngsQigfMDPYdxpYPZJGiWQE",
-            "username": "default",
+            # Using the private Redis URL provided by Railway, which does not require a password in this format
+            "hosts": [("redis.railway.internal", 6379)],
         },
     },
 }
