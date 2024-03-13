@@ -21,6 +21,7 @@ from .utils import post_questions_to_interview_round
 LOG = logging.getLogger(__name__)
 DAILY_API_KEY = os.environ.get("DAILY_API_KEY")
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+BACKEND_URL = os.environ.get("BACKEND_URL")
 
 
 @cache
@@ -165,7 +166,7 @@ class TranscriptionBot:
 
     def trigger_summarization_task(self):
         # Code to trigger the summarization task using only the interview_round_id
-        url = f"http://localhost:8000/api/question_response/question_summarized_answers/{self.interview_round_id}/"
+        url = f"http://{BACKEND_URL}/api/question_response/question_summarized_answers/{self.interview_round_id}/"
         headers = {"Content-Type": "application/json"}
         payload = {"interview_round_id": self.interview_round_id}
 
