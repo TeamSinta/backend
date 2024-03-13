@@ -7,7 +7,6 @@ import queue
 import threading
 import time
 import uuid
-import wave
 from functools import cache
 
 import boto3
@@ -15,6 +14,7 @@ import requests
 from daily import CallClient, Daily, EventHandler
 from django.conf import settings
 from openai import OpenAI
+from pydub import AudioSegment
 
 from .utils import post_questions_to_interview_round
 
@@ -201,20 +201,24 @@ class TranscriptionBot:
                 if time.time() - last_transcription_time >= 60:
                     if self.accumulated_buffer:
                         print("Starting new transcription")
-                        # Create a BytesIO object for the WAV format
-                        audio_stream = io.BytesIO()
-                        with wave.open(audio_stream, "wb") as wf:
-                            wf.setnchannels(1)  # Assuming mono audio
-                            wf.setsampwidth(2)  # Assuming 16 bits per sample
-                            wf.setframerate(16000)  # Assuming a sample rate of 16000 Hz
-                            wf.writeframes(self.accumulated_buffer)
+                        # Create an AudioSegment from the WAV buffer
+                        audio_segment = AudioSegment(
+                            data=self.accumulated_buffer,
+                            sample_width=2,  # Assuming 16 bits per sample
+                            frame_rate=16000,  # Assuming a sample rate of 16000 Hz
+                            channels=1,  # Assuming mono audio
+                        )
+
+                        # Export the AudioSegment to a BytesIO object in MP3 format
+                        mp3_io = io.BytesIO()
+                        audio_segment.export(mp3_io, format="mp3")
 
                         # Seek to the beginning of the BytesIO object
-                        wf.seek(0)
+                        mp3_io.seek(0)
 
                         # Directly use the stream for transcription
                         transcript_text = get_openai_client().audio.transcriptions.create(
-                            model="whisper-1", language="en", file=wf, response_format="text"
+                            model="whisper-1", language="en", file=mp3_io, response_format="text"
                         )
                         print(f"Transcription: {transcript_text}")
 
