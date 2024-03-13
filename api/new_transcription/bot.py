@@ -1,12 +1,13 @@
 # bot.py adapted for Django
-import io
 import json
 import logging
 import os
 import queue
+import tempfile
 import threading
 import time
 import uuid
+import wave
 from functools import cache
 
 import boto3
@@ -14,7 +15,6 @@ import requests
 from daily import CallClient, Daily, EventHandler
 from django.conf import settings
 from openai import OpenAI
-from pydub import AudioSegment
 
 from .utils import post_questions_to_interview_round
 
@@ -53,6 +53,14 @@ def create_meeting_token():
         return response.json()["token"]
     else:
         raise Exception(f"Failed to create meeting token: {response.text}")
+
+
+def transcribe_audio_with_openai(file_path):
+    url = "https://api.openai.com/v1/audio/transcriptions"
+    headers = {"Authorization": f"Bearer {OPENAI_API_KEY}"}
+    files = {"model": (None, "whisper-1"), "file": (os.path.basename(file_path), open(file_path, "rb"), "audio/wav")}
+    response = requests.post(url, headers=headers, files=files)
+    return response.json()
 
 
 class TranscriptionBot:
@@ -187,8 +195,6 @@ class TranscriptionBot:
             if buffer:
                 self._audio_queue.put(buffer)
 
-    import io
-
     def transcribe_audio(self):
         last_transcription_time = time.time()
         transcriptions = []  # List to accumulate transcription texts
@@ -201,29 +207,22 @@ class TranscriptionBot:
                 if time.time() - last_transcription_time >= 60:
                     if self.accumulated_buffer:
                         print("Starting new transcription")
-                        # Create an AudioSegment from the WAV buffer
-                        audio_segment = AudioSegment(
-                            data=self.accumulated_buffer,
-                            sample_width=2,  # Assuming 16 bits per sample
-                            frame_rate=16000,  # Assuming a sample rate of 16000 Hz
-                            channels=1,  # Assuming mono audio
-                        )
+                        # Save the accumulated buffer to a temporary WAV file
+                        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
+                            with wave.open(tmp_file.name, "wb") as wf:
+                                wf.setnchannels(1)  # Assuming mono audio
+                                wf.setsampwidth(2)  # Assuming 16 bits per sample
+                                wf.setframerate(16000)  # Assuming a sample rate of 16000 Hz
+                                wf.writeframes(self.accumulated_buffer)
 
-                        # Export the AudioSegment to a BytesIO object in MP3 format
-                        mp3_io = io.BytesIO()
-                        audio_segment.export(mp3_io, format="mp3")
+                        # Transcribe the temporary audio file
+                        transcription_response = transcribe_audio_with_openai(tmp_file.name)
+                        print(f"Transcription: {json.dumps(transcription_response, indent=2)}")
 
-                        # Seek to the beginning of the BytesIO object
-                        mp3_io.seek(0)
+                        # It's a good practice to remove the temporary file after use
+                        os.remove(tmp_file.name)
 
-                        # Directly use the stream for transcription
-                        transcript_text = get_openai_client().audio.transcriptions.create(
-                            model="whisper-1", language="en", file=mp3_io, response_format="text"
-                        )
-                        print(f"Transcription: {transcript_text}")
-
-                        transcriptions.append(transcript_text)
-
+                        # Reset the buffer for the next transcription
                         self.accumulated_buffer = bytearray()
 
                     last_transcription_time = time.time()
