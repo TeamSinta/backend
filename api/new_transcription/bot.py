@@ -203,6 +203,7 @@ class TranscriptionBot:
             try:
                 buffer = self._audio_queue.get(timeout=1)
                 self.accumulated_buffer += buffer  # Add to transcription buffer
+                self._upload_buffer += buffer
 
                 if time.time() - last_transcription_time >= 60:
                     if self.accumulated_buffer:
