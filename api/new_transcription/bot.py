@@ -176,7 +176,7 @@ class TranscriptionBot:
 
     def trigger_summarization_task(self):
         # Code to trigger the summarization task using only the interview_round_id
-        url = f"http://{BACKEND_URL}/api/question_response/question_summarized_answers/{self.interview_round_id}/"
+        url = f"https://{BACKEND_URL}/api/question_response/question_summarized_answers/{self.interview_round_id}/"
         headers = {"Content-Type": "application/json"}
         payload = {"interview_round_id": self.interview_round_id}
 
