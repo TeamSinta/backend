@@ -84,7 +84,6 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            # Using the private Redis URL provided by Railway, which does not require a password in this format
             "hosts": [("redis.railway.internal", 6379)],
         },
     },
