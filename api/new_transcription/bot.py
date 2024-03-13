@@ -210,11 +210,11 @@ class TranscriptionBot:
                             wf.writeframes(self.accumulated_buffer)
 
                         # Seek to the beginning of the BytesIO object
-                        audio_stream.seek(0)
+                        wf.seek(0)
 
                         # Directly use the stream for transcription
                         transcript_text = get_openai_client().audio.transcriptions.create(
-                            model="whisper-1", language="en", file=audio_stream, response_format="text"
+                            model="whisper-1", language="en", file=wf, response_format="text"
                         )
                         print(f"Transcription: {transcript_text}")
 
