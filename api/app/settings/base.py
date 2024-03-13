@@ -84,11 +84,11 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            # Including authentication details for Redis
-            "hosts": [("redis.railway.internal", 6379, "yUmvoLfJKngsQigfMDPYdxpYPZJGiWQE", "default")],
+            "hosts": [(os.environ.get("REDIS_URL"))],  # update this line.
         },
     },
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
