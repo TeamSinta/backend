@@ -197,7 +197,6 @@ class TranscriptionBot:
 
     def transcribe_audio(self):
         last_transcription_time = time.time()
-        transcriptions = []  # List to accumulate transcription texts
 
         while not self.__app_quit:
             try:
@@ -230,11 +229,6 @@ class TranscriptionBot:
 
             except queue.Empty:
                 continue
-
-        if transcriptions:
-            # Package accumulated transcriptions as JSON for S3 upload
-            transcription_json = json.dumps({"transcriptions": transcriptions}).encode("utf-8")
-            self.upload_transcript_to_s3(transcription_json)
 
 
 def start_bot(meeting_url, interview_round_id):

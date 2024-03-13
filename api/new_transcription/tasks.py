@@ -68,13 +68,10 @@ def save_summary_and_qa(interview_round, transcript_summary, question_answers):
         for qa in question_answers:
             question_text = qa["question"]
             answer_text = qa["answer"]
-
-            # Corrected to traverse the relationships properly
             interview_round_question = InterviewRoundQuestion.objects.filter(
                 interview_round=interview_round,
                 question__question__question_text=question_text,  # Note the double underscore syntax here
             ).first()
-
             if interview_round_question:
                 answer, answer_created = Answer.objects.update_or_create(
                     question=interview_round_question,
@@ -86,9 +83,7 @@ def save_summary_and_qa(interview_round, transcript_summary, question_answers):
                 print(f"{'Created' if answer_created else 'Updated'} answer for question: {question_text}")
             else:
                 print(f"No matching InterviewRoundQuestion found for question: {question_text}")
-
         return print("Success: Summary and answers processed and saved.")
-
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         return "Error: An issue occurred during processing."

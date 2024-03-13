@@ -83,10 +83,13 @@ ASGI_APPLICATION = "app.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": [("redis", 6379)]},
+        "CONFIG": {
+            "hosts": [("monorail.proxy.rlwy.net", 25069)],
+            "password": "yUmvoLfJKngsQigfMDPYdxpYPZJGiWQE",
+            "username": "default",
+        },
     },
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
