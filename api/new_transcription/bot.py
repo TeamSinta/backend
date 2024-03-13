@@ -60,7 +60,9 @@ def transcribe_audio_with_openai(file_path):
     headers = {"Authorization": f"Bearer {OPENAI_API_KEY}"}
     files = {"model": (None, "whisper-1"), "file": (os.path.basename(file_path), open(file_path, "rb"), "audio/wav")}
     response = requests.post(url, headers=headers, files=files)
-    return response.json()
+    # Parse the JSON response to access the transcription text
+    response_json = response.json()  # This converts the response text to a Python dictionary
+    return response_json.get("text", "")
 
 
 class TranscriptionBot:
@@ -73,7 +75,6 @@ class TranscriptionBot:
         self.accumulated_buffer = bytearray()
         self._upload_buffer = bytearray()
         self._audio_queue = queue.Queue()
-        self._transcription_text = ""
 
         print("Creating speaker device")
         self.__speaker_device = Daily.create_speaker_device("my-speaker", sample_rate=16000, channels=1)
@@ -134,10 +135,10 @@ class TranscriptionBot:
         self.__thread.join()
         self.__transcription_thread.join()
         print("Leaving Call")
-        if self._transcription_text:
-            print("Starting S3 upload Call")
-            self.upload_transcript_to_s3(self._transcription_text)
-            self._transcription_text = ""
+        if self._upload_buffer:
+            print("starting s3 upload Call")
+            self.upload_transcript_to_s3(self._upload_buffer)
+            self._upload_buffer = bytearray()
         if self.__client:
             try:
                 self.__client.leave()
@@ -155,34 +156,23 @@ class TranscriptionBot:
             except Exception as e:
                 print(f"Error deallocating SDK resources: {e}")
 
-    def upload_transcript_to_s3(self, transcription_text):
+    def upload_transcript_to_s3(self, transcription_json):
         # Extract the meeting ID from the URL
         meeting_id = self.meeting_url.split("/")[-1]
         object_key = f"teamsinta/{meeting_id}/transcription.json"
         bucket_name = "team-sinta"
 
-        transcription_data = {"transcription": transcription_text}
-
-        # Use a temporary file to save the JSON data
-        with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as tmp_file:
-            json.dump(transcription_data, tmp_file)
-            tmp_file.seek(0)  # Go back to the beginning of the file before reading for upload
-
-            s3_client = boto3.client(
-                "s3",
-                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-            )
-
-            try:
-                # Read the temporary file and upload its contents to S3
-                with open(tmp_file.name, "rb") as f:
-                    s3_client.upload_fileobj(f, bucket_name, object_key)
-                print(f"Transcription uploaded successfully to S3 at key {object_key}.")
-            except Exception as e:
-                print(f"Failed to upload transcription to S3: {e}")
-
-            os.remove(tmp_file.name)
+        s3_client = boto3.client(
+            "s3",
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        )
+        try:
+            s3_client.put_object(Body=transcription_json, Bucket=bucket_name, Key=object_key)
+            print(f"Transcription uploaded successfully to S3 at key {object_key}.")
+            self.trigger_summarization_task()
+        except Exception as e:
+            print(f"Failed to upload transcription to S3: {e}")
 
     def trigger_summarization_task(self):
         # Code to trigger the summarization task using only the interview_round_id
@@ -194,7 +184,7 @@ class TranscriptionBot:
         if response.status_code == 200 and "Processing initiated" in response.text:
             print("Summarization task initiated successfully.")
         else:
-            print(f"Failed to trigger summarization task: {response.text} {response.status_code} ")
+            print(f"Failed to trigger summarization task: {response.text}")
 
     def receive_audio(self):
         """Receive audio from the meeting and enqueue it for transcription."""
@@ -209,37 +199,40 @@ class TranscriptionBot:
 
     def transcribe_audio(self):
         last_transcription_time = time.time()
+        transcriptions = []  # List to accumulate transcription texts
 
         while not self.__app_quit:
             try:
                 buffer = self._audio_queue.get(timeout=1)
-                self.accumulated_buffer += buffer  # Add to transcription buffer
+                self.accumulated_buffer += buffer
 
                 if time.time() - last_transcription_time >= 60:
                     if self.accumulated_buffer:
                         print("Starting new transcription")
-                        # Save the accumulated buffer to a temporary WAV file
                         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
                             with wave.open(tmp_file.name, "wb") as wf:
-                                wf.setnchannels(1)  # Assuming mono audio
-                                wf.setsampwidth(2)  # Assuming 16 bits per sample
-                                wf.setframerate(16000)  # Assuming a sample rate of 16000 Hz
+                                wf.setnchannels(1)
+                                wf.setsampwidth(2)
+                                wf.setframerate(16000)
                                 wf.writeframes(self.accumulated_buffer)
 
-                        # Transcribe the temporary audio file
-                        transcription_response = transcribe_audio_with_openai(tmp_file.name)
-                        print(f"Transcription: {json.dumps(transcription_response, indent=2)}")
-                        self._transcription_text += transcription_response["text"] + "\n"
-                        # It's a good practice to remove the temporary file after use
-                        os.remove(tmp_file.name)
+                        transcription_text = transcribe_audio_with_openai(tmp_file.name)
+                        print(f"Transcription: {transcription_text}")
+                        if transcription_text:  # Check if transcription_text is not empty
+                            transcriptions.append(transcription_text)
 
-                        # Reset the buffer for the next transcription
+                        os.remove(tmp_file.name)
                         self.accumulated_buffer = bytearray()
 
                     last_transcription_time = time.time()
 
             except queue.Empty:
                 continue
+
+        if transcriptions:
+            # Package accumulated transcriptions as JSON for S3 upload
+            transcription_json = json.dumps({"transcriptions": transcriptions}, ensure_ascii=False).encode("utf-8")
+            self.upload_transcript_to_s3(transcription_json)
 
 
 def start_bot(meeting_url, interview_round_id):
