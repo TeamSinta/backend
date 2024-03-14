@@ -47,4 +47,4 @@ USER user
 EXPOSE 8000
 
 # Specify the entrypoint
-ENTRYPOINT ["bash", "/backend/scripts/runserver.sh"]
+ENTRYPOINT ["bash", "/backend/scripts/dev-start.sh"]
