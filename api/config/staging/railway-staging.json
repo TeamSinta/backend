@@ -5,10 +5,10 @@
 		"nixpacksPlan": {
 			"phases": {
 				"setup": {
-					"nixPkgs": ["...", "ffmpeg", "wkhtmltopdf", "libfontconfig"],
+					"nixPkgs": ["...", "ffmpeg", "wkhtmltopdf"],
 					"cmds": [
 						"...",
-						"sudo apt-get -y update && sudo apt-get install -y ffmpeg && sudo apt-get install -y wkhtmltopdf && sudo apt-get install -y libfontconfig"
+						"sudo apt-get -y update && sudo apt-get install -y ffmpeg && sudo apt-get install -y wkhtmltopdf"
 					]
 				}
 			}
