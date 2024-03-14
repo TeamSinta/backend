@@ -36,7 +36,6 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 ALLOWED_HOSTS_ENV = os.environ.get("ALLOWED_HOSTS")
 ALLOWED_HOSTS = ALLOWED_HOSTS_ENV.split(",") if ALLOWED_HOSTS_ENV else []
-print(ALLOWED_HOSTS)
 
 
 CORS_ALLOWED_ORIGINS_ENV = os.environ.get("CORS_ALLOWED_ORIGINS")
@@ -53,3 +52,6 @@ DATABASES = {
         "PORT": os.environ.get("DB_PORT"),
     }
 }
+
+DAILY_API_KEY = os.environ.get("DAILY_API_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")

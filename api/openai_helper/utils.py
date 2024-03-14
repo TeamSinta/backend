@@ -12,6 +12,71 @@ EMBEDDING_MODEL = os.environ.get("EMBEDDINGS_MODEL")
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
+def get_summarized_answer(question, transcript):
+    """Generates a summarized answer from a question and transcript using OpenAI's API."""
+    try:
+        context = f'Question: {question}\nTranscript: """{"".join(transcript)}"""'
+        payload = {
+            "model": "gpt-3.5-turbo",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a shadow interviewer. You are incredible at summarizing chunks of interview after it's complete.",
+                },
+                {
+                    "role": "assistant",
+                    "content": "You will be given information in the context and followed by a question. This information is the response from an interview candidate. Your task is to help the interviewer evaluate the candidate's response and provide insights. Write your evaluation and insights in the first person, as if you are the interviewer. Ensure your response is formatted in HTML, using <p>, <li>, <ol>, and <strong> tags to organize your insights clearly. Do not use header tags. Directly address the information provided, without adding or inferring information not mentioned.Focus on providing insights related to the interview question, excluding irrelevant content. If the candidate's feedback contains ambiguities, note these ambiguities but avoid speculation or assumptions beyond the provided information.",
+                },
+                {"role": "user", "content": context},
+            ],
+            "temperature": 0.5,
+            "max_tokens": 150,
+            "top_p": 1.0,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0,
+        }
+        print("Payload before API call:", payload)  # Debug print
+        response = client.chat.completions.create(**payload)
+        print("Raw response:", response)  # Debug print to inspect the raw response structure
+        last_message = response.choices[0].message.content
+        return last_message.strip()
+    except Exception as e:
+        print(f"Error in generating summary: {str(e)}")
+        return "Error in generating summary."
+
+
+def get_transcript_summary(transcript_text):
+    """Generates a summary for the entire interview transcript using OpenAI's API."""
+    try:
+        payload = {
+            "model": "gpt-3.5-turbo",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a shadow interviewer. You are incredible at summarizing chunks of interview after it's complete.",
+                },
+                {
+                    "role": "assistant",
+                    "content": "You will be given all necessary information in the context. Your task is to create a concise summary for the interviewer. Format your summary using HTML, employing <p> tags for paragraphs and <h1> or <h2> tags for headings to organize and highlight main points or sections. Exclude any information not directly relevant to the core insights of the interview. Rely solely on the provided context without introducing any new information or assumptions.",
+                },
+                {"role": "user", "content": transcript_text},
+            ],
+            "temperature": 0.5,
+            "max_tokens": 300,
+            "top_p": 1.0,
+            "frequency_penalty": 0.0,
+            "presence_penalty": 0.0,
+        }
+        print("Payload before API call:", payload)  # Debug print
+        response = client.chat.completions.create(**payload)
+        print("Raw response:", response)  # Debug print to inspect the raw response structure
+        last_message = response.choices[0].message.content
+        return last_message.strip()
+    except Exception as e:
+        print(f"Error in generating transcript summary: {str(e)}")
+        return "Error in generating transcript summary."
+
+
 @retry(wait=wait_random_exponential(min=1, max=20), stop=stop_after_attempt(6))
 def get_embedding(text: str) -> List[float]:
     response = client.embeddings.create(input=[text], model=EMBEDDING_MODEL)
@@ -42,10 +107,10 @@ def get_answer_notes_for_question(context_text: str, question: str) -> str:
         top_p=1,
     )
 
-    if response.choices and response.choices[0].message:
-        return response.choices[0].message.content
-    else:
-        return ""
+    response_message = response.choices[0].message.content
+    print(response_message)
+
+    return ""
 
 
 def summarize_interview(qa_text: str) -> str:

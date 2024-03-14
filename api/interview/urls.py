@@ -56,6 +56,17 @@ urlpatterns = [
         name="update_interview_round",
     ),
     path(
+        "GetTranscriptFromS3/<int:interview_round_id>/",
+        views.GetTranscriptFromS3.as_view(),
+        name="TranscriptFromS3",
+    ),
+    path("delete/<int:interview_round_id>/", views.DeleteInterviewRound.as_view(), name="delete-interview-round"),
+    path(
         "check-content/<int:round_id>/", CheckInterviewRoundContentView.as_view(), name="check-interview-round-content"
+    ),
+    path(
+        "api/interview_round/<int:interview_round_id>/post_questions/",
+        views.post_questions_to_interview_round,
+        name="post_questions_to_interview_round",
     ),
 ]

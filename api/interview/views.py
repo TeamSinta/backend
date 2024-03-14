@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 
 from company.models import Company
 from interview_templates.models import Template, TemplateQuestion
+from new_transcription.utils import post_questions_to_interview_round
 from question_response.models import InterviewerFeedback
 from user.models import UserCompanies
 from user.serializers import CustomUserSerializer
@@ -181,7 +182,7 @@ class InterviewRoundGet(APIView):
             formatted_date = interview_round.created_at.strftime("%B %d, %Y")
 
             template = Template.objects.filter(id=interview_round.template_id).first()
-            department_name = template.department.name if template and template.department else None
+            department_name = template.department.title if template and template.department else None
             template_title = template.role_title if template else None
 
             response = {
@@ -431,14 +432,60 @@ class DeleteInterviewRound(APIView):
     def delete(self, request, interview_round_id):
         try:
             interview_round = InterviewRound.objects.get(id=interview_round_id, deleted_at__isnull=True)
-            interview_round.deleted_at = timezone.now()
-            interview_round.deleted_by = request.user
-            interview_round.save()
+            interview_round.delete()
+
+            # interview_round.deleted_at = timezone.now()
+            # interview_round.deleted_by = request.user
+            # interview_round.save()
             response = {"message": "InterviewRound deleted successfully"}
             return JsonResponse(response)
         except InterviewRound.DoesNotExist:
             error_response = {"error": "InterviewRound not found"}
             return JsonResponse(error_response, status=404)
+
+
+class GetTranscriptFromS3(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, interview_round_id):
+        try:
+            interview_round = InterviewRound.objects.get(id=interview_round_id, deleted_at__isnull=True)
+            s3 = boto3.client(
+                "s3",
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            )
+
+            directory_path = f"teamsinta/{interview_round.meeting_room_id}/"
+            bucket_name = "team-sinta"
+
+            # List objects in the directory
+            response = s3.list_objects_v2(Bucket=bucket_name, Prefix=directory_path)
+
+            if "Contents" in response:
+                transcript_file = None
+                # Loop through the files in the directory to find the transcript JSON file
+                for file in response["Contents"]:
+                    if file["Key"].endswith(".json"):
+                        transcript_file = file["Key"]
+                        break
+
+                if transcript_file:
+                    # Instead of generating a signed URL, download the file content
+                    obj = s3.get_object(Bucket=bucket_name, Key=transcript_file)
+                    # Read the file's content and parse it as JSON
+                    transcript_content = json.loads(obj["Body"].read())
+                    return JsonResponse(transcript_content, status=status.HTTP_200_OK, safe=False)
+                else:
+                    return JsonResponse({"error": "Transcript file not found"}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                return JsonResponse({"error": "No files found in the directory"}, status=status.HTTP_404_NOT_FOUND)
+        except InterviewRound.DoesNotExist:
+            return JsonResponse({"error": "InterviewRound not found"}, status=status.HTTP_404_NOT_FOUND)
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"error": "Error decoding the transcript file"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class CheckInterviewRoundContentView(APIView):
@@ -463,3 +510,12 @@ class CheckInterviewRoundContentView(APIView):
             return Response({"message": "Interview round deleted due to lack of content."})
 
         return Response({"hasContent": True})
+
+
+def post_questions_to_interview_round_view(request, interview_round_id):
+    result = post_questions_to_interview_round(interview_round_id)
+    if result["status"] == "success":
+        return JsonResponse(result, status=200)
+    else:
+        error_status = 404 if result["message"] == "Interview round not found." else 500
+        return JsonResponse(result, status=error_status)

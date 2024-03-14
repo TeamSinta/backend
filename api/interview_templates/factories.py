@@ -13,7 +13,6 @@ class TemplateFactory(factory.django.DjangoModelFactory):
         model = Template
 
     role_title = factory.Faker("job")
-    location = factory.Faker("city")
     description = factory.Faker("sentence")
 
     @factory.lazy_attribute

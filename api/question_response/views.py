@@ -1,161 +1,67 @@
-import json
-from typing import Dict, List
-
-from django.core.exceptions import PermissionDenied
-from django.db import transaction
-from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
-from pgvector.django import CosineDistance
 from rest_framework import generics, status
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from interview.models import InterviewRound, InterviewRoundQuestion
-from openai_helper.utils import get_answer_notes_for_question, get_embedding
+from new_transcription.tasks import process_transcription_summary
 from question_response.models import Answer, InterviewerFeedback
-from transcription.models import TranscriptChunk
 
 from .serializers import InterviewerFeedbackSerializer
 
 
 class QuestionSummarizedAnswerView(APIView):
-    # permission_classes = [IsAuthenticated]
+    parser_classes = (
+        MultiPartParser,
+        FormParser,
+    )
 
-    def get(self, request: HttpRequest, interview_round_id: int) -> Response:
+    def post(self, request, interview_round_id):
+        process_transcription_summary.delay(interview_round_id)
+        return Response({"message": "Processing initiated"}, status=202)
+
+    def get(self, request, interview_round_id):
         interview_round = get_object_or_404(InterviewRound, pk=interview_round_id)
-        return self._serve_question_answers(interview_round)
+        questions_answers_data = []
 
-    def post(self, request: HttpRequest, interview_round_id: int) -> Response:
-        interview_round = get_object_or_404(InterviewRound, pk=interview_round_id)
-        self._process_transcription(interview_round)
-        return self._serve_question_answers(interview_round)
+        for ir_question in InterviewRoundQuestion.objects.filter(interview_round=interview_round).select_related(
+            "question__question"
+        ):
+            answer = Answer.objects.filter(question=ir_question).first()
 
-    def _serve_question_answers(self, interview_round: InterviewRound) -> Response:
-        question_answers = self._get_question_and_answers(interview_round)
+            template_question = ir_question.question
+            actual_question = template_question.question  # Access the actual Question model
 
-        if len(question_answers) > 0:
-            return Response({"data": question_answers}, status=status.HTTP_200_OK)
-        else:
-            return Response(
-                {"status": "error", "message": "No question answers found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            # Assuming answer_text is stored in a JSON-compatible string format
+            answer_text = answer.answer_text if answer else ""
+            answer_id = answer.id if answer else None  # Correctly access the id attribute of the answer object
+
+            item = {
+                "question": actual_question.question_text if actual_question else "",
+                "answer": answer_text,
+                "competency": actual_question.competency if actual_question and actual_question.competency else None,
+                "score": ir_question.rating if ir_question.rating is not None else None,
+                "answer_id": answer_id,
+            }
+            questions_answers_data.append(item)
+
+        response_data = {"data": questions_answers_data}
+        return Response(response_data, status=status.HTTP_200_OK)
 
     def patch(self, request, answer_id: int) -> Response:
         answer = get_object_or_404(Answer, pk=answer_id)
+        html_content = request.data.get("html_content")
 
-        # Optional: Check if the user has permission to update this answer
-        if request.user != answer.user:
-            raise PermissionDenied("You do not have permission to edit this answer.")
-
-        answer_text = request.data.get("answer_text")
-        if answer_text is not None:
-            answer.answer_text = answer_text
-
-        # Add any other fields you expect to update
-
-        answer.save()
-        return Response({"status": "success", "message": "Answer updated successfully."}, status=status.HTTP_200_OK)
-
-    def _save_answer_notes(self, answer: Answer, question_text: str):
-        answer_text = " ".join(TranscriptChunk.objects.filter(answer=answer).values_list("chunk_text", flat=True))
-        response = get_answer_notes_for_question(answer_text, question_text)
-        answer.answer_text = response
-        answer.embedding = get_embedding(response)
-        answer.save()
-
-    def _generate_answers_for_interview_round(self, interview_round: InterviewRound):
-        interview_round_questions = interview_round.interview_round_questions.all()
-        transcript_chunks = TranscriptChunk.objects.filter(interview_round=interview_round)
-
-        for interview_round_question in interview_round_questions:
-            template_question = interview_round_question.question
-            question = template_question.question  # Access the related Question
-
-            if question:
-                question_embedding = question.embedding
-                relevant_chunks = transcript_chunks.order_by(CosineDistance("embedding", question_embedding))[:5]
-
-                answer = None
-
-                with transaction.atomic():
-                    answer = Answer.objects.create(question=interview_round_question)
-                    answer.transcript_chunks.set(relevant_chunks)
-
-                print(f"Saved state for answer #{answer.id}")
-
-                # TODO: Move to a different thread
-                self._save_answer_notes(answer, template_question.question.question_text)
-
-    def _process_transcription(self, interview_round: InterviewRound):
-        # TODO: Create up bulk create
-        # TODO: Handle user identification
-        transcription_file = interview_round.transcription_file_uri
-
-        print(transcription_file)
-
-        with open(transcription_file, "r") as f:
-            data = json.load(f)
-
-            interviewer = interview_round.interviewer
-            utterances = data.get("utterances", [])
-            if utterances is not None:
-                for utterance in utterances:
-                    # TODO: We assume that the first speaker is always an interviewer. Fix this.
-                    # TODO: If this is not the case, we then need to rerun this code after
-                    # modifying the transcript chunks
-                    # for the interviewer.
-                    # TODO: This will also only work for one interviewer and one candidate.
-                    # We need to support multiple interviewers and candidates.
-
-                    user = interviewer if utterance["speaker"] == "A" else interview_round.candidate
-                    # user = CustomUser.objects.get(id=utterance["speaker"])
-                    TranscriptChunk.objects.create(
-                        chunk_text=utterance["text"],
-                        embedding=get_embedding(utterance["text"]),
-                        interview_round=interview_round,
-                        speaker=user,
-                        start_time=int(utterance["start"]) / 1000,
-                        end_time=int(utterance["end"]) / 1000,
-                    )
-
-        self._generate_answers_for_interview_round(interview_round)
-
-    def _get_question_and_answers(self, interview_round: InterviewRound) -> List[Dict]:
-        interview_round_questions = InterviewRoundQuestion.objects.filter(interview_round=interview_round)
-        question_answers = []
-
-        for interview_round_question in interview_round_questions:
-            template_question = interview_round_question.question
-            question = template_question.question
-
-            answers = interview_round_question.answer.all()
-            for answer in answers:
-                tc = []
-                for chunk in answer.transcript_chunks.all():
-                    speaker_username = chunk.speaker.username if chunk.speaker is not None else "Unknown"
-                    tc.append(
-                        {
-                            "chunk_text": chunk.chunk_text,
-                            "start_time": chunk.start_time,
-                            "end_time": chunk.end_time,
-                            "speaker": speaker_username,
-                        }
-                    )
-
-                question_answers.append(
-                    {
-                        "question": question.question_text,
-                        "answer": answer.answer_text,
-                        "answer_id": answer.id,
-                        "transcript_chunks": tc,
-                        "competency": question.competency,
-                        "score": interview_round_question.rating,
-                    }
-                )
-
-        return question_answers
+        if html_content:
+            answer.answer_text = html_content
+            answer.save()
+            return Response(
+                {"status": "success", "message": "Answer updated successfully."}, status=status.HTTP_200_OK
+            )
+        else:
+            return Response({"error": "HTML content is missing."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class InterviewerFeedbackListCreateView(generics.ListCreateAPIView):

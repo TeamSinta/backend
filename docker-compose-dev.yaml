@@ -30,10 +30,61 @@ services:
       - 8000:8000
     depends_on:
       - db
+      - redis  # Ensure backend waits for Redis
     env_file:
       - ./api/config/dev/.env.dev
     environment:
       - ENVIRONMENT=dev
+      - CELERY_BROKER_URL=redis://redis:6379/0  # Add Redis broker URL
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0  # Add Redis result backend
+    networks:
+      - backend-network
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: sinta-redis
+    ports:
+      - 6379:6379
+    networks:
+      - backend-network
+
+  celery_worker:
+    container_name: sinta-celery-worker
+    build:
+      context: ./api
+      dockerfile: dev.Dockerfile
+    command: celery -A app worker --loglevel=info
+    volumes:
+      - ./api:/backend
+    depends_on:
+      - backend
+      - redis
+    env_file:
+      - ./api/config/dev/.env.dev
+    environment:
+      - ENVIRONMENT=dev
+      - CELERY_BROKER_URL=redis://redis:6379/0  # Ensure Celery worker uses Redis
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    networks:
+      - backend-network
+
+  celery_flower:
+    container_name: sinta-celery-flower
+    build:
+      context: ./api
+      dockerfile: dev.Dockerfile
+    command: celery -A app flower --address=0.0.0.0 --port=5555
+    ports:
+      - 5555:5555
+    depends_on:
+      - backend
+      - redis
+    env_file:
+      - ./api/config/dev/.env.dev
+    environment:
+      - ENVIRONMENT=dev
+      - CELERY_BROKER_URL=redis://redis:6379/0  # Flower to monitor Celery using Redis
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     networks:
       - backend-network
 

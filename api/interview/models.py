@@ -67,7 +67,7 @@ class InterviewRoundQuestion(models.Model):
         on_delete=models.CASCADE,
         related_name="interview_round_questions",
     )
-    rating = models.IntegerField(default=3)
+    rating = models.IntegerField(null=True, blank=True, default=None)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, blank=True, default=None)
     user = models.ForeignKey(
         CustomUser,

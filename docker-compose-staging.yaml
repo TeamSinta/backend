@@ -18,22 +18,45 @@ services:
 
   backend:
     container_name: sinta-staging-api
+  build:
+    context: ./api
+    dockerfile: dev.Dockerfile
+  command: python manage.py runserver 0.0.0.0:8000
+  volumes:
+    - ./api:/backend
+  ports:
+    - 8000:8000
+  depends_on:
+    - db
+  env_file:
+    - ./api/config/staging/.env.staging
+  environment:
+    - ENVIRONMENT=staging
+    - CELERY_BROKER_URL=redis://default:yUmvoLfJKngsQigfMDPYdxpYPZJGiWQE@monorail.proxy.rlwy.net:25069
+    - CELERY_RESULT_BACKEND=redis://default:yUmvoLfJKngsQigfMDPYdxpYPZJGiWQE@monorail.proxy.rlwy.net:25069
+  networks:
+    - backend-network
+
+  celery_worker:
+    container_name: sinta-production-celery-worker
     build:
       context: ./api
-      dockerfile: dev.Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+      dockerfile: Dockerfile
+    command: celery -A your_project_name worker --loglevel=info
     volumes:
       - ./api:/backend
-    ports:
-      - 8000:8000
+    env_file:
+      - ./api/config/production/.env.production
+    environment:
+      - CELERY_BROKER_URL=redis://default:<REDIS_PASSWORD>@<REDIS_HOST>:<REDIS_PORT>
+      - CELERY_RESULT_BACKEND=redis://default:<REDIS_PASSWORD>@<REDIS_HOST>:<REDIS_PORT>
     depends_on:
       - db
-    env_file:
-      - ./api/config/staging/.env.staging
-    environment:
-      - ENVIRONMENT=staging
+      - redis
     networks:
       - backend-network
+
+
 
 volumes:
   dbdata:

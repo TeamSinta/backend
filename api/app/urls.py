@@ -24,4 +24,5 @@ urlpatterns = [
     # path('sse_endpoint/', YourViewClassName.as_view(), name='sse_endpoint'),
     path("api/summary/", include("summary.urls")),  # Add this line for the "summary" app
     path("api/", include("export_handler.urls")),
+    path("api/new_transcription/", include("new_transcription.urls")),
 ]

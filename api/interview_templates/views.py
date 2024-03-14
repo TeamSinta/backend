@@ -242,7 +242,6 @@ class CreateTemplate(APIView):
             response = {
                 "id": template.id,
                 "role_title": template.role_title,
-                "location": template.location,
                 "interviewer_ids": user_ids,
                 "company": company_id,
                 "department_id": department_id,  # Include department ID in the response
@@ -268,7 +267,6 @@ class ReadTemplate(APIView):
             response = {
                 "id": template.id,
                 "role_title": template.role_title,
-                "location": template.location,
                 "company": template.company.id,
                 "interviewers": [
                     {
@@ -306,7 +304,6 @@ class GetAllTemplates(APIView):
             template_data = {
                 "id": template.id,
                 "role_title": template.role_title,
-                "location": template.location,
                 "company_id": template.company.id,
                 "interviewers": [
                     {
