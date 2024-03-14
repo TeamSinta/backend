@@ -60,6 +60,7 @@ urlpatterns = [
         views.GetTranscriptFromS3.as_view(),
         name="TranscriptFromS3",
     ),
+    path("delete/<int:interview_round_id>/", views.DeleteInterviewRound.as_view(), name="delete-interview-round"),
     path(
         "check-content/<int:round_id>/", CheckInterviewRoundContentView.as_view(), name="check-interview-round-content"
     ),

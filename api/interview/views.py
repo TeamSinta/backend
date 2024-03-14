@@ -432,9 +432,11 @@ class DeleteInterviewRound(APIView):
     def delete(self, request, interview_round_id):
         try:
             interview_round = InterviewRound.objects.get(id=interview_round_id, deleted_at__isnull=True)
-            interview_round.deleted_at = timezone.now()
-            interview_round.deleted_by = request.user
-            interview_round.save()
+            interview_round.delete()
+
+            # interview_round.deleted_at = timezone.now()
+            # interview_round.deleted_by = request.user
+            # interview_round.save()
             response = {"message": "InterviewRound deleted successfully"}
             return JsonResponse(response)
         except InterviewRound.DoesNotExist:
