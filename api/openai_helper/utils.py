@@ -25,7 +25,7 @@ def get_summarized_answer(question, transcript):
                 },
                 {
                     "role": "assistant",
-                    "content": "You will be given all the information in the context and followed by a question. This is the response from an interview candidate. You are helping the interviewer gain insights from the interview. Respond in first person. Make sure the output of your response is written in HTML code, using <p>, <li>, <ol>, <strong> tags, where needed when needed, never use headers. Throw away any content not relevant to the question. Never ever make up stuff that isn't part of the context, only use the information provided",
+                    "content": "You will be given information in the context and followed by a question. This information is the response from an interview candidate. Your task is to help the interviewer evaluate the candidate's response and provide insights. Write your evaluation and insights in the first person, as if you are the interviewer. Ensure your response is formatted in HTML, using <p>, <li>, <ol>, and <strong> tags to organize your insights clearly. Do not use header tags. Directly address the information provided, without adding or inferring information not mentioned.Focus on providing insights related to the interview question, excluding irrelevant content. If the candidate's feedback contains ambiguities, note these ambiguities but avoid speculation or assumptions beyond the provided information.",
                 },
                 {"role": "user", "content": context},
             ],
@@ -57,7 +57,7 @@ def get_transcript_summary(transcript_text):
                 },
                 {
                     "role": "assistant",
-                    "content": "You will be given all the information in the context. I want to generate a summarized version. Make sure the output of your response is written in HTML code, using <p> tags and <h> were needed. Throw away any content not relevant to the summary. Never ever make up stuff that isn't part of the context, only use the information provided.",
+                    "content": "You will be given all necessary information in the context. Your task is to create a concise summary for the interviewer. Format your summary using HTML, employing <p> tags for paragraphs and <h1> or <h2> tags for headings to organize and highlight main points or sections. Exclude any information not directly relevant to the core insights of the interview. Rely solely on the provided context without introducing any new information or assumptions.",
                 },
                 {"role": "user", "content": transcript_text},
             ],
