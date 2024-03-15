@@ -55,9 +55,15 @@ def create_user_and_organization(user_and_organization):
     print("last_name", last_name)
     print("profile_picture_url", profile_picture_url)
     print(workos_user)
-
     workos_user_id = workos_user.get("id", "")
+    analytics.identify(
+        user_id=str(workos_user_id),
+        traits={"email": email, "first_name": first_name, "last_name": last_name},
+    )
+    analytics.track(user_id=str(workos_user_id), event="user_signed_up")
     get_user = CustomUser.objects.filter(email=email).first()
+    analytics.identify(user_id=str(workos_user_id), traits={"email": email})
+    analytics.track(user_id=str(workos_user_id), event="user_logged_in")
     print("get_user", get_user)
     if get_user is None:
         default_data = {
@@ -74,11 +80,6 @@ def create_user_and_organization(user_and_organization):
             id=workos_user_id,
             defaults=default_data,
         )
-        analytics.identify(
-            user_id=str(new_user.id),
-            traits={"email": new_user.email, "first_name": new_user.first_name, "last_name": new_user.last_name},
-        )
-        analytics.track(user_id=str(new_user.id), event="user_signed_up")
 
         if workos_org_id is None:
             DEFAULT_DOMAIN = os.environ.get("DEFAULT_DOMAIN")
@@ -125,8 +126,6 @@ def create_user_and_organization(user_and_organization):
         if profile_picture_url is not None and get_user.profile_picture != profile_picture_url:
             CustomUser.objects.filter(id=workos_user_id).update(profile_picture=profile_picture_url)
 
-    analytics.identify(user_id=str(get_user), traits={"email": get_user.email})
-    analytics.track(user_id=str(get_user), event="user_logged_in")
     refresh = RefreshToken.for_user(get_user)
     return {"access": str(refresh.access_token), "refresh": str(refresh)}
 
