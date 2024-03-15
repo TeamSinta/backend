@@ -1,23 +1,23 @@
 {
-  "$schema": "https://schema.up.railway.app/railway.schema.json",
-  "build": {
-    "builder": "NIXPACKS",
-    "nixpacksPlan": {
-      "phases": {
-        "setup": {
-          "nixPkgs": ["...", "ffmpeg"],
-          "cmds": [
-            "...",
-            "sudo apt-get -y update && sudo apt-get install -y ffmpeg"
-          ]
-        }
-      }
-    },
-    "buildCommand": "poetry install"
-  },
-  "deploy": {
-    "startCommand": "bash scripts/start.sh",
-    "restartPolicyType": "NEVER",
-    "restartPolicyMaxRetries": 10
-  }
+	"$schema": "https://schema.up.railway.app/railway.schema.json",
+	"build": {
+		"builder": "NIXPACKS",
+		"nixpacksPlan": {
+			"phases": {
+				"setup": {
+					"nixPkgs": ["...", "ffmpeg", "wkhtmltopdf"],
+					"cmds": [
+						"...",
+						"sudo apt-get -y update && sudo apt-get install -y ffmpeg && sudo apt-get install -y wkhtmltopdf"
+					]
+				}
+			}
+		},
+		"buildCommand": "poetry install"
+	},
+	"deploy": {
+		"startCommand": "bash scripts/prod-start.sh",
+		"restartPolicyType": "NEVER",
+		"restartPolicyMaxRetries": 10
+	}
 }
