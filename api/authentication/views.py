@@ -48,6 +48,12 @@ def create_user_and_organization(user_and_organization):
     first_name = workos_user.get("first_name", email_split)
     username = workos_user.get("username", email_split)
 
+    if first_name is None:
+        first_name = email_split
+
+    if username is None:
+        username = email_split
+
     print("workos_user", workos_user)
     print("workos_org_id", workos_org_id)
     print("email", email)
