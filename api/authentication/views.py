@@ -20,6 +20,7 @@ from user.models import CustomUser, Role, UserCompanies
 workos.api_key = os.environ.get("WORKOS_APIKEY")
 workos.client_id = os.environ.get("WORKOS_CLIENT")
 analytics.write_key = os.environ.get("JUNE_ANALYTICS_WRITE_KEY", "default_key_if_not_set")
+DEFAULT_PROFILE_URI = "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227"
 
 
 def get_or_create_company(org_name, org_id, user, org_member_id):
@@ -40,19 +41,21 @@ def create_user_and_organization(user_and_organization):
     workos_org_id = user_and_organization.get("organization_id", None)
     email = workos_user.get("email", "")
     last_name = workos_user.get("last_name", "")
-    profile_picture_url = workos_user.get(
-        "profile_picture_url", "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227"
-    )
+    profile_picture_url = workos_user.get("profile_picture_url", DEFAULT_PROFILE_URI)
 
     email_split = email.split("@")[0]
     first_name = workos_user.get("first_name", email_split)
     username = workos_user.get("username", email_split)
 
+    # This has to be done because .get(key, default_value) is not working
     if first_name is None:
         first_name = email_split
 
     if username is None:
         username = email_split
+
+    if profile_picture_url is None:
+        profile_picture_url = DEFAULT_PROFILE_URI
 
     print("workos_user", workos_user)
     print("workos_org_id", workos_org_id)
@@ -195,7 +198,7 @@ class MockGoogleLogin(LoginView):
                 "is_active": True,
                 "first_name": first_name,
                 "last_name": last_name,
-                "profile_picture": "https://ak.picdn.net/contributors/436585/avatars/thumb.jpg?t=5674227",
+                "profile_picture": DEFAULT_PROFILE_URI,
             },
         )
         company_unique_id = os.environ.get("MOCK_COMPANY_UNIQUE_ID", "mock-company-1")
